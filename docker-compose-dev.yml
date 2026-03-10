@@ -1,0 +1,13 @@
+services:
+  api:
+    container_name: api
+    build:
+      context: .
+      dockerfile: apps/api/Dockerfile.dev
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/apps/api/node_modules
+    command: "tail -f /dev/null"
