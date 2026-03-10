@@ -1,6 +1,12 @@
 {
   "name": "loopra",
   "private": true,
-  "scripts": {},
+  "scripts": {
+    "api:dev": "pnpm --filter api dev",
+    "api:build": "pnpm --filter api build",
+    "api:test": "pnpm --filter api test",
+    "lint": "pnpm -r lint",
+    "typecheck": "pnpm -r typecheck"
+  },
   "packageManager": "pnpm@10.28.0"
 }
