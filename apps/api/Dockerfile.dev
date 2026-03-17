@@ -1,6 +1,6 @@
 FROM node:22-alpine
 
-RUN npm install -g pnpm@10.28.0
+RUN npm install -g pnpm@10.28.0 && pnpm config set store-dir /pnpm/store --global
 
 WORKDIR /app
 
@@ -9,6 +9,6 @@ COPY pnpm-lock.yaml ./
 COPY package.json ./
 COPY apps/api/package.json ./apps/api/
 
-RUN pnpm install --filter api --frozen-lockfile && pnpm approve-builds
+RUN pnpm install --filter api && pnpm approve-builds
 
 COPY . ./

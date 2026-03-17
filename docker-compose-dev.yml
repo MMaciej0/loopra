@@ -11,3 +11,47 @@ services:
       - /app/node_modules
       - /app/apps/api/node_modules
     command: "tail -f /dev/null"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://loopra:loopra@postgres:5432/loopra
+      REDIS_URL: redis://redis:6379
+      PORT: 8080
+
+  postgres:
+    container_name: loopra-postgres
+    image: postgis/postgis:16-3.4
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: loopra
+      POSTGRES_PASSWORD: loopra
+      POSTGRES_DB: loopra
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U loopra -d loopra"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    container_name: loopra-redis
+    image: redis:7-alpine
+    ports:
+      - "6380:6379"
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+  redis_data:
