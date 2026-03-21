@@ -261,10 +261,101 @@ Base URL: `/api/v1`
 
 ## Authentication Flow
 
-- **Access token**: short-lived JWT (15 min), sent as `Authorization: Bearer <token>`
-- **Refresh token**: long-lived (30 days), stored in `httpOnly` cookie, also accepted in body
-- On refresh: rotate refresh token, issue new access token
-- Refresh token stored in Redis; logout invalidates it
+Both tokens are delivered via **httpOnly cookies only** — no `Authorization` headers, no tokens in response bodies. JS never has access to either token.
+
+### Cookies
+
+| Cookie | Value | httpOnly | Path | Max-Age |
+|--------|-------|----------|------|---------|
+| `accessToken` | signed JWT | ✓ | `/` | 15 min |
+| `refreshToken` | `{familyId}.{rawToken}` | ✓ | `/api/v1/auth/refresh` | 30 days |
+
+Restricting `refreshToken` to `/api/v1/auth/refresh` ensures the browser never sends it to other endpoints.
+
+### Token families
+
+Each login on each device creates an independent **token family** — a UUID that identifies the session. This enables:
+
+- Multiple devices logged in simultaneously (browser + mobile = two families)
+- Per-device logout without affecting other sessions
+- **Refresh token reuse detection**: if a rotated (already-used) token is presented again, the entire family is invalidated immediately (theft response)
+- Future: "logout all devices" by deleting all families for a user
+
+The `familyId` is not secret — it's just a session identifier. The `rawToken` is the secret. Both travel together in the `refreshToken` cookie as `{familyId}.{rawToken}`.
+
+### Redis structure
+
+```
+family:{familyId}           →  { userId, tokenHash }    TTL: 30d
+user:families:{userId}      →  Set[ familyId, ... ]     (no TTL — cleaned on logout)
+```
+
+- **Access token**: not stored server-side. JWT is self-contained (`{ sub: userId }`), verified by signature on every request — zero DB or Redis lookups.
+- **Refresh token**: stored in Redis only, no DB table.
+
+### Flows
+
+**Register / Login**
+1. `familyId = uuid()`
+2. `rawToken = crypto.randomBytes(32).toString('hex')`
+3. `tokenHash = sha256(rawToken)`
+4. `redis.set(family:{familyId}, { userId, tokenHash }, EX 2592000)`
+5. `redis.sadd(user:families:{userId}, familyId)`
+6. Sign access JWT (`{ sub: userId }`, 15 min expiry)
+7. Set both httpOnly cookies; `refreshToken` value = `{familyId}.{rawToken}`
+8. Return `{ user: { id, email } }` — no tokens in body
+
+**Authenticated request** (any protected route)
+1. `@fastify/jwt` reads `accessToken` cookie, verifies signature
+2. Populates `request.user = { sub: userId }`
+3. Zero DB or Redis lookups
+
+**Refresh** (`POST /auth/refresh`)
+1. Parse `refreshToken` cookie → `[familyId, rawToken]`
+2. `tokenHash = sha256(rawToken)`
+3. `family = redis.get(family:{familyId})`
+4. If `family` not found → expired or already invalidated → 401
+5. If `family.tokenHash !== tokenHash` → **reuse detected** (possible theft):
+   - `redis.del(family:{familyId})`
+   - `redis.srem(user:families:{userId}, familyId)`
+   - Return 401 — force re-login
+6. Valid — rotate:
+   - Generate new `rawToken` + `tokenHash`
+   - `redis.set(family:{familyId}, { userId, newTokenHash }, EX 2592000)` — same familyId
+   - Issue new access JWT
+   - Set both cookies with new values
+
+**Logout** (`POST /auth/logout`) — this device only
+1. Verify `accessToken` cookie (requires valid session)
+2. Parse `refreshToken` cookie → `familyId`
+3. `redis.del(family:{familyId})`
+4. `redis.srem(user:families:{userId}, familyId)`
+5. Clear both cookies
+
+**Logout all devices** (future — `POST /auth/logout-all`)
+1. `familyIds = redis.smembers(user:families:{userId})`
+2. `redis.del(...familyIds.map(id => family:${id}))`
+3. `redis.del(user:families:{userId})`
+4. Clear cookies
+
+### Plugin setup
+
+```ts
+// plugins/auth.ts
+fastify.register(jwt, {
+  secret: config.JWT_ACCESS_SECRET,
+  cookie: { cookieName: 'accessToken', signed: false },
+})
+fastify.register(cookie)
+
+fastify.decorate('authenticate', async (request, reply) => {
+  await request.jwtVerify() // reads accessToken cookie automatically
+})
+```
+
+### Mobile note
+
+React Native (Expo) does not have an automatic cookie jar — httpOnly cookies from `Set-Cookie` will not be attached automatically. Mobile auth strategy will be decided when the mobile app is built (Phase 3). The service layer is transport-agnostic and will not change.
 
 ---
 
