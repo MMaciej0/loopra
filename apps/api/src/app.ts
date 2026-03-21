@@ -1,5 +1,6 @@
 import Fastify from 'fastify';
 import databasePlugin from './plugins/database.js';
+import redisPlugin from './plugins/redis.js';
 import userRoutes from './routes/users.js';
 
 export const buildApp = () => {
@@ -8,6 +9,7 @@ export const buildApp = () => {
   });
 
   app.register(databasePlugin);
+  app.register(redisPlugin);
 
   app.register(userRoutes);
 
