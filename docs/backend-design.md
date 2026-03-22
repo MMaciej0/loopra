@@ -12,7 +12,7 @@ apps/api/
 │   ├── index.ts              # Starts the HTTP server
 │   ├── app.ts                # Fastify app factory (exported for testing)
 │   ├── config/
-│   │   └── index.ts          # Zod-validated env (DATABASE_URL, JWT_SECRET, etc.)
+│   │   └── env.ts            # Zod-validated env (DATABASE_URL, JWT_SECRET, etc.)
 │   ├── plugins/              # Global Fastify plugins (registered in app.ts)
 │   │   ├── database.ts       # Drizzle ORM instance, exposed as fastify.db
 │   │   ├── auth.ts           # JWT verify decorator, fastify.authenticate hook
@@ -55,13 +55,15 @@ Every feature module follows the same internal structure:
 
 ```
 modules/<name>/
-  index.ts      # Registers Fastify plugin, mounts routes on a prefix
-  routes.ts     # Route definitions (method, url, schema, handler)
-  schema.ts     # Zod schemas for request body, params, query, response
-  service.ts    # Business logic — pure functions, no Fastify types
+  index.ts        # Registers Fastify plugin, mounts routes on a prefix
+  routes.ts       # Route definitions (method, url, schema, handler)
+  schema.ts       # Zod schemas for request body, params, query, response
+  services/       # Business logic — pure functions, no Fastify types
+    <action>.ts   # One file per service action (e.g. registerUser.ts, loginUser.ts)
+    cookies.ts    # Shared cookie helpers (setAuthCookies, clearAuthCookies)
 ```
 
-`service.ts` receives `db` as a parameter, making it independently testable.
+Services receive `db` and `redis` as parameters, making them independently testable.
 
 ---
 
@@ -185,7 +187,7 @@ Cycling clubs or local communities.
 
 ## API Endpoints
 
-Base URL: `/api/v1`
+No base URL prefix — routes are mounted directly (e.g. `/auth`, `/users`).
 
 ### Auth — `/auth`
 | Method | Path | Auth | Description |
@@ -268,9 +270,9 @@ Both tokens are delivered via **httpOnly cookies only** — no `Authorization` h
 | Cookie | Value | httpOnly | Path | Max-Age |
 |--------|-------|----------|------|---------|
 | `accessToken` | signed JWT | ✓ | `/` | 15 min |
-| `refreshToken` | `{familyId}.{rawToken}` | ✓ | `/api/v1/auth/refresh` | 30 days |
+| `refreshToken` | `{familyId}.{rawToken}` | ✓ | `/auth/refresh` | 30 days |
 
-Restricting `refreshToken` to `/api/v1/auth/refresh` ensures the browser never sends it to other endpoints.
+Restricting `refreshToken` to `/auth/refresh` ensures the browser never sends it to other endpoints.
 
 ### Token families
 
@@ -286,8 +288,8 @@ The `familyId` is not secret — it's just a session identifier. The `rawToken` 
 ### Redis structure
 
 ```
-family:{familyId}           →  { userId, tokenHash }    TTL: 30d
-user:families:{userId}      →  Set[ familyId, ... ]     (no TTL — cleaned on logout)
+family:{familyId}           →  { userId, refreshTokenHash }    TTL: 30d
+user:families:{userId}      →  Set[ familyId, ... ]            (no TTL — cleaned on logout)
 ```
 
 - **Access token**: not stored server-side. JWT is self-contained (`{ sub: userId }`), verified by signature on every request — zero DB or Redis lookups.
@@ -415,7 +417,7 @@ Response: `{ data: [...], nextCursor: "<string>" | null }`
   "pg": "^8",
   "ioredis": "^5",
   "@aws-sdk/client-s3": "^3",
-  "zod": "^3",
+  "zod": "^4",
   "bcrypt": "^5"
 }
 ```
