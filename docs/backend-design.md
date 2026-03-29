@@ -270,7 +270,7 @@ Both tokens are delivered via **httpOnly cookies only** — no `Authorization` h
 | Cookie | Value | httpOnly | Path | Max-Age |
 |--------|-------|----------|------|---------|
 | `accessToken` | signed JWT | ✓ | `/` | 15 min |
-| `refreshToken` | `{familyId}.{rawToken}` | ✓ | `/auth/refresh` | 30 days |
+| `refreshToken` | `{rawToken}.{familyId}` | ✓ | `/auth/refresh` | 30 days |
 
 Restricting `refreshToken` to `/auth/refresh` ensures the browser never sends it to other endpoints.
 
@@ -283,7 +283,7 @@ Each login on each device creates an independent **token family** — a UUID tha
 - **Refresh token reuse detection**: if a rotated (already-used) token is presented again, the entire family is invalidated immediately (theft response)
 - Future: "logout all devices" by deleting all families for a user
 
-The `familyId` is not secret — it's just a session identifier. The `rawToken` is the secret. Both travel together in the `refreshToken` cookie as `{familyId}.{rawToken}`.
+The `familyId` is not secret — it's just a session identifier. The `rawToken` is the secret. Both travel together in the `refreshToken` cookie as `{rawToken}.{familyId}`.
 
 ### Redis structure
 
@@ -304,7 +304,7 @@ user:families:{userId}      →  Set[ familyId, ... ]            (no TTL — cle
 4. `redis.set(family:{familyId}, { userId, tokenHash }, EX 2592000)`
 5. `redis.sadd(user:families:{userId}, familyId)`
 6. Sign access JWT (`{ sub: userId }`, 15 min expiry)
-7. Set both httpOnly cookies; `refreshToken` value = `{familyId}.{rawToken}`
+7. Set both httpOnly cookies; `refreshToken` value = `{rawToken}.{familyId}`
 8. Return `{ user: { id, email } }` — no tokens in body
 
 **Authenticated request** (any protected route)
