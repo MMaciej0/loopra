@@ -1,7 +1,9 @@
 import Fastify from 'fastify';
 import databasePlugin from './plugins/database.js';
 import redisPlugin from './plugins/redis.js';
-import userRoutes from './routes/users.js';
+import authPlugin from './plugins/auth.js';
+
+import authModule from './modules/auth/index.js';
 
 export const buildApp = () => {
   const app = Fastify({
@@ -10,8 +12,9 @@ export const buildApp = () => {
 
   app.register(databasePlugin);
   app.register(redisPlugin);
+  app.register(authPlugin);
 
-  app.register(userRoutes);
+  app.register(authModule, { prefix: '/auth' });
 
   app.get('/health', async () => {
     return { status: 'ok' };
