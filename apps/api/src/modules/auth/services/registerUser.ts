@@ -1,7 +1,7 @@
 import { eq } from 'drizzle-orm';
 import bcrypt from 'bcrypt';
-import { createHash, randomBytes, randomUUID } from 'crypto';
 import { users } from '../../../db/schema.js';
+import { createTokenFamily } from './createTokenFamily.js';
 
 import type { Redis } from 'ioredis';
 import type { Db } from '../../../db/index.js';
@@ -25,21 +25,11 @@ export const registerUser = async (database: Db, redis: Redis, email: string, pa
     })
     .returning();
 
-  const tokenFamilyUuid = randomUUID();
-  const rawToken = randomBytes(32).toString('hex');
-  const tokenHash = createHash('sha256').update(rawToken).digest('hex');
-
-  await redis.set(
-    `family:${tokenFamilyUuid}`,
-    JSON.stringify({ userId: user.id, refreshTokenHash: tokenHash }),
-    'EX',
-    2592000,
-  );
-  await redis.sadd(`user:families:${user.id}`, tokenFamilyUuid);
+  const { familyUuid, rawRefreshToken } = await createTokenFamily(redis, user.id);
 
   return {
     user,
-    rawRefreshToken: rawToken,
-    familyUuid: tokenFamilyUuid,
+    rawRefreshToken,
+    familyUuid,
   };
 };
