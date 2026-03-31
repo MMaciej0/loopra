@@ -27,8 +27,8 @@ describe('POST /auth/register', () => {
 
     expect(refreshToken).toBeDefined();
     expect(refreshToken?.httpOnly).toBe(true);
-    expect(refreshToken?.path).toBe('/auth/refresh');
-    expect(refreshToken?.value).toMatch(/^[0-9a-f]{64}\.[0-9a-f-]{36}$/); // {rawToken}.{familyUuid}
+    expect(refreshToken?.path).toBe('/auth');
+    expect(refreshToken?.value).toMatch(/^[0-9a-f-]{36}\.[0-9a-f]{64}$/); // {familyUuid}.{rawToken}
   });
 
   it('returns 409 when email already exists', async () => {

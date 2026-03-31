@@ -24,7 +24,7 @@ export const setAuthCookies = (
       httpOnly: true,
       secure: isProduction,
       sameSite: 'strict',
-      path: '/auth/refresh',
+      path: '/auth',
       maxAge: REFRESH_TOKEN_MAX_AGE,
     });
 };
@@ -32,5 +32,5 @@ export const setAuthCookies = (
 export const clearAuthCookies = (reply: FastifyReply) => {
   reply
     .clearCookie('accessToken', { path: '/' })
-    .clearCookie('refreshToken', { path: '/auth/refresh' });
+    .clearCookie('refreshToken', { path: '/auth' });
 };
