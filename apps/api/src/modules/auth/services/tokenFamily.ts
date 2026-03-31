@@ -5,6 +5,52 @@ export class InvalidTokenError extends Error {}
 
 export const createTokenFamily = async (redis: Redis, userId: string) => {
   const familyUuid = randomUUID();
+
+  const { rawRefreshToken } = await upsertFamilies(redis, familyUuid, userId);
+
+  return {
+    familyUuid,
+    rawRefreshToken,
+  };
+};
+
+export const deleteTokenFamily = async (redis: Redis, familyUuid: string) => {
+  const familyData = await redis.get(`family:${familyUuid}`);
+
+  if (!familyData) {
+    throw new InvalidTokenError();
+  }
+
+  const { userId } = JSON.parse(familyData);
+
+  await redis.del(`family:${familyUuid}`);
+  await redis.srem(`user:families:${userId}`, familyUuid);
+};
+
+export const rotateTokenFamily = async (redis: Redis, familyUuid: string, rawToken: string) => {
+  const familyData = await redis.get(`family:${familyUuid}`);
+
+  if (!familyData) {
+    throw new InvalidTokenError();
+  }
+
+  const { refreshTokenHash, userId } = JSON.parse(familyData);
+  const incomingTokenHash = createHash('sha256').update(rawToken).digest('hex');
+
+  if (refreshTokenHash !== incomingTokenHash) {
+    await deleteAllFamilies(redis, userId);
+    throw new InvalidTokenError();
+  }
+
+  const { rawRefreshToken } = await upsertFamilies(redis, familyUuid, userId);
+
+  return {
+    newRawRefreshToken: rawRefreshToken,
+    userId: userId,
+  };
+};
+
+const upsertFamilies = async (redis: Redis, familyUuid: string, userId: string) => {
   const rawToken = randomBytes(32).toString('hex');
   const tokenHash = createHash('sha256').update(rawToken).digest('hex');
 
@@ -22,15 +68,12 @@ export const createTokenFamily = async (redis: Redis, userId: string) => {
   };
 };
 
-export const deleteTokenFamily = async (redis: Redis, familyUuid: string) => {
-  const familyData = await redis.get(`family:${familyUuid}`);
+const deleteAllFamilies = async (redis: Redis, userId: string) => {
+  const familyUuids = await redis.smembers(`user:families:${userId}`);
 
-  if (!familyData) {
-    throw new InvalidTokenError();
+  if (familyUuids.length > 0) {
+    await redis.del(...familyUuids.map((uuid) => `family:${uuid}`));
   }
 
-  const { userId } = JSON.parse(familyData);
-
-  await redis.del(`family:${familyUuid}`);
-  await redis.srem(`user:families:${userId}`, familyUuid);
+  await redis.del(`user:families:${userId}`);
 };
