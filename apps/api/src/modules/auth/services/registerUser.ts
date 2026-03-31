@@ -1,7 +1,7 @@
 import { eq } from 'drizzle-orm';
 import bcrypt from 'bcrypt';
 import { users } from '../../../db/schema.js';
-import { createTokenFamily } from './createTokenFamily.js';
+import { createTokenFamily } from './tokenFamily.js';
 
 import type { Redis } from 'ioredis';
 import type { Db } from '../../../db/index.js';

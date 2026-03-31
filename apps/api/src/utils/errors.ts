@@ -4,6 +4,8 @@ export const ErrorType = {
   INVALID_PASSWORD: 'INVALID_PASSWORD',
   INVALID_INPUT: 'INVALID_INPUT',
   INTERNAL_ERROR: 'INTERNAL_ERROR',
+  UNAUTHORIZED: 'UNAUTHORIZED',
+  INVALID_TOKEN: 'INVALID_TOKEN',
 } as const;
 
 export type ErrorType = (typeof ErrorType)[keyof typeof ErrorType];
