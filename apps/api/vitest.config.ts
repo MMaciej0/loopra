@@ -4,6 +4,7 @@ export default defineConfig({
   test: {
     setupFiles: ['./test/setup.ts'],
     pool: 'forks',
+    fileParallelism: false,
     testTimeout: 15000,
   },
 });
