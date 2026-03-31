@@ -195,7 +195,7 @@ No base URL prefix — routes are mounted directly (e.g. `/auth`, `/users`).
 | POST | `/auth/register` | — | Create account |
 | POST | `/auth/login` | — | Returns access + refresh tokens |
 | POST | `/auth/refresh` | — | Exchange refresh token |
-| POST | `/auth/logout` | ✓ | Invalidate refresh token |
+| DELETE | `/auth/logout` | — | Invalidate refresh token |
 | POST | `/auth/forgot-password` | — | Send reset email |
 | POST | `/auth/reset-password` | — | Complete password reset |
 
@@ -270,9 +270,9 @@ Both tokens are delivered via **httpOnly cookies only** — no `Authorization` h
 | Cookie | Value | httpOnly | Path | Max-Age |
 |--------|-------|----------|------|---------|
 | `accessToken` | signed JWT | ✓ | `/` | 15 min |
-| `refreshToken` | `{rawToken}.{familyId}` | ✓ | `/auth/refresh` | 30 days |
+| `refreshToken` | `{familyUuid}.{rawToken}` | ✓ | `/auth` | 30 days |
 
-Restricting `refreshToken` to `/auth/refresh` ensures the browser never sends it to other endpoints.
+Restricting `refreshToken` to `/auth` ensures the browser only sends it to auth endpoints (refresh, logout), not to the rest of the API.
 
 ### Token families
 
@@ -280,16 +280,15 @@ Each login on each device creates an independent **token family** — a UUID tha
 
 - Multiple devices logged in simultaneously (browser + mobile = two families)
 - Per-device logout without affecting other sessions
-- **Refresh token reuse detection**: if a rotated (already-used) token is presented again, the entire family is invalidated immediately (theft response)
-- Future: "logout all devices" by deleting all families for a user
+- **Refresh token reuse detection**: if a rotated (already-used) token is presented again, **all families for that user** are invalidated immediately — logging out all devices (theft response)
 
-The `familyId` is not secret — it's just a session identifier. The `rawToken` is the secret. Both travel together in the `refreshToken` cookie as `{rawToken}.{familyId}`.
+The `familyUuid` is not secret — it's just a session identifier. The `rawToken` is the secret. Both travel together in the `refreshToken` cookie as `{familyUuid}.{rawToken}`.
 
 ### Redis structure
 
 ```
-family:{familyId}           →  { userId, refreshTokenHash }    TTL: 30d
-user:families:{userId}      →  Set[ familyId, ... ]            (no TTL — cleaned on logout)
+family:{familyUuid}           →  { userId, refreshTokenHash }    TTL: 30d
+user:families:{userId}        →  Set[ familyUuid, ... ]          (no TTL — cleaned on logout)
 ```
 
 - **Access token**: not stored server-side. JWT is self-contained (`{ sub: userId }`), verified by signature on every request — zero DB or Redis lookups.
@@ -298,13 +297,13 @@ user:families:{userId}      →  Set[ familyId, ... ]            (no TTL — cle
 ### Flows
 
 **Register / Login**
-1. `familyId = uuid()`
+1. `familyUuid = uuid()`
 2. `rawToken = crypto.randomBytes(32).toString('hex')`
 3. `tokenHash = sha256(rawToken)`
-4. `redis.set(family:{familyId}, { userId, tokenHash }, EX 2592000)`
-5. `redis.sadd(user:families:{userId}, familyId)`
+4. `redis.set(family:{familyUuid}, { userId, tokenHash }, EX 2592000)`
+5. `redis.sadd(user:families:{userId}, familyUuid)`
 6. Sign access JWT (`{ sub: userId }`, 15 min expiry)
-7. Set both httpOnly cookies; `refreshToken` value = `{rawToken}.{familyId}`
+7. Set both httpOnly cookies; `refreshToken` value = `{familyUuid}.{rawToken}`
 8. Return `{ user: { id, email } }` — no tokens in body
 
 **Authenticated request** (any protected route)
@@ -313,32 +312,30 @@ user:families:{userId}      →  Set[ familyId, ... ]            (no TTL — cle
 3. Zero DB or Redis lookups
 
 **Refresh** (`POST /auth/refresh`)
-1. Parse `refreshToken` cookie → `[familyId, rawToken]`
+1. Parse `refreshToken` cookie → `[familyUuid, rawToken]`
 2. `tokenHash = sha256(rawToken)`
-3. `family = redis.get(family:{familyId})`
+3. `family = redis.get(family:{familyUuid})`
 4. If `family` not found → expired or already invalidated → 401
 5. If `family.tokenHash !== tokenHash` → **reuse detected** (possible theft):
-   - `redis.del(family:{familyId})`
-   - `redis.srem(user:families:{userId}, familyId)`
-   - Return 401 — force re-login
+   - `familyIds = redis.smembers(user:families:{userId})`
+   - `redis.del(...familyIds.map(id => family:${id}))` — all families nuked
+   - `redis.del(user:families:{userId})`
+   - Clear both cookies
+   - Return 401 — force re-login on all devices
 6. Valid — rotate:
    - Generate new `rawToken` + `tokenHash`
-   - `redis.set(family:{familyId}, { userId, newTokenHash }, EX 2592000)` — same familyId
+   - `redis.set(family:{familyUuid}, { userId, newTokenHash }, EX 2592000)` — same familyUuid
    - Issue new access JWT
    - Set both cookies with new values
 
-**Logout** (`POST /auth/logout`) — this device only
-1. Verify `accessToken` cookie (requires valid session)
-2. Parse `refreshToken` cookie → `familyId`
-3. `redis.del(family:{familyId})`
-4. `redis.srem(user:families:{userId}, familyId)`
-5. Clear both cookies
+**Logout** (`DELETE /auth/logout`) — this device only
+1. Parse `refreshToken` cookie → `familyUuid`
+2. `redis.del(family:{familyUuid})`
+3. `redis.srem(user:families:{userId}, familyUuid)`
+4. Clear both cookies
 
 **Logout all devices** (future — `POST /auth/logout-all`)
-1. `familyIds = redis.smembers(user:families:{userId})`
-2. `redis.del(...familyIds.map(id => family:${id}))`
-3. `redis.del(user:families:{userId})`
-4. Clear cookies
+Same as reuse detection: delete all families + the set, clear cookies. The internal `deleteAllFamilies(redis, userId)` helper already implements this — the endpoint just needs a route + auth check.
 
 ### Plugin setup
 
