@@ -5,7 +5,7 @@ import { clearAuthCookies, setAuthCookies } from './services/cookies.js';
 import { parseBody } from '../../utils/validation.js';
 import { InvalidPasswordError, loginUser, UserNotFoundError } from './services/loginUser.js';
 import { AppError, ErrorType } from '../../utils/errors.js';
-import { deleteTokenFamily, InvalidTokenError } from './services/tokenFamily.js';
+import { deleteTokenFamily, InvalidTokenError, rotateTokenFamily } from './services/tokenFamily.js';
 
 export const authRoutes = (fastify: FastifyInstance, _options: unknown) => {
   fastify.post('/register', async (request, reply) => {
@@ -54,6 +54,34 @@ export const authRoutes = (fastify: FastifyInstance, _options: unknown) => {
     }
   });
 
+  fastify.post('/refresh', async (request, reply) => {
+    const refreshTokenCookie = request.cookies.refreshToken;
+
+    if (!refreshTokenCookie) {
+      throw new AppError(401, ErrorType.UNAUTHORIZED, 'Unauthorized');
+    }
+
+    try {
+      const [familyUuid, rawRefreshToken] = refreshTokenCookie.split('.');
+      const { newRawRefreshToken, userId } = await rotateTokenFamily(
+        fastify.redis,
+        familyUuid,
+        rawRefreshToken,
+      );
+
+      const accessToken = fastify.jwt.sign({ sub: userId });
+
+      setAuthCookies(reply, accessToken, familyUuid, newRawRefreshToken);
+      return reply.send({ user: { id: userId } });
+    } catch (error) {
+      if (error instanceof InvalidTokenError) {
+        clearAuthCookies(reply);
+        throw new AppError(401, ErrorType.INVALID_TOKEN, 'Invalid token');
+      }
+      throw error;
+    }
+  });
+
   fastify.delete('/logout', async (request, reply) => {
     const refreshTokenCookie = request.cookies.refreshToken;
 
@@ -68,6 +96,7 @@ export const authRoutes = (fastify: FastifyInstance, _options: unknown) => {
       return reply.send({ message: 'Logout successful' });
     } catch (error) {
       if (error instanceof InvalidTokenError) {
+        clearAuthCookies(reply);
         throw new AppError(401, ErrorType.INVALID_TOKEN, 'Invalid token');
       }
       throw error;
