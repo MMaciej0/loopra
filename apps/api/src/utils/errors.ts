@@ -6,6 +6,7 @@ export const ErrorType = {
   INTERNAL_ERROR: 'INTERNAL_ERROR',
   UNAUTHORIZED: 'UNAUTHORIZED',
   INVALID_TOKEN: 'INVALID_TOKEN',
+  STALE_TOKEN: 'STALE_TOKEN',
 } as const;
 
 export type ErrorType = (typeof ErrorType)[keyof typeof ErrorType];

@@ -17,10 +17,15 @@ export const buildApp = () => {
 
   app.register(globalErrorHandler);
 
+  // public routes
   app.register(authModule, { prefix: '/auth' });
-
   app.get('/health', async () => {
     return { status: 'ok' };
+  });
+
+  // protected routes
+  app.register(async (protectedApp) => {
+    protectedApp.addHook('onRequest', app.authenticate);
   });
 
   return app;
