@@ -1,11 +1,19 @@
 import { FastifyInstance } from 'fastify';
-import { LoginBodySchema, RegisterBodySchema } from './schema.js';
+import {
+  ForgottenPasswordBodySchema,
+  LoginBodySchema,
+  RegisterBodySchema,
+  ResetPasswordBodySchema,
+} from './schema.js';
 import { registerUser, UserAlreadyExistsError } from './services/registerUser.js';
 import { clearAuthCookies, setAuthCookies } from './services/cookies.js';
 import { parseBody } from '../../utils/validation.js';
 import { InvalidPasswordError, loginUser, UserNotFoundError } from './services/loginUser.js';
 import { AppError, ErrorType } from '../../utils/errors.js';
 import { deleteTokenFamily, InvalidTokenError, rotateTokenFamily } from './services/tokenFamily.js';
+import { sendResetPasswordToken } from './services/sendResetPasswordToken.js';
+import { resetPassword } from './services/resetPassword.js';
+import { InvalidResetTokenError } from './services/passwordResetToken.js';
 
 export const authRoutes = (fastify: FastifyInstance, _options: unknown) => {
   fastify.post('/register', async (request, reply) => {
@@ -97,6 +105,28 @@ export const authRoutes = (fastify: FastifyInstance, _options: unknown) => {
     } catch (error) {
       if (error instanceof InvalidTokenError) {
         clearAuthCookies(reply);
+        throw new AppError(401, ErrorType.INVALID_TOKEN, 'Invalid token');
+      }
+      throw error;
+    }
+  });
+
+  fastify.post('/forgot-password', async (request, reply) => {
+    const { email } = parseBody(request.body, ForgottenPasswordBodySchema);
+
+    // Always return 200 — never reveal whether email exists in the system
+    await sendResetPasswordToken(email, fastify.db, fastify.redis, fastify.mailer).catch(() => {});
+    return reply.send({ message: 'If that email exists, a reset link has been sent.' });
+  });
+
+  fastify.post('/reset-password', async (request, reply) => {
+    const { token, password } = parseBody(request.body, ResetPasswordBodySchema);
+
+    try {
+      await resetPassword(token, password, fastify.db, fastify.redis);
+      return reply.send({ message: 'Password reset successful' });
+    } catch (error) {
+      if (error instanceof InvalidResetTokenError) {
         throw new AppError(401, ErrorType.INVALID_TOKEN, 'Invalid token');
       }
       throw error;
