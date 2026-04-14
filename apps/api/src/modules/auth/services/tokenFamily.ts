@@ -68,7 +68,7 @@ const upsertFamilies = async (redis: Redis, familyUuid: string, userId: string) 
   };
 };
 
-const deleteAllFamilies = async (redis: Redis, userId: string) => {
+export const deleteAllFamilies = async (redis: Redis, userId: string) => {
   const familyUuids = await redis.smembers(`user:families:${userId}`);
 
   if (familyUuids.length > 0) {
