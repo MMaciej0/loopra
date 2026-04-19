@@ -11,6 +11,13 @@ declare module 'fastify' {
   }
 }
 
+declare module '@fastify/jwt' {
+  interface FastifyJWT {
+    payload: { sub: string };
+    user: { sub: string };
+  }
+}
+
 export default fastifyPlugin(async (fastify) => {
   fastify.register(fastifyCookie);
 

@@ -7,6 +7,7 @@ import mailerPlugin from './plugins/mailer.js';
 import globalErrorHandler from './plugins/globalErrorHandler.js';
 
 import authModule from './modules/auth/index.js';
+import usersModule from './modules/users/index.js';
 
 export const buildApp = () => {
   const app = Fastify({
@@ -30,6 +31,8 @@ export const buildApp = () => {
   // protected routes
   app.register(async (protectedApp) => {
     protectedApp.addHook('onRequest', protectedApp.authenticate);
+
+    protectedApp.register(usersModule, { prefix: '/users' });
   });
 
   return app;
