@@ -7,11 +7,15 @@ import type { Redis } from 'ioredis';
 import type { Db } from '../../../db/index.js';
 
 export class UserAlreadyExistsError extends Error {}
+export class OAuthOnlyAccountError extends Error {}
 
 export const registerUser = async (database: Db, redis: Redis, email: string, password: string) => {
-  const existingUser = await database.select().from(users).where(eq(users.email, email)).limit(1);
+  const [existingUser] = await database.select().from(users).where(eq(users.email, email)).limit(1);
 
-  if (existingUser.length > 0) {
+  if (existingUser) {
+    if (!existingUser.password_hash) {
+      throw new OAuthOnlyAccountError();
+    }
     throw new UserAlreadyExistsError();
   }
 
