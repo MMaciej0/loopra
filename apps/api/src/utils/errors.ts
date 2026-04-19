@@ -7,6 +7,7 @@ export const ErrorType = {
   UNAUTHORIZED: 'UNAUTHORIZED',
   INVALID_TOKEN: 'INVALID_TOKEN',
   STALE_TOKEN: 'STALE_TOKEN',
+  OAUTH_ONLY_ACCOUNT: 'OAUTH_ONLY_ACCOUNT',
 } as const;
 
 export type ErrorType = (typeof ErrorType)[keyof typeof ErrorType];

@@ -2,6 +2,7 @@ import Fastify from 'fastify';
 import databasePlugin from './plugins/database.js';
 import redisPlugin from './plugins/redis.js';
 import authPlugin from './plugins/auth.js';
+import oauthPlugin from './plugins/oauth.js';
 import mailerPlugin from './plugins/mailer.js';
 import globalErrorHandler from './plugins/globalErrorHandler.js';
 
@@ -15,6 +16,7 @@ export const buildApp = () => {
   app.register(databasePlugin);
   app.register(redisPlugin);
   app.register(authPlugin);
+  app.register(oauthPlugin);
   app.register(mailerPlugin);
 
   app.register(globalErrorHandler);

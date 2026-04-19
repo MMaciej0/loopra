@@ -77,7 +77,7 @@ PostgreSQL with PostGIS. Managed by Drizzle ORM (`drizzle-kit` for migrations).
 | id | uuid PK | |
 | email | text unique | |
 | username | text unique | |
-| password_hash | text | bcrypt |
+| password_hash | text nullable | bcrypt — null for OAuth-only accounts |
 | full_name | text | |
 | avatar_url | text | S3 key |
 | bio | text | |
@@ -89,6 +89,18 @@ PostgreSQL with PostGIS. Managed by Drizzle ORM (`drizzle-kit` for migrations).
 | is_verified | boolean | default false |
 | created_at | timestamptz | |
 | updated_at | timestamptz | |
+
+### `oauth_accounts`
+Links external OAuth identities to local users. Supports multiple providers per user (e.g. Google + Strava on the same account).
+
+| Column | Type | Notes |
+|--------|------|-------|
+| id | uuid PK | |
+| user_id | uuid FK → users | |
+| provider | text | `google` — extensible to `strava`, `apple`, etc. |
+| provider_user_id | text | Stable ID from provider (`sub` in Google's case) |
+| created_at | timestamptz | |
+| — | UNIQUE | `(provider, provider_user_id)` — one identity per provider |
 
 ### `events`
 Unified model for both **trips** (social group rides) and **trainings** (structured workouts).
@@ -192,12 +204,14 @@ No base URL prefix — routes are mounted directly (e.g. `/auth`, `/users`).
 ### Auth — `/auth`
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
-| POST | `/auth/register` | — | Create account |
+| POST | `/auth/register` | — | Create account with email + password |
 | POST | `/auth/login` | — | Returns access + refresh tokens |
 | POST | `/auth/refresh` | — | Exchange refresh token |
 | DELETE | `/auth/logout` | — | Invalidate refresh token |
 | POST | `/auth/forgot-password` | — | Send reset email |
 | POST | `/auth/reset-password` | — | Complete password reset |
+| GET | `/auth/google` | — | Redirect to Google OAuth consent screen |
+| GET | `/auth/google/callback` | — | Handle Google callback, set cookies, redirect to frontend |
 
 ### Users — `/users`
 | Method | Path | Auth | Description |
@@ -337,10 +351,38 @@ user:families:{userId}        →  Set[ familyUuid, ... ]          (no TTL — c
 **Logout all devices** (future — `POST /auth/logout-all`)
 Same as reuse detection: delete all families + the set, clear cookies. The internal `deleteAllFamilies(redis, userId)` helper already implements this — the endpoint just needs a route + auth check.
 
+**Google OAuth** (`GET /auth/google` → `GET /auth/google/callback`)
+
+OAuth is an alternative identity verification path. Once the user's identity is confirmed via Google, the session is created using the same token family system — the JWT, refresh rotation, and Redis structures are identical to password login.
+
+1. `GET /auth/google` — server redirects browser to Google's consent screen:
+   ```
+   https://accounts.google.com/o/oauth2/v2/auth
+     ?client_id=GOOGLE_CLIENT_ID
+     &redirect_uri=GOOGLE_CALLBACK_URL
+     &response_type=code
+     &scope=openid email profile
+     &state=<random_csrf_token>        ← stored in a short-lived cookie
+   ```
+2. User grants consent on Google's UI.
+3. Google redirects to `GET /auth/google/callback?code=AUTH_CODE&state=<token>`.
+4. Server validates `state` matches the cookie (CSRF check).
+5. Server POSTs to Google's token endpoint with `code` + `client_secret` → receives `access_token` + `id_token`.
+6. Server calls `https://www.googleapis.com/oauth2/v3/userinfo` with the access token → receives `{ sub, email, name, picture }`.
+7. `findOrCreateOAuthUser(db, provider="google", providerUserId=sub, email, name, picture)`:
+   - Find `oauth_accounts` by `(provider, providerUserId)` → user exists → proceed to step 8
+   - Else find `users` by `email` → link new `oauth_accounts` row to existing user → proceed to step 8
+   - Else create new `users` row (`password_hash = null`) + new `oauth_accounts` row
+8. `createTokenFamily(redis, userId)` — same as password login from here
+9. Sign access JWT, set both httpOnly cookies.
+10. `302` redirect to `FRONTEND_URL` (e.g. `/dashboard`).
+
+**Why `sub`, not `email`?** Google's `sub` is a permanent, immutable user ID. Email can be changed or transferred. Always identify OAuth users by `provider_user_id = sub`.
+
 ### Plugin setup
 
 ```ts
-// plugins/auth.ts
+// plugins/auth.ts — JWT + cookie auth
 fastify.register(jwt, {
   secret: config.JWT_ACCESS_SECRET,
   cookie: { cookieName: 'accessToken', signed: false },
@@ -351,6 +393,39 @@ fastify.decorate('authenticate', async (request, reply) => {
   await request.jwtVerify() // reads accessToken cookie automatically
 })
 ```
+
+```ts
+// plugins/oauth.ts — Google OAuth via @fastify/oauth2
+fastify.register(oauth2, {
+  name: 'googleOAuth2',
+  scope: ['openid', 'email', 'profile'],
+  credentials: {
+    client: { id: config.GOOGLE_CLIENT_ID, secret: config.GOOGLE_CLIENT_SECRET },
+    auth: oauth2.GOOGLE_CONFIGURATION,
+  },
+  startRedirectPath: '/auth/google',          // GET /auth/google → redirect to Google
+  callbackUri: config.GOOGLE_CALLBACK_URL,    // Google redirects back here with ?code=
+})
+// Exposes: fastify.googleOAuth2.getAccessTokenFromAuthorizationCodeFlow(request)
+// state CSRF token is handled automatically by the plugin
+```
+
+**Note:** `userinfo()` from the plugin only works with the `discovery` option. We use static config, so after token exchange we call Google's userinfo endpoint directly:
+```ts
+const resp = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+  headers: { Authorization: `Bearer ${token.access_token.token}` },
+})
+const { sub, email, name, picture } = await resp.json()
+```
+
+### Required env vars for OAuth
+
+| Variable | Description |
+|----------|-------------|
+| `GOOGLE_CLIENT_ID` | From Google Cloud Console → APIs & Services → Credentials |
+| `GOOGLE_CLIENT_SECRET` | Same as above — **never expose to browser** |
+| `GOOGLE_CALLBACK_URL` | Must match exactly what's registered in Google Console — e.g. `http://localhost:3000/auth/google/callback` |
+| `FRONTEND_URL` | Redirect destination after successful OAuth — e.g. `http://localhost:3001` |
 
 ### Mobile note
 
@@ -403,6 +478,7 @@ Response: `{ data: [...], nextCursor: "<string>" | null }`
 {
   "fastify": "^5",
   "@fastify/jwt": "^9",
+  "@fastify/oauth2": "^8",
   "@fastify/cors": "^10",
   "@fastify/multipart": "^9",
   "@fastify/websocket": "^11",

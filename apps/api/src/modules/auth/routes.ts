@@ -5,15 +5,21 @@ import {
   RegisterBodySchema,
   ResetPasswordBodySchema,
 } from './schema.js';
-import { registerUser, UserAlreadyExistsError } from './services/registerUser.js';
+import { OAuthOnlyAccountError as RegisterOAuthOnlyAccountError, registerUser, UserAlreadyExistsError } from './services/registerUser.js';
 import { clearAuthCookies, setAuthCookies } from './services/cookies.js';
 import { parseBody } from '../../utils/validation.js';
-import { InvalidPasswordError, loginUser, UserNotFoundError } from './services/loginUser.js';
+import { InvalidPasswordError, loginUser, OAuthOnlyAccountError, UserNotFoundError } from './services/loginUser.js';
 import { AppError, ErrorType } from '../../utils/errors.js';
-import { deleteTokenFamily, InvalidTokenError, rotateTokenFamily } from './services/tokenFamily.js';
+import {
+  deleteTokenFamily,
+  InvalidTokenError,
+  rotateTokenFamily,
+} from './services/tokenFamily.js';
 import { sendResetPasswordToken } from './services/sendResetPasswordToken.js';
 import { resetPassword } from './services/resetPassword.js';
 import { InvalidResetTokenError } from './services/passwordResetToken.js';
+import { findOrCreateOAuthUser } from './services/findOrCreateOAuthUser.js';
+import { APP_URL } from '../../config/env.js';
 
 export const authRoutes = (fastify: FastifyInstance, _options: unknown) => {
   fastify.post('/register', async (request, reply) => {
@@ -31,7 +37,9 @@ export const authRoutes = (fastify: FastifyInstance, _options: unknown) => {
       setAuthCookies(reply, accessToken, familyUuid, rawRefreshToken);
       return reply.send({ user: { id: user.id, email: user.email } });
     } catch (error) {
-      if (error instanceof UserAlreadyExistsError) {
+      if (error instanceof RegisterOAuthOnlyAccountError) {
+        throw new AppError(409, ErrorType.OAUTH_ONLY_ACCOUNT, 'This email is registered via Google. Please log in with Google.');
+      } else if (error instanceof UserAlreadyExistsError) {
         throw new AppError(409, ErrorType.USER_ALREADY_EXISTS, 'User already exists');
       }
       throw error;
@@ -55,6 +63,8 @@ export const authRoutes = (fastify: FastifyInstance, _options: unknown) => {
     } catch (error) {
       if (error instanceof UserNotFoundError) {
         throw new AppError(401, ErrorType.USER_NOT_FOUND, 'User not found');
+      } else if (error instanceof OAuthOnlyAccountError) {
+        throw new AppError(401, ErrorType.OAUTH_ONLY_ACCOUNT, 'This account uses Google sign-in. Please log in with Google.');
       } else if (error instanceof InvalidPasswordError) {
         throw new AppError(401, ErrorType.INVALID_PASSWORD, 'Invalid password');
       }
@@ -131,5 +141,25 @@ export const authRoutes = (fastify: FastifyInstance, _options: unknown) => {
       }
       throw error;
     }
+  });
+
+  fastify.get('/google/callback', async (request, reply) => {
+    const { token } = await fastify.oauth2Google!.getAccessTokenFromAuthorizationCodeFlow(request);
+    const { sub, email } = (await fastify.oauth2Google!.userinfo(token)) as {
+      sub: string;
+      email: string;
+    };
+
+    const { userId, familyUuid, rawRefreshToken } = await findOrCreateOAuthUser(
+      fastify.db,
+      fastify.redis,
+      'google',
+      sub,
+      email,
+    );
+
+    const accessToken = fastify.jwt.sign({ sub: userId });
+    setAuthCookies(reply, accessToken, familyUuid, rawRefreshToken);
+    return reply.redirect(APP_URL);
   });
 };
