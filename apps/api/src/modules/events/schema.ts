@@ -26,4 +26,49 @@ export const ListEventsQuerySchema = z
     { message: 'lat, lng, and radius_km must all be provided together' },
   );
 
+export const CreateEventBodySchema = z
+  .object({
+    type: z.enum(['trip', 'training']),
+    title: z.string().min(5).max(50),
+    description: z.string().optional(),
+    start_location: z
+      .object({
+        x: z.coerce.number().min(-180).max(180),
+        y: z.coerce.number().min(-90).max(90),
+      })
+      .optional(),
+    start_location_name: z.string().optional(),
+    city: z.string(),
+    region: z.string().optional(),
+    country: z.string(),
+
+    // Minimum 5h lead time — prevents ghost events nobody can find in time
+    start_time: z.coerce.date().refine((d) => {
+      const now = new Date();
+      now.setHours(now.getHours() + 5);
+      return d.getTime() >= now.getTime();
+    }),
+
+    end_time: z.coerce.date().optional(),
+    distance_km: z.coerce
+      .number()
+      .min(1)
+      .transform((d) => d.toString())
+      .optional(),
+    pace_kmh: z.coerce.number().int().min(1).optional(),
+    difficulty: z.enum(['easy', 'moderate', 'hard', 'expert']).optional(),
+    bike_type: z.enum(['road', 'gravel', 'mtb', 'trekking']).optional(),
+    max_participants: z.coerce.number().int().min(1).optional(),
+    is_private: z.boolean().default(false),
+  })
+  .refine((f) => {
+    const startTime = f.start_time;
+    const endTime = f.end_time;
+    if (endTime) {
+      return startTime < endTime;
+    }
+    return true;
+  });
+
+export type CreateEventBody = z.infer<typeof CreateEventBodySchema>;
 export type ListEventsQuery = z.infer<typeof ListEventsQuerySchema>;

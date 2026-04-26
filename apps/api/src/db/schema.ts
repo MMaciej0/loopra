@@ -73,7 +73,7 @@ export const events = pgTable('events', {
   distance_km: numeric({ precision: 6, scale: 2 }),
   pace_kmh: integer(),
   difficulty: eventDifficultyEnum(),
-  bike_type: bikeTypeEnum().notNull(),
+  bike_type: bikeTypeEnum(),
   max_participants: integer(), // null = unlimited
   is_private: boolean().notNull().default(false),
   status: eventStatusEnum().notNull().default('open'),
