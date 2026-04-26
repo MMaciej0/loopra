@@ -8,6 +8,7 @@ import globalErrorHandler from './plugins/globalErrorHandler.js';
 
 import authModule from './modules/auth/index.js';
 import usersModule from './modules/users/index.js';
+import eventsModule from './modules/events/index.js';
 
 export const buildApp = () => {
   const app = Fastify({
@@ -33,6 +34,7 @@ export const buildApp = () => {
     protectedApp.addHook('onRequest', protectedApp.authenticate);
 
     protectedApp.register(usersModule, { prefix: '/users' });
+    protectedApp.register(eventsModule, { prefix: '/events' });
   });
 
   return app;

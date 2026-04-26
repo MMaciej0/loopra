@@ -1,4 +1,16 @@
-import { pgTable, text, timestamp, unique, uuid } from 'drizzle-orm/pg-core';
+import {
+  boolean,
+  geometry,
+  integer,
+  numeric,
+  pgEnum,
+  pgTable,
+  primaryKey,
+  text,
+  timestamp,
+  unique,
+  uuid,
+} from 'drizzle-orm/pg-core';
 
 export const users = pgTable('users', {
   id: uuid().primaryKey().defaultRandom(),
@@ -20,4 +32,66 @@ export const oauth_accounts = pgTable(
     created_at: timestamp({ withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [unique().on(t.provider, t.provider_user_id)],
+);
+
+export const eventTypeEnum = pgEnum('event_type', ['trip', 'training']);
+export const eventDifficultyEnum = pgEnum('event_difficulty', [
+  'easy',
+  'moderate',
+  'hard',
+  'expert',
+]);
+export const eventStatusEnum = pgEnum('event_status', [
+  'draft',
+  'open',
+  'full',
+  'cancelled',
+  'completed',
+]);
+export const participantStatusEnum = pgEnum('participant_status', [
+  'pending',
+  'confirmed',
+  'declined',
+]);
+export const bikeTypeEnum = pgEnum('bike_type', ['road', 'gravel', 'mtb', 'trekking']);
+
+export const events = pgTable('events', {
+  id: uuid().primaryKey().defaultRandom(),
+  type: eventTypeEnum().notNull(),
+  title: text().notNull(),
+  description: text(),
+  creator_id: uuid()
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade' }),
+  start_location: geometry({ type: 'point', mode: 'xy', srid: 4326 }),
+  start_location_name: text(),
+  city: text(),
+  region: text(), // state/province — nullable, used for US/CA/AU disambiguation
+  country: text(), // ISO 3166-1 alpha-2
+  start_time: timestamp({ withTimezone: true }).notNull(),
+  end_time: timestamp({ withTimezone: true }),
+  distance_km: numeric({ precision: 6, scale: 2 }),
+  pace_kmh: integer(),
+  difficulty: eventDifficultyEnum(),
+  bike_type: bikeTypeEnum().notNull(),
+  max_participants: integer(), // null = unlimited
+  is_private: boolean().notNull().default(false),
+  status: eventStatusEnum().notNull().default('open'),
+  created_at: timestamp({ withTimezone: true }).notNull().defaultNow(),
+  updated_at: timestamp({ withTimezone: true }).notNull().defaultNow(),
+});
+
+export const event_participants = pgTable(
+  'event_participants',
+  {
+    event_id: uuid()
+      .notNull()
+      .references(() => events.id, { onDelete: 'cascade' }),
+    user_id: uuid()
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    status: participantStatusEnum().notNull().default('confirmed'),
+    joined_at: timestamp({ withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [primaryKey({ columns: [t.event_id, t.user_id] })],
 );
