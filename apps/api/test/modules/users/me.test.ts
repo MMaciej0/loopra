@@ -1,8 +1,10 @@
 import { describe, expect, it } from 'vitest';
-import { useApp, registerUser } from '../../helpers/app.js';
+import { useApp } from '../../helpers/app.js';
+import { useAuthenticatedUser } from '../../helpers/auth.js';
 
 describe('GET /users/me', () => {
   const appRef = useApp();
+  const auth = useAuthenticatedUser(appRef);
 
   it('returns 401 when not authenticated', async () => {
     const response = await appRef.app.inject({
@@ -27,17 +29,15 @@ describe('GET /users/me', () => {
   });
 
   it('returns current user profile when authenticated', async () => {
-    const { accessToken, userId, email } = await registerUser(appRef.app);
-
     const response = await appRef.app.inject({
       method: 'GET',
       url: '/users/me',
-      cookies: { accessToken },
+      cookies: { accessToken: auth.accessToken },
     });
 
     expect(response.statusCode).toBe(200);
     expect(response.json()).toMatchObject({
-      user: { id: userId, email },
+      user: { id: auth.userId, email: auth.email },
     });
   });
 });

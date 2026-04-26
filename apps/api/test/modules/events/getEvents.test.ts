@@ -1,27 +1,21 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { registerUser, useApp } from '../../helpers/app.js';
+import { useApp } from '../../helpers/app.js';
 import { createMultipleRandomEvents, newEvent } from '../../helpers/events.js';
 import { events } from '../../../src/db/schema.js';
+import { useAuthenticatedUser } from '../../helpers/auth.js';
 
 describe('GET /events', () => {
   const appRef = useApp();
-  let reusableAccessToken: string;
-  let reusableUserId: string;
+  const auth = useAuthenticatedUser(appRef);
   const LIMIT = 20;
 
-  beforeEach(async () => {
-    const { accessToken, userId } = await registerUser(appRef.app);
-    reusableAccessToken = accessToken;
-    reusableUserId = userId;
-  });
-
   it('returns first 20 records (limit) when cursor is not defined', async () => {
-    await createMultipleRandomEvents(appRef.app.db, LIMIT + 1, reusableUserId);
+    await createMultipleRandomEvents(appRef.app.db, LIMIT + 1, auth.userId);
 
     const response = await appRef.app.inject({
       method: 'GET',
       url: '/events',
-      cookies: { accessToken: reusableAccessToken },
+      cookies: { accessToken: auth.accessToken },
     });
 
     expect(response.statusCode).toBe(200);
@@ -30,12 +24,12 @@ describe('GET /events', () => {
   });
 
   it('returns next 20 records (limit) when cursor is defined', async () => {
-    await createMultipleRandomEvents(appRef.app.db, LIMIT * 2, reusableUserId);
+    await createMultipleRandomEvents(appRef.app.db, LIMIT * 2, auth.userId);
 
     const initialResponse = await appRef.app.inject({
       method: 'GET',
       url: '/events',
-      cookies: { accessToken: reusableAccessToken },
+      cookies: { accessToken: auth.accessToken },
     });
 
     const { nextCursor, data } = initialResponse.json();
@@ -46,7 +40,7 @@ describe('GET /events', () => {
     const nextResponse = await appRef.app.inject({
       method: 'GET',
       url: '/events',
-      cookies: { accessToken: reusableAccessToken },
+      cookies: { accessToken: auth.accessToken },
       query: {
         cursor: nextCursor,
       },
@@ -59,15 +53,15 @@ describe('GET /events', () => {
 
   it('returns events near Warsaw when Warsaw lat/long is provided', async () => {
     const warsawEvent1 = newEvent({
-      user_id: reusableUserId,
+      user_id: auth.userId,
       start_location: { x: 21.01178, y: 52.22977 },
     });
     const warsawEvent2 = newEvent({
-      user_id: reusableUserId,
+      user_id: auth.userId,
       start_location: { x: 21.01178, y: 52.22977 },
     });
     const tokyoEvent = newEvent({
-      user_id: reusableUserId,
+      user_id: auth.userId,
       start_location: { x: 139.69171, y: 35.6895 },
     });
 
@@ -76,7 +70,7 @@ describe('GET /events', () => {
     const response = await appRef.app.inject({
       method: 'GET',
       url: '/events',
-      cookies: { accessToken: reusableAccessToken },
+      cookies: { accessToken: auth.accessToken },
       query: {
         lat: '52.22977',
         lng: '21.01178',
