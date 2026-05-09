@@ -20,6 +20,7 @@ beforeAll(async () => {
   pool = new Pool({ connectionString: process.env.DATABASE_URL });
   const db = drizzle(pool, { schema });
 
+  await pool.query('CREATE EXTENSION IF NOT EXISTS postgis');
   await migrate(db, { migrationsFolder: resolve(__dirname, '../drizzle') });
 
   redis = new Redis(process.env.REDIS_URL!);
