@@ -18,6 +18,10 @@ export const newEvent = ({
   start_location_name,
   start_time,
   start_location,
+  end_time,
+  city,
+  region,
+  country,
 }: NewEventProps) => ({
   creator_id: user_id,
   type: type || TYPE[Math.floor(Math.random() * TYPE.length)],
@@ -26,8 +30,12 @@ export const newEvent = ({
   bike_type: bike_type || BIKE_TYPES[Math.floor(Math.random() * BIKE_TYPES.length)],
   difficulty: difficulty || DIFFICULTIES[Math.floor(Math.random() * DIFFICULTIES.length)],
   start_location_name: start_location_name || 'Test Location',
-  start_time: start_time || new Date(),
-  start_location: start_location || null,
+  start_time: start_time || new Date(Date.now() + 6 * 60 * 60 * 1000),
+  ...(start_location && { start_location }),
+  ...(end_time && { end_time }),
+  city: city || 'Warsaw',
+  ...(region && { region }),
+  country: country || 'Poland',
 });
 
 export const createMultipleRandomEvents = (db: Db, count: number, user_id: string) => {

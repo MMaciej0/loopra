@@ -8,6 +8,8 @@ export const ErrorType = {
   INVALID_TOKEN: 'INVALID_TOKEN',
   STALE_TOKEN: 'STALE_TOKEN',
   OAUTH_ONLY_ACCOUNT: 'OAUTH_ONLY_ACCOUNT',
+  EVENT_NOT_FOUND: 'EVENT_NOT_FOUND',
+  EVENT_UPDATE_BAD_BODY: 'EVENT_UPDATE_BAD_BODY',
 } as const;
 
 export type ErrorType = (typeof ErrorType)[keyof typeof ErrorType];
