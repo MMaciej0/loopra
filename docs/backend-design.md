@@ -76,6 +76,7 @@ PostgreSQL with PostGIS. Managed by Drizzle ORM (`drizzle-kit` for migrations).
 |--------|------|-------|
 | id | uuid PK | |
 | email | text unique | |
+| email_verified_at | timestamptz nullable | null until email confirmation; set immediately for trusted OAuth emails |
 | username | text unique | |
 | password_hash | text nullable | bcrypt — null for OAuth-only accounts |
 | full_name | text | |
@@ -86,7 +87,6 @@ PostgreSQL with PostGIS. Managed by Drizzle ORM (`drizzle-kit` for migrations).
 | country | text | ISO 3166-1 alpha-2 |
 | avg_speed_kmh | integer | for ride matching |
 | ride_styles | text[] | road, mtb, gravel, urban, cx |
-| is_verified | boolean | default false |
 | created_at | timestamptz | |
 | updated_at | timestamptz | |
 
@@ -208,6 +208,8 @@ No base URL prefix — routes are mounted directly (e.g. `/auth`, `/users`).
 | POST | `/auth/login` | — | Returns access + refresh tokens |
 | POST | `/auth/refresh` | — | Exchange refresh token |
 | DELETE | `/auth/logout` | — | Invalidate refresh token |
+| GET | `/auth/verify-email?token=...` | — | Confirm email address from verification link |
+| POST | `/auth/resend-verification` | ✓ | Send a new verification email for the current unverified user |
 | POST | `/auth/forgot-password` | — | Send reset email |
 | POST | `/auth/reset-password` | — | Complete password reset |
 | GET | `/auth/google` | — | Redirect to Google OAuth consent screen |
@@ -229,11 +231,11 @@ No base URL prefix — routes are mounted directly (e.g. `/auth`, `/users`).
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
 | GET | `/events` | ✓ | List (filter: type, lat/lng/radius, date, difficulty) |
-| POST | `/events` | ✓ | Create event |
+| POST | `/events` | ✓ + verified | Create event |
 | GET | `/events/:id` | ✓ | Event details |
 | PATCH | `/events/:id` | ✓ | Update (creator only) |
 | DELETE | `/events/:id` | ✓ | Cancel (creator only) |
-| POST | `/events/:id/join` | ✓ | Join event |
+| POST | `/events/:id/join` | ✓ + verified | Join event |
 | DELETE | `/events/:id/leave` | ✓ | Leave event |
 | GET | `/events/:id/participants` | ✓ | Participant list |
 
@@ -241,11 +243,11 @@ No base URL prefix — routes are mounted directly (e.g. `/auth`, `/users`).
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
 | GET | `/groups` | ✓ | Search groups (city, country, ride_style) |
-| POST | `/groups` | ✓ | Create group |
+| POST | `/groups` | ✓ + verified | Create group |
 | GET | `/groups/:id` | ✓ | Group details |
 | PATCH | `/groups/:id` | ✓ | Update (admin only) |
 | DELETE | `/groups/:id` | ✓ | Delete (owner only) |
-| POST | `/groups/:id/join` | ✓ | Join group |
+| POST | `/groups/:id/join` | ✓ + verified | Join group |
 | DELETE | `/groups/:id/leave` | ✓ | Leave group |
 | GET | `/groups/:id/members` | ✓ | Member list |
 | GET | `/groups/:id/events` | ✓ | Group events |
@@ -254,7 +256,7 @@ No base URL prefix — routes are mounted directly (e.g. `/auth`, `/users`).
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
 | GET | `/routes` | ✓ | Browse public routes |
-| POST | `/routes` | ✓ | Upload GPX + metadata |
+| POST | `/routes` | ✓ + verified | Upload GPX + metadata |
 | GET | `/routes/:id` | ✓ | Route details + download |
 | DELETE | `/routes/:id` | ✓ | Delete (creator only) |
 
@@ -278,6 +280,37 @@ No base URL prefix — routes are mounted directly (e.g. `/auth`, `/users`).
 ## Authentication Flow
 
 Both tokens are delivered via **httpOnly cookies only** — no `Authorization` headers, no tokens in response bodies. JS never has access to either token.
+
+### Email verification gate
+
+Registration and login are allowed before email verification so users can see the product value quickly. Verification gates participation, not discovery.
+
+Unverified authenticated users can:
+
+- search and browse rides
+- view ride details
+- view and edit their own basic profile
+- resend the verification email
+
+Unverified authenticated users cannot:
+
+- create rides
+- join/request to join rides
+- write in event chat
+- create groups/clubs
+- upload routes/GPX
+- send direct messages
+
+Protected write/participation routes should use a separate `requireVerifiedUser` guard after the normal auth guard. If the user is authenticated but `email_verified_at` is null, return `403 EMAIL_NOT_VERIFIED`.
+
+Example response:
+
+```json
+{
+  "type": "EMAIL_NOT_VERIFIED",
+  "message": "Verify your email to continue."
+}
+```
 
 ### Cookies
 
@@ -303,14 +336,16 @@ The `familyUuid` is not secret — it's just a session identifier. The `rawToken
 ```
 family:{familyUuid}           →  { userId, refreshTokenHash }    TTL: 30d
 user:families:{userId}        →  Set[ familyUuid, ... ]          (no TTL — cleaned on logout)
+email-verification:{tokenHash} → userId                          TTL: 24h
 ```
 
 - **Access token**: not stored server-side. JWT is self-contained (`{ sub: userId }`), verified by signature on every request — zero DB or Redis lookups.
 - **Refresh token**: stored in Redis only, no DB table.
+- **Email verification token**: raw token is sent only by email; Redis stores only a hash for single-use confirmation.
 
 ### Flows
 
-**Register / Login**
+**Register**
 1. `familyUuid = uuid()`
 2. `rawToken = crypto.randomBytes(32).toString('hex')`
 3. `tokenHash = sha256(rawToken)`
@@ -318,12 +353,40 @@ user:families:{userId}        →  Set[ familyUuid, ... ]          (no TTL — c
 5. `redis.sadd(user:families:{userId}, familyUuid)`
 6. Sign access JWT (`{ sub: userId }`, 15 min expiry)
 7. Set both httpOnly cookies; `refreshToken` value = `{familyUuid}.{rawToken}`
-8. Return `{ user: { id, email } }` — no tokens in body
+8. Create a single-use email verification token, store only its hash in Redis with a 24h TTL, and send the verification link by email.
+9. Return `{ user: { id, email, email_verified_at: null } }` — no tokens in body
+
+**Login**
+1. Validate email + password.
+2. Create token family using the same cookie/session flow as register.
+3. Return `{ user: { id, email, email_verified_at } }`.
+4. Do not block login for unverified accounts; block participation routes instead.
 
 **Authenticated request** (any protected route)
 1. `@fastify/jwt` reads `accessToken` cookie, verifies signature
 2. Populates `request.user = { sub: userId }`
 3. Zero DB or Redis lookups
+
+**Verified participation request** (create/join/chat/etc.)
+1. Run the normal auth guard.
+2. Load the current user from DB.
+3. If `email_verified_at` is null, return `403 EMAIL_NOT_VERIFIED`.
+4. Otherwise continue to the handler.
+
+**Verify email** (`GET /auth/verify-email?token=...`)
+1. Hash the raw token from the URL.
+2. Look up the hash in Redis.
+3. If missing or expired, return `401 INVALID_TOKEN`.
+4. Set `users.email_verified_at = now()`.
+5. Delete the token so it cannot be reused.
+6. Redirect to the frontend email-verified state or return success for API clients.
+
+**Resend verification** (`POST /auth/resend-verification`)
+1. Require authentication.
+2. Load the current user.
+3. If already verified, return success without sending a new email.
+4. Create a new single-use token, store only its hash in Redis with a 24h TTL, and send the verification link.
+5. Rate-limit this endpoint to prevent email abuse.
 
 **Refresh** (`POST /auth/refresh`)
 1. Parse `refreshToken` cookie → `[familyUuid, rawToken]`
@@ -368,11 +431,12 @@ OAuth is an alternative identity verification path. Once the user's identity is 
 3. Google redirects to `GET /auth/google/callback?code=AUTH_CODE&state=<token>`.
 4. Server validates `state` matches the cookie (CSRF check).
 5. Server POSTs to Google's token endpoint with `code` + `client_secret` → receives `access_token` + `id_token`.
-6. Server calls `https://www.googleapis.com/oauth2/v3/userinfo` with the access token → receives `{ sub, email, name, picture }`.
+6. Server calls `https://www.googleapis.com/oauth2/v3/userinfo` with the access token → receives `{ sub, email, email_verified, name, picture }`.
 7. `findOrCreateOAuthUser(db, provider="google", providerUserId=sub, email, name, picture)`:
    - Find `oauth_accounts` by `(provider, providerUserId)` → user exists → proceed to step 8
    - Else find `users` by `email` → link new `oauth_accounts` row to existing user → proceed to step 8
    - Else create new `users` row (`password_hash = null`) + new `oauth_accounts` row
+   - If Google returns `email_verified = true`, set `email_verified_at` for that user.
 8. `createTokenFamily(redis, userId)` — same as password login from here
 9. Sign access JWT, set both httpOnly cookies.
 10. `302` redirect to `FRONTEND_URL` (e.g. `/dashboard`).
