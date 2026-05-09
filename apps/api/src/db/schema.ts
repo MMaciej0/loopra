@@ -97,10 +97,12 @@ export const event_participants = pgTable(
   (t) => [primaryKey({ columns: [t.event_id, t.user_id] })],
 );
 
-export const eventsRelations = relations(events, ({ many }) => ({
+export const eventsRelations = relations(events, ({ many, one }) => ({
   participants: many(event_participants),
+  creator: one(users, { fields: [events.creator_id], references: [users.id] }),
 }));
 
 export const eventParticipantsRelations = relations(event_participants, ({ one }) => ({
   event: one(events, { fields: [event_participants.event_id], references: [events.id] }),
+  user: one(users, { fields: [event_participants.user_id], references: [users.id] }),
 }));
