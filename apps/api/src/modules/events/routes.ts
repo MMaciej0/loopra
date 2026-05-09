@@ -14,6 +14,7 @@ import {
 } from './errors.js';
 import { AppError, ErrorType } from '../../utils/errors.js';
 import { joinEvent } from './services/joinEvent.js';
+import { getEvent } from './services/getEvent.js';
 
 export const eventsRoutes = async (fastify: FastifyInstance) => {
   fastify.get('/', async (request, reply) => {
@@ -27,6 +28,19 @@ export const eventsRoutes = async (fastify: FastifyInstance) => {
     const creatorId = request.user.sub;
     const [newEvent] = await createEvent(fastify.db, creatorId, parsedBody);
     return reply.send({ data: newEvent });
+  });
+
+  fastify.get('/:id', async (request, reply) => {
+    const { id } = request.params as { id: string };
+    try {
+      const event = await getEvent(fastify.db, id);
+      return reply.send({ data: event });
+    } catch (error) {
+      if (error instanceof EventNotFoundError) {
+        throw new AppError(404, ErrorType.EVENT_NOT_FOUND, 'Event not found');
+      }
+      throw error;
+    }
   });
 
   fastify.patch('/:id', async (request, reply) => {
