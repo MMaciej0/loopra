@@ -6,3 +6,6 @@ export class EventUpdateBadBodyError extends Error {
   }
 }
 export class EventHasParticipantsError extends Error {}
+
+export class ParticipantExistsError extends Error {}
+export class MaxParticipantsError extends Error {}

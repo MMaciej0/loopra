@@ -11,6 +11,7 @@ import {
   unique,
   uuid,
 } from 'drizzle-orm/pg-core';
+import { relations } from 'drizzle-orm';
 
 export const users = pgTable('users', {
   id: uuid().primaryKey().defaultRandom(),
@@ -95,3 +96,11 @@ export const event_participants = pgTable(
   },
   (t) => [primaryKey({ columns: [t.event_id, t.user_id] })],
 );
+
+export const eventsRelations = relations(events, ({ many }) => ({
+  participants: many(event_participants),
+}));
+
+export const eventParticipantsRelations = relations(event_participants, ({ one }) => ({
+  event: one(events, { fields: [event_participants.event_id], references: [events.id] }),
+}));

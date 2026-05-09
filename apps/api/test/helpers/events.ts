@@ -22,6 +22,7 @@ export const newEvent = ({
   city,
   region,
   country,
+  max_participants,
 }: NewEventProps) => ({
   creator_id: user_id,
   type: type || TYPE[Math.floor(Math.random() * TYPE.length)],
@@ -36,6 +37,7 @@ export const newEvent = ({
   city: city || 'Warsaw',
   ...(region && { region }),
   country: country || 'Poland',
+  ...(max_participants && { max_participants }),
 });
 
 export const createMultipleRandomEvents = (db: Db, count: number, user_id: string) => {
