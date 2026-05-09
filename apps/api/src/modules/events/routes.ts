@@ -3,11 +3,9 @@ import { parseBody, parseSearchParams } from '../../utils/validation.js';
 import { CreateEventBodySchema, ListEventsQuerySchema, UpdateEventBodySchema } from './schema.js';
 import { listEvents } from './services/listEvents.js';
 import { createEvent } from './services/createEvent.js';
-import {
-  EventNotFoundError,
-  EventUpdateBadBodyError,
-  updateEvent,
-} from './services/updateEvent.js';
+import { updateEvent } from './services/updateEvent.js';
+import { deleteEvent } from './services/deleteEvent.js';
+import { EventNotFoundError, EventUpdateBadBodyError, EventHasParticipantsError } from './errors.js';
 import { AppError, ErrorType } from '../../utils/errors.js';
 
 export const eventsRoutes = async (fastify: FastifyInstance) => {
@@ -37,6 +35,23 @@ export const eventsRoutes = async (fastify: FastifyInstance) => {
       }
       if (error instanceof EventUpdateBadBodyError) {
         throw new AppError(400, ErrorType.EVENT_UPDATE_BAD_BODY, error.message);
+      }
+      throw error;
+    }
+  });
+
+  fastify.delete('/:id', async (request, reply) => {
+    const { id } = request.params as { id: string };
+    const creatorId = request.user.sub;
+    try {
+      const deletedEvent = await deleteEvent(fastify.db, id, creatorId);
+      return reply.send({ data: deletedEvent });
+    } catch (error) {
+      if (error instanceof EventNotFoundError) {
+        throw new AppError(404, ErrorType.EVENT_NOT_FOUND, 'Event not found');
+      }
+      if (error instanceof EventHasParticipantsError) {
+        throw new AppError(400, ErrorType.EVENT_HAS_PARTICIPANTS, 'Event has participants');
       }
       throw error;
     }

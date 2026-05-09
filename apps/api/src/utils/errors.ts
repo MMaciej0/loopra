@@ -10,6 +10,7 @@ export const ErrorType = {
   OAUTH_ONLY_ACCOUNT: 'OAUTH_ONLY_ACCOUNT',
   EVENT_NOT_FOUND: 'EVENT_NOT_FOUND',
   EVENT_UPDATE_BAD_BODY: 'EVENT_UPDATE_BAD_BODY',
+  EVENT_HAS_PARTICIPANTS: 'EVENT_HAS_PARTICIPANTS',
 } as const;
 
 export type ErrorType = (typeof ErrorType)[keyof typeof ErrorType];
