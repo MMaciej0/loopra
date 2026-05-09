@@ -9,3 +9,4 @@ export class EventHasParticipantsError extends Error {}
 
 export class ParticipantExistsError extends Error {}
 export class MaxParticipantsError extends Error {}
+export class ParticipantNotFoundError extends Error {}

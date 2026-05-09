@@ -11,9 +11,11 @@ import {
   EventHasParticipantsError,
   ParticipantExistsError,
   MaxParticipantsError,
+  ParticipantNotFoundError,
 } from './errors.js';
 import { AppError, ErrorType } from '../../utils/errors.js';
 import { joinEvent } from './services/joinEvent.js';
+import { leaveEvent } from './services/leaveEvent.js';
 import { getEvent } from './services/getEvent.js';
 
 export const eventsRoutes = async (fastify: FastifyInstance) => {
@@ -93,6 +95,20 @@ export const eventsRoutes = async (fastify: FastifyInstance) => {
       }
       if (error instanceof MaxParticipantsError) {
         throw new AppError(400, ErrorType.MAX_PARTICIPANTS, 'Max participants reached');
+      }
+      throw error;
+    }
+  });
+
+  fastify.delete('/:id/leave', async (request, reply) => {
+    const { id } = request.params as { id: string };
+    const userId = request.user.sub;
+    try {
+      const deleted = await leaveEvent(fastify.db, userId, id);
+      return reply.send({ data: deleted });
+    } catch (error) {
+      if (error instanceof ParticipantNotFoundError) {
+        throw new AppError(404, ErrorType.PARTICIPANT_NOT_FOUND, 'Participant not found');
       }
       throw error;
     }
