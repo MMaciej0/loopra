@@ -44,6 +44,22 @@ The first product experience should stay very simple:
 5. The ride chat opens for coordination.
 6. We ride.
 
+## Trust Gate
+
+Loopra should let people discover value before asking too much from them, but participating in the community should require a verified email address.
+
+Account states:
+
+- Anonymous: can see public marketing pages; public ride browsing can be considered later.
+- Registered but unverified: can log in, search rides, view ride details, edit basic profile, and resend the verification email.
+- Verified: can create rides, join/request to join rides, write in ride chat, and later create groups, upload routes, or send direct messages.
+
+The rule:
+
+> Reading is allowed. Participating requires verified email.
+
+If an unverified user tries to create or join a ride, the UI should not feel like a dead error. It should explain the next step: "Verify your email to join this ride." After verification, the app should return them to the ride or creation flow where possible.
+
 ## Ride Contract
 
 Loopra should make expectations explicit before someone joins. This reduces fear for newer riders and prevents frustration for stronger riders.
@@ -96,4 +112,3 @@ Templates can reduce friction:
 Do not overbuild around social network features before the ride loop works. Clubs, follows, route libraries, Strava import, achievements, and deep profiles can be useful later, but the first version should protect the simple promise:
 
 > I want to ride. I create a ride. People who fit can join. Or I find a ride that fits me.
-

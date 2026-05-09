@@ -16,6 +16,7 @@ The minimum to be useful to a cyclist in any city.
 
 | Feature | Description |
 |---------|-------------|
+| **Email verification gate** | Users can register and search rides immediately, but must verify email before creating rides, joining rides, chatting, or otherwise participating |
 | **Structured ride events** | Title, date/time, meetup point (map pin), distance, estimated pace, discipline (road/mtb/gravel/cx), max spots, difficulty |
 | **RSVP with real headcount** | Join / Leave / Waitlist. Participant count visible upfront — no counting comments |
 | **Searchable ride feed** | Filter by location + radius, date range, discipline, pace, difficulty |
