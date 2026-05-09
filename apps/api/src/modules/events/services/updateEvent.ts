@@ -2,14 +2,7 @@ import { eq } from 'drizzle-orm';
 import { Db } from '../../../db/index.js';
 import { events } from '../../../db/schema.js';
 import { UpdateEventBody } from '../schema.js';
-
-export class EventNotFoundError extends Error {}
-export class EventUpdateBadBodyError extends Error {
-  constructor(message?: string) {
-    super(message);
-    this.name = 'EventUpdateBadBodyError';
-  }
-}
+import { EventNotFoundError, EventUpdateBadBodyError } from '../errors.js';
 
 export const updateEvent = async (
   db: Db,

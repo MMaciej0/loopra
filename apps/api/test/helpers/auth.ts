@@ -18,11 +18,11 @@ export const registerUser = async (
   return { accessToken, userId, email };
 };
 
-export const useAuthenticatedUser = (appRef: { app: FastifyInstance }) => {
+export const useAuthenticatedUser = (appRef: { app: FastifyInstance }, customEmail?: string) => {
   const auth = { accessToken: '', userId: '', email: '' };
 
   beforeEach(async () => {
-    const { accessToken, userId, email } = await registerUser(appRef.app);
+    const { accessToken, userId, email } = await registerUser(appRef.app, customEmail);
     auth.accessToken = accessToken;
     auth.userId = userId;
     auth.email = email;
