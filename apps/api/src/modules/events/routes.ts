@@ -5,8 +5,15 @@ import { listEvents } from './services/listEvents.js';
 import { createEvent } from './services/createEvent.js';
 import { updateEvent } from './services/updateEvent.js';
 import { deleteEvent } from './services/deleteEvent.js';
-import { EventNotFoundError, EventUpdateBadBodyError, EventHasParticipantsError } from './errors.js';
+import {
+  EventNotFoundError,
+  EventUpdateBadBodyError,
+  EventHasParticipantsError,
+  ParticipantExistsError,
+  MaxParticipantsError,
+} from './errors.js';
 import { AppError, ErrorType } from '../../utils/errors.js';
+import { joinEvent } from './services/joinEvent.js';
 
 export const eventsRoutes = async (fastify: FastifyInstance) => {
   fastify.get('/', async (request, reply) => {
@@ -52,6 +59,26 @@ export const eventsRoutes = async (fastify: FastifyInstance) => {
       }
       if (error instanceof EventHasParticipantsError) {
         throw new AppError(400, ErrorType.EVENT_HAS_PARTICIPANTS, 'Event has participants');
+      }
+      throw error;
+    }
+  });
+
+  fastify.post('/:id/join', async (request, reply) => {
+    const { id } = request.params as { id: string };
+    const userId = request.user.sub;
+    try {
+      const newParticipant = await joinEvent(fastify.db, userId, id);
+      return reply.send({ data: newParticipant });
+    } catch (error) {
+      if (error instanceof EventNotFoundError) {
+        throw new AppError(404, ErrorType.EVENT_NOT_FOUND, 'Event not found');
+      }
+      if (error instanceof ParticipantExistsError) {
+        throw new AppError(400, ErrorType.PARTICIPANT_EXISTS, 'Participant already exists');
+      }
+      if (error instanceof MaxParticipantsError) {
+        throw new AppError(400, ErrorType.MAX_PARTICIPANTS, 'Max participants reached');
       }
       throw error;
     }
