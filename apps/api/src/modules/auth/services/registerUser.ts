@@ -1,14 +1,19 @@
 import { eq } from 'drizzle-orm';
 import bcrypt from 'bcrypt';
+import type { FastifyInstance } from 'fastify';
 import { users } from '../../../db/schema.js';
 import { createTokenFamily } from './tokenFamily.js';
-
-import type { Redis } from 'ioredis';
-import type { Db } from '../../../db/index.js';
+import { sendEmailVerification } from './sendEmailVerification.js';
 import { UserAlreadyExistsError, OAuthOnlyAccountError } from '../errors.js';
 
-export const registerUser = async (database: Db, redis: Redis, email: string, password: string) => {
-  const [existingUser] = await database.select().from(users).where(eq(users.email, email)).limit(1);
+interface RegisterUserParams {
+  fastify: FastifyInstance;
+  email: string;
+  password: string;
+}
+
+export const registerUser = async ({ fastify, email, password }: RegisterUserParams) => {
+  const [existingUser] = await fastify.db.select().from(users).where(eq(users.email, email)).limit(1);
 
   if (existingUser) {
     if (!existingUser.password_hash) {
@@ -19,19 +24,14 @@ export const registerUser = async (database: Db, redis: Redis, email: string, pa
 
   const passwordHash = await bcrypt.hash(password, 10);
 
-  const [user] = await database
+  const [user] = await fastify.db
     .insert(users)
-    .values({
-      email,
-      password_hash: passwordHash,
-    })
+    .values({ email, password_hash: passwordHash })
     .returning();
 
-  const { familyUuid, rawRefreshToken } = await createTokenFamily(redis, user.id);
+  const { familyUuid, rawRefreshToken } = await createTokenFamily(fastify.redis, user.id);
+  const accessToken = fastify.jwt.sign({ sub: user.id, email_verified: user.email_verified });
+  sendEmailVerification(email, fastify.db, fastify.redis, fastify.mailer).catch(() => {});
 
-  return {
-    user,
-    rawRefreshToken,
-    familyUuid,
-  };
+  return { user, accessToken, rawRefreshToken, familyUuid };
 };
