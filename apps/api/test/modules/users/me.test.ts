@@ -16,7 +16,7 @@ describe('GET /users/me', () => {
   });
 
   it('returns 404 when user has a valid token but account no longer exists', async () => {
-    const ghostToken = appRef.app.jwt.sign({ sub: '00000000-0000-0000-0000-000000000000' });
+    const ghostToken = appRef.app.jwt.sign({ sub: '00000000-0000-0000-0000-000000000000', email_verified: true });
 
     const response = await appRef.app.inject({
       method: 'GET',

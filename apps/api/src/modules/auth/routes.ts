@@ -28,6 +28,8 @@ import { clearAuthCookies, setAuthCookies } from './services/cookies.js';
 import { parseBody } from '../../utils/validation.js';
 import { AppError, ErrorType } from '../../utils/errors.js';
 import { APP_URL } from '../../config/env.js';
+import { users } from '../../db/schema.js';
+import { eq } from 'drizzle-orm';
 
 export const authRoutes = (fastify: FastifyInstance, _options: unknown) => {
   fastify.post('/register', async (request, reply) => {
@@ -41,7 +43,7 @@ export const authRoutes = (fastify: FastifyInstance, _options: unknown) => {
         password,
       );
 
-      const accessToken = fastify.jwt.sign({ sub: user.id });
+      const accessToken = fastify.jwt.sign({ sub: user.id, email_verified: user.email_verified });
       setAuthCookies(reply, accessToken, familyUuid, rawRefreshToken);
       sendEmailVerification(email, fastify.db, fastify.redis, fastify.mailer).catch(() => {});
       return reply.send({ user: { id: user.id, email: user.email } });
@@ -70,7 +72,7 @@ export const authRoutes = (fastify: FastifyInstance, _options: unknown) => {
         password,
       );
 
-      const accessToken = fastify.jwt.sign({ sub: user.id });
+      const accessToken = fastify.jwt.sign({ sub: user.id, email_verified: user.email_verified });
       setAuthCookies(reply, accessToken, familyUuid, rawRefreshToken);
       return reply.send({ user: { id: user.id, email: user.email } });
     } catch (error) {
@@ -104,7 +106,13 @@ export const authRoutes = (fastify: FastifyInstance, _options: unknown) => {
         rawRefreshToken,
       );
 
-      const accessToken = fastify.jwt.sign({ sub: userId });
+      const [user] = await fastify.db
+        .select({ email_verified: users.email_verified })
+        .from(users)
+        .where(eq(users.id, userId))
+        .limit(1);
+
+      const accessToken = fastify.jwt.sign({ sub: userId, email_verified: user?.email_verified ?? false });
 
       setAuthCookies(reply, accessToken, familyUuid, newRawRefreshToken);
       return reply.send({ user: { id: userId } });
@@ -197,7 +205,13 @@ export const authRoutes = (fastify: FastifyInstance, _options: unknown) => {
       email,
     );
 
-    const accessToken = fastify.jwt.sign({ sub: userId });
+    const [oauthUser] = await fastify.db
+      .select({ email_verified: users.email_verified })
+      .from(users)
+      .where(eq(users.id, userId))
+      .limit(1);
+
+    const accessToken = fastify.jwt.sign({ sub: userId, email_verified: oauthUser?.email_verified ?? false });
     setAuthCookies(reply, accessToken, familyUuid, rawRefreshToken);
     return reply.redirect(APP_URL);
   });

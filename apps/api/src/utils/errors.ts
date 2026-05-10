@@ -14,6 +14,7 @@ export const ErrorType = {
   PARTICIPANT_EXISTS: 'PARTICIPANT_EXISTS',
   MAX_PARTICIPANTS: 'MAX_PARTICIPANTS',
   PARTICIPANT_NOT_FOUND: 'PARTICIPANT_NOT_FOUND',
+  EMAIL_NOT_VERIFIED: 'EMAIL_NOT_VERIFIED',
 } as const;
 
 export type ErrorType = (typeof ErrorType)[keyof typeof ErrorType];

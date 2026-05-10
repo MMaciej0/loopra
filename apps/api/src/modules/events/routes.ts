@@ -25,7 +25,7 @@ export const eventsRoutes = async (fastify: FastifyInstance) => {
     return reply.send({ data, nextCursor });
   });
 
-  fastify.post('/', async (request, reply) => {
+  fastify.post('/', { preHandler: fastify.requireVerifiedEmail }, async (request, reply) => {
     const parsedBody = parseBody(request.body, CreateEventBodySchema);
     const creatorId = request.user.sub;
     const [newEvent] = await createEvent(fastify.db, creatorId, parsedBody);
@@ -45,7 +45,7 @@ export const eventsRoutes = async (fastify: FastifyInstance) => {
     }
   });
 
-  fastify.patch('/:id', async (request, reply) => {
+  fastify.patch('/:id', { preHandler: fastify.requireVerifiedEmail }, async (request, reply) => {
     const parsedBody = parseBody(request.body, UpdateEventBodySchema);
     const { id } = request.params as { id: string };
     const creatorId = request.user.sub;
@@ -63,7 +63,7 @@ export const eventsRoutes = async (fastify: FastifyInstance) => {
     }
   });
 
-  fastify.delete('/:id', async (request, reply) => {
+  fastify.delete('/:id', { preHandler: fastify.requireVerifiedEmail }, async (request, reply) => {
     const { id } = request.params as { id: string };
     const creatorId = request.user.sub;
     try {
@@ -80,7 +80,7 @@ export const eventsRoutes = async (fastify: FastifyInstance) => {
     }
   });
 
-  fastify.post('/:id/join', async (request, reply) => {
+  fastify.post('/:id/join', { preHandler: fastify.requireVerifiedEmail }, async (request, reply) => {
     const { id } = request.params as { id: string };
     const userId = request.user.sub;
     try {
@@ -100,7 +100,7 @@ export const eventsRoutes = async (fastify: FastifyInstance) => {
     }
   });
 
-  fastify.delete('/:id/leave', async (request, reply) => {
+  fastify.delete('/:id/leave', { preHandler: fastify.requireVerifiedEmail }, async (request, reply) => {
     const { id } = request.params as { id: string };
     const userId = request.user.sub;
     try {
