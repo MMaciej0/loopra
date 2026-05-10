@@ -4,7 +4,7 @@ import { eq } from 'drizzle-orm';
 import { APP_URL } from '../../../config/env.js';
 import { Db } from '../../../db/index.js';
 import { users } from '../../../db/schema.js';
-import { UserNotFoundError } from './loginUser.js';
+import { UserNotFoundError } from '../errors.js';
 import { createPasswordResetToken } from './passwordResetToken.js';
 
 export const sendResetPasswordToken = async (

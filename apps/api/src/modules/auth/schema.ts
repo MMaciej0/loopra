@@ -19,6 +19,15 @@ export const ResetPasswordBodySchema = z.object({
   password: z.string().min(8),
 });
 
+export const VerifyEmailBodySchema = z.object({
+  token: z.string(),
+});
+
+export const ResendEmailVerificationBodySchema = z.object({
+  email: z.email(),
+});
+
+export type VerifyEmailBody = z.infer<typeof VerifyEmailBodySchema>;
 export type RegisterBody = z.infer<typeof RegisterBodySchema>;
 export type LoginBody = z.infer<typeof LoginBodySchema>;
 export type ForgottenPasswordBody = z.infer<typeof ForgottenPasswordBodySchema>;

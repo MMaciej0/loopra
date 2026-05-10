@@ -19,6 +19,8 @@ export const users = pgTable('users', {
   password_hash: text(),
   created_at: timestamp({ withTimezone: true }).notNull().defaultNow(),
   updated_at: timestamp({ withTimezone: true }).notNull().defaultNow(),
+  email_verified: boolean().notNull().default(false),
+  email_verified_at: timestamp({ withTimezone: true }),
 });
 
 export const oauth_accounts = pgTable(
