@@ -5,9 +5,7 @@ import { createTokenFamily } from './tokenFamily.js';
 
 import type { Redis } from 'ioredis';
 import type { Db } from '../../../db/index.js';
-
-export class UserAlreadyExistsError extends Error {}
-export class OAuthOnlyAccountError extends Error {}
+import { UserAlreadyExistsError, OAuthOnlyAccountError } from '../errors.js';
 
 export const registerUser = async (database: Db, redis: Redis, email: string, password: string) => {
   const [existingUser] = await database.select().from(users).where(eq(users.email, email)).limit(1);

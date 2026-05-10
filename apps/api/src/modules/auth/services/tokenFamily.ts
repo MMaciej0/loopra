@@ -1,7 +1,6 @@
 import { createHash, randomBytes, randomUUID } from 'crypto';
 import type { Redis } from 'ioredis';
-
-export class InvalidTokenError extends Error {}
+import { InvalidTokenError } from '../errors.js';
 
 export const createTokenFamily = async (redis: Redis, userId: string) => {
   const familyUuid = randomUUID();

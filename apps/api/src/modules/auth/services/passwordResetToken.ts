@@ -1,7 +1,6 @@
 import { Redis } from 'ioredis';
 import { createHash, randomBytes } from 'node:crypto';
-
-export class InvalidResetTokenError extends Error {}
+import { InvalidResetTokenError } from '../errors.js';
 
 const TTL_SECONDS = 60 * 60; // 1 hour
 const KEY = (token: string) => `password-reset:${token}`;

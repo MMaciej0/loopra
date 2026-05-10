@@ -5,10 +5,7 @@ import { createTokenFamily } from './tokenFamily.js';
 
 import type { Redis } from 'ioredis';
 import type { Db } from '../../../db/index.js';
-
-export class UserNotFoundError extends Error {}
-export class InvalidPasswordError extends Error {}
-export class OAuthOnlyAccountError extends Error {}
+import { UserNotFoundError, InvalidPasswordError, OAuthOnlyAccountError } from '../errors.js';
 
 export const loginUser = async (database: Db, redis: Redis, email: string, password: string) => {
   const [user] = await database.select().from(users).where(eq(users.email, email)).limit(1);
