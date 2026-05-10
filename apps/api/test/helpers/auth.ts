@@ -1,5 +1,7 @@
 import { FastifyInstance } from 'fastify';
 import { beforeEach } from 'vitest';
+import { users } from '../../src/db/schema.js';
+import { eq } from 'drizzle-orm';
 
 export const registerUser = async (
   app: FastifyInstance,
@@ -12,8 +14,14 @@ export const registerUser = async (
     body: { email, password },
   });
 
-  const accessToken = response.cookies.find((c) => c.name === 'accessToken')?.value ?? '';
   const userId = response.json().user.id as string;
+
+  await app.db
+    .update(users)
+    .set({ email_verified: true, email_verified_at: new Date() })
+    .where(eq(users.id, userId));
+
+  const accessToken = app.jwt.sign({ sub: userId, email_verified: true });
 
   return { accessToken, userId, email };
 };

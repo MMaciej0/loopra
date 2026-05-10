@@ -16,7 +16,7 @@ describe('GET /users/:id', () => {
   });
 
   it("returns 404 when user doesn't exist", async () => {
-    const ghostToken = appRef.app.jwt.sign({ sub: '00000000-0000-0000-0000-000000000000' });
+    const ghostToken = appRef.app.jwt.sign({ sub: '00000000-0000-0000-0000-000000000000', email_verified: true });
 
     const response = await appRef.app.inject({
       method: 'GET',

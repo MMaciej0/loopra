@@ -8,13 +8,14 @@ import { AppError, ErrorType } from '../utils/errors.js';
 declare module 'fastify' {
   interface FastifyInstance {
     authenticate: (request: FastifyRequest, reply: FastifyReply) => Promise<void>;
+    requireVerifiedEmail: (request: FastifyRequest, reply: FastifyReply) => Promise<void>;
   }
 }
 
 declare module '@fastify/jwt' {
   interface FastifyJWT {
-    payload: { sub: string };
-    user: { sub: string };
+    payload: { sub: string; email_verified: boolean };
+    user: { sub: string; email_verified: boolean };
   }
 }
 
@@ -37,6 +38,12 @@ export default fastifyPlugin(async (fastify) => {
       await request.jwtVerify();
     } catch {
       throw new AppError(401, ErrorType.STALE_TOKEN, 'Stale token');
+    }
+  });
+
+  fastify.decorate('requireVerifiedEmail', async (request: FastifyRequest, _reply: FastifyReply) => {
+    if (!request.user.email_verified) {
+      throw new AppError(403, ErrorType.EMAIL_NOT_VERIFIED, 'Email not verified');
     }
   });
 });

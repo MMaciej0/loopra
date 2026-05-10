@@ -16,6 +16,20 @@ describe('POST /events', () => {
     is_private: false,
   };
 
+  it('returns 403 when user email is not verified', async () => {
+    const unverifiedToken = appRef.app.jwt.sign({ sub: auth.userId, email_verified: false });
+
+    const response = await appRef.app.inject({
+      method: 'POST',
+      url: '/events',
+      body: eventBody,
+      cookies: { accessToken: unverifiedToken },
+    });
+
+    expect(response.statusCode).toBe(403);
+    expect(response.json()).toMatchObject({ type: 'EMAIL_NOT_VERIFIED' });
+  });
+
   it('returns 200 when correct body is sent', async () => {
     const response = await appRef.app.inject({
       method: 'POST',
