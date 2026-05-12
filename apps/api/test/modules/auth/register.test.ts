@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeEach } from 'vitest';
 import { useApp } from '../../helpers/app.js';
 
 describe('POST /auth/register', () => {
@@ -58,5 +58,30 @@ describe('POST /auth/register', () => {
     });
 
     expect(response.statusCode).toBe(400);
+  });
+
+  describe('when ip rate limit is reached', () => {
+    beforeEach(async () => {
+      const ipKeys = await appRef.app.redis.keys('rate-limit:ip:*');
+      if (ipKeys.length > 0) await appRef.app.redis.del(...ipKeys);
+    });
+
+    const RATE_LIMIT = 5;
+
+    it('returns 429', async () => {
+      for (let i = 1; i <= RATE_LIMIT + 1; i++) {
+        const response = await appRef.app.inject({
+          method: 'POST',
+          url: '/auth/register',
+          body: { email: `test${i}@example.com`, password: 'password123' },
+        });
+
+        if (i <= RATE_LIMIT) {
+          expect(response.statusCode).toBe(200);
+        } else {
+          expect(response.statusCode).toBe(429);
+        }
+      }
+    });
   });
 });

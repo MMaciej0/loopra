@@ -74,5 +74,61 @@ describe('POST /auth/login', () => {
       expect(cookies.find((c) => c.name === 'accessToken')).toBeDefined();
       expect(cookies.find((c) => c.name === 'refreshToken')).toBeDefined();
     });
+
+    describe('when rate limit is exceeded', () => {
+      beforeEach(async () => {
+        const ipKeys = await appRef.app.redis.keys('rate-limit:ip:*');
+        const emailKeys = await appRef.app.redis.keys('rate-limit:email:*');
+        if (emailKeys.length > 0) await appRef.app.redis.del(...emailKeys);
+        if (ipKeys.length > 0) await appRef.app.redis.del(...ipKeys);
+      });
+
+      const RATE_LIMIT = 5;
+
+      it('returns 429 because of ip rate limit', async () => {
+        for (let i = 1; i <= RATE_LIMIT + 1; i++) {
+          const response = await appRef.app.inject({
+            method: 'POST',
+            url: '/auth/login',
+            body: { email: `test@example.com`, password: 'password123' },
+          });
+
+          if (i <= RATE_LIMIT) {
+            expect(response.statusCode).toBe(401);
+          } else {
+            const ipValue = await appRef.app.redis.get('rate-limit:ip:127.0.0.1');
+            const emailValue = await appRef.app.redis.get('rate-limit:email:test@example.com');
+            expect(emailValue).toBe('5');
+            expect(ipValue).toBe('5');
+            expect(response.statusCode).toBe(429);
+          }
+        }
+      });
+
+      it('after 5 attempts fails and successful login returns 200 and clears rate limits', async () => {
+        for (let i = 1; i <= RATE_LIMIT - 1; i++) {
+          const response = await appRef.app.inject({
+            method: 'POST',
+            url: '/auth/login',
+            body: { email: TEST_EMAIL, password: 'wrong-password' },
+          });
+
+          expect(response.statusCode).toBe(401);
+        }
+
+        const successfulResponse = await appRef.app.inject({
+          method: 'POST',
+          url: '/auth/login',
+          body: { email: TEST_EMAIL, password: TEST_PASSWORD },
+        });
+
+        expect(successfulResponse.statusCode).toBe(200);
+
+        const ipKeys = await appRef.app.redis.keys('rate-limit:ip:*');
+        const emailKeys = await appRef.app.redis.keys('rate-limit:email:*');
+        expect(ipKeys.length).toBe(0);
+        expect(emailKeys.length).toBe(0);
+      });
+    });
   });
 });
