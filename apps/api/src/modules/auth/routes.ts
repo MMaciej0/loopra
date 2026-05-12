@@ -29,18 +29,28 @@ import { clearAuthCookies, setAuthCookies } from './services/cookies.js';
 import { parseBody } from '../../utils/validation.js';
 import { AppError, ErrorType } from '../../utils/errors.js';
 import { APP_URL } from '../../config/env.js';
+import { clearRateLimits, rateLimiter } from './services/rateLimiter.js';
 
 export const authRoutes = (fastify: FastifyInstance, _options: unknown) => {
   fastify.post('/register', async (request, reply) => {
     const { email, password } = parseBody(request.body, RegisterBodySchema);
+    await rateLimiter(request, fastify.redis);
 
     try {
-      const { user, accessToken, familyUuid, rawRefreshToken } = await registerUser({ fastify, email, password });
+      const { user, accessToken, familyUuid, rawRefreshToken } = await registerUser({
+        fastify,
+        email,
+        password,
+      });
       setAuthCookies(reply, accessToken, familyUuid, rawRefreshToken);
       return reply.send({ user: { id: user.id, email: user.email } });
     } catch (error) {
       if (error instanceof OAuthOnlyAccountError) {
-        throw new AppError(409, ErrorType.OAUTH_ONLY_ACCOUNT, 'This email is registered via Google. Please log in with Google.');
+        throw new AppError(
+          409,
+          ErrorType.OAUTH_ONLY_ACCOUNT,
+          'This email is registered via Google. Please log in with Google.',
+        );
       } else if (error instanceof UserAlreadyExistsError) {
         throw new AppError(409, ErrorType.USER_ALREADY_EXISTS, 'User already exists');
       }
@@ -50,16 +60,26 @@ export const authRoutes = (fastify: FastifyInstance, _options: unknown) => {
 
   fastify.post('/login', async (request, reply) => {
     const { email, password } = parseBody(request.body, LoginBodySchema);
+    await rateLimiter(request, fastify.redis, email);
 
     try {
-      const { user, accessToken, familyUuid, rawRefreshToken } = await loginUser({ fastify, email, password });
+      const { user, accessToken, familyUuid, rawRefreshToken } = await loginUser({
+        fastify,
+        email,
+        password,
+      });
       setAuthCookies(reply, accessToken, familyUuid, rawRefreshToken);
+      await clearRateLimits(request, fastify.redis, email);
       return reply.send({ user: { id: user.id, email: user.email } });
     } catch (error) {
       if (error instanceof UserNotFoundError) {
         throw new AppError(401, ErrorType.USER_NOT_FOUND, 'User not found');
       } else if (error instanceof OAuthOnlyAccountError) {
-        throw new AppError(401, ErrorType.OAUTH_ONLY_ACCOUNT, 'This account uses Google sign-in. Please log in with Google.');
+        throw new AppError(
+          401,
+          ErrorType.OAUTH_ONLY_ACCOUNT,
+          'This account uses Google sign-in. Please log in with Google.',
+        );
       } else if (error instanceof InvalidPasswordError) {
         throw new AppError(401, ErrorType.INVALID_PASSWORD, 'Invalid password');
       }
@@ -77,7 +97,11 @@ export const authRoutes = (fastify: FastifyInstance, _options: unknown) => {
     const [familyUuid, rawRefreshToken] = refreshTokenCookie.split('.');
 
     try {
-      const { accessToken, newRawRefreshToken, userId } = await refreshSession({ fastify, familyUuid, rawRefreshToken });
+      const { accessToken, newRawRefreshToken, userId } = await refreshSession({
+        fastify,
+        familyUuid,
+        rawRefreshToken,
+      });
       setAuthCookies(reply, accessToken, familyUuid, newRawRefreshToken);
       return reply.send({ user: { id: userId } });
     } catch (error) {
@@ -138,7 +162,9 @@ export const authRoutes = (fastify: FastifyInstance, _options: unknown) => {
 
     // Always return 200 — never reveal whether email exists or is already verified
     await sendEmailVerification(email, fastify.db, fastify.redis, fastify.mailer).catch(() => {});
-    return reply.send({ message: 'If that email exists and is unverified, a new link has been sent.' });
+    return reply.send({
+      message: 'If that email exists and is unverified, a new link has been sent.',
+    });
   });
 
   fastify.post('/verify-email', async (request, reply) => {
@@ -157,7 +183,10 @@ export const authRoutes = (fastify: FastifyInstance, _options: unknown) => {
 
   fastify.get('/google/callback', async (request, reply) => {
     const { token } = await fastify.oauth2Google!.getAccessTokenFromAuthorizationCodeFlow(request);
-    const { sub, email } = (await fastify.oauth2Google!.userinfo(token)) as { sub: string; email: string };
+    const { sub, email } = (await fastify.oauth2Google!.userinfo(token)) as {
+      sub: string;
+      email: string;
+    };
 
     const { accessToken, familyUuid, rawRefreshToken } = await findOrCreateOAuthUser({
       fastify,
