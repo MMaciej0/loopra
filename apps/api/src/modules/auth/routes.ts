@@ -29,12 +29,12 @@ import { clearAuthCookies, setAuthCookies } from './services/cookies.js';
 import { parseBody } from '../../utils/validation.js';
 import { AppError, ErrorType } from '../../utils/errors.js';
 import { APP_URL } from '../../config/env.js';
-import { clearRateLimits, rateLimiter } from './services/rateLimiter.js';
+import { authRateLimiter, clearRateLimits, emailSendRateLimiter } from './services/rateLimiter.js';
 
 export const authRoutes = (fastify: FastifyInstance, _options: unknown) => {
   fastify.post('/register', async (request, reply) => {
     const { email, password } = parseBody(request.body, RegisterBodySchema);
-    await rateLimiter(request, fastify.redis);
+    await authRateLimiter(request, fastify.redis);
 
     try {
       const { user, accessToken, familyUuid, rawRefreshToken } = await registerUser({
@@ -60,7 +60,7 @@ export const authRoutes = (fastify: FastifyInstance, _options: unknown) => {
 
   fastify.post('/login', async (request, reply) => {
     const { email, password } = parseBody(request.body, LoginBodySchema);
-    await rateLimiter(request, fastify.redis, email);
+    await authRateLimiter(request, fastify.redis, email);
 
     try {
       const { user, accessToken, familyUuid, rawRefreshToken } = await loginUser({
@@ -137,6 +137,7 @@ export const authRoutes = (fastify: FastifyInstance, _options: unknown) => {
 
   fastify.post('/forgot-password', async (request, reply) => {
     const { email } = parseBody(request.body, ForgottenPasswordBodySchema);
+    await emailSendRateLimiter(request, fastify.redis, email);
 
     // Always return 200 — never reveal whether email exists in the system
     await sendResetPasswordToken(email, fastify.db, fastify.redis, fastify.mailer).catch(() => {});
@@ -159,6 +160,7 @@ export const authRoutes = (fastify: FastifyInstance, _options: unknown) => {
 
   fastify.post('/resend-verification-email', async (request, reply) => {
     const { email } = parseBody(request.body, ResendEmailVerificationBodySchema);
+    await emailSendRateLimiter(request, fastify.redis, email);
 
     // Always return 200 — never reveal whether email exists or is already verified
     await sendEmailVerification(email, fastify.db, fastify.redis, fastify.mailer).catch(() => {});

@@ -97,4 +97,47 @@ describe('POST /auth/resend-verification-email', () => {
       expect(keys.length).toBe(0);
     });
   });
+
+  describe('when email send rate limit is exceeded', () => {
+    beforeEach(async () => {
+      const ipKeys = await appRef.app.redis.keys('rate-limit:email-send:ip:*');
+      const addressKeys = await appRef.app.redis.keys('rate-limit:email-send:address:*');
+      if (ipKeys.length > 0) await appRef.app.redis.del(...ipKeys);
+      if (addressKeys.length > 0) await appRef.app.redis.del(...addressKeys);
+    });
+
+    const RATE_LIMIT = 3;
+
+    it('returns 429 when address rate limit is exceeded', async () => {
+      for (let i = 1; i <= RATE_LIMIT + 1; i++) {
+        const response = await appRef.app.inject({
+          method: 'POST',
+          url: '/auth/resend-verification-email',
+          body: { email: 'target@example.com' },
+        });
+
+        if (i <= RATE_LIMIT) {
+          expect(response.statusCode).toBe(200);
+        } else {
+          expect(response.statusCode).toBe(429);
+        }
+      }
+    });
+
+    it('returns 429 when ip rate limit is exceeded', async () => {
+      for (let i = 1; i <= RATE_LIMIT + 1; i++) {
+        const response = await appRef.app.inject({
+          method: 'POST',
+          url: '/auth/resend-verification-email',
+          body: { email: `unique${i}@example.com` },
+        });
+
+        if (i <= RATE_LIMIT) {
+          expect(response.statusCode).toBe(200);
+        } else {
+          expect(response.statusCode).toBe(429);
+        }
+      }
+    });
+  });
 });
