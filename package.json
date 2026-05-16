@@ -8,6 +8,11 @@
     "api:db:generate": "pnpm --filter api db:generate",
     "api:db:migrate": "pnpm --filter api db:migrate",
     "api:db:studio": "pnpm --filter api db:studio",
+    "web:dev": "pnpm --filter web exec next dev --hostname 0.0.0.0",
+    "web:build": "pnpm --filter web build",
+    "web:lint": "pnpm --filter web lint",
+    "web:start": "pnpm --filter web exec next start --hostname 0.0.0.0",
+    "web:typecheck": "pnpm --filter web typecheck",
     "lint": "pnpm -r lint",
     "typecheck": "pnpm -r typecheck"
   },

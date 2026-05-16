@@ -23,6 +23,23 @@ services:
     env_file:
       - .env
 
+  web:
+    container_name: web
+    build:
+      context: .
+      dockerfile: apps/web/Dockerfile.dev
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/apps/web/node_modules
+      - /app/apps/web/.next
+    command: "tail -f /dev/null"
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:8080
+      API_URL: http://api:8080
+
   postgres:
     container_name: loopra-postgres
     image: postgis/postgis:16-3.4
