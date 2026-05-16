@@ -43,7 +43,9 @@ export const authRoutes = (fastify: FastifyInstance, _options: unknown) => {
         password,
       });
       setAuthCookies(reply, accessToken, familyUuid, rawRefreshToken);
-      return reply.send({ user: { id: user.id, email: user.email } });
+      return reply.send({
+        user: { id: user.id, email: user.email, emailVerified: user.email_verified },
+      });
     } catch (error) {
       if (error instanceof OAuthOnlyAccountError) {
         throw new AppError(
@@ -70,7 +72,9 @@ export const authRoutes = (fastify: FastifyInstance, _options: unknown) => {
       });
       setAuthCookies(reply, accessToken, familyUuid, rawRefreshToken);
       await clearRateLimits(request, fastify.redis, email);
-      return reply.send({ user: { id: user.id, email: user.email } });
+      return reply.send({
+        user: { id: user.id, email: user.email, emailVerified: user.email_verified },
+      });
     } catch (error) {
       if (error instanceof UserNotFoundError) {
         throw new AppError(401, ErrorType.USER_NOT_FOUND, 'User not found');
