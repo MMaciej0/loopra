@@ -6,6 +6,7 @@ const DEV_ORIGINS = new Set(['localhost', '127.0.0.1']);
 
 export default fastifyPlugin(async (fastify) => {
   await fastify.register(cors, {
+    credentials: true,
     origin: (origin, callback) => {
       if (!origin) {
         callback(null, true);
