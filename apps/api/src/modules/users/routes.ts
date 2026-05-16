@@ -13,6 +13,7 @@ export const usersRoutes = (fastify: FastifyInstance, _options: unknown) => {
         id: true,
         email: true,
         created_at: true,
+        email_verified: true,
       },
     });
 
@@ -32,6 +33,7 @@ export const usersRoutes = (fastify: FastifyInstance, _options: unknown) => {
         id: true,
         email: true,
         created_at: true,
+        email_verified: true,
       },
     });
 
