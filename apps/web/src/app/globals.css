@@ -1,0 +1,218 @@
+/* ------------------------------------------------------------------
+ * loopra · globals.css
+ * shadcn/ui token file — Tailwind v4 (OKLCH)
+ *
+ * Mapping notes:
+ *   shadcn slot          ←  loopra token
+ *   --background         ←  --bg
+ *   --foreground         ←  --ink
+ *   --card / --popover   ←  --surface
+ *   --primary            ←  --ink         (ink-on-bg buttons = Loopra's default)
+ *   --primary-foreground ←  --bg
+ *   --secondary          ←  --surface
+ *   --muted              ←  --surface-2
+ *   --muted-foreground   ←  --ink-3
+ *   --accent             ←  --surface-hi  (shadcn "accent" = subtle hover surface,
+ *                                          not the brand colour)
+ *   --destructive        ←  --coral-fg
+ *   --border / --input   ←  --line
+ *   --ring               ←  --brand       (cobalt focus ring)
+ *   --brand              ←  --accent      (loopra cobalt — added as a custom slot
+ *                                          since shadcn has no brand slot; use
+ *                                          for Join / Create CTAs only)
+ * ------------------------------------------------------------------ */
+
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* =====================================================================
+ * Map tokens → Tailwind utility classes
+ * (bg-background, text-foreground, border-border, ring-ring, etc.)
+ * ===================================================================== */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Loopra extras — not in stock shadcn */
+  --color-brand: var(--brand);
+  --color-brand-foreground: var(--brand-foreground);
+  --color-brand-muted: var(--brand-muted);
+  --color-surface-2: var(--surface-2);
+
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Bricolage Grotesque", ui-serif, serif;
+  --font-mono: "Geist Mono", ui-monospace, monospace;
+}
+
+/* =====================================================================
+ * LIGHT — cool snow + cobalt
+ * ===================================================================== */
+:root {
+  --radius: 0.625rem; /* 10px — matches Loopra's btn-md radius */
+
+  --background: oklch(0.987 0.003 250);
+  --foreground: oklch(0.17 0.025 260);
+
+  --card: oklch(0.972 0.004 250);
+  --card-foreground: oklch(0.17 0.025 260);
+
+  --popover: oklch(0.972 0.004 250);
+  --popover-foreground: oklch(0.17 0.025 260);
+
+  --primary: oklch(0.17 0.025 260);
+  --primary-foreground: oklch(0.987 0.003 250);
+
+  --secondary: oklch(0.972 0.004 250);
+  --secondary-foreground: oklch(0.17 0.025 260);
+
+  --muted: oklch(0.945 0.006 250);
+  --muted-foreground: oklch(0.58 0.012 260);
+
+  --accent: oklch(0.955 0.006 250);
+  --accent-foreground: oklch(0.17 0.025 260);
+
+  --destructive: oklch(0.55 0.19 30);
+  --destructive-foreground: oklch(0.987 0.003 250);
+
+  --border: oklch(0.91 0.008 250);
+  --input: oklch(0.91 0.008 250);
+  --ring: oklch(0.55 0.22 260);
+
+  /* Loopra brand — cobalt (use sparingly: join, create, confirm) */
+  --brand: oklch(0.55 0.22 260);
+  --brand-foreground: oklch(0.987 0.003 250);
+  --brand-muted: oklch(0.95 0.05 260);
+
+  --surface-2: oklch(0.945 0.006 250);
+
+  /* charts — cobalt-led, harmonious hues */
+  --chart-1: oklch(0.55 0.22 260); /* cobalt */
+  --chart-2: oklch(0.68 0.16 210); /* sky */
+  --chart-3: oklch(0.72 0.14 165); /* teal */
+  --chart-4: oklch(0.78 0.14 85);  /* gold */
+  --chart-5: oklch(0.65 0.22 30);  /* coral */
+
+  /* sidebar — slightly inset from page bg */
+  --sidebar: oklch(0.972 0.004 250);
+  --sidebar-foreground: oklch(0.17 0.025 260);
+  --sidebar-primary: oklch(0.55 0.22 260);
+  --sidebar-primary-foreground: oklch(0.987 0.003 250);
+  --sidebar-accent: oklch(0.955 0.006 250);
+  --sidebar-accent-foreground: oklch(0.17 0.025 260);
+  --sidebar-border: oklch(0.91 0.008 250);
+  --sidebar-ring: oklch(0.55 0.22 260);
+}
+
+/* =====================================================================
+ * DARK — navy charcoal + lifted cobalt
+ * ===================================================================== */
+.dark {
+  --background: oklch(0.155 0.022 260);
+  --foreground: oklch(0.97 0.005 250);
+
+  --card: oklch(0.20 0.022 260);
+  --card-foreground: oklch(0.97 0.005 250);
+
+  --popover: oklch(0.20 0.022 260);
+  --popover-foreground: oklch(0.97 0.005 250);
+
+  --primary: oklch(0.97 0.005 250);
+  --primary-foreground: oklch(0.155 0.022 260);
+
+  --secondary: oklch(0.20 0.022 260);
+  --secondary-foreground: oklch(0.97 0.005 250);
+
+  --muted: oklch(0.245 0.022 260);
+  --muted-foreground: oklch(0.60 0.015 260);
+
+  --accent: oklch(0.23 0.022 260);
+  --accent-foreground: oklch(0.97 0.005 250);
+
+  --destructive: oklch(0.65 0.20 30);
+  --destructive-foreground: oklch(0.155 0.022 260);
+
+  --border: oklch(0.27 0.022 260);
+  --input: oklch(0.27 0.022 260);
+  --ring: oklch(0.72 0.20 260);
+
+  --brand: oklch(0.72 0.20 260);
+  --brand-foreground: oklch(0.155 0.022 260);
+  --brand-muted: oklch(0.30 0.10 260);
+
+  --surface-2: oklch(0.245 0.022 260);
+
+  --chart-1: oklch(0.72 0.20 260);
+  --chart-2: oklch(0.75 0.14 210);
+  --chart-3: oklch(0.78 0.12 165);
+  --chart-4: oklch(0.82 0.14 85);
+  --chart-5: oklch(0.72 0.20 30);
+
+  --sidebar: oklch(0.20 0.022 260);
+  --sidebar-foreground: oklch(0.97 0.005 250);
+  --sidebar-primary: oklch(0.72 0.20 260);
+  --sidebar-primary-foreground: oklch(0.155 0.022 260);
+  --sidebar-accent: oklch(0.23 0.022 260);
+  --sidebar-accent-foreground: oklch(0.97 0.005 250);
+  --sidebar-border: oklch(0.27 0.022 260);
+  --sidebar-ring: oklch(0.72 0.20 260);
+}
+
+/* =====================================================================
+ * Base layer — same shape shadcn ships with
+ * ===================================================================== */
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-feature-settings: "ss01", "ss02", "cv01";
+  }
+}
