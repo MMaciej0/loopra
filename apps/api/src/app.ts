@@ -4,6 +4,7 @@ import redisPlugin from './plugins/redis.js';
 import authPlugin from './plugins/auth.js';
 import oauthPlugin from './plugins/oauth.js';
 import mailerPlugin from './plugins/mailer.js';
+import corsPlugin from './plugins/cors.js';
 import globalErrorHandler from './plugins/globalErrorHandler.js';
 
 import authModule from './modules/auth/index.js';
@@ -14,6 +15,8 @@ export const buildApp = () => {
   const app = Fastify({
     logger: true,
   });
+
+  app.register(corsPlugin);
 
   app.register(databasePlugin);
   app.register(redisPlugin);
