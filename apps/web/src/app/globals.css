@@ -22,9 +22,9 @@
  *                                          for Join / Create CTAs only)
  * ------------------------------------------------------------------ */
 
-@import "tailwindcss";
-@import "tw-animate-css";
-@import "shadcn/tailwind.css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -93,14 +93,14 @@
   --radius-xl: calc(var(--radius) + 4px);
 
   /* Semantic aliases — use these in product code */
-  --font-ui:       var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-ui: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-editorial: var(--font-bricolage), ui-serif, serif;
-  --font-data:     var(--font-geist-mono), ui-monospace, monospace;
+  --font-data: var(--font-geist-mono), ui-monospace, monospace;
 
   /* shadcn compat — do not use directly in product code */
-  --font-sans:    var(--font-ui);
+  --font-sans: var(--font-ui);
   --font-display: var(--font-editorial);
-  --font-mono:    var(--font-data);
+  --font-mono: var(--font-data);
   --font-heading: var(--font-ui);
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
@@ -142,22 +142,22 @@
   --brand: oklch(0.55 0.22 260);
   --brand-foreground: oklch(0.987 0.003 250);
   --brand-muted: oklch(0.95 0.05 260);
-  --brand-fg: oklch(0.45 0.20 260);
+  --brand-fg: oklch(0.45 0.2 260);
   --brand-line: oklch(0.84 0.11 260);
 
   /* Coral — errors, alerts, FULL badge */
   --coral-bg: oklch(0.96 0.04 30);
   --coral-line: oklch(0.87 0.09 30);
 
-  --border-strong: oklch(0.83 0.010 250);
+  --border-strong: oklch(0.83 0.01 250);
   --surface-2: oklch(0.945 0.006 250);
 
   /* charts — cobalt-led, harmonious hues */
   --chart-1: oklch(0.87 0 0); /* cobalt */
   --chart-2: oklch(0.556 0 0); /* sky */
   --chart-3: oklch(0.439 0 0); /* teal */
-  --chart-4: oklch(0.371 0 0);  /* gold */
-  --chart-5: oklch(0.269 0 0);  /* coral */
+  --chart-4: oklch(0.371 0 0); /* gold */
+  --chart-5: oklch(0.269 0 0); /* coral */
 
   /* sidebar — slightly inset from page bg */
   --sidebar: oklch(0.985 0 0);
@@ -204,14 +204,14 @@
   --input: oklch(1 0 0 / 15%);
   --ring: oklch(0.556 0 0);
 
-  --brand: oklch(0.72 0.20 260);
+  --brand: oklch(0.72 0.2 260);
   --brand-foreground: oklch(0.155 0.022 260);
-  --brand-muted: oklch(0.30 0.10 260);
+  --brand-muted: oklch(0.3 0.1 260);
   --brand-fg: oklch(0.82 0.18 260);
   --brand-line: oklch(0.42 0.14 260);
 
   /* Coral — errors, alerts, FULL badge */
-  --coral-bg: oklch(0.30 0.08 30);
+  --coral-bg: oklch(0.3 0.08 30);
   --coral-line: oklch(0.42 0.12 30);
 
   --border-strong: oklch(0.37 0.022 260);
@@ -242,7 +242,7 @@
   }
   body {
     @apply font-sans antialiased bg-background text-foreground;
-    font-feature-settings: "ss01", "ss02", "cv01";
+    font-feature-settings: 'ss01', 'ss02', 'cv01';
   }
   html {
     @apply font-sans;

@@ -11,6 +11,8 @@
     "web:dev": "pnpm --filter web exec next dev --hostname 0.0.0.0",
     "web:build": "pnpm --filter web build",
     "web:lint": "pnpm --filter web lint",
+    "web:format": "pnpm --filter web format",
+    "web:format:check": "pnpm --filter web format:check",
     "web:start": "pnpm --filter web exec next start --hostname 0.0.0.0",
     "web:typecheck": "pnpm --filter web typecheck",
     "web:ui:add": "pnpm dlx shadcn@latest add -c apps/web",
