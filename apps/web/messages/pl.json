@@ -1,0 +1,19 @@
+{
+  "HomePage": {
+    "title": "Witaj świecie!"
+  },
+  "NotFoundPage": {
+    "eyebrow": "404",
+    "title": "Nie znaleziono strony",
+    "description": "Strona, której szukasz, nie istnieje albo została przeniesiona.",
+    "home": "Wróć na start"
+  },
+  "ErrorPage": {
+    "eyebrow": "Coś poszło nie tak",
+    "title": "Wystąpił nieoczekiwany błąd",
+    "description": "Spróbuj ponownie za chwilę. Jeśli problem będzie wracał, wróć na stronę główną i zacznij od nowa.",
+    "retry": "Spróbuj ponownie",
+    "home": "Wróć na start",
+    "reference": "Identyfikator błędu"
+  }
+}
