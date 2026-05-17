@@ -1,0 +1,19 @@
+{
+  "HomePage": {
+    "title": "Hello world!"
+  },
+  "NotFoundPage": {
+    "eyebrow": "404",
+    "title": "Page not found",
+    "description": "The page you are looking for does not exist or has been moved.",
+    "home": "Go home"
+  },
+  "ErrorPage": {
+    "eyebrow": "Something went wrong",
+    "title": "We hit an unexpected error",
+    "description": "Try again in a moment. If the problem keeps happening, return home and start from a clean page.",
+    "retry": "Try again",
+    "home": "Go home",
+    "reference": "Error reference"
+  }
+}
