@@ -87,10 +87,17 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  --radius-xs: var(--r-xs);
+  --radius-sm: var(--r-sm);
+  --radius-md: var(--r-md);
+  --radius-lg: var(--r-lg);
+  --radius-xl: var(--r-xl);
+  --radius-2xl: var(--r-2xl);
+
+  /* ── Shadows ───────────────────────────────────────────────────────── */
+  --shadow-subtle: var(--shadow-subtle-val);
+  --shadow-raised: var(--shadow-raised-val);
+  --shadow-overlay: var(--shadow-overlay-val);
 
   /* Semantic aliases — use these in product code */
   --font-ui: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
@@ -101,17 +108,88 @@
   --font-sans: var(--font-ui);
   --font-display: var(--font-editorial);
   --font-mono: var(--font-data);
-  --font-heading: var(--font-ui);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
+  --font-heading: var(--font-editorial);
+
+  /* ── Spacing scale · 4px base, 8-point grid ───────────────────────── */
+  --spacing-xs: var(--space-xs);
+  --spacing-sm: var(--space-sm);
+  --spacing-md: var(--space-md);
+  --spacing-lg: var(--space-lg);
+  --spacing-xl: var(--space-xl);
+  --spacing-2xl: var(--space-2xl);
+  --spacing-3xl: var(--space-3xl);
+
+  /* ── Typography scale ──────────────────────────────────────────────── */
+  /* Heading · Bricolage Grotesque */
+  --type-heading-xxl-size: 64px;
+  --type-heading-xxl-lh: 64px;
+  --type-heading-xxl-ls: -0.025em;
+
+  --type-heading-xl-size: 38px;
+  --type-heading-xl-lh: 40px;
+  --type-heading-xl-ls: -0.01em;
+
+  --type-heading-l-size: 30px;
+  --type-heading-l-lh: 34px;
+  --type-heading-l-ls: -0.015em;
+
+  --type-heading-m-size: 22px;
+  --type-heading-m-lh: 30px;
+  --type-heading-m-ls: -0.005em;
+
+  /* Body · Geist */
+  --type-body-l-size: 17px;
+  --type-body-l-lh: 26px;
+
+  --type-body-m-size: 14px;
+  --type-body-m-lh: 22px;
+
+  --type-body-s-size: 13px;
+  --type-body-s-lh: 20px;
+
+  --type-caption-size: 11.5px;
+  --type-caption-lh: 16px;
+
+  /* Mono · Geist Mono */
+  --type-label-size: 10px;
+  --type-label-lh: 1;
+  --type-label-ls: 0.14em;
+
+  --type-stat-size: 15px;
+  --type-stat-lh: 1.4;
+
+  --type-meta-size: 11px;
+  --type-meta-lh: 1;
+  --type-meta-ls: 0.06em;
 }
 
 /* =====================================================================
  * LIGHT — cool snow + cobalt
  * ===================================================================== */
 :root {
-  --radius: 0.625rem; /* 10px — matches Loopra's btn-md radius */
+  --radius: 0.625rem; /* 10px — btn-md default; aligns with --r-xl */
+
+  /* ── Shadows ─────────────────────────────────────────────────────── */
+  --shadow-subtle-val:  0 1px 2px rgba(0,0,0,0.05);
+  --shadow-raised-val:  0 4px 14px rgba(0,0,0,0.08);
+  --shadow-overlay-val: 0 14px 40px rgba(0,0,0,0.16);
+
+  /* ── Radius · 2px-per-step scale ─────────────────────────────────── */
+  --r-xs:  2px;   /* tags, small badges                                 */
+  --r-sm:  4px;   /* chips, pill insets                                 */
+  --r-md:  6px;   /* inputs, small cards                                */
+  --r-lg:  8px;   /* standard cards, dropdowns                          */
+  --r-xl:  10px;  /* buttons (= --radius), primary cards                */
+  --r-2xl: 12px;  /* modals, sheets, large containers                   */
+
+  /* ── Spacing · raw values (also consumed by @theme inline above) ──── */
+  --space-xs: 4px;   /*  4px — tight insets, icon padding               */
+  --space-sm: 8px;   /*  8px — chip/badge padding, stacked list gaps     */
+  --space-md: 16px;  /* 16px — card padding, form field gaps             */
+  --space-lg: 24px;  /* 24px — section internal padding                  */
+  --space-xl: 32px;  /* 32px — between cards / major layout gaps         */
+  --space-2xl: 48px; /* 48px — section vertical rhythm                   */
+  --space-3xl: 64px; /* 64px — page-level breathing room                 */
 
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
@@ -153,6 +231,7 @@
   --surface-2: oklch(0.945 0.006 250);
 
   /* charts — cobalt-led, harmonious hues */
+
   --chart-1: oklch(0.87 0 0); /* cobalt */
   --chart-2: oklch(0.556 0 0); /* sky */
   --chart-3: oklch(0.439 0 0); /* teal */
@@ -231,6 +310,10 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+
+  --shadow-subtle-val:  0 1px 2px rgba(0,0,0,0.4);
+  --shadow-raised-val:  0 4px 14px rgba(0,0,0,0.45);
+  --shadow-overlay-val: 0 14px 40px rgba(0,0,0,0.6);
 }
 
 /* =====================================================================
@@ -246,5 +329,91 @@
   }
   html {
     @apply font-sans;
+  }
+}
+
+/* =====================================================================
+ * Typography utilities — apply via <Text variant="…" />
+ * ===================================================================== */
+@layer utilities {
+  /* Heading · Bricolage Grotesque */
+  /* Heading · Bricolage Grotesque — weight 400 always; size + tracking carry hierarchy */
+  .type-heading-xxl {
+    font-family: var(--font-editorial);
+    font-size: var(--type-heading-xxl-size);
+    line-height: var(--type-heading-xxl-lh);
+    letter-spacing: var(--type-heading-xxl-ls);
+    font-weight: 400;
+  }
+  .type-heading-xl {
+    font-family: var(--font-editorial);
+    font-size: var(--type-heading-xl-size);
+    line-height: var(--type-heading-xl-lh);
+    letter-spacing: var(--type-heading-xl-ls);
+    font-weight: 400;
+  }
+  .type-heading-l {
+    font-family: var(--font-editorial);
+    font-size: var(--type-heading-l-size);
+    line-height: var(--type-heading-l-lh);
+    letter-spacing: var(--type-heading-l-ls);
+    font-weight: 400;
+  }
+  .type-heading-m {
+    font-family: var(--font-editorial);
+    font-size: var(--type-heading-m-size);
+    line-height: var(--type-heading-m-lh);
+    letter-spacing: var(--type-heading-m-ls);
+    font-weight: 400;
+    font-style: italic;
+  }
+
+  /* Body · Geist */
+  .type-body-l {
+    font-family: var(--font-ui);
+    font-size: var(--type-body-l-size);
+    line-height: var(--type-body-l-lh);
+    font-weight: 400;
+  }
+  .type-body-m {
+    font-family: var(--font-ui);
+    font-size: var(--type-body-m-size);
+    line-height: var(--type-body-m-lh);
+    font-weight: 500;
+  }
+  .type-body-s {
+    font-family: var(--font-ui);
+    font-size: var(--type-body-s-size);
+    line-height: var(--type-body-s-lh);
+    font-weight: 400;
+  }
+  .type-caption {
+    font-family: var(--font-ui);
+    font-size: var(--type-caption-size);
+    line-height: var(--type-caption-lh);
+    font-weight: 400;
+  }
+
+  /* Mono · Geist Mono */
+  .type-label {
+    font-family: var(--font-data);
+    font-size: var(--type-label-size);
+    line-height: var(--type-label-lh);
+    letter-spacing: var(--type-label-ls);
+    font-weight: 500;
+    text-transform: uppercase;
+  }
+  .type-stat {
+    font-family: var(--font-data);
+    font-size: var(--type-stat-size);
+    line-height: var(--type-stat-lh);
+    font-weight: 600;
+  }
+  .type-meta {
+    font-family: var(--font-data);
+    font-size: var(--type-meta-size);
+    line-height: var(--type-meta-lh);
+    letter-spacing: var(--type-meta-ls);
+    font-weight: 500;
   }
 }
