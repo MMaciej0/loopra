@@ -77,7 +77,7 @@ export const authRoutes = (fastify: FastifyInstance, _options: unknown) => {
       });
     } catch (error) {
       if (error instanceof UserNotFoundError) {
-        throw new AppError(401, ErrorType.USER_NOT_FOUND, 'User not found');
+        throw new AppError(401, ErrorType.INVALID_CREDENTIALS, 'Invalid credentials');
       } else if (error instanceof OAuthOnlyAccountError) {
         throw new AppError(
           401,
@@ -85,7 +85,7 @@ export const authRoutes = (fastify: FastifyInstance, _options: unknown) => {
           'This account uses Google sign-in. Please log in with Google.',
         );
       } else if (error instanceof InvalidPasswordError) {
-        throw new AppError(401, ErrorType.INVALID_PASSWORD, 'Invalid password');
+        throw new AppError(401, ErrorType.INVALID_CREDENTIALS, 'Invalid credentials');
       }
       throw error;
     }

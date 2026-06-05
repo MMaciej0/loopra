@@ -26,7 +26,7 @@ describe('POST /auth/login', () => {
     expect(response.json()).toMatchObject({ type: 'INVALID_INPUT', field: 'password' });
   });
 
-  it('return status 401 when user is not found', async () => {
+  it('returns status 401 with invalid credentials when user is not found', async () => {
     const response = await appRef.app.inject({
       method: 'POST',
       url: '/auth/login',
@@ -34,7 +34,7 @@ describe('POST /auth/login', () => {
     });
 
     expect(response.statusCode).toBe(401);
-    expect(response.json()).toMatchObject({ type: 'USER_NOT_FOUND' });
+    expect(response.json()).toMatchObject({ type: 'INVALID_CREDENTIALS' });
   });
 
   describe('when user exists', () => {
@@ -57,7 +57,7 @@ describe('POST /auth/login', () => {
       });
 
       expect(response.statusCode).toBe(401);
-      expect(response.json()).toMatchObject({ type: 'INVALID_PASSWORD' });
+      expect(response.json()).toMatchObject({ type: 'INVALID_CREDENTIALS' });
     });
 
     it('returns status 200 with user data and sets auth cookies when password is correct', async () => {
