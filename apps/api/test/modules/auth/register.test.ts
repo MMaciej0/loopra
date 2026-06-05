@@ -27,7 +27,7 @@ describe('POST /auth/register', () => {
 
     expect(refreshToken).toBeDefined();
     expect(refreshToken?.httpOnly).toBe(true);
-    expect(refreshToken?.path).toBe('/auth');
+    expect(refreshToken?.path).toBe('/');
     expect(refreshToken?.value).toMatch(/^[0-9a-f-]{36}\.[0-9a-f]{64}$/); // {familyUuid}.{rawToken}
   });
 
