@@ -1,8 +1,13 @@
 import { Text } from '@/components/ui/text';
+import { protectedRequest } from '@/utils/api';
 
-export default function DashboardPage() {
+export default async function DashboardPage() {
+  const events = await protectedRequest('/events');
+
+  console.log(events);
+
   return (
-    <main className="min-h-screen bg-background p-12">
+    <main className="bg-background min-h-screen p-12">
       <Text variant="heading-xl">Dashboard</Text>
     </main>
   );
