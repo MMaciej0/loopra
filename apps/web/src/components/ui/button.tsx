@@ -22,6 +22,8 @@ const buttonVariants = cva(
         ghost: 'border-transparent text-foreground hover:bg-muted active:bg-accent',
         // selectable filter chip — use with aria-pressed for selected state
         chip: 'rounded-full px-[13px] py-[7px] text-[12.5px] bg-secondary text-foreground/60 border-border hover:border-foreground hover:text-foreground aria-pressed:bg-primary aria-pressed:text-primary-foreground aria-pressed:border-primary aria-pressed:hover:bg-[color-mix(in_oklch,var(--primary)_88%,var(--background))] aria-pressed:active:bg-[color-mix(in_oklch,var(--primary)_75%,var(--background))]',
+        // plain text nav link — "Need help?", footer links, inline anchors
+        nav: 'border-transparent bg-transparent p-0 text-[13px] font-ui text-muted-foreground hover:text-foreground',
         // kept for shadcn compat
         outline:
           'border-border bg-background hover:bg-muted hover:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50',

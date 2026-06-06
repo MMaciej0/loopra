@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="820" height="800" viewBox="0 0 820 800" font-family="Geist Mono, ui-monospace, monospace">
+  <path d="M-27 5 C 426 5, 793 181, 793 400 S 426 795, -27 795"
+        fill="none" stroke="rgba(244,245,238,0.24)" stroke-width="1.6" stroke-dasharray="3 7" stroke-linecap="round"/>
+  <g fill="rgba(244,245,238,0.5)" font-size="13" letter-spacing="0.05em">
+    <g><circle cx="232" cy="25" r="4.5" fill="rgba(244,245,238,0.6)"/><circle cx="232" cy="25" r="13" fill="none" stroke="rgba(244,245,238,0.2)" stroke-width="1.2"/><text x="252" y="29">08:00</text></g>
+    <g><circle cx="635" cy="166" r="4.5" fill="rgba(244,245,238,0.6)"/><circle cx="635" cy="166" r="13" fill="none" stroke="rgba(244,245,238,0.2)" stroke-width="1.2"/><text x="655" y="170">Café</text></g>
+    <g><circle cx="701" cy="582" r="4.5" fill="rgba(244,245,238,0.6)"/><circle cx="701" cy="582" r="13" fill="none" stroke="rgba(244,245,238,0.2)" stroke-width="1.2"/><text x="721" y="586">Climb</text></g>
+    <g><circle cx="232" cy="775" r="4.5" fill="rgba(244,245,238,0.6)"/><circle cx="232" cy="775" r="13" fill="none" stroke="rgba(244,245,238,0.2)" stroke-width="1.2"/><text x="252" y="779">Summit</text></g>
+  </g>
+</svg>

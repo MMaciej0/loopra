@@ -53,4 +53,31 @@ function BadgeDot({ className }: { className?: string }) {
   );
 }
 
-export { Badge, BadgeDot, badgeVariants };
+// Large editorial badge for dark poster surfaces (auth layout)
+function PosterBadge({ className, style, ...props }: React.ComponentProps<'span'>) {
+  return (
+    <span
+      data-slot="poster-badge"
+      className={cn(
+        'inline-flex items-center gap-[9px] w-max rounded-full border',
+        'px-[15px] py-[7px]',
+        'font-data text-[16px] tracking-[0.06em] uppercase',
+        className,
+      )}
+      style={{
+        background: 'color-mix(in oklch, var(--brand-foreground) 6%, transparent)',
+        borderColor: 'color-mix(in oklch, var(--brand-foreground) 16%, transparent)',
+        color: 'color-mix(in oklch, var(--brand-foreground) 70%, transparent)',
+        ...style,
+      }}
+      {...props}
+    />
+  );
+}
+
+// 8px cobalt dot for PosterBadge
+function PosterBadgeDot({ className }: { className?: string }) {
+  return <span aria-hidden className={cn('size-2 shrink-0 rounded-full bg-brand', className)} />;
+}
+
+export { Badge, BadgeDot, badgeVariants, PosterBadge, PosterBadgeDot };
