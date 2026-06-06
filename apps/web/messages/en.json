@@ -1,4 +1,26 @@
 {
+  "Errors": {
+    "REQUIRED": "This field is required.",
+    "INVALID_EMAIL": "Please enter a valid email.",
+    "PASSWORD_TOO_SHORT": "Password must be at least 8 characters.",
+    "INVALID_CREDENTIALS": "Wrong email or password.",
+    "OAUTH_ONLY_ACCOUNT": "This account uses Google sign-in. Please log in with Google.",
+    "RATE_LIMIT_EXCEEDED": "Too many attempts. Try again later.",
+    "UNKNOWN": "Something went wrong. Try again."
+  },
+  "LoginPage": {
+    "eyebrow": "WELCOME BACK",
+    "heading": "Log in to <i>loopra</i>",
+    "continueWithGoogle": "Continue with Google",
+    "or": "OR",
+    "emailLabel": "Email",
+    "emailPlaceholder": "you@example.com",
+    "passwordLabel": "Password",
+    "forgotPassword": "Forgot?",
+    "submit": "Log in",
+    "noAccount": "New to Loopra?",
+    "createAccount": "Create an account"
+  },
   "HomePage": {
     "title": "Hello world!"
   },

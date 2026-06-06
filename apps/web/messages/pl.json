@@ -1,4 +1,26 @@
 {
+  "Errors": {
+    "REQUIRED": "To pole jest wymagane.",
+    "INVALID_EMAIL": "Podaj prawidłowy adres e-mail.",
+    "PASSWORD_TOO_SHORT": "Hasło musi mieć co najmniej 8 znaków.",
+    "INVALID_CREDENTIALS": "Nieprawidłowy e-mail lub hasło.",
+    "OAUTH_ONLY_ACCOUNT": "To konto używa logowania przez Google. Zaloguj się przez Google.",
+    "RATE_LIMIT_EXCEEDED": "Zbyt wiele prób. Spróbuj ponownie później.",
+    "UNKNOWN": "Coś poszło nie tak. Spróbuj ponownie."
+  },
+  "LoginPage": {
+    "eyebrow": "WITAJ PONOWNIE",
+    "heading": "Zaloguj się do <i>loopra</i>",
+    "continueWithGoogle": "Kontynuuj z Google",
+    "or": "LUB",
+    "emailLabel": "E-mail",
+    "emailPlaceholder": "ty@przykład.pl",
+    "passwordLabel": "Hasło",
+    "forgotPassword": "Nie pamiętasz?",
+    "submit": "Zaloguj się",
+    "noAccount": "Nowy w Loopra?",
+    "createAccount": "Załóż konto"
+  },
   "HomePage": {
     "title": "Witaj świecie!"
   },

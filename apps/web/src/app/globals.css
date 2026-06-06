@@ -14,7 +14,7 @@
  *   --muted-foreground   ←  --ink-3
  *   --accent             ←  --surface-hi  (shadcn "accent" = subtle hover surface,
  *                                          not the brand colour)
- *   --destructive        ←  --coral-fg
+ *   --destructive        ←  hardcoded red (no --coral-fg token; only --coral-bg/--coral-line exist)
  *   --border / --input   ←  --line
  *   --ring               ←  --brand       (cobalt focus ring)
  *   --brand              ←  --accent      (loopra cobalt — added as a custom slot
@@ -106,24 +106,13 @@
 
   /* shadcn compat — do not use directly in product code */
   --font-sans: var(--font-ui);
-  --font-display: var(--font-editorial);
   --font-mono: var(--font-data);
-  --font-heading: var(--font-editorial);
-
-  /* ── Spacing scale · 4px base, 8-point grid ───────────────────────── */
-  --spacing-xs: var(--space-xs);
-  --spacing-sm: var(--space-sm);
-  --spacing-md: var(--space-md);
-  --spacing-lg: var(--space-lg);
-  --spacing-xl: var(--space-xl);
-  --spacing-2xl: var(--space-2xl);
-  --spacing-3xl: var(--space-3xl);
 
   /* ── Typography scale ──────────────────────────────────────────────── */
   /* Heading · Bricolage Grotesque */
-  --type-heading-xxl-size: 64px;
-  --type-heading-xxl-lh: 64px;
-  --type-heading-xxl-ls: -0.025em;
+  --type-heading-xxl-size: 84px;
+  --type-heading-xxl-lh: 84px;
+  --type-heading-xxl-ls: -0.02em;
 
   --type-heading-xl-size: 38px;
   --type-heading-xl-lh: 40px;
@@ -150,6 +139,10 @@
   --type-caption-size: 11.5px;
   --type-caption-lh: 16px;
 
+  /* Poster body */
+  --type-poster-body-size: 24px;
+  --type-poster-body-lh: 1.5;
+
   /* Mono · Geist Mono */
   --type-label-size: 10px;
   --type-label-lh: 1;
@@ -167,8 +160,6 @@
  * LIGHT — cool snow + cobalt
  * ===================================================================== */
 :root {
-  --radius: 0.625rem; /* 10px — btn-md default; aligns with --r-xl */
-
   /* ── Shadows ─────────────────────────────────────────────────────── */
   --shadow-subtle-val:  0 1px 2px rgba(0,0,0,0.05);
   --shadow-raised-val:  0 4px 14px rgba(0,0,0,0.08);
@@ -182,14 +173,8 @@
   --r-xl:  10px;  /* buttons (= --radius), primary cards                */
   --r-2xl: 12px;  /* modals, sheets, large containers                   */
 
-  /* ── Spacing · raw values (also consumed by @theme inline above) ──── */
-  --space-xs: 4px;   /*  4px — tight insets, icon padding               */
-  --space-sm: 8px;   /*  8px — chip/badge padding, stacked list gaps     */
-  --space-md: 16px;  /* 16px — card padding, form field gaps             */
-  --space-lg: 24px;  /* 24px — section internal padding                  */
-  --space-xl: 32px;  /* 32px — between cards / major layout gaps         */
-  --space-2xl: 48px; /* 48px — section vertical rhythm                   */
-  --space-3xl: 64px; /* 64px — page-level breathing room                 */
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
 
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
@@ -214,14 +199,14 @@
 
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --ring: var(--brand);
 
   /* Loopra brand — cobalt (use sparingly: join, create, confirm) */
-  --brand: oklch(0.55 0.22 260);
+  --brand: oklch(0.74 0.13 262);
   --brand-foreground: oklch(0.987 0.003 250);
-  --brand-muted: oklch(0.95 0.05 260);
-  --brand-fg: oklch(0.45 0.2 260);
-  --brand-line: oklch(0.84 0.11 260);
+  --brand-muted: oklch(0.95 0.04 262);
+  --brand-fg: oklch(0.58 0.16 262);
+  --brand-line: oklch(0.86 0.08 262);
 
   /* Coral — errors, alerts, FULL badge */
   --coral-bg: oklch(0.96 0.04 30);
@@ -232,11 +217,11 @@
 
   /* charts — cobalt-led, harmonious hues */
 
-  --chart-1: oklch(0.87 0 0); /* cobalt */
-  --chart-2: oklch(0.556 0 0); /* sky */
-  --chart-3: oklch(0.439 0 0); /* teal */
-  --chart-4: oklch(0.371 0 0); /* gold */
-  --chart-5: oklch(0.269 0 0); /* coral */
+  --chart-1: oklch(0.52 0.22 262); /* cobalt */
+  --chart-2: oklch(0.60 0.16 220); /* sky    */
+  --chart-3: oklch(0.58 0.14 188); /* teal   */
+  --chart-4: oklch(0.72 0.15 78);  /* gold   */
+  --chart-5: oklch(0.62 0.20 28);  /* coral  */
 
   /* sidebar — slightly inset from page bg */
   --sidebar: oklch(0.985 0 0);
@@ -247,8 +232,6 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
 }
 
 /* =====================================================================
@@ -289,18 +272,17 @@
   --brand-fg: oklch(0.82 0.18 260);
   --brand-line: oklch(0.42 0.14 260);
 
-  /* Coral — errors, alerts, FULL badge */
   --coral-bg: oklch(0.3 0.08 30);
   --coral-line: oklch(0.42 0.12 30);
 
   --border-strong: oklch(0.37 0.022 260);
   --surface-2: oklch(0.245 0.022 260);
 
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
+  --chart-1: oklch(0.74 0.13 262); /* cobalt */
+  --chart-2: oklch(0.76 0.13 220); /* sky    */
+  --chart-3: oklch(0.74 0.12 188); /* teal   */
+  --chart-4: oklch(0.82 0.13 78);  /* gold   */
+  --chart-5: oklch(0.74 0.17 28);  /* coral  */
 
   --sidebar: oklch(0.205 0 0);
   --sidebar-foreground: oklch(0.985 0 0);
@@ -336,7 +318,6 @@
  * Typography utilities — apply via <Text variant="…" />
  * ===================================================================== */
 @layer utilities {
-  /* Heading · Bricolage Grotesque */
   /* Heading · Bricolage Grotesque — weight 400 always; size + tracking carry hierarchy */
   .type-heading-xxl {
     font-family: var(--font-editorial);
@@ -366,6 +347,14 @@
     letter-spacing: var(--type-heading-m-ls);
     font-weight: 400;
     font-style: italic;
+  }
+
+  /* Poster · large editorial body for dark poster surfaces */
+  .type-poster-body {
+    font-family: var(--font-ui);
+    font-size: var(--type-poster-body-size);
+    line-height: var(--type-poster-body-lh);
+    font-weight: 400;
   }
 
   /* Body · Geist */
