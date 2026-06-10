@@ -40,12 +40,13 @@ describe('POST /auth/login', () => {
   describe('when user exists', () => {
     const TEST_EMAIL = 'wrongpassword@example.com';
     const TEST_PASSWORD = 'correct-password123';
+    const TEST_USERNAME = 'test';
 
     beforeEach(async () => {
       await appRef.app.inject({
         method: 'POST',
         url: '/auth/register',
-        body: { email: TEST_EMAIL, password: TEST_PASSWORD },
+        body: { email: TEST_EMAIL, password: TEST_PASSWORD, username: TEST_USERNAME },
       });
     });
 
@@ -68,7 +69,9 @@ describe('POST /auth/login', () => {
       });
 
       expect(response.statusCode).toBe(200);
-      expect(response.json()).toMatchObject({ user: { email: TEST_EMAIL } });
+      expect(response.json()).toMatchObject({
+        user: { email: TEST_EMAIL, username: TEST_USERNAME },
+      });
 
       const cookies = response.cookies;
       expect(cookies.find((c) => c.name === 'accessToken')).toBeDefined();

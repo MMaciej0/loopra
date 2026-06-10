@@ -25,7 +25,7 @@ describe('DELETE /auth/logout', () => {
       const registerResponse = await appRef.app.inject({
         method: 'POST',
         url: '/auth/register',
-        body: { email: TEST_EMAIL, password: TEST_PASSWORD },
+        body: { email: TEST_EMAIL, password: TEST_PASSWORD, username: 'test' },
       });
 
       refreshToken = registerResponse.cookies.find((c) => c.name === 'refreshToken')?.value || '';

@@ -8,13 +8,14 @@ describe('POST /auth/register', () => {
     const response = await appRef.app.inject({
       method: 'POST',
       url: '/auth/register',
-      body: { email: 'test@example.com', password: 'password123' },
+      body: { email: 'test@example.com', password: 'password123', username: 'test' },
     });
 
     expect(response.statusCode).toBe(200);
 
     const body = response.json();
     expect(body.user.email).toBe('test@example.com');
+    expect(body.user.username).toBe('test');
     expect(body.user.password_hash).toBeUndefined();
 
     const cookies = response.cookies;
@@ -32,7 +33,7 @@ describe('POST /auth/register', () => {
   });
 
   it('returns 409 when email already exists', async () => {
-    const body = { email: 'test@example.com', password: 'password123' };
+    const body = { email: 'test@example.com', password: 'password123', username: 'test' };
 
     await appRef.app.inject({ method: 'POST', url: '/auth/register', body });
     const response = await appRef.app.inject({ method: 'POST', url: '/auth/register', body });
@@ -73,7 +74,7 @@ describe('POST /auth/register', () => {
         const response = await appRef.app.inject({
           method: 'POST',
           url: '/auth/register',
-          body: { email: `test${i}@example.com`, password: 'password123' },
+          body: { email: `test${i}@example.com`, password: 'password123', username: 'test' },
         });
 
         if (i <= RATE_LIMIT) {
