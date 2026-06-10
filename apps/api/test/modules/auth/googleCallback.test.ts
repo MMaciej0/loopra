@@ -44,8 +44,13 @@ describe('GET /auth/google/callback', () => {
         url: '/auth/google/callback',
       });
 
-      expect(response.cookies.find((c) => c.name === 'accessToken')).toBeDefined();
-      expect(response.cookies.find((c) => c.name === 'refreshToken')).toBeDefined();
+      const accessToken = response.cookies.find((c) => c.name === 'accessToken');
+      const refreshToken = response.cookies.find((c) => c.name === 'refreshToken');
+
+      expect(accessToken).toBeDefined();
+      expect(accessToken?.sameSite).toBe('Lax');
+      expect(refreshToken).toBeDefined();
+      expect(refreshToken?.sameSite).toBe('Lax');
     });
   });
 
