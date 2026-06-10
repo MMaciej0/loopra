@@ -16,14 +16,14 @@ export const setAuthCookies = (
     .setCookie('accessToken', accessToken, {
       httpOnly: true,
       secure: isProduction,
-      sameSite: 'strict',
+      sameSite: 'lax',
       path: '/',
       maxAge: ACCESS_TOKEN_MAX_AGE,
     })
     .setCookie('refreshToken', `${familyUuid}.${rawRefreshToken}`, {
       httpOnly: true,
       secure: isProduction,
-      sameSite: 'strict',
+      sameSite: 'lax',
       path: '/',
       maxAge: REFRESH_TOKEN_MAX_AGE,
     });
