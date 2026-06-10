@@ -7,11 +7,12 @@ export const registerUser = async (
   app: FastifyInstance,
   email = 'test@example.com',
   password = 'password123',
+  username = 'testuser',
 ) => {
   const response = await app.inject({
     method: 'POST',
     url: '/auth/register',
-    body: { email, password },
+    body: { email, password, username },
   });
 
   const userId = response.json().user.id as string;

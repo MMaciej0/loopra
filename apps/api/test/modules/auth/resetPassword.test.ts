@@ -14,7 +14,7 @@ describe('POST /auth/reset-password', () => {
     await appRef.app.inject({
       method: 'POST',
       url: '/auth/register',
-      body: { email: USER_EMAIL, password: USER_PASSWORD },
+      body: { email: USER_EMAIL, password: USER_PASSWORD, username: 'test' },
     });
   });
 

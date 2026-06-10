@@ -33,18 +33,22 @@ import { authRateLimiter, clearRateLimits, emailSendRateLimiter } from './servic
 
 export const authRoutes = (fastify: FastifyInstance, _options: unknown) => {
   fastify.post('/register', async (request, reply) => {
-    const { email, password } = parseBody(request.body, RegisterBodySchema);
+    const registerCredentials = parseBody(request.body, RegisterBodySchema);
     await authRateLimiter(request, fastify.redis);
 
     try {
       const { user, accessToken, familyUuid, rawRefreshToken } = await registerUser({
         fastify,
-        email,
-        password,
+        registerCredentials,
       });
       setAuthCookies(reply, accessToken, familyUuid, rawRefreshToken);
       return reply.send({
-        user: { id: user.id, email: user.email, emailVerified: user.email_verified },
+        user: {
+          id: user.id,
+          email: user.email,
+          emailVerified: user.email_verified,
+          username: user.username,
+        },
       });
     } catch (error) {
       if (error instanceof OAuthOnlyAccountError) {
@@ -73,7 +77,12 @@ export const authRoutes = (fastify: FastifyInstance, _options: unknown) => {
       setAuthCookies(reply, accessToken, familyUuid, rawRefreshToken);
       await clearRateLimits(request, fastify.redis, email);
       return reply.send({
-        user: { id: user.id, email: user.email, emailVerified: user.email_verified },
+        user: {
+          id: user.id,
+          email: user.email,
+          emailVerified: user.email_verified,
+          username: user.username,
+        },
       });
     } catch (error) {
       if (error instanceof UserNotFoundError) {

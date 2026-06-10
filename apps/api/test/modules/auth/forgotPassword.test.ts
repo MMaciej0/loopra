@@ -32,7 +32,7 @@ describe('POST /auth/forgot-password', () => {
         await appRef.app.inject({
           method: 'POST',
           url: '/auth/register',
-          body: { email: EXISTING_EMAIL, password: TEST_PASSWORD },
+          body: { email: EXISTING_EMAIL, password: TEST_PASSWORD, username: 'test' },
         });
       });
 
