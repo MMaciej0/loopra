@@ -1,8 +1,9 @@
 import { getTranslations } from 'next-intl/server';
-import { Header } from './_components/Header';
-import { GoogleLoginButton } from './_components/GoogleLoginButton';
+import { AuthHeader } from '../_components/AuthHeader';
+import { AuthDivider } from '../_components/AuthDivider';
+import { AuthSwitchLink } from '../_components/AuthSwitchLink';
+import { GoogleAuthButton } from '../_components/GoogleAuthButton';
 import { LoginForm } from './_components/LoginForm';
-import { Footer } from './_components/Footer';
 
 export default async function Login({
   searchParams,
@@ -13,19 +14,15 @@ export default async function Login({
 
   return (
     <div className="flex w-full flex-col">
-      <Header />
-      <GoogleLoginButton />
-
-      <div className="mb-[18px] flex items-center gap-3">
-        <span className="bg-border h-px flex-1" />
-        <span className="text-muted-foreground font-mono text-[11px] tracking-[0.1em]">
-          {t('or')}
-        </span>
-        <span className="bg-border h-px flex-1" />
-      </div>
+      <AuthHeader
+        eyebrow={t('eyebrow')}
+        heading={t.rich('heading', { i: (chunks) => <i>{chunks}</i> })}
+      />
+      <GoogleAuthButton />
+      <AuthDivider />
 
       <LoginForm redirectTo={redirectTo ?? '/dashboard'} />
-      <Footer />
+      <AuthSwitchLink text={t('noAccount')} href="/register" label={t('createAccount')} />
     </div>
   );
 }

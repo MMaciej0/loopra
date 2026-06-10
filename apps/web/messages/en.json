@@ -8,11 +8,13 @@
     "RATE_LIMIT_EXCEEDED": "Too many attempts. Try again later.",
     "UNKNOWN": "Something went wrong. Try again."
   },
+  "Auth": {
+    "or": "OR",
+    "continueWithGoogle": "Continue with Google"
+  },
   "LoginPage": {
     "eyebrow": "WELCOME BACK",
     "heading": "Log in to <i>loopra</i>",
-    "continueWithGoogle": "Continue with Google",
-    "or": "OR",
     "emailLabel": "Email",
     "emailPlaceholder": "you@example.com",
     "passwordLabel": "Password",
@@ -20,6 +22,20 @@
     "submit": "Log in",
     "noAccount": "New to Loopra?",
     "createAccount": "Create an account"
+  },
+  "RegisterPage": {
+    "eyebrow": "CREATE ACCOUNT",
+    "heading": "Join <i>loopra</i>",
+    "description": "Email + password, or Google. We'll send a confirmation link to verify your address afterwards.",
+    "emailLabel": "Email",
+    "emailPlaceholder": "you@example.com",
+    "usernameLabel": "Username",
+    "usernamePlaceholder": "yourname",
+    "passwordLabel": "Password",
+    "submit": "Create account",
+    "termsAgreement": "By creating an account you agree to our <terms>Terms</terms> and <privacy>Privacy Policy</privacy>.",
+    "haveAccount": "Already have an account?",
+    "logIn": "Log in"
   },
   "HomePage": {
     "title": "Hello world!"

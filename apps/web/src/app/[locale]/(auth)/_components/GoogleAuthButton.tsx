@@ -2,8 +2,8 @@ import { GoogleIcon } from '@/components/icons/google';
 import { Button } from '@/components/ui/button';
 import { getTranslations } from 'next-intl/server';
 
-export async function GoogleLoginButton() {
-  const t = await getTranslations('LoginPage');
+export async function GoogleAuthButton() {
+  const t = await getTranslations('Auth');
 
   return (
     <Button
