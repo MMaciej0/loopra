@@ -5,12 +5,8 @@ import { AuthSwitchLink } from '../_components/AuthSwitchLink';
 import { GoogleAuthButton } from '../_components/GoogleAuthButton';
 import { RegisterForm } from './_components/RegisterForm';
 
-export default async function Register({
-  searchParams,
-}: {
-  searchParams: Promise<{ redirectTo?: string }>;
-}) {
-  const [t, { redirectTo }] = await Promise.all([getTranslations('RegisterPage'), searchParams]);
+export default async function Register() {
+  const t = await getTranslations('RegisterPage');
 
   return (
     <div className="flex w-full flex-col">
@@ -22,7 +18,7 @@ export default async function Register({
       <GoogleAuthButton />
       <AuthDivider />
 
-      <RegisterForm redirectTo={redirectTo ?? '/dashboard'} />
+      <RegisterForm />
       <AuthSwitchLink text={t('haveAccount')} href="/login" label={t('logIn')} />
     </div>
   );
