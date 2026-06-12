@@ -3,7 +3,11 @@
     "REQUIRED": "This field is required.",
     "INVALID_EMAIL": "Please enter a valid email.",
     "PASSWORD_TOO_SHORT": "Password must be at least 8 characters.",
+    "PASSWORD_REQUIRES_UPPERCASE": "Password must contain at least one uppercase letter.",
+    "PASSWORD_REQUIRES_SPECIAL_CHAR": "Password must contain at least one special character.",
+    "USERNAME_TOO_SHORT": "Username must be at least 3 characters.",
     "INVALID_CREDENTIALS": "Wrong email or password.",
+    "USER_ALREADY_EXISTS": "An account with this email already exists.",
     "OAUTH_ONLY_ACCOUNT": "This account uses Google sign-in. Please log in with Google.",
     "RATE_LIMIT_EXCEEDED": "Too many attempts. Try again later.",
     "UNKNOWN": "Something went wrong. Try again."

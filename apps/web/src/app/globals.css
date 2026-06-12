@@ -110,8 +110,8 @@
 
   /* ── Typography scale ──────────────────────────────────────────────── */
   /* Heading · Bricolage Grotesque */
-  --type-heading-xxl-size: 84px;
-  --type-heading-xxl-lh: 84px;
+  --type-heading-xxl-size: clamp(40px, calc(6.86vw - 47.8px), 84px);
+  --type-heading-xxl-lh: 1;
   --type-heading-xxl-ls: -0.02em;
 
   --type-heading-xl-size: 38px;

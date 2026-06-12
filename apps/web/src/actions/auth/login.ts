@@ -60,7 +60,5 @@ export async function login(
     return { values: { email }, formError: APP_ERROR_TYPES.UNKNOWN };
   }
 
-  await redirect(redirectTo);
-
-  return null;
+  redirect(redirectTo);
 }
