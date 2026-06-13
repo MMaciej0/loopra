@@ -51,12 +51,12 @@ export default function AuthLayout({ children }: Props) {
             <PosterBadgeDot />
             OPEN WORLDWIDE · NEW RIDES DAILY
           </PosterBadge>
-          <Text variant="heading-xxl" className="text-brand-foreground mb-7">
+          <Text variant="heading-xxl" className="mb-7 text-white">
             Find rides you
             <br />
-            <em className="text-brand">actually belong</em> on.
+            <em className="text-accent">actually belong</em> on.
           </Text>
-          <Text variant="poster-body" className="text-brand-foreground/70 max-w-[580px]">
+          <Text variant="poster-body" className="max-w-[580px] text-white/70">
             An open ride calendar for cyclists. Log in, create a ride in 60 seconds, or browse
             what&apos;s nearby.
           </Text>
