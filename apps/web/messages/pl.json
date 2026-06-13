@@ -27,6 +27,16 @@
     "noAccount": "Nowy w Loopra?",
     "createAccount": "Załóż konto"
   },
+  "ForgotPasswordPage": {
+    "eyebrow": "RESET HASŁA",
+    "heading": "Zapomniałeś? Bywa.",
+    "description": "Podaj adres e-mail przypisany do konta, a wyślemy Ci link do resetu hasła.",
+    "emailLabel": "E-mail",
+    "emailPlaceholder": "ty@przykład.pl",
+    "submit": "Wyślij link resetujący",
+    "rememberedIt": "Pamiętasz hasło?",
+    "logIn": "Zaloguj się"
+  },
   "RegisterPage": {
     "eyebrow": "ZAŁÓŻ KONTO",
     "heading": "Dołącz do <i>loopra</i>",

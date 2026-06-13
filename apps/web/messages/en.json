@@ -27,6 +27,16 @@
     "noAccount": "New to Loopra?",
     "createAccount": "Create an account"
   },
+  "ForgotPasswordPage": {
+    "eyebrow": "RESET PASSWORD",
+    "heading": "Forgot it? Happens.",
+    "description": "Enter the email on your account and we'll send you a reset link.",
+    "emailLabel": "Email",
+    "emailPlaceholder": "you@example.com",
+    "submit": "Send reset link",
+    "rememberedIt": "Remembered it?",
+    "logIn": "Log in"
+  },
   "RegisterPage": {
     "eyebrow": "CREATE ACCOUNT",
     "heading": "Join <i>loopra</i>",
