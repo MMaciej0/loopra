@@ -1,37 +1,9 @@
-/* ------------------------------------------------------------------
- * loopra · globals.css
- * shadcn/ui token file — Tailwind v4 (OKLCH)
- *
- * Mapping notes:
- *   shadcn slot          ←  loopra token
- *   --background         ←  --bg
- *   --foreground         ←  --ink
- *   --card / --popover   ←  --surface
- *   --primary            ←  --ink         (ink-on-bg buttons = Loopra's default)
- *   --primary-foreground ←  --bg
- *   --secondary          ←  --surface
- *   --muted              ←  --surface-2
- *   --muted-foreground   ←  --ink-3
- *   --accent             ←  --surface-hi  (shadcn "accent" = subtle hover surface,
- *                                          not the brand colour)
- *   --destructive        ←  hardcoded red (no --coral-fg token; only --coral-bg/--coral-line exist)
- *   --border / --input   ←  --line
- *   --ring               ←  --brand       (cobalt focus ring)
- *   --brand              ←  --accent      (loopra cobalt — added as a custom slot
- *                                          since shadcn has no brand slot; use
- *                                          for Join / Create CTAs only)
- * ------------------------------------------------------------------ */
-
 @import 'tailwindcss';
 @import 'tw-animate-css';
 @import 'shadcn/tailwind.css';
 
 @custom-variant dark (&:is(.dark *));
 
-/* =====================================================================
- * Map tokens → Tailwind utility classes
- * (bg-background, text-foreground, border-border, ring-ring, etc.)
- * ===================================================================== */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -61,121 +33,14 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
 
-  /* Loopra extras — not in stock shadcn */
-  --color-brand: var(--brand);
-  --color-brand-foreground: var(--brand-foreground);
-  --color-brand-muted: var(--brand-muted);
-  --color-brand-fg: var(--brand-fg);
-  --color-brand-line: var(--brand-line);
-  --color-coral-bg: var(--coral-bg);
-  --color-coral-line: var(--coral-line);
-  --color-surface-2: var(--surface-2);
-  --color-border-strong: var(--border-strong);
-
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
-
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
-
-  --radius-xs: var(--r-xs);
-  --radius-sm: var(--r-sm);
-  --radius-md: var(--r-md);
-  --radius-lg: var(--r-lg);
-  --radius-xl: var(--r-xl);
-  --radius-2xl: var(--r-2xl);
-
-  /* ── Shadows ───────────────────────────────────────────────────────── */
-  --shadow-subtle: var(--shadow-subtle-val);
-  --shadow-raised: var(--shadow-raised-val);
-  --shadow-overlay: var(--shadow-overlay-val);
-
-  /* Semantic aliases — use these in product code */
   --font-ui: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-editorial: var(--font-bricolage), ui-serif, serif;
   --font-data: var(--font-geist-mono), ui-monospace, monospace;
-
-  /* shadcn compat — do not use directly in product code */
   --font-sans: var(--font-ui);
   --font-mono: var(--font-data);
-
-  /* ── Typography scale ──────────────────────────────────────────────── */
-  /* Heading · Bricolage Grotesque */
-  --type-heading-xxl-size: clamp(40px, calc(6.86vw - 47.8px), 84px);
-  --type-heading-xxl-lh: 1;
-  --type-heading-xxl-ls: -0.02em;
-
-  --type-heading-xl-size: 38px;
-  --type-heading-xl-lh: 40px;
-  --type-heading-xl-ls: -0.01em;
-
-  --type-heading-l-size: 30px;
-  --type-heading-l-lh: 34px;
-  --type-heading-l-ls: -0.015em;
-
-  --type-heading-m-size: 22px;
-  --type-heading-m-lh: 30px;
-  --type-heading-m-ls: -0.005em;
-
-  /* Body · Geist */
-  --type-body-l-size: 17px;
-  --type-body-l-lh: 26px;
-
-  --type-body-m-size: 14px;
-  --type-body-m-lh: 22px;
-
-  --type-body-s-size: 13px;
-  --type-body-s-lh: 20px;
-
-  --type-caption-size: 11.5px;
-  --type-caption-lh: 16px;
-
-  --type-body-xs-size: 11.5px;
-  --type-body-xs-lh: 1.5;
-
-  /* Poster body */
-  --type-poster-body-size: 24px;
-  --type-poster-body-lh: 1.5;
-
-  /* Mono · Geist Mono */
-  --type-label-size: 10px;
-  --type-label-lh: 1;
-  --type-label-ls: 0.14em;
-
-  --type-stat-size: 15px;
-  --type-stat-lh: 1.4;
-
-  --type-meta-size: 11px;
-  --type-meta-lh: 1;
-  --type-meta-ls: 0.06em;
 }
 
-/* =====================================================================
- * LIGHT — cool snow + cobalt
- * ===================================================================== */
 :root {
-  /* ── Shadows ─────────────────────────────────────────────────────── */
-  --shadow-subtle-val:  0 1px 2px rgba(0,0,0,0.05);
-  --shadow-raised-val:  0 4px 14px rgba(0,0,0,0.08);
-  --shadow-overlay-val: 0 14px 40px rgba(0,0,0,0.16);
-
-  /* ── Radius · 2px-per-step scale ─────────────────────────────────── */
-  --r-xs:  2px;   /* tags, small badges                                 */
-  --r-sm:  4px;   /* chips, pill insets                                 */
-  --r-md:  6px;   /* inputs, small cards                                */
-  --r-lg:  8px;   /* standard cards, dropdowns                          */
-  --r-xl:  10px;  /* buttons (= --radius), primary cards                */
-  --r-2xl: 12px;  /* modals, sheets, large containers                   */
-
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
 
@@ -194,52 +59,17 @@
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.58 0.012 260);
 
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  --accent: oklch(0.74 0.13 262);
+  --accent-foreground: oklch(0.145 0 0);
 
   --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.987 0.003 250);
+  --destructive-foreground: oklch(0.985 0 0);
 
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
-  --ring: var(--brand);
-
-  /* Loopra brand — cobalt (use sparingly: join, create, confirm) */
-  --brand: oklch(0.74 0.13 262);
-  --brand-foreground: oklch(0.987 0.003 250);
-  --brand-muted: oklch(0.95 0.04 262);
-  --brand-fg: oklch(0.58 0.16 262);
-  --brand-line: oklch(0.86 0.08 262);
-
-  /* Coral — errors, alerts, FULL badge */
-  --coral-bg: oklch(0.96 0.04 30);
-  --coral-line: oklch(0.87 0.09 30);
-
-  --border-strong: oklch(0.83 0.01 250);
-  --surface-2: oklch(0.945 0.006 250);
-
-  /* charts — cobalt-led, harmonious hues */
-
-  --chart-1: oklch(0.52 0.22 262); /* cobalt */
-  --chart-2: oklch(0.60 0.16 220); /* sky    */
-  --chart-3: oklch(0.58 0.14 188); /* teal   */
-  --chart-4: oklch(0.72 0.15 78);  /* gold   */
-  --chart-5: oklch(0.62 0.20 28);  /* coral  */
-
-  /* sidebar — slightly inset from page bg */
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --ring: var(--accent);
 }
 
-/* =====================================================================
- * DARK — navy charcoal + lifted cobalt
- * ===================================================================== */
 .dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
@@ -257,161 +87,131 @@
   --secondary-foreground: oklch(0.985 0 0);
 
   --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.60 0.015 260);
+  --muted-foreground: oklch(0.6 0.015 260);
 
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
+  --accent: oklch(0.72 0.2 260);
+  --accent-foreground: oklch(0.155 0.022 260);
 
   --destructive: oklch(0.704 0.191 22.216);
   --destructive-foreground: oklch(0.155 0.022 260);
 
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-
-  --brand: oklch(0.72 0.2 260);
-  --brand-foreground: oklch(0.155 0.022 260);
-  --brand-muted: oklch(0.3 0.1 260);
-  --brand-fg: oklch(0.82 0.18 260);
-  --brand-line: oklch(0.42 0.14 260);
-
-  --coral-bg: oklch(0.3 0.08 30);
-  --coral-line: oklch(0.42 0.12 30);
-
-  --border-strong: oklch(0.37 0.022 260);
-  --surface-2: oklch(0.245 0.022 260);
-
-  --chart-1: oklch(0.74 0.13 262); /* cobalt */
-  --chart-2: oklch(0.76 0.13 220); /* sky    */
-  --chart-3: oklch(0.74 0.12 188); /* teal   */
-  --chart-4: oklch(0.82 0.13 78);  /* gold   */
-  --chart-5: oklch(0.74 0.17 28);  /* coral  */
-
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
-
-  --shadow-subtle-val:  0 1px 2px rgba(0,0,0,0.4);
-  --shadow-raised-val:  0 4px 14px rgba(0,0,0,0.45);
-  --shadow-overlay-val: 0 14px 40px rgba(0,0,0,0.6);
+  --ring: var(--accent);
 }
 
-/* =====================================================================
- * Base layer — same shape shadcn ships with
- * ===================================================================== */
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
-  body {
-    @apply font-sans antialiased bg-background text-foreground;
-    font-feature-settings: 'ss01', 'ss02', 'cv01';
-  }
+
   html {
     @apply font-sans;
   }
+
+  body {
+    @apply bg-background font-sans text-foreground antialiased;
+    font-feature-settings: 'ss01', 'ss02', 'cv01';
+  }
 }
 
-/* =====================================================================
- * Typography utilities — apply via <Text variant="…" />
- * ===================================================================== */
 @layer utilities {
-  /* Heading · Bricolage Grotesque — weight 400 always; size + tracking carry hierarchy */
   .type-heading-xxl {
     font-family: var(--font-editorial);
-    font-size: var(--type-heading-xxl-size);
-    line-height: var(--type-heading-xxl-lh);
-    letter-spacing: var(--type-heading-xxl-ls);
+    font-size: clamp(40px, calc(6.86vw - 47.8px), 84px);
+    line-height: 1;
+    letter-spacing: 0;
     font-weight: 400;
   }
+
   .type-heading-xl {
     font-family: var(--font-editorial);
-    font-size: var(--type-heading-xl-size);
-    line-height: var(--type-heading-xl-lh);
-    letter-spacing: var(--type-heading-xl-ls);
+    font-size: 38px;
+    line-height: 40px;
+    letter-spacing: 0;
     font-weight: 400;
   }
+
   .type-heading-l {
     font-family: var(--font-editorial);
-    font-size: var(--type-heading-l-size);
-    line-height: var(--type-heading-l-lh);
-    letter-spacing: var(--type-heading-l-ls);
+    font-size: 30px;
+    line-height: 34px;
+    letter-spacing: 0;
     font-weight: 400;
   }
+
   .type-heading-m {
     font-family: var(--font-editorial);
-    font-size: var(--type-heading-m-size);
-    line-height: var(--type-heading-m-lh);
-    letter-spacing: var(--type-heading-m-ls);
-    font-weight: 400;
+    font-size: 22px;
+    line-height: 30px;
+    letter-spacing: 0;
     font-style: italic;
+    font-weight: 400;
   }
 
-  /* Poster · large editorial body for dark poster surfaces */
   .type-poster-body {
     font-family: var(--font-ui);
-    font-size: var(--type-poster-body-size);
-    line-height: var(--type-poster-body-lh);
+    font-size: 24px;
+    line-height: 1.5;
     font-weight: 400;
   }
 
-  /* Body · Geist */
   .type-body-l {
     font-family: var(--font-ui);
-    font-size: var(--type-body-l-size);
-    line-height: var(--type-body-l-lh);
-    font-weight: 400;
-  }
-  .type-body-m {
-    font-family: var(--font-ui);
-    font-size: var(--type-body-m-size);
-    line-height: var(--type-body-m-lh);
-    font-weight: 500;
-  }
-  .type-body-s {
-    font-family: var(--font-ui);
-    font-size: var(--type-body-s-size);
-    line-height: var(--type-body-s-lh);
-    font-weight: 400;
-  }
-  .type-body-xs {
-    font-family: var(--font-ui);
-    font-size: var(--type-body-xs-size);
-    line-height: var(--type-body-xs-lh);
-    font-weight: 400;
-  }
-  .type-caption {
-    font-family: var(--font-ui);
-    font-size: var(--type-caption-size);
-    line-height: var(--type-caption-lh);
+    font-size: 17px;
+    line-height: 26px;
     font-weight: 400;
   }
 
-  /* Mono · Geist Mono */
+  .type-body-m {
+    font-family: var(--font-ui);
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 500;
+  }
+
+  .type-body-s {
+    font-family: var(--font-ui);
+    font-size: 13px;
+    line-height: 20px;
+    font-weight: 400;
+  }
+
+  .type-body-xs {
+    font-family: var(--font-ui);
+    font-size: 11.5px;
+    line-height: 1.5;
+    font-weight: 400;
+  }
+
+  .type-caption {
+    font-family: var(--font-ui);
+    font-size: 11.5px;
+    line-height: 16px;
+    font-weight: 400;
+  }
+
   .type-label {
     font-family: var(--font-data);
-    font-size: var(--type-label-size);
-    line-height: var(--type-label-lh);
-    letter-spacing: var(--type-label-ls);
+    font-size: 10px;
+    line-height: 1;
+    letter-spacing: 0.14em;
     font-weight: 500;
     text-transform: uppercase;
   }
+
   .type-stat {
     font-family: var(--font-data);
-    font-size: var(--type-stat-size);
-    line-height: var(--type-stat-lh);
+    font-size: 15px;
+    line-height: 1.4;
     font-weight: 600;
   }
+
   .type-meta {
     font-family: var(--font-data);
-    font-size: var(--type-meta-size);
-    line-height: var(--type-meta-lh);
-    letter-spacing: var(--type-meta-ls);
+    font-size: 11px;
+    line-height: 1;
+    letter-spacing: 0.06em;
     font-weight: 500;
   }
 }

@@ -8,15 +8,10 @@ const badgeVariants = cva(
   {
     variants: {
       variant: {
-        // status metadata, counts, dates
         default: 'bg-muted text-foreground/60 border-border',
-        // discipline tags, road/gravel/mtb
-        accent: 'bg-brand-muted text-brand-fg border-brand-line',
-        // alerts: FULL, first-timers welcome
-        coral: 'bg-coral-bg text-destructive border-coral-line',
-        // joined, host, confirmed
+        accent: 'bg-accent/10 text-accent border-accent/30',
+        destructive: 'bg-destructive/10 text-destructive border-destructive/20',
         inverse: 'bg-primary text-primary-foreground border-primary',
-        // drop ride, subtle flags
         soft: 'bg-transparent text-muted-foreground border-border',
       },
       size: {
@@ -46,14 +41,12 @@ function Badge({
   );
 }
 
-// Dot indicator used inside accent/coral pills: <Badge variant="accent"><BadgeDot />Road · Social</Badge>
 function BadgeDot({ className }: { className?: string }) {
   return (
     <span aria-hidden className={cn('size-[5px] shrink-0 rounded-full bg-current', className)} />
   );
 }
 
-// Large editorial badge for dark poster surfaces (auth layout)
 function PosterBadge({ className, style, ...props }: React.ComponentProps<'span'>) {
   return (
     <span
@@ -65,9 +58,9 @@ function PosterBadge({ className, style, ...props }: React.ComponentProps<'span'
         className,
       )}
       style={{
-        background: 'color-mix(in oklch, var(--brand-foreground) 6%, transparent)',
-        borderColor: 'color-mix(in oklch, var(--brand-foreground) 16%, transparent)',
-        color: 'color-mix(in oklch, var(--brand-foreground) 70%, transparent)',
+        background: 'color-mix(in oklch, oklch(0.985 0 0) 6%, transparent)',
+        borderColor: 'color-mix(in oklch, oklch(0.985 0 0) 16%, transparent)',
+        color: 'color-mix(in oklch, oklch(0.985 0 0) 70%, transparent)',
         ...style,
       }}
       {...props}
@@ -75,9 +68,8 @@ function PosterBadge({ className, style, ...props }: React.ComponentProps<'span'
   );
 }
 
-// 8px cobalt dot for PosterBadge
 function PosterBadgeDot({ className }: { className?: string }) {
-  return <span aria-hidden className={cn('size-2 shrink-0 rounded-full bg-brand', className)} />;
+  return <span aria-hidden className={cn('size-2 shrink-0 rounded-full bg-accent', className)} />;
 }
 
 export { Badge, BadgeDot, badgeVariants, PosterBadge, PosterBadgeDot };

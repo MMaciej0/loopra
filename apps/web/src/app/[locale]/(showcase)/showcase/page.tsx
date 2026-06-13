@@ -75,7 +75,7 @@ const inputTypes = [
 
 // ── Badge showcase ────────────────────────────────────────────────────────────
 
-const badgeVariants = ['default', 'accent', 'coral', 'inverse', 'soft'] as const;
+const badgeVariants = ['default', 'accent', 'destructive', 'inverse', 'soft'] as const;
 
 const badgeExamples: Record<(typeof badgeVariants)[number], React.ReactNode> = {
   default: 'Saturday',
@@ -85,7 +85,7 @@ const badgeExamples: Record<(typeof badgeVariants)[number], React.ReactNode> = {
       Road · Social
     </>
   ),
-  coral: 'First-timers welcome',
+  destructive: 'First-timers welcome',
   inverse: 'Joined',
   soft: 'Drop ride',
 };
@@ -162,7 +162,9 @@ export default function ShowcasePage() {
             </div>
             <div className="flex items-baseline gap-6">
               <span className="type-label text-muted-foreground w-28 shrink-0">M · 22/30 italic</span>
-              <Text variant="heading-m">"The best rides start before the city wakes up."</Text>
+              <Text variant="heading-m">
+                &quot;The best rides start before the city wakes up.&quot;
+              </Text>
             </div>
           </div>
         </div>
@@ -323,12 +325,12 @@ export default function ShowcasePage() {
             </Badge>
           ))}
         </Row>
-        <Row label="With dot · accent &amp; coral">
+        <Row label="With dot · accent &amp; destructive">
           <Badge variant="accent">
             <BadgeDot />
             Road · Social
           </Badge>
-          <Badge variant="coral">
+          <Badge variant="destructive">
             <BadgeDot />
             First-timers welcome
           </Badge>
@@ -336,7 +338,7 @@ export default function ShowcasePage() {
             <BadgeDot />
             Gravel
           </Badge>
-          <Badge variant="coral" size="sm">
+          <Badge variant="destructive" size="sm">
             FULL
           </Badge>
         </Row>
