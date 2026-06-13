@@ -8,7 +8,11 @@ export default async function ForgotPassword() {
 
   return (
     <div className="flex w-full flex-col">
-      <AuthHeader eyebrow={t('eyebrow')} heading={t('heading')} description={t('description')} />
+      <AuthHeader
+        eyebrow={t('eyebrow')}
+        heading={t.rich('heading', { i: (chunks) => <i>{chunks}</i> })}
+        description={t('description')}
+      />
       <ForgotPasswordForm />
       <AuthSwitchLink text={t('rememberedIt')} href="/login" label={t('logIn')} />
     </div>
