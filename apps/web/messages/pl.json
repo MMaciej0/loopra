@@ -29,7 +29,7 @@
   },
   "ForgotPasswordPage": {
     "eyebrow": "RESET HASŁA",
-    "heading": "Zapomniałeś? Bywa.",
+    "heading": "Zapomniałeś? <i>Bywa.</i>",
     "description": "Podaj adres e-mail przypisany do konta, a wyślemy Ci link do resetu hasła.",
     "emailLabel": "E-mail",
     "emailPlaceholder": "ty@przykład.pl",

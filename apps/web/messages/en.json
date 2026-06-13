@@ -29,7 +29,7 @@
   },
   "ForgotPasswordPage": {
     "eyebrow": "RESET PASSWORD",
-    "heading": "Forgot it? Happens.",
+    "heading": "Forgot it? <i>Happens.</i>",
     "description": "Enter the email on your account and we'll send you a reset link.",
     "emailLabel": "Email",
     "emailPlaceholder": "you@example.com",
