@@ -1,4 +1,9 @@
 {
+  "Sidebar": {
+    "rides": "Rides",
+    "routes": "Routes",
+    "createRide": "Create ride"
+  },
   "Errors": {
     "REQUIRED": "This field is required.",
     "INVALID_EMAIL": "Please enter a valid email.",

@@ -63,5 +63,5 @@ export async function register(previousState: RegisterState, formData: FormData)
     return { values: { email, username }, formError: APP_ERROR_TYPES.UNKNOWN };
   }
 
-  redirect('/dashboard');
+  redirect('/rides');
 }

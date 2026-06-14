@@ -1,4 +1,9 @@
 {
+  "Sidebar": {
+    "rides": "Jazdy",
+    "routes": "Trasy",
+    "createRide": "Utwórz jazdę"
+  },
   "Errors": {
     "REQUIRED": "To pole jest wymagane.",
     "INVALID_EMAIL": "Podaj prawidłowy adres e-mail.",
