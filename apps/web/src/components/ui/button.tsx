@@ -10,17 +10,16 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        default:
-          'bg-primary text-primary-foreground border-primary hover:bg-[color-mix(in_oklch,var(--primary)_88%,var(--background))] hover:border-[color-mix(in_oklch,var(--primary)_88%,var(--background))] active:bg-[color-mix(in_oklch,var(--primary)_75%,var(--background))]',
+        default: 'border-primary bg-primary text-primary-foreground hover:border-primary-hover hover:bg-primary-hover',
         secondary:
-          'bg-secondary text-secondary-foreground border-border hover:bg-muted hover:border-foreground/30 active:bg-secondary',
+          'border-border bg-secondary text-secondary-foreground hover:border-border-strong hover:bg-secondary-hover',
         accent:
-          'bg-accent text-accent-foreground border-accent hover:bg-[color-mix(in_oklch,var(--accent)_85%,black)] hover:border-[color-mix(in_oklch,var(--accent)_85%,black)] active:bg-[color-mix(in_oklch,var(--accent)_75%,black)]',
-        ghost: 'border-transparent text-foreground hover:bg-muted active:bg-secondary',
-        chip: 'rounded-full px-[13px] py-[7px] text-[12.5px] bg-secondary text-foreground/60 border-border hover:border-foreground hover:text-foreground aria-pressed:bg-primary aria-pressed:text-primary-foreground aria-pressed:border-primary aria-pressed:hover:bg-[color-mix(in_oklch,var(--primary)_88%,var(--background))] aria-pressed:active:bg-[color-mix(in_oklch,var(--primary)_75%,var(--background))]',
+          'border-accent bg-accent text-[#0d0f12] hover:border-accent-hover hover:bg-accent-hover',
+        ghost: 'border-transparent bg-transparent text-foreground hover:bg-muted',
+        chip: 'rounded-full px-[13px] py-[7px] text-[12.5px] bg-secondary text-foreground/60 border-border hover:border-foreground hover:text-foreground aria-pressed:bg-primary aria-pressed:text-primary-foreground aria-pressed:border-primary aria-pressed:hover:bg-primary-hover aria-pressed:hover:border-primary-hover',
         nav: 'border-transparent bg-transparent p-0 text-[13px] font-ui text-muted-foreground hover:text-foreground',
         outline:
-          'border-border bg-background hover:bg-muted hover:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50',
+          'border-border bg-secondary text-secondary-foreground hover:border-border-strong hover:bg-secondary-hover',
         destructive:
           'bg-destructive/10 text-destructive border-transparent hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40',
         link: 'border-transparent text-primary underline-offset-4 hover:underline',
