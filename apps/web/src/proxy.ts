@@ -21,7 +21,7 @@ export default async function proxy(request: NextRequest) {
   const hasRecoverableSession = Boolean(accessToken || refreshToken);
 
   if (isPublicPath && accessToken) {
-    return NextResponse.redirect(new URL('/dashboard', request.url));
+    return NextResponse.redirect(new URL('/rides', request.url));
   }
 
   if (!isPublicPath && !hasRecoverableSession) {

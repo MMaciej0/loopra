@@ -78,7 +78,7 @@
 
   --accent: oklch(0.74 0.13 262);
   --accent-foreground: oklch(0.145 0 0);
-  --accent-hover: oklch(0.45 0.2 260);
+  --accent-hover: oklch(0.68 0.14 262);
 
   --destructive: oklch(0.55 0.19 30);
   --destructive-foreground: oklch(0.985 0 0);

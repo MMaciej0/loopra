@@ -21,7 +21,7 @@ export default async function Login({
       <GoogleAuthButton />
       <AuthDivider />
 
-      <LoginForm redirectTo={redirectTo ?? '/dashboard'} />
+      <LoginForm redirectTo={redirectTo ?? '/rides'} />
       <AuthSwitchLink text={t('noAccount')} href="/register" label={t('createAccount')} />
     </div>
   );
