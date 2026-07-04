@@ -38,10 +38,15 @@ export function Field({
       <Input
         id={id}
         aria-invalid={!!error}
+        aria-describedby={error ? `${id}-error` : undefined}
         className={cn(fieldSizes[size], className)}
         {...inputProps}
       />
-      {error && <p className="text-destructive mt-1 text-[11.5px]">{error}</p>}
+      {error && (
+        <p id={`${id}-error`} role="alert" className="text-destructive mt-1 text-[11.5px]">
+          {error}
+        </p>
+      )}
     </div>
   );
 }
