@@ -94,27 +94,29 @@ function DialogHeader({ className, ...props }: React.ComponentProps<'div'>) {
 
 function DialogFooter({
   className,
-  showCloseButton = false,
+  showCancel = false,
+  cancelLabel = 'Cancel',
   children,
   ...props
 }: React.ComponentProps<'div'> & {
-  showCloseButton?: boolean;
+  showCancel?: boolean;
+  cancelLabel?: string;
 }) {
   return (
     <div
       data-slot="dialog-footer"
       className={cn(
-        'bg-muted/50 -mx-4 -mb-4 flex flex-col-reverse gap-2 rounded-b-xl border-t p-4 sm:flex-row sm:justify-end',
+        'bg-muted/50 -mx-4 -mb-4 flex flex-col-reverse gap-2 rounded-b-xl border-t p-4 sm:flex-row sm:items-center sm:justify-end',
         className,
       )}
       {...props}
     >
-      {children}
-      {showCloseButton && (
+      {showCancel && (
         <DialogPrimitive.Close asChild>
-          <Button variant="outline">Close</Button>
+          <Button variant="ghost">{cancelLabel}</Button>
         </DialogPrimitive.Close>
       )}
+      {children}
     </div>
   );
 }
