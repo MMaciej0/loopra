@@ -1,7 +1,7 @@
 'use server';
 
 import { protectedRequest } from '@/utils/api';
-import { createRideSchema, type CreateRideInput } from './schema';
+import { createRideSchema, type CreateRideInput } from '../schema';
 
 export async function createRide(input: CreateRideInput) {
   const data = createRideSchema.parse(input);
