@@ -13,7 +13,7 @@ import {
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import { createRideSchema, type CreateRideInput } from './schema';
-import { createRide } from './action';
+import { createRide } from './_actions/action';
 import { FormFields } from './form-fields';
 import { LocationPicker } from './location/picker';
 

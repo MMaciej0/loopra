@@ -6,7 +6,7 @@ import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Field } from '@/components/ui/field';
 import { ControlledForm } from '@/components/ui/controlled-form';
-import { login } from '@/actions/auth/login';
+import { login } from '../_actions/login';
 
 export function LoginForm({ redirectTo }: { redirectTo: string }) {
   const [state, action, isLoading] = useActionState(login.bind(null, redirectTo), null);

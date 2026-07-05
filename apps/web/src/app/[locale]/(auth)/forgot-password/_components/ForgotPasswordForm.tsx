@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Field } from '@/components/ui/field';
 import { ControlledForm } from '@/components/ui/controlled-form';
-import { forgotPassword } from '@/actions/auth/forgotPassword';
+import { forgotPassword } from '../_actions/forgotPassword';
 
 export function ForgotPasswordForm() {
   const [state, action, isLoading] = useActionState(forgotPassword, null);
