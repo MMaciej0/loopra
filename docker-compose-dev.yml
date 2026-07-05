@@ -37,8 +37,9 @@ services:
       - /app/apps/web/.next
     command: "tail -f /dev/null"
     environment:
-      NEXT_PUBLIC_API_URL: http://localhost:8080
-      API_URL: http://api:8080
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+      API_URL: ${API_URL}
+      NEXT_PUBLIC_MAPTILER_KEY: ${NEXT_PUBLIC_MAPTILER_KEY}
 
   postgres:
     container_name: loopra-postgres
