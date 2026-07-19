@@ -10,8 +10,8 @@ const coordsSchema = z.object({
 export const createRideSchema = z.object({
   type: z.enum(['trip', 'training']),
   title: z.string().min(5, 'Title must be at least 5 characters').max(50, 'Title is too long'),
-  start_location: coordsSchema,
-  start_location_name: z.string().min(1, 'Pick a start point'),
+  start_location: coordsSchema.optional().refine((v) => v !== undefined, 'Pick a start point'),
+  start_location_name: z.string().min(1, 'Name this location'),
   city: z.string().min(1, 'Pick a start point'),
   country: z.string().min(1, 'Pick a start point'),
   start_time: z.date({ error: 'Pick a date' }).refine((d) => {

@@ -7,10 +7,11 @@ const DEFAULT_CENTER: [number, number] = [19.9275, 50.0616]; // [lng, lat] — K
 const DEFAULT_ZOOM = 14;
 
 interface UseMapProps {
+  initialCoords?: Coords;
   onPick: (coords: Coords) => void;
 }
 
-export function useMap({ onPick }: UseMapProps) {
+export function useMap({ onPick, initialCoords }: UseMapProps) {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<maptilersdk.Map | null>(null);
 
@@ -22,7 +23,7 @@ export function useMap({ onPick }: UseMapProps) {
     const map = new maptilersdk.Map({
       container: mapContainerRef.current,
       style: maptilersdk.MapStyle.STREETS,
-      center: DEFAULT_CENTER,
+      center: initialCoords ? [initialCoords.x, initialCoords.y] : DEFAULT_CENTER,
       zoom: DEFAULT_ZOOM,
       navigationControl: false,
       geolocateControl: false,
@@ -33,6 +34,10 @@ export function useMap({ onPick }: UseMapProps) {
 
     const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
     const pointer = new maptilersdk.Marker({ color: accent });
+
+    if (initialCoords) {
+      pointer.setLngLat([initialCoords.x, initialCoords.y]).addTo(map);
+    }
 
     map.on('click', (e) => {
       pointer.setLngLat(e.lngLat).addTo(map);

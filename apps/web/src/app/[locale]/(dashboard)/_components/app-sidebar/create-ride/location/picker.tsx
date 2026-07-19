@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import type { Coords, CreateRideInput } from '../schema';
 import { useMap } from '@/hooks/use-map';
 import { useCallback } from 'react';
+import { SubmitBanner } from './submit-banner';
 
 export function LocationPicker({ onDone }: { onDone: () => void }) {
   const { setValue } = useFormContext<CreateRideInput>();
@@ -15,10 +16,10 @@ export function LocationPicker({ onDone }: { onDone: () => void }) {
     },
     [setValue],
   );
+  const startLocation = useWatch<CreateRideInput, 'start_location'>({ name: 'start_location' });
 
-  const { mapContainerRef } = useMap({ onPick });
+  const { mapContainerRef } = useMap({ onPick, initialCoords: startLocation });
 
-  const startLocation = useWatch<CreateRideInput>({ name: 'start_location' });
   const hint = startLocation
     ? 'Click again to move the start point'
     : 'Click to set the start point';
@@ -35,6 +36,7 @@ export function LocationPicker({ onDone }: { onDone: () => void }) {
             {hint}
           </Badge>
         </div>
+        {startLocation && <SubmitBanner onDone={onDone} />}
       </div>
     </div>
   );

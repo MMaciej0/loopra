@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
+  DialogClose,
   DialogDescription,
   DialogFooter,
   DialogHeader,
@@ -27,6 +28,7 @@ export function RideForm() {
     defaultValues: {
       type: 'trip',
       title: '',
+      start_location: undefined,
       start_location_name: '',
       city: '',
       country: '',
@@ -34,6 +36,7 @@ export function RideForm() {
   });
 
   const onSubmit = form.handleSubmit(async (data) => {
+    console.log(data);
     const result = await createRide(data);
     if (!result.ok) {
       form.setError('root', { message: result.errorType });
@@ -45,7 +48,7 @@ export function RideForm() {
       <form onSubmit={onSubmit} className="flex min-h-0 flex-col">
         <DialogHeader className="shrink-0 p-4 md:px-7.5 md:pt-5.5">
           <DialogSubheader>NEW RIDE</DialogSubheader>
-          <DialogTitle>Post your ride</DialogTitle>
+          <DialogTitle>{view === 'form' ? 'Post your ride' : 'Pick a location'}</DialogTitle>
           <DialogDescription className="sr-only">
             Create and share a new ride with the community.
           </DialogDescription>
@@ -63,7 +66,18 @@ export function RideForm() {
             {form.formState.errors.root.message}
           </p>
         )}
-        <DialogFooter showCancel className="mx-0 mb-0 shrink-0 md:px-7.5">
+        <DialogFooter className="mx-0 mb-0 shrink-0 md:px-7.5">
+          {view === 'location' ? (
+            <Button variant="ghost" onClick={() => setView('form')}>
+              Back
+            </Button>
+          ) : (
+            <DialogClose asChild>
+              <Button variant="ghost" type="button">
+                Cancel
+              </Button>
+            </DialogClose>
+          )}
           <Button
             type="submit"
             disabled={view === 'location'}
