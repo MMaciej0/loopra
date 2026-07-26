@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import {
+  BIKE_TYPES,
   LAT_MAX,
   LAT_MIN,
   LNG_MAX,
@@ -34,6 +35,7 @@ export const createRideSchema = z.object({
     min.setHours(min.getHours() + MIN_LEAD_HOURS);
     return d.getTime() >= min.getTime();
   }, `Start must be at least ${MIN_LEAD_HOURS} hours from now`),
+  bike_type: z.enum(['all', ...BIKE_TYPES]),
 });
 
 export type Coords = z.infer<typeof coordsSchema>;

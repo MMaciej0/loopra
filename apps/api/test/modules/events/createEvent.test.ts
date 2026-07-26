@@ -41,7 +41,7 @@ describe('POST /events', () => {
     expect(response.statusCode).toBe(200);
   });
 
-  it.each(['road', 'gravel', 'mtb', 'trekking', 'urban', 'electric'])(
+  it.each(['road', 'gravel', 'mtb', 'trekking', 'urban', 'electric', 'cyclocross', 'tt'])(
     'accepts bike_type %s',
     async (bike_type) => {
       const response = await appRef.app.inject({

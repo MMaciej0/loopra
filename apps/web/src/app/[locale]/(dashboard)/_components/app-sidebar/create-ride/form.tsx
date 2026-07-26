@@ -37,6 +37,7 @@ export function RideForm() {
       municipality: '',
       postal_code: '',
       full_address: '',
+      bike_type: 'all',
     },
   });
 
