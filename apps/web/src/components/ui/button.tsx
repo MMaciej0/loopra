@@ -16,7 +16,7 @@ const buttonVariants = cva(
         accent:
           'border-accent bg-accent text-[#0d0f12] hover:border-accent-hover hover:bg-accent-hover',
         ghost: 'border-transparent bg-transparent text-foreground hover:bg-muted',
-        chip: 'rounded-full px-[13px] py-[7px] text-[12.5px] bg-secondary text-foreground/60 border-border hover:border-foreground hover:text-foreground aria-pressed:bg-primary aria-pressed:text-primary-foreground aria-pressed:border-primary aria-pressed:hover:bg-primary-hover aria-pressed:hover:border-primary-hover',
+        chip: 'rounded-full px-[13px] py-[7px] text-[12.5px] bg-secondary text-foreground/60 border-border hover:border-foreground hover:text-foreground aria-pressed:bg-primary aria-pressed:text-primary-foreground aria-pressed:border-primary aria-pressed:hover:bg-primary-hover aria-pressed:hover:border-primary-hover aria-checked:bg-primary aria-checked:text-primary-foreground aria-checked:border-primary aria-checked:hover:bg-primary-hover aria-checked:hover:border-primary-hover',
         nav: 'border-transparent bg-transparent p-0 text-[13px] font-ui text-muted-foreground hover:text-foreground',
         outline:
           'border-border bg-secondary text-secondary-foreground hover:border-border-strong hover:bg-secondary-hover',

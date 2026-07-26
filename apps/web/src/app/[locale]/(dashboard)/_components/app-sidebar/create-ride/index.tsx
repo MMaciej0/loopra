@@ -18,6 +18,7 @@ export function CreateRide() {
       </SidebarGroup>
 
       <DialogContent
+        onOpenAutoFocus={(e) => e.preventDefault()}
         buttonClassName="top-4 right-4 md:top-5.5 md:right-7.5"
         className={cn(
           'gap-0 overflow-hidden p-0',

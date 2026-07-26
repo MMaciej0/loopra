@@ -7,7 +7,7 @@ import { LocationInput } from './location/input';
 import { DateTimeInput } from './date-time-input';
 import type { CreateRideInput } from './schema';
 import { Separator } from '@/components/ui/separator';
-import { DisciplineInput } from './discipline-input';
+import { BikeTypeInput } from './bike-type-input';
 
 export function FormFields({ onEditLocation }: { onEditLocation: () => void }) {
   const {
@@ -48,7 +48,7 @@ export function FormFields({ onEditLocation }: { onEditLocation: () => void }) {
         <DividerHeader text="THE RIDE SHAPE" />
       </div>
       <div className="flex flex-col gap-y-4">
-        <DisciplineInput />
+        <BikeTypeInput />
       </div>
     </div>
   );

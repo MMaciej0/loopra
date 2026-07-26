@@ -64,6 +64,8 @@ export const bikeTypeEnum = pgEnum('bike_type', [
   'trekking',
   'urban',
   'electric',
+  'cyclocross',
+  'tt',
 ]);
 
 export const events = pgTable('events', {

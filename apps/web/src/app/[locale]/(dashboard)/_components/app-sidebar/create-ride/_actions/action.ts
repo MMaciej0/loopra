@@ -6,9 +6,14 @@ import { createRideSchema, type CreateRideInput } from '../schema';
 export async function createRide(input: CreateRideInput) {
   const data = createRideSchema.parse(input);
 
+  const payload = {
+    ...data,
+    bike_type: data.bike_type.toLowerCase() === 'all' ? undefined : data.bike_type,
+  };
+
   const response = await protectedRequest('/events', {
     method: 'POST',
-    body: JSON.stringify(data),
+    body: JSON.stringify(payload),
   });
 
   if (!response.ok) {

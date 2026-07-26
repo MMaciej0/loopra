@@ -5,7 +5,7 @@ export const ListEventsQuerySchema = z
     cursor: z.string().optional(),
     limit: z.coerce.number().int().min(1).max(100).default(20),
     type: z.enum(['trip', 'training']).optional(),
-    bike_type: z.enum(['road', 'gravel', 'mtb', 'trekking', 'urban', 'electric']).optional(),
+    bike_type: z.enum(['road', 'gravel', 'mtb', 'trekking', 'urban', 'electric', 'cyclocross', 'tt']).optional(),
     difficulty: z.enum(['easy', 'moderate', 'hard', 'expert']).optional(),
     city: z.string().optional(),
     region: z.string().optional(),
@@ -60,7 +60,7 @@ export const CreateEventBodySchema = z
       .optional(),
     pace_kmh: z.coerce.number().int().min(1).optional(),
     difficulty: z.enum(['easy', 'moderate', 'hard', 'expert']).optional(),
-    bike_type: z.enum(['road', 'gravel', 'mtb', 'trekking', 'urban', 'electric']).optional(),
+    bike_type: z.enum(['road', 'gravel', 'mtb', 'trekking', 'urban', 'electric', 'cyclocross', 'tt']).optional(),
     max_participants: z.coerce.number().int().min(1).optional(),
     is_private: z.boolean().default(false),
   })
@@ -109,7 +109,7 @@ export const UpdateEventBodySchema = z
       .optional(),
     pace_kmh: z.coerce.number().int().min(1).optional(),
     difficulty: z.enum(['easy', 'moderate', 'hard', 'expert']).optional(),
-    bike_type: z.enum(['road', 'gravel', 'mtb', 'trekking', 'urban', 'electric']).optional(),
+    bike_type: z.enum(['road', 'gravel', 'mtb', 'trekking', 'urban', 'electric', 'cyclocross', 'tt']).optional(),
     max_participants: z.coerce.number().int().min(1).optional(),
     is_private: z.boolean().optional(),
   })
