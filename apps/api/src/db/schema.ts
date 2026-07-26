@@ -57,7 +57,14 @@ export const participantStatusEnum = pgEnum('participant_status', [
   'confirmed',
   'declined',
 ]);
-export const bikeTypeEnum = pgEnum('bike_type', ['road', 'gravel', 'mtb', 'trekking']);
+export const bikeTypeEnum = pgEnum('bike_type', [
+  'road',
+  'gravel',
+  'mtb',
+  'trekking',
+  'urban',
+  'electric',
+]);
 
 export const events = pgTable('events', {
   id: uuid().primaryKey().defaultRandom(),
@@ -70,8 +77,11 @@ export const events = pgTable('events', {
   start_location: geometry({ type: 'point', mode: 'xy', srid: 4326 }),
   start_location_name: text(),
   city: text(),
-  region: text(), // state/province — nullable, used for US/CA/AU disambiguation
-  country: text(), // ISO 3166-1 alpha-2
+  municipality: text(),
+  region: text(),
+  country: text(),
+  postal_code: text(),
+  full_address: text(),
   start_time: timestamp({ withTimezone: true }).notNull(),
   end_time: timestamp({ withTimezone: true }),
   distance_km: numeric({ precision: 6, scale: 2 }),

@@ -5,7 +5,7 @@ export const ListEventsQuerySchema = z
     cursor: z.string().optional(),
     limit: z.coerce.number().int().min(1).max(100).default(20),
     type: z.enum(['trip', 'training']).optional(),
-    bike_type: z.enum(['road', 'gravel', 'mtb', 'trekking']).optional(),
+    bike_type: z.enum(['road', 'gravel', 'mtb', 'trekking', 'urban', 'electric']).optional(),
     difficulty: z.enum(['easy', 'moderate', 'hard', 'expert']).optional(),
     city: z.string().optional(),
     region: z.string().optional(),
@@ -39,8 +39,11 @@ export const CreateEventBodySchema = z
       .optional(),
     start_location_name: z.string().optional(),
     city: z.string(),
+    municipality: z.string().optional(),
     region: z.string().optional(),
     country: z.string(),
+    postal_code: z.string().optional(),
+    full_address: z.string().optional(),
 
     // Minimum 5h lead time — prevents ghost events nobody can find in time
     start_time: z.coerce.date().refine((d) => {
@@ -57,7 +60,7 @@ export const CreateEventBodySchema = z
       .optional(),
     pace_kmh: z.coerce.number().int().min(1).optional(),
     difficulty: z.enum(['easy', 'moderate', 'hard', 'expert']).optional(),
-    bike_type: z.enum(['road', 'gravel', 'mtb', 'trekking']).optional(),
+    bike_type: z.enum(['road', 'gravel', 'mtb', 'trekking', 'urban', 'electric']).optional(),
     max_participants: z.coerce.number().int().min(1).optional(),
     is_private: z.boolean().default(false),
   })
@@ -82,8 +85,11 @@ export const UpdateEventBodySchema = z
       .optional(),
     start_location_name: z.string().optional(),
     city: z.string().optional(),
+    municipality: z.string().optional(),
     region: z.string().optional(),
     country: z.string().optional(),
+    postal_code: z.string().optional(),
+    full_address: z.string().optional(),
 
     // Minimum 5h lead time — prevents ghost events nobody can find in time
     start_time: z.coerce
@@ -103,7 +109,7 @@ export const UpdateEventBodySchema = z
       .optional(),
     pace_kmh: z.coerce.number().int().min(1).optional(),
     difficulty: z.enum(['easy', 'moderate', 'hard', 'expert']).optional(),
-    bike_type: z.enum(['road', 'gravel', 'mtb', 'trekking']).optional(),
+    bike_type: z.enum(['road', 'gravel', 'mtb', 'trekking', 'urban', 'electric']).optional(),
     max_participants: z.coerce.number().int().min(1).optional(),
     is_private: z.boolean().optional(),
   })
