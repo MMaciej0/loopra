@@ -40,4 +40,29 @@ describe('POST /events', () => {
 
     expect(response.statusCode).toBe(200);
   });
+
+  it.each(['road', 'gravel', 'mtb', 'trekking', 'urban', 'electric'])(
+    'accepts bike_type %s',
+    async (bike_type) => {
+      const response = await appRef.app.inject({
+        method: 'POST',
+        url: '/events',
+        body: { ...eventBody, bike_type },
+        cookies: { accessToken: auth.accessToken },
+      });
+
+      expect(response.statusCode).toBe(200);
+    },
+  );
+
+  it('returns 400 for unknown bike_type', async () => {
+    const response = await appRef.app.inject({
+      method: 'POST',
+      url: '/events',
+      body: { ...eventBody, bike_type: 'unicycle' },
+      cookies: { accessToken: auth.accessToken },
+    });
+
+    expect(response.statusCode).toBe(400);
+  });
 });
