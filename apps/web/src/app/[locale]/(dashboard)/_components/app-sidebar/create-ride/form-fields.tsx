@@ -6,6 +6,8 @@ import { DividerHeader } from './divider-header';
 import { LocationInput } from './location/input';
 import { DateTimeInput } from './date-time-input';
 import type { CreateRideInput } from './schema';
+import { Separator } from '@/components/ui/separator';
+import { DisciplineInput } from './discipline-input';
 
 export function FormFields({ onEditLocation }: { onEditLocation: () => void }) {
   const {
@@ -30,11 +32,6 @@ export function FormFields({ onEditLocation }: { onEditLocation: () => void }) {
 
         <div className="flex flex-col gap-y-1.5">
           <LocationInput onOpen={onEditLocation} />
-          {errors.start_location_name && (
-            <p role="alert" className="text-destructive text-[11.5px]">
-              {errors.start_location_name.message}
-            </p>
-          )}
         </div>
 
         <div className="flex flex-col gap-y-1.5">
@@ -45,6 +42,13 @@ export function FormFields({ onEditLocation }: { onEditLocation: () => void }) {
             </p>
           )}
         </div>
+      </div>
+      <Separator className="my-6 w-full" />
+      <div className="pb-6">
+        <DividerHeader text="THE RIDE SHAPE" />
+      </div>
+      <div className="flex flex-col gap-y-4">
+        <DisciplineInput />
       </div>
     </div>
   );

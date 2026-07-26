@@ -8,9 +8,12 @@ import { Text } from '@/components/ui/text';
 import type { CreateRideInput } from '../schema';
 
 export function LocationInput({ onOpen }: { onOpen: () => void }) {
-  const { watch } = useFormContext<CreateRideInput>();
+  const {
+    watch,
+    formState: { errors },
+  } = useFormContext<CreateRideInput>();
   const name = watch('start_location_name');
-  const city = watch('city');
+  const full_address = watch('full_address');
 
   return (
     <>
@@ -26,10 +29,14 @@ export function LocationInput({ onOpen }: { onOpen: () => void }) {
         </span>
         <span className="flex flex-col">
           <Text variant="body-m" className="text-start">
-            {name || 'Choose a start point'}
+            {errors.start_location_name ? (
+              <span className="text-destructive">{errors.start_location_name.message}</span>
+            ) : (
+              name || 'Choose a start point'
+            )}
           </Text>
           <Text variant="body-xs" className="text-muted-foreground text-start">
-            {name ? city : 'Tap to pick on the map'}
+            {full_address ? full_address : 'Tap to pick on the map'}
           </Text>
         </span>
       </Button>

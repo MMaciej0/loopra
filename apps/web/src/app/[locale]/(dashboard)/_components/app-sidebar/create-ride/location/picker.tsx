@@ -1,28 +1,32 @@
 'use client';
 
 import { useFormContext, useWatch } from 'react-hook-form';
-import { Badge } from '@/components/ui/badge';
-import type { Coords, CreateRideInput } from '../schema';
-import { useMap } from '@/hooks/use-map';
-import { useCallback } from 'react';
-import { SubmitBanner } from './submit-banner';
+import { useLocale } from 'next-intl';
 
-export function LocationPicker({ onDone }: { onDone: () => void }) {
+import type { CreateRideInput } from '../schema';
+import { useMap, type PickedLocation } from '@/hooks/use-map';
+import { useCallback } from 'react';
+import { StartingPointInputBanner } from './starting-point-input-banner';
+
+export function LocationPicker() {
   const { setValue } = useFormContext<CreateRideInput>();
+  const locale = useLocale();
 
   const onPick = useCallback(
-    (coords: Coords) => {
-      setValue('start_location', coords, { shouldValidate: true });
+    (loc: PickedLocation) => {
+      setValue('start_location', loc.coords, { shouldValidate: true });
+      setValue('city', loc.city, { shouldValidate: true });
+      setValue('country', loc.country, { shouldValidate: true });
+      setValue('region', loc.region, { shouldValidate: true });
+      setValue('municipality', loc.municipality, { shouldValidate: true });
+      setValue('postal_code', loc.postal_code, { shouldValidate: true });
+      setValue('full_address', loc.full_address, { shouldValidate: true });
     },
     [setValue],
   );
   const startLocation = useWatch<CreateRideInput, 'start_location'>({ name: 'start_location' });
 
-  const { mapContainerRef } = useMap({ onPick, initialCoords: startLocation });
-
-  const hint = startLocation
-    ? 'Click again to move the start point'
-    : 'Click to set the start point';
+  const { mapContainerRef } = useMap({ onPick, initialCoords: startLocation, language: locale });
 
   return (
     // min-h-full fills the scroll body; map region flex-1 takes the leftover space
@@ -31,12 +35,7 @@ export function LocationPicker({ onDone }: { onDone: () => void }) {
         ref={mapContainerRef}
         className="relative min-h-0 w-full flex-1 overflow-hidden rounded-sm"
       >
-        <div className="pointer-events-none absolute top-3 left-1/2 z-10 -translate-x-1/2">
-          <Badge variant="default" size="sm" className="shadow-sm backdrop-blur">
-            {hint}
-          </Badge>
-        </div>
-        {startLocation && <SubmitBanner onDone={onDone} />}
+        {startLocation && <StartingPointInputBanner />}
       </div>
     </div>
   );

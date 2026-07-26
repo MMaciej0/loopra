@@ -1,18 +1,25 @@
 'use client';
 
-import { useState } from 'react';
-import { format } from 'date-fns';
+import { useMemo, useState } from 'react';
+import { format, isSameDay } from 'date-fns';
 import { Controller, useFormContext } from 'react-hook-form';
 import { Button } from '@/components/ui/button';
 import { InputLabel } from '@/components/ui/input-label';
 import { Clock } from 'lucide-react';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { MIN_LEAD_HOURS } from '@/config/ride';
 import type { CreateRideInput } from './schema';
 
 export function DateTimeInput() {
   const { control } = useFormContext<CreateRideInput>();
   const [open, setOpen] = useState(false);
+
+  const minDate = useMemo(() => {
+    const d = new Date();
+    d.setHours(d.getHours() + MIN_LEAD_HOURS);
+    return d;
+  }, [open]);
 
   return (
     <>
@@ -30,7 +37,7 @@ export function DateTimeInput() {
             <PopoverTrigger asChild>
               <Button type="button" variant="outline" className="justify-start gap-x-2 font-normal">
                 {field.value ? (
-                  format(field.value, "PPP 'at' HH:mm")
+                  format(field.value, 'dd/MM/yyyy HH:mm')
                 ) : (
                   <span className="text-muted-foreground">Pick a date</span>
                 )}
@@ -40,13 +47,16 @@ export function DateTimeInput() {
               <Calendar
                 mode="single"
                 selected={field.value}
+                disabled={{ before: minDate }}
                 onSelect={(d) => {
                   if (!d) return field.onChange(undefined);
-                  // keep current time when changing the day
-                  if (field.value) {
-                    d.setHours(field.value.getHours(), field.value.getMinutes());
+                  const next = new Date(d);
+                  const base = field.value ?? minDate;
+                  next.setHours(base.getHours(), base.getMinutes());
+                  if (next.getTime() < minDate.getTime()) {
+                    next.setHours(minDate.getHours(), minDate.getMinutes());
                   }
-                  field.onChange(d);
+                  field.onChange(next);
                 }}
                 autoFocus
               />
@@ -55,10 +65,14 @@ export function DateTimeInput() {
                 <input
                   type="time"
                   value={field.value ? format(field.value, 'HH:mm') : ''}
+                  min={field.value && isSameDay(field.value, minDate) ? format(minDate, 'HH:mm') : undefined}
                   onChange={(e) => {
                     const [h, m] = e.target.value.split(':').map(Number);
-                    const next = field.value ? new Date(field.value) : new Date();
+                    const next = field.value ? new Date(field.value) : new Date(minDate);
                     next.setHours(h, m);
+                    if (next.getTime() < minDate.getTime()) {
+                      next.setHours(minDate.getHours(), minDate.getMinutes());
+                    }
                     field.onChange(next);
                   }}
                   className="focus-visible:ring-ring/50 flex-1 rounded-lg border bg-transparent px-3 py-1.5 text-sm outline-none focus-visible:ring-3"

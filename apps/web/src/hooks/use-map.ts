@@ -2,18 +2,28 @@ import { useEffect, useRef } from 'react';
 import * as maptilersdk from '@maptiler/sdk';
 import '@maptiler/sdk/dist/maptiler-sdk.css';
 import { Coords } from '@/app/[locale]/(dashboard)/_components/app-sidebar/create-ride/schema';
+import { GeocodingControl } from '@maptiler/geocoding-control/maptilersdk';
+import { reverseGeocode, type RideLocation } from '@/utils/geocoding';
 
 const DEFAULT_CENTER: [number, number] = [19.9275, 50.0616]; // [lng, lat] — Kraków
 const DEFAULT_ZOOM = 14;
 
-interface UseMapProps {
-  initialCoords?: Coords;
-  onPick: (coords: Coords) => void;
+export interface PickedLocation extends RideLocation {
+  coords: Coords;
 }
 
-export function useMap({ onPick, initialCoords }: UseMapProps) {
+interface UseMapProps {
+  initialCoords?: Coords;
+  onPick: (loc: PickedLocation) => void;
+  language?: string; // ISO 639-1, localizes reverse-geocoded place names
+}
+
+export function useMap({ onPick, initialCoords, language = 'en' }: UseMapProps) {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<maptilersdk.Map | null>(null);
+  // keep latest language for the click handler without re-creating the map
+  const languageRef = useRef(language);
+  languageRef.current = language;
 
   useEffect(() => {
     if (mapRef.current || !mapContainerRef.current) return;
@@ -30,6 +40,16 @@ export function useMap({ onPick, initialCoords }: UseMapProps) {
     });
     mapRef.current = map;
 
+    const geocoder = new GeocodingControl({
+      types: ['municipality', 'address', 'country'],
+      proximity: [{ type: 'map-center' }],
+      placeholder: 'Search country, city or street',
+      language: languageRef.current,
+      marker: false,
+      showResultMarkers: false,
+    });
+
+    map.addControl(geocoder, 'top-left');
     map.addControl(new maptilersdk.NavigationControl({ showCompass: false }), 'top-right');
 
     const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
@@ -39,9 +59,11 @@ export function useMap({ onPick, initialCoords }: UseMapProps) {
       pointer.setLngLat([initialCoords.x, initialCoords.y]).addTo(map);
     }
 
-    map.on('click', (e) => {
-      pointer.setLngLat(e.lngLat).addTo(map);
-      onPick({ x: e.lngLat.lng, y: e.lngLat.lat });
+    map.on('click', async (e) => {
+      const coords: Coords = { x: e.lngLat.lng, y: e.lngLat.lat };
+      pointer.setLngLat(e.lngLat).addTo(map); // instant marker, no wait
+      const location = await reverseGeocode(coords, languageRef.current);
+      onPick({ coords, ...location });
     });
 
     return () => {
@@ -49,13 +71,18 @@ export function useMap({ onPick, initialCoords }: UseMapProps) {
 
       if (map.loaded()) {
         map.remove();
+        map.removeControl(geocoder);
       } else {
-        map.once('load', () => map.remove());
+        map.once('load', () => {
+          map.remove();
+          map.removeControl(geocoder);
+        });
       }
     };
   }, []);
 
   return {
     mapContainerRef,
+    mapRef,
   };
 }

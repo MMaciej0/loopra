@@ -11,6 +11,7 @@ import {
   DialogSubheader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { Separator } from '@/components/ui/separator';
 import { Button } from '@/components/ui/button';
 import { createRideSchema, type CreateRideInput } from './schema';
@@ -32,8 +33,17 @@ export function RideForm() {
       start_location_name: '',
       city: '',
       country: '',
+      region: '',
+      municipality: '',
+      postal_code: '',
+      full_address: '',
     },
   });
+
+  const onUseStartPoint = async () => {
+    const valid = await form.trigger('start_location_name');
+    if (valid) setView('form');
+  };
 
   const onSubmit = form.handleSubmit(async (data) => {
     console.log(data);
@@ -47,7 +57,19 @@ export function RideForm() {
     <FormProvider {...form}>
       <form onSubmit={onSubmit} className="flex min-h-0 flex-col">
         <DialogHeader className="shrink-0 p-4 md:px-7.5 md:pt-5.5">
-          <DialogSubheader>NEW RIDE</DialogSubheader>
+          <DialogSubheader>
+            {view === 'form' ? (
+              'NEW RIDE'
+            ) : (
+              <button
+                type="button"
+                onClick={() => setView('form')}
+                className="inline-flex cursor-pointer items-center gap-x-2"
+              >
+                <ArrowLeft aria-hidden size={12} /> BACK TO DETAILS
+              </button>
+            )}
+          </DialogSubheader>
           <DialogTitle>{view === 'form' ? 'Post your ride' : 'Pick a location'}</DialogTitle>
           <DialogDescription className="sr-only">
             Create and share a new ride with the community.
@@ -58,7 +80,7 @@ export function RideForm() {
           {view === 'form' ? (
             <FormFields onEditLocation={() => setView('location')} />
           ) : (
-            <LocationPicker onDone={() => setView('form')} />
+            <LocationPicker />
           )}
         </div>
         {form.formState.errors.root && (
@@ -78,13 +100,16 @@ export function RideForm() {
               </Button>
             </DialogClose>
           )}
-          <Button
-            type="submit"
-            disabled={view === 'location'}
-            loading={form.formState.isSubmitting}
-          >
-            Save changes
-          </Button>
+          {view === 'location' ? (
+            <Button type="button" variant="accent" onClick={onUseStartPoint}>
+              Use this start point
+              <ArrowRight />
+            </Button>
+          ) : (
+            <Button type="submit" loading={form.formState.isSubmitting}>
+              Save changes
+            </Button>
+          )}
         </DialogFooter>
       </form>
     </FormProvider>
