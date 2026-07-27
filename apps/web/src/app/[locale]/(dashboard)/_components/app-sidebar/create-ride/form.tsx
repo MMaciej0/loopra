@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { FormProvider, useForm } from 'react-hook-form';
+import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   DialogClose,
@@ -41,9 +41,27 @@ export function RideForm() {
     },
   });
 
+  const startLocation = useWatch({ control: form.control, name: 'start_location' });
+  const startLocationName = useWatch({ control: form.control, name: 'start_location_name' });
+
+  const canUseStartPoint = Boolean(startLocation) && Boolean(startLocationName?.trim());
+
   const onUseStartPoint = async () => {
     const valid = await form.trigger('start_location_name');
     if (valid) setView('form');
+  };
+
+  const onBack = () => {
+    if (!form.getValues('start_location_name')?.trim()) {
+      form.resetField('start_location');
+      form.resetField('city');
+      form.resetField('country');
+      form.resetField('region');
+      form.resetField('municipality');
+      form.resetField('postal_code');
+      form.resetField('full_address');
+    }
+    setView('form');
   };
 
   const onSubmit = form.handleSubmit(async (data) => {
@@ -64,7 +82,7 @@ export function RideForm() {
             ) : (
               <button
                 type="button"
-                onClick={() => setView('form')}
+                onClick={onBack}
                 className="inline-flex cursor-pointer items-center gap-x-2"
               >
                 <ArrowLeft aria-hidden size={12} /> BACK TO DETAILS
@@ -91,7 +109,7 @@ export function RideForm() {
         )}
         <DialogFooter className="mx-0 mb-0 shrink-0 md:px-7.5">
           {view === 'location' ? (
-            <Button variant="ghost" onClick={() => setView('form')}>
+            <Button type="button" variant="ghost" onClick={onBack}>
               Back
             </Button>
           ) : (
@@ -102,7 +120,12 @@ export function RideForm() {
             </DialogClose>
           )}
           {view === 'location' ? (
-            <Button type="button" variant="accent" onClick={onUseStartPoint}>
+            <Button
+              type="button"
+              variant="accent"
+              onClick={onUseStartPoint}
+              disabled={!canUseStartPoint}
+            >
               Use this start point
               <ArrowRight />
             </Button>

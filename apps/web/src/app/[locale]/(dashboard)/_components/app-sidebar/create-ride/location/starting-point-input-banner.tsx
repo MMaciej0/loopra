@@ -11,7 +11,7 @@ export function StartingPointInputBanner() {
   } = useFormContext<CreateRideInput>();
 
   return (
-    <div className="bg-popover border-border absolute bottom-1 left-1/2 z-10 flex w-[calc(100%-1rem)] -translate-x-1/2 flex-col gap-2 rounded-md border p-3">
+    <div className="bg-popover border-border absolute bottom-9 left-1/2 z-10 flex w-[calc(100%-1rem)] -translate-x-1/2 flex-col gap-2 rounded-md border p-3">
       <div className="min-w-0">
         <Field
           id="start_location_name"

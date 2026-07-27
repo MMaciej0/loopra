@@ -37,6 +37,9 @@ export function useMap({ onPick, initialCoords, language = 'en' }: UseMapProps) 
       zoom: DEFAULT_ZOOM,
       navigationControl: false,
       geolocateControl: false,
+      // Compact attribution: collapses "© MapTiler © OpenStreetMap contributors"
+      // into an expandable ⓘ. Required attribution stays visible/reachable — legal.
+      attributionControl: { compact: true },
     });
     mapRef.current = map;
 
@@ -59,9 +62,18 @@ export function useMap({ onPick, initialCoords, language = 'en' }: UseMapProps) 
       pointer.setLngLat([initialCoords.x, initialCoords.y]).addTo(map);
     }
 
+    // Compact attribution renders expanded on load and only minimizes after the
+    // first map interaction — collapse it to the ⓘ toggle immediately.
+    map.on('load', () => {
+      mapContainerRef.current
+        ?.querySelector('.maplibregl-ctrl-attrib')
+        ?.classList.remove('maplibregl-compact-show');
+    });
+
     map.on('click', async (e) => {
       const coords: Coords = { x: e.lngLat.lng, y: e.lngLat.lat };
       pointer.setLngLat(e.lngLat).addTo(map); // instant marker, no wait
+      map.easeTo({ center: e.lngLat }); // recenter on the picked point
       const location = await reverseGeocode(coords, languageRef.current);
       onPick({ coords, ...location });
     });
