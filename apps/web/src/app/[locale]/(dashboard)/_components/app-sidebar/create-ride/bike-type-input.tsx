@@ -1,6 +1,6 @@
 import { BIKE_TYPES, BIKE_TYPE_LABELS } from '@/config/ride';
 import { Button } from '@/components/ui/button';
-import { useFormContext } from 'react-hook-form';
+import { useFormContext, useWatch } from 'react-hook-form';
 import { useCallback, useRef, type KeyboardEvent } from 'react';
 import { CreateRideInput } from './schema';
 
@@ -8,10 +8,10 @@ const BIKE_TYPE_OPTIONS = ['all', ...BIKE_TYPES] as const;
 type BikeTypeOption = (typeof BIKE_TYPE_OPTIONS)[number];
 
 export function BikeTypeInput() {
-  const { watch, setValue } = useFormContext<CreateRideInput>();
+  const { control, setValue } = useFormContext<CreateRideInput>();
   const groupRef = useRef<HTMLDivElement>(null);
 
-  const bike_type = watch('bike_type');
+  const bike_type = useWatch({ control, name: 'bike_type' });
   const selectedIndex = Math.max(0, BIKE_TYPE_OPTIONS.indexOf(bike_type));
 
   const select = useCallback(
