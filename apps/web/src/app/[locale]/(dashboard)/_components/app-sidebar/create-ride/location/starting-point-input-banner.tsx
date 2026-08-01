@@ -1,10 +1,13 @@
 'use client';
 
 import { useFormContext } from 'react-hook-form';
+import { useTranslations } from 'next-intl';
 import { Field } from '@/components/ui/field';
 import type { CreateRideInput } from '../schema';
 
 export function StartingPointInputBanner() {
+  const t = useTranslations('CreateRide');
+  const tErrors = useTranslations('Errors');
   const {
     register,
     formState: { errors },
@@ -15,20 +18,18 @@ export function StartingPointInputBanner() {
       <div className="min-w-0">
         <Field
           id="start_location_name"
-          label="Name this start point"
-          placeholder="e.g. Main square fountain"
+          label={t('startPointNameLabel')}
+          placeholder={t('startPointNamePlaceholder')}
           size="sm"
           {...register('start_location_name')}
         />
       </div>
       {errors.start_location_name ? (
         <p role="alert" className="text-destructive text-[11.5px]">
-          {errors.start_location_name.message}
+          {tErrors(errors.start_location_name.message ?? 'UNKNOWN')}
         </p>
       ) : (
-        <p className="text-muted-foreground text-[11.5px]">
-          Riders see this name — add a landmark or exact spot (e.g. “by the fountain”).
-        </p>
+        <p className="text-muted-foreground text-[11.5px]">{t('startPointNameHint')}</p>
       )}
     </div>
   );

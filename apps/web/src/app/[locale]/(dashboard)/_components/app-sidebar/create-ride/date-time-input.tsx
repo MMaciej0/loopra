@@ -3,6 +3,7 @@
 import { useMemo, useState } from 'react';
 import { format, isSameDay } from 'date-fns';
 import { Controller, useFormContext } from 'react-hook-form';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { InputLabel } from '@/components/ui/input-label';
 import { Clock } from 'lucide-react';
@@ -12,6 +13,7 @@ import { MIN_LEAD_HOURS } from '@/config/ride';
 import type { CreateRideInput } from './schema';
 
 export function DateTimeInput() {
+  const t = useTranslations('CreateRide');
   const { control } = useFormContext<CreateRideInput>();
   const [open, setOpen] = useState(false);
 
@@ -27,7 +29,7 @@ export function DateTimeInput() {
         <span className="inline-flex pr-2">
           <Clock className="size-2.5" />
         </span>
-        WHEN
+        {t('whenLabel')}
       </InputLabel>
       <Controller
         control={control}
@@ -39,7 +41,7 @@ export function DateTimeInput() {
                 {field.value ? (
                   format(field.value, 'dd/MM/yyyy HH:mm')
                 ) : (
-                  <span className="text-muted-foreground">Pick a date</span>
+                  <span className="text-muted-foreground">{t('datePlaceholder')}</span>
                 )}
               </Button>
             </PopoverTrigger>
@@ -65,7 +67,11 @@ export function DateTimeInput() {
                 <input
                   type="time"
                   value={field.value ? format(field.value, 'HH:mm') : ''}
-                  min={field.value && isSameDay(field.value, minDate) ? format(minDate, 'HH:mm') : undefined}
+                  min={
+                    field.value && isSameDay(field.value, minDate)
+                      ? format(minDate, 'HH:mm')
+                      : undefined
+                  }
                   onChange={(e) => {
                     const [h, m] = e.target.value.split(':').map(Number);
                     const next = field.value ? new Date(field.value) : new Date(minDate);

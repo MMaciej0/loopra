@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useTranslations } from 'next-intl';
 import {
   DialogClose,
   DialogDescription,
@@ -22,6 +23,8 @@ import { LocationPicker } from './location/picker';
 type View = 'form' | 'location';
 
 export function RideForm() {
+  const t = useTranslations('CreateRide');
+  const tErrors = useTranslations('Errors');
   const [view, setView] = useState<View>('form');
   const form = useForm<CreateRideInput>({
     resolver: zodResolver(createRideSchema),
@@ -78,21 +81,19 @@ export function RideForm() {
         <DialogHeader className="shrink-0 p-4 md:px-7.5 md:pt-5.5">
           <DialogSubheader>
             {view === 'form' ? (
-              'NEW RIDE'
+              t('eyebrow')
             ) : (
               <button
                 type="button"
                 onClick={onBack}
                 className="inline-flex cursor-pointer items-center gap-x-2"
               >
-                <ArrowLeft aria-hidden size={12} /> BACK TO DETAILS
+                <ArrowLeft aria-hidden size={12} /> {t('backToDetails')}
               </button>
             )}
           </DialogSubheader>
-          <DialogTitle>{view === 'form' ? 'Post your ride' : 'Pick a location'}</DialogTitle>
-          <DialogDescription className="sr-only">
-            Create and share a new ride with the community.
-          </DialogDescription>
+          <DialogTitle>{view === 'form' ? t('title') : t('locationTitle')}</DialogTitle>
+          <DialogDescription className="sr-only">{t('description')}</DialogDescription>
         </DialogHeader>
         <Separator className="shrink-0" />
         <div className="min-h-0 flex-1 overflow-y-auto p-4 md:px-7.5 md:pt-5.5">
@@ -104,18 +105,18 @@ export function RideForm() {
         </div>
         {form.formState.errors.root && (
           <p role="alert" className="text-destructive px-4 pb-2 text-[11.5px] md:px-7.5">
-            {form.formState.errors.root.message}
+            {tErrors(form.formState.errors.root.message ?? 'UNKNOWN')}
           </p>
         )}
         <DialogFooter className="mx-0 mb-0 shrink-0 md:px-7.5">
           {view === 'location' ? (
             <Button type="button" variant="ghost" onClick={onBack}>
-              Back
+              {t('back')}
             </Button>
           ) : (
             <DialogClose asChild>
               <Button variant="ghost" type="button">
-                Cancel
+                {t('cancel')}
               </Button>
             </DialogClose>
           )}
@@ -126,12 +127,12 @@ export function RideForm() {
               onClick={onUseStartPoint}
               disabled={!canUseStartPoint}
             >
-              Use this start point
+              {t('useStartPoint')}
               <ArrowRight />
             </Button>
           ) : (
             <Button type="submit" loading={form.formState.isSubmitting}>
-              Save changes
+              {t('submit')}
             </Button>
           )}
         </DialogFooter>
