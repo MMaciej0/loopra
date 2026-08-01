@@ -15,6 +15,7 @@ describe('POST /events', () => {
     bike_type: 'road',
     drop_policy: 'no_drop',
     pace_policy: 'slowest_rider',
+    formation_policy: 'free',
     is_private: false,
   };
 
@@ -138,6 +139,44 @@ describe('POST /events', () => {
 
   it('returns 400 when pace_policy is missing', async () => {
     const { pace_policy: _omitted, ...body } = eventBody;
+
+    const response = await appRef.app.inject({
+      method: 'POST',
+      url: '/events',
+      body,
+      cookies: { accessToken: auth.accessToken },
+    });
+
+    expect(response.statusCode).toBe(400);
+  });
+
+  it.each(['free', 'leader', 'rotation'])(
+    'accepts formation_policy %s',
+    async (formation_policy) => {
+      const response = await appRef.app.inject({
+        method: 'POST',
+        url: '/events',
+        body: { ...eventBody, formation_policy },
+        cookies: { accessToken: auth.accessToken },
+      });
+
+      expect(response.statusCode).toBe(200);
+    },
+  );
+
+  it('returns 400 for unknown formation_policy', async () => {
+    const response = await appRef.app.inject({
+      method: 'POST',
+      url: '/events',
+      body: { ...eventBody, formation_policy: 'echelon' },
+      cookies: { accessToken: auth.accessToken },
+    });
+
+    expect(response.statusCode).toBe(400);
+  });
+
+  it('returns 400 when formation_policy is missing', async () => {
+    const { formation_policy: _omitted, ...body } = eventBody;
 
     const response = await appRef.app.inject({
       method: 'POST',

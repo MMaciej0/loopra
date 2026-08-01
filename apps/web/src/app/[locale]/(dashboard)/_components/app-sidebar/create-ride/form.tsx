@@ -47,6 +47,7 @@ export function RideForm() {
       drop_policy: 'no_drop',
       pace_policy: 'slowest_rider',
       average_pace_kmh: undefined,
+      formation_policy: 'free',
     },
   });
 

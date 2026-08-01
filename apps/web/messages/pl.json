@@ -33,7 +33,8 @@
     "dropPolicyLabel": "Zasady czekania",
     "pacePolicyLabel": "Zasady tempa",
     "averagePaceLabel": "Średnie tempo (km/h)",
-    "averagePacePlaceholder": "np. 28"
+    "averagePacePlaceholder": "np. 28",
+    "formationPolicyLabel": "Organizacja jazdy"
   },
   "BikeTypes": {
     "all": "Wszystkie",
@@ -90,6 +91,20 @@
     "group_split": {
       "label": "Podział grupy",
       "description": "Grupa dzieli się po drodze na tempowe podgrupy."
+    }
+  },
+  "FormationPolicies": {
+    "free": {
+      "label": "Dowolna",
+      "description": "Bez ustalonego szyku — jedziesz jak chcesz, byle przewidywalnie i bezpiecznie."
+    },
+    "leader": {
+      "label": "Wyznaczone osoby prowadzą",
+      "description": "Wyznaczone osoby jadą na przodzie — nikt ich nie wyprzedza, chyba że same poproszą o zmianę."
+    },
+    "rotation": {
+      "label": "Zmiany",
+      "description": "Każdy prowadzi grupę na zmianę, w ustalonych odstępach czasu."
     }
   },
   "Errors": {

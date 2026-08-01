@@ -61,6 +61,7 @@ export const CreateEventBodySchema = z
     bike_type: z.enum(['road', 'gravel', 'mtb', 'trekking', 'urban', 'electric', 'cyclocross', 'tt']).optional(),
     drop_policy: z.enum(['no_drop', 'regroup', 'drop']),
     pace_policy: z.enum(['slowest_rider', 'leader', 'group_split']),
+    formation_policy: z.enum(['free', 'leader', 'rotation']),
     max_participants: z.coerce.number().int().min(1).optional(),
     is_private: z.boolean().default(false),
   })
@@ -115,6 +116,7 @@ export const UpdateEventBodySchema = z
     bike_type: z.enum(['road', 'gravel', 'mtb', 'trekking', 'urban', 'electric', 'cyclocross', 'tt']).optional(),
     drop_policy: z.enum(['no_drop', 'regroup', 'drop']).optional(),
     pace_policy: z.enum(['slowest_rider', 'leader', 'group_split']).optional(),
+    formation_policy: z.enum(['free', 'leader', 'rotation']).optional(),
     max_participants: z.coerce.number().int().min(1).optional(),
     is_private: z.boolean().optional(),
   })
