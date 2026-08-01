@@ -56,10 +56,11 @@ export const CreateEventBodySchema = z
       .min(1)
       .transform((d) => d.toString())
       .optional(),
-    pace_kmh: z.coerce.number().int().min(1).optional(),
+    average_pace_kmh: z.coerce.number().int().min(1).optional(),
     ride_type: z.enum(['coffee_ride', 'sightseeing', 'casual', 'training']),
     bike_type: z.enum(['road', 'gravel', 'mtb', 'trekking', 'urban', 'electric', 'cyclocross', 'tt']).optional(),
     drop_policy: z.enum(['no_drop', 'regroup', 'drop']),
+    pace_policy: z.enum(['slowest_rider', 'leader', 'group_split']),
     max_participants: z.coerce.number().int().min(1).optional(),
     is_private: z.boolean().default(false),
   })
@@ -70,6 +71,9 @@ export const CreateEventBodySchema = z
       return startTime < endTime;
     }
     return true;
+  })
+  .refine((f) => f.pace_policy !== 'leader' || f.average_pace_kmh !== undefined, {
+    path: ['average_pace_kmh'],
   });
 
 export const UpdateEventBodySchema = z
@@ -106,10 +110,11 @@ export const UpdateEventBodySchema = z
       .min(1)
       .transform((d) => d.toString())
       .optional(),
-    pace_kmh: z.coerce.number().int().min(1).optional(),
+    average_pace_kmh: z.coerce.number().int().min(1).optional(),
     ride_type: z.enum(['coffee_ride', 'sightseeing', 'casual', 'training']).optional(),
     bike_type: z.enum(['road', 'gravel', 'mtb', 'trekking', 'urban', 'electric', 'cyclocross', 'tt']).optional(),
     drop_policy: z.enum(['no_drop', 'regroup', 'drop']).optional(),
+    pace_policy: z.enum(['slowest_rider', 'leader', 'group_split']).optional(),
     max_participants: z.coerce.number().int().min(1).optional(),
     is_private: z.boolean().optional(),
   })
@@ -120,6 +125,9 @@ export const UpdateEventBodySchema = z
       return startTime < endTime;
     }
     return true;
+  })
+  .refine((f) => f.pace_policy !== 'leader' || f.average_pace_kmh !== undefined, {
+    path: ['average_pace_kmh'],
   });
 
 export type UpdateEventBody = z.infer<typeof UpdateEventBodySchema>;

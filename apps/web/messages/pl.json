@@ -30,7 +30,10 @@
     "bikeTypeLabel": "Typ roweru",
     "rideTypeLabel": "Typ jazdy",
     "policySection": "ZASADY",
-    "dropPolicyLabel": "Zasady tempa"
+    "dropPolicyLabel": "Zasady czekania",
+    "pacePolicyLabel": "Zasady tempa",
+    "averagePaceLabel": "Średnie tempo (km/h)",
+    "averagePacePlaceholder": "np. 28"
   },
   "BikeTypes": {
     "all": "Wszystkie",
@@ -75,6 +78,20 @@
       "description": "Trzymasz koło albo wracasz sam."
     }
   },
+  "PacePolicies": {
+    "slowest_rider": {
+      "label": "Najwolniejszy",
+      "description": "Grupa jedzie w tempie najwolniejszej osoby."
+    },
+    "leader": {
+      "label": "Tempo prowadzącego",
+      "description": "Prowadzący trzyma zadeklarowane średnie tempo."
+    },
+    "group_split": {
+      "label": "Podział grupy",
+      "description": "Grupa dzieli się po drodze na tempowe podgrupy."
+    }
+  },
   "Errors": {
     "REQUIRED": "To pole jest wymagane.",
     "INVALID_EMAIL": "Podaj prawidłowy adres e-mail.",
@@ -92,7 +109,9 @@
     "LOCATION_NAME_REQUIRED": "Nazwij tę lokalizację.",
     "DATE_REQUIRED": "Wybierz datę.",
     "START_TOO_SOON": "Start musi być za co najmniej {hours, plural, one {# godzinę} few {# godziny} many {# godzin} other {# godziny}}.",
-    "UNKNOWN": "Coś poszło nie tak. Spróbuj ponownie."
+    "UNKNOWN": "Coś poszło nie tak. Spróbuj ponownie.",
+    "PACE_REQUIRED": "Podaj średnie tempo prowadzącego.",
+    "PACE_OUT_OF_RANGE": "Tempo musi mieścić się między {min} a {max} km/h."
   },
   "Auth": {
     "or": "LUB",

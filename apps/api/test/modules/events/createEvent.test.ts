@@ -14,6 +14,7 @@ describe('POST /events', () => {
     start_time: new Date(Date.now() + 6 * 60 * 60 * 1000).toISOString(), // 6h from now — clears the 5h validation
     bike_type: 'road',
     drop_policy: 'no_drop',
+    pace_policy: 'slowest_rider',
     is_private: false,
   };
 
@@ -91,6 +92,52 @@ describe('POST /events', () => {
 
   it('returns 400 when drop_policy is missing', async () => {
     const { drop_policy: _omitted, ...body } = eventBody;
+
+    const response = await appRef.app.inject({
+      method: 'POST',
+      url: '/events',
+      body,
+      cookies: { accessToken: auth.accessToken },
+    });
+
+    expect(response.statusCode).toBe(400);
+  });
+
+  it.each(['slowest_rider', 'group_split'])('accepts pace_policy %s', async (pace_policy) => {
+    const response = await appRef.app.inject({
+      method: 'POST',
+      url: '/events',
+      body: { ...eventBody, pace_policy },
+      cookies: { accessToken: auth.accessToken },
+    });
+
+    expect(response.statusCode).toBe(200);
+  });
+
+  it('accepts pace_policy leader when average_pace_kmh is given', async () => {
+    const response = await appRef.app.inject({
+      method: 'POST',
+      url: '/events',
+      body: { ...eventBody, pace_policy: 'leader', average_pace_kmh: 28 },
+      cookies: { accessToken: auth.accessToken },
+    });
+
+    expect(response.statusCode).toBe(200);
+  });
+
+  it('returns 400 for pace_policy leader without average_pace_kmh', async () => {
+    const response = await appRef.app.inject({
+      method: 'POST',
+      url: '/events',
+      body: { ...eventBody, pace_policy: 'leader' },
+      cookies: { accessToken: auth.accessToken },
+    });
+
+    expect(response.statusCode).toBe(400);
+  });
+
+  it('returns 400 when pace_policy is missing', async () => {
+    const { pace_policy: _omitted, ...body } = eventBody;
 
     const response = await appRef.app.inject({
       method: 'POST',
