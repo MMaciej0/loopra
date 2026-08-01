@@ -50,3 +50,9 @@ export const FORMATION_POLICIES = ['free', 'leader', 'rotation'] as const;
 export type FormationPolicy = (typeof FORMATION_POLICIES)[number];
 
 // Display labels live in messages under FormationPolicies.
+
+// Storage slugs — must match backend experience_policy enum exactly.
+export const EXPERIENCE_POLICIES = ['first_timers', 'moderate', 'advanced'] as const;
+export type ExperiencePolicy = (typeof EXPERIENCE_POLICIES)[number];
+
+// Display labels live in messages under ExperiencePolicies.

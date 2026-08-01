@@ -9,6 +9,7 @@ const RIDE_TYPES = ['coffee_ride', 'sightseeing', 'casual', 'training'] as const
 const DROP_POLICIES = ['no_drop', 'regroup', 'drop'] as const;
 const PACE_POLICIES = ['slowest_rider', 'leader', 'group_split'] as const;
 const FORMATION_POLICIES = ['free', 'leader', 'rotation'] as const;
+const EXPERIENCE_POLICIES = ['first_timers', 'moderate', 'advanced'] as const;
 
 export const newEvent = ({
   user_id,
@@ -19,6 +20,7 @@ export const newEvent = ({
   drop_policy,
   pace_policy,
   formation_policy,
+  experience_policy,
   average_pace_kmh,
   start_location_name,
   start_time,
@@ -41,6 +43,9 @@ export const newEvent = ({
     pace_policy: pacePolicy,
     formation_policy:
       formation_policy || FORMATION_POLICIES[Math.floor(Math.random() * FORMATION_POLICIES.length)],
+    experience_policy:
+      experience_policy ||
+      EXPERIENCE_POLICIES[Math.floor(Math.random() * EXPERIENCE_POLICIES.length)],
     // leader-paced rides must carry a pace — see CreateEventBodySchema
     ...((average_pace_kmh || pacePolicy === 'leader') && {
       average_pace_kmh: average_pace_kmh || 28,

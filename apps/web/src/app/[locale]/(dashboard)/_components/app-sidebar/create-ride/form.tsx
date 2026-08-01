@@ -48,6 +48,7 @@ export function RideForm() {
       pace_policy: 'slowest_rider',
       average_pace_kmh: undefined,
       formation_policy: 'free',
+      experience_policy: 'first_timers',
     },
   });
 
