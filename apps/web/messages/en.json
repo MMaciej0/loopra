@@ -30,7 +30,10 @@
     "bikeTypeLabel": "Bike type",
     "rideTypeLabel": "Ride type",
     "policySection": "THE RULES",
-    "dropPolicyLabel": "Drop policy"
+    "dropPolicyLabel": "Drop policy",
+    "pacePolicyLabel": "Pace rules",
+    "averagePaceLabel": "Average pace (km/h)",
+    "averagePacePlaceholder": "e.g. 28"
   },
   "BikeTypes": {
     "all": "All",
@@ -75,6 +78,20 @@
       "description": "Hold the wheel or ride home alone."
     }
   },
+  "PacePolicies": {
+    "slowest_rider": {
+      "label": "Slowest rider",
+      "description": "The group rides at the pace of whoever is slowest."
+    },
+    "leader": {
+      "label": "Set by leader",
+      "description": "The leader holds a declared average pace."
+    },
+    "group_split": {
+      "label": "Group split",
+      "description": "The group splits into pace groups along the way."
+    }
+  },
   "Errors": {
     "REQUIRED": "This field is required.",
     "INVALID_EMAIL": "Please enter a valid email.",
@@ -92,7 +109,9 @@
     "LOCATION_NAME_REQUIRED": "Name this location.",
     "DATE_REQUIRED": "Pick a date.",
     "START_TOO_SOON": "Start must be at least {hours} hours from now.",
-    "UNKNOWN": "Something went wrong. Try again."
+    "UNKNOWN": "Something went wrong. Try again.",
+    "PACE_REQUIRED": "Enter the average pace the leader will hold.",
+    "PACE_OUT_OF_RANGE": "Pace must be between {min} and {max} km/h."
   },
   "Auth": {
     "or": "OR",

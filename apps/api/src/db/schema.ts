@@ -57,6 +57,7 @@ export const participantStatusEnum = pgEnum('participant_status', [
   'declined',
 ]);
 export const dropPolicyEnum = pgEnum('drop_policy', ['no_drop', 'regroup', 'drop']);
+export const pacePolicyEnum = pgEnum('pace_policy', ['slowest_rider', 'leader', 'group_split']);
 export const bikeTypeEnum = pgEnum('bike_type', [
   'road',
   'gravel',
@@ -86,10 +87,11 @@ export const events = pgTable('events', {
   start_time: timestamp({ withTimezone: true }).notNull(),
   end_time: timestamp({ withTimezone: true }),
   distance_km: numeric({ precision: 6, scale: 2 }),
-  pace_kmh: integer(),
+  average_pace_kmh: integer(),
   ride_type: rideTypeEnum().notNull(),
   bike_type: bikeTypeEnum(),
   drop_policy: dropPolicyEnum().notNull().default('no_drop'),
+  pace_policy: pacePolicyEnum().notNull().default('slowest_rider'),
   max_participants: integer(), // null = unlimited
   is_private: boolean().notNull().default(false),
   status: eventStatusEnum().notNull().default('open'),
