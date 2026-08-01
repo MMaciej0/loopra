@@ -16,7 +16,7 @@ const buttonVariants = cva(
         accent:
           'border-accent bg-accent text-[#0d0f12] hover:border-accent-hover hover:bg-accent-hover',
         ghost: 'border-transparent bg-transparent text-foreground hover:bg-muted',
-        chip: 'rounded-full px-[13px] py-[7px] text-[12.5px] bg-secondary text-foreground/60 border-border hover:border-foreground hover:text-foreground aria-pressed:bg-primary aria-pressed:text-primary-foreground aria-pressed:border-primary aria-pressed:hover:bg-primary-hover aria-pressed:hover:border-primary-hover aria-checked:bg-primary aria-checked:text-primary-foreground aria-checked:border-primary aria-checked:hover:bg-primary-hover aria-checked:hover:border-primary-hover',
+        chip: 'rounded-full px-[13px] py-[7px] text-[12.5px] bg-transparent text-foreground/60 border-border hover:border-border-strong hover:text-foreground aria-pressed:bg-accent/10 aria-pressed:text-foreground aria-pressed:border-accent aria-pressed:hover:border-accent aria-checked:bg-accent/10 aria-checked:text-foreground aria-checked:border-accent aria-checked:hover:border-accent peer-checked:bg-accent/10 peer-checked:text-foreground peer-checked:border-accent peer-checked:hover:border-accent peer-focus-visible:border-ring peer-focus-visible:ring-3 peer-focus-visible:ring-ring/50',
         nav: 'border-transparent bg-transparent p-0 text-[13px] font-ui text-muted-foreground hover:text-foreground',
         outline:
           'border-border bg-secondary text-secondary-foreground hover:border-border-strong hover:bg-secondary-hover',

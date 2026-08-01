@@ -7,8 +7,7 @@ export const listEvents = async (db: Db, searchParams: ListEventsQuery) => {
   const conditions: SQL[] = [];
 
   if (searchParams.bike_type) conditions.push(eq(events.bike_type, searchParams.bike_type));
-  if (searchParams.type) conditions.push(eq(events.type, searchParams.type));
-  if (searchParams.difficulty) conditions.push(eq(events.difficulty, searchParams.difficulty));
+  if (searchParams.ride_type) conditions.push(eq(events.ride_type, searchParams.ride_type));
   if (searchParams.city) conditions.push(eq(events.city, searchParams.city));
   if (searchParams.region) conditions.push(eq(events.region, searchParams.region));
   if (searchParams.country) conditions.push(eq(events.country, searchParams.country));

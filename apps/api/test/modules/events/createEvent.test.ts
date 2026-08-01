@@ -7,7 +7,7 @@ describe('POST /events', () => {
   const auth = useAuthenticatedUser(appRef);
 
   const eventBody = {
-    type: 'trip',
+    ride_type: 'casual',
     title: 'Warsaw Morning Ride',
     city: 'Warsaw',
     country: 'PL',

@@ -28,16 +28,35 @@
     "startPointNameHint": "Riders see this name — be specific (e.g. “by the fountain”).",
     "shapeSection": "THE RIDE SHAPE",
     "bikeTypeLabel": "Bike type",
-    "bikeTypes": {
-      "all": "All",
-      "road": "Road",
-      "gravel": "Gravel",
-      "mtb": "MTB",
-      "trekking": "Trekking",
-      "urban": "Urban",
-      "cyclocross": "Cyclocross",
-      "tt": "TT / Triathlon",
-      "electric": "Electric"
+    "rideTypeLabel": "Ride type"
+  },
+  "BikeTypes": {
+    "all": "All",
+    "road": "Road",
+    "gravel": "Gravel",
+    "mtb": "MTB",
+    "trekking": "Trekking",
+    "urban": "Urban",
+    "cyclocross": "Cyclocross",
+    "tt": "TT / Triathlon",
+    "electric": "Electric"
+  },
+  "RideTypes": {
+    "casual": {
+      "label": "Casual",
+      "description": "No particular goal, relaxed approach."
+    },
+    "coffee_ride": {
+      "label": "Coffee ride",
+      "description": "Social ride with a café stop."
+    },
+    "sightseeing": {
+      "label": "Sightseeing",
+      "description": "A ride focused on visiting interesting places along the route."
+    },
+    "training": {
+      "label": "Training",
+      "description": "Structured effort — intervals, pace work, zones."
     }
   },
   "Errors": {
