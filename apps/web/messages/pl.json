@@ -28,16 +28,35 @@
     "startPointNameHint": "Tę nazwę zobaczą inni — bądź konkretny (np. „przy fontannie”).",
     "shapeSection": "CHARAKTER JAZDY",
     "bikeTypeLabel": "Typ roweru",
-    "bikeTypes": {
-      "all": "Wszystkie",
-      "road": "Szosa",
-      "gravel": "Gravel",
-      "mtb": "MTB",
-      "trekking": "Trekking",
-      "urban": "Miejski",
-      "cyclocross": "Przełajowy",
-      "tt": "Czasowy / Triathlon",
-      "electric": "Elektryczny"
+    "rideTypeLabel": "Typ jazdy"
+  },
+  "BikeTypes": {
+    "all": "Wszystkie",
+    "road": "Szosa",
+    "gravel": "Gravel",
+    "mtb": "MTB",
+    "trekking": "Trekking",
+    "urban": "Miejski",
+    "cyclocross": "Przełajowy",
+    "tt": "Czasowy / Triathlon",
+    "electric": "Elektryczny"
+  },
+  "RideTypes": {
+    "casual": {
+      "label": "Rekreacyjna",
+      "description": "Brak określonego celu jazdy, luźne podejście."
+    },
+    "coffee_ride": {
+      "label": "Coffee ride",
+      "description": "Towarzyska jazda, z przystankiem w kawiarni."
+    },
+    "sightseeing": {
+      "label": "Krajoznawcza",
+      "description": "Jazda ukierunkowana na odwiedzenie ciekawych miejsc na trasie."
+    },
+    "training": {
+      "label": "Trening",
+      "description": "Ustrukturyzowany wysiłek — interwały, tempo, strefy."
     }
   },
   "Errors": {

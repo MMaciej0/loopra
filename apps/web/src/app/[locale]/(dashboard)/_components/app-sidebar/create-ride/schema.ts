@@ -18,7 +18,7 @@ const coordsSchema = z.object({
 });
 
 export const createRideSchema = z.object({
-  type: z.enum(RIDE_TYPES),
+  ride_type: z.enum(RIDE_TYPES),
   title: z
     .string()
     .min(TITLE_MIN_LENGTH, APP_ERROR_TYPES.TITLE_TOO_SHORT)

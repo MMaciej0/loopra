@@ -38,12 +38,11 @@ export const oauth_accounts = pgTable(
   (t) => [unique().on(t.provider, t.provider_user_id)],
 );
 
-export const eventTypeEnum = pgEnum('event_type', ['trip', 'training']);
-export const eventDifficultyEnum = pgEnum('event_difficulty', [
-  'easy',
-  'moderate',
-  'hard',
-  'expert',
+export const rideTypeEnum = pgEnum('ride_type', [
+  'coffee_ride',
+  'sightseeing',
+  'casual',
+  'training',
 ]);
 export const eventStatusEnum = pgEnum('event_status', [
   'draft',
@@ -70,7 +69,6 @@ export const bikeTypeEnum = pgEnum('bike_type', [
 
 export const events = pgTable('events', {
   id: uuid().primaryKey().defaultRandom(),
-  type: eventTypeEnum().notNull(),
   title: text().notNull(),
   description: text(),
   creator_id: uuid()
@@ -88,7 +86,7 @@ export const events = pgTable('events', {
   end_time: timestamp({ withTimezone: true }),
   distance_km: numeric({ precision: 6, scale: 2 }),
   pace_kmh: integer(),
-  difficulty: eventDifficultyEnum(),
+  ride_type: rideTypeEnum().notNull(),
   bike_type: bikeTypeEnum(),
   max_participants: integer(), // null = unlimited
   is_private: boolean().notNull().default(false),

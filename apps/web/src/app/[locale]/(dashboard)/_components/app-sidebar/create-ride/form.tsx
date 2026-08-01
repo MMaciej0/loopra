@@ -30,7 +30,7 @@ export function RideForm() {
     resolver: zodResolver(createRideSchema),
     mode: 'onBlur',
     defaultValues: {
-      type: 'trip',
+      ride_type: 'casual',
       title: '',
       start_location: undefined,
       start_location_name: '',
