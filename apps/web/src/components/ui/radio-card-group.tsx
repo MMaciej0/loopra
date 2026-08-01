@@ -25,8 +25,10 @@ export function RadioCardGroup<TValues extends FieldValues>({
         {legend}
       </legend>
       <div className="mt-2 grid gap-1.5 md:grid-cols-2">
+        {/* label is relative: the input is sr-only (position:absolute) — without a positioned
+            label it resolves against the dialog and drags its scroll box open */}
         {options.map((option) => (
-          <label key={option.value} className="group block h-full cursor-pointer">
+          <label key={option.value} className="group relative block h-full cursor-pointer">
             <input type="radio" value={option.value} {...register(name)} className="sr-only" />
             <span className="border-border group-hover:border-border-strong group-has-[:checked]:border-accent group-has-[:checked]:bg-accent/10 group-has-[:checked]:group-hover:border-accent group-has-[:focus-visible]:border-ring group-has-[:focus-visible]:ring-ring/50 flex h-full items-start gap-2.5 rounded-[10px] border bg-clip-padding px-3 py-2.5 transition-all group-has-[:focus-visible]:ring-3">
               <span

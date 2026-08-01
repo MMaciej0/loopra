@@ -41,6 +41,7 @@ export function RideForm() {
       postal_code: '',
       full_address: '',
       bike_type: 'all',
+      drop_policy: 'no_drop',
     },
   });
 

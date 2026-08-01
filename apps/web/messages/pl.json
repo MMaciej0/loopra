@@ -28,7 +28,9 @@
     "startPointNameHint": "Tę nazwę zobaczą inni — bądź konkretny (np. „przy fontannie”).",
     "shapeSection": "CHARAKTER JAZDY",
     "bikeTypeLabel": "Typ roweru",
-    "rideTypeLabel": "Typ jazdy"
+    "rideTypeLabel": "Typ jazdy",
+    "policySection": "ZASADY",
+    "dropPolicyLabel": "Zasady tempa"
   },
   "BikeTypes": {
     "all": "Wszystkie",
@@ -57,6 +59,20 @@
     "training": {
       "label": "Trening",
       "description": "Ustrukturyzowany wysiłek — interwały, tempo, strefy."
+    }
+  },
+  "DropPolicies": {
+    "no_drop": {
+      "label": "Nikogo nie zostawiamy",
+      "description": "Grupa czeka na wszystkich — nikt nie zostaje z tyłu."
+    },
+    "regroup": {
+      "label": "Zbiórki",
+      "description": "Czekamy na górkach lub w wyznaczonych miejscach."
+    },
+    "drop": {
+      "label": "Bez czekania",
+      "description": "Trzymasz koło albo wracasz sam."
     }
   },
   "Errors": {

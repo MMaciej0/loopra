@@ -59,6 +59,7 @@ export const CreateEventBodySchema = z
     pace_kmh: z.coerce.number().int().min(1).optional(),
     ride_type: z.enum(['coffee_ride', 'sightseeing', 'casual', 'training']),
     bike_type: z.enum(['road', 'gravel', 'mtb', 'trekking', 'urban', 'electric', 'cyclocross', 'tt']).optional(),
+    drop_policy: z.enum(['no_drop', 'regroup', 'drop']),
     max_participants: z.coerce.number().int().min(1).optional(),
     is_private: z.boolean().default(false),
   })
@@ -108,6 +109,7 @@ export const UpdateEventBodySchema = z
     pace_kmh: z.coerce.number().int().min(1).optional(),
     ride_type: z.enum(['coffee_ride', 'sightseeing', 'casual', 'training']).optional(),
     bike_type: z.enum(['road', 'gravel', 'mtb', 'trekking', 'urban', 'electric', 'cyclocross', 'tt']).optional(),
+    drop_policy: z.enum(['no_drop', 'regroup', 'drop']).optional(),
     max_participants: z.coerce.number().int().min(1).optional(),
     is_private: z.boolean().optional(),
   })

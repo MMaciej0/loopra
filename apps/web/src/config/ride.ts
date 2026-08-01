@@ -29,3 +29,9 @@ export const RIDE_TYPES = ['casual', 'coffee_ride', 'sightseeing', 'training'] a
 export type RideType = (typeof RIDE_TYPES)[number];
 
 // Display labels live in messages under RideTypes.
+
+// Storage slugs — must match backend drop_policy enum exactly.
+export const DROP_POLICIES = ['no_drop', 'regroup', 'drop'] as const;
+export type DropPolicy = (typeof DROP_POLICIES)[number];
+
+// Display labels live in messages under DropPolicies.

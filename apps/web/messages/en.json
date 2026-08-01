@@ -28,7 +28,9 @@
     "startPointNameHint": "Riders see this name — be specific (e.g. “by the fountain”).",
     "shapeSection": "THE RIDE SHAPE",
     "bikeTypeLabel": "Bike type",
-    "rideTypeLabel": "Ride type"
+    "rideTypeLabel": "Ride type",
+    "policySection": "THE RULES",
+    "dropPolicyLabel": "Drop policy"
   },
   "BikeTypes": {
     "all": "All",
@@ -57,6 +59,20 @@
     "training": {
       "label": "Training",
       "description": "Structured effort — intervals, pace work, zones."
+    }
+  },
+  "DropPolicies": {
+    "no_drop": {
+      "label": "No drop",
+      "description": "Nobody gets left behind — the group waits for everyone."
+    },
+    "regroup": {
+      "label": "Regroup",
+      "description": "We wait at the top of climbs or at set meeting points."
+    },
+    "drop": {
+      "label": "Drop",
+      "description": "Hold the wheel or ride home alone."
     }
   },
   "Errors": {

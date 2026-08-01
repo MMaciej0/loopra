@@ -13,6 +13,7 @@ describe('POST /events', () => {
     country: 'PL',
     start_time: new Date(Date.now() + 6 * 60 * 60 * 1000).toISOString(), // 6h from now — clears the 5h validation
     bike_type: 'road',
+    drop_policy: 'no_drop',
     is_private: false,
   };
 
@@ -60,6 +61,41 @@ describe('POST /events', () => {
       method: 'POST',
       url: '/events',
       body: { ...eventBody, bike_type: 'unicycle' },
+      cookies: { accessToken: auth.accessToken },
+    });
+
+    expect(response.statusCode).toBe(400);
+  });
+
+  it.each(['no_drop', 'regroup', 'drop'])('accepts drop_policy %s', async (drop_policy) => {
+    const response = await appRef.app.inject({
+      method: 'POST',
+      url: '/events',
+      body: { ...eventBody, drop_policy },
+      cookies: { accessToken: auth.accessToken },
+    });
+
+    expect(response.statusCode).toBe(200);
+  });
+
+  it('returns 400 for unknown drop_policy', async () => {
+    const response = await appRef.app.inject({
+      method: 'POST',
+      url: '/events',
+      body: { ...eventBody, drop_policy: 'sweeper' },
+      cookies: { accessToken: auth.accessToken },
+    });
+
+    expect(response.statusCode).toBe(400);
+  });
+
+  it('returns 400 when drop_policy is missing', async () => {
+    const { drop_policy: _omitted, ...body } = eventBody;
+
+    const response = await appRef.app.inject({
+      method: 'POST',
+      url: '/events',
+      body,
       cookies: { accessToken: auth.accessToken },
     });
 

@@ -11,6 +11,7 @@ import type { CreateRideInput } from './schema';
 import { Separator } from '@/components/ui/separator';
 import { BikeTypeInput } from './bike-type-input';
 import { RideTypeInput } from './ride-type-input';
+import { DropPolicyInput } from './drop-policy-input';
 
 export function FormFields({ onEditLocation }: { onEditLocation: () => void }) {
   const t = useTranslations('CreateRide');
@@ -55,6 +56,13 @@ export function FormFields({ onEditLocation }: { onEditLocation: () => void }) {
       <div className="flex flex-col gap-y-4">
         <BikeTypeInput />
         <RideTypeInput />
+      </div>
+      <Separator className="my-6 w-full" />
+      <div className="pb-6">
+        <DividerHeader text={t('policySection')} />
+      </div>
+      <div className="flex flex-col gap-y-4">
+        <DropPolicyInput />
       </div>
     </div>
   );
