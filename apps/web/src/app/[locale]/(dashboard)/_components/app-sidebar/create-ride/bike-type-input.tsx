@@ -1,8 +1,9 @@
 import { BIKE_TYPES, BIKE_TYPE_LABELS } from '@/config/ride';
 import { Button } from '@/components/ui/button';
 import { useFormContext, useWatch } from 'react-hook-form';
-import { useCallback, useRef, type KeyboardEvent } from 'react';
+import { useCallback, useRef } from 'react';
 import { CreateRideInput } from './schema';
+import { useRadioGroupKeyNavigation } from '@/hooks/use-key-navigation';
 
 const BIKE_TYPE_OPTIONS = ['all', ...BIKE_TYPES] as const;
 type BikeTypeOption = (typeof BIKE_TYPE_OPTIONS)[number];
@@ -21,41 +22,7 @@ export function BikeTypeInput() {
     [setValue],
   );
 
-  const focusRadio = useCallback((index: number) => {
-    const radios = groupRef.current?.querySelectorAll<HTMLButtonElement>('[role="radio"]');
-    radios?.[index]?.focus();
-  }, []);
-
-  const onKeyDown = useCallback(
-    (event: KeyboardEvent<HTMLButtonElement>, index: number) => {
-      const last = BIKE_TYPE_OPTIONS.length - 1;
-      let next: number;
-
-      switch (event.key) {
-        case 'ArrowRight':
-        case 'ArrowDown':
-          next = index === last ? 0 : index + 1;
-          break;
-        case 'ArrowLeft':
-        case 'ArrowUp':
-          next = index === 0 ? last : index - 1;
-          break;
-        case 'Home':
-          next = 0;
-          break;
-        case 'End':
-          next = last;
-          break;
-        default:
-          return;
-      }
-
-      event.preventDefault();
-      select(BIKE_TYPE_OPTIONS[next]);
-      focusRadio(next);
-    },
-    [select, focusRadio],
-  );
+  const { onKeyDown } = useRadioGroupKeyNavigation(groupRef, BIKE_TYPE_OPTIONS, select);
 
   return (
     <div>
