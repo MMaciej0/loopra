@@ -34,7 +34,8 @@
     "pacePolicyLabel": "Zasady tempa",
     "averagePaceLabel": "Średnie tempo (km/h)",
     "averagePacePlaceholder": "np. 28",
-    "formationPolicyLabel": "Organizacja jazdy"
+    "formationPolicyLabel": "Organizacja jazdy",
+    "experiencePolicyLabel": "Wymagane doświadczenie"
   },
   "BikeTypes": {
     "all": "Wszystkie",
@@ -105,6 +106,20 @@
     "rotation": {
       "label": "Zmiany",
       "description": "Każdy prowadzi grupę na zmianę, w ustalonych odstępach czasu."
+    }
+  },
+  "ExperiencePolicies": {
+    "first_timers": {
+      "label": "Początkujący mile widziani",
+      "description": "Doświadczenie niepotrzebne — pokażemy, jak wygląda jazda w grupie."
+    },
+    "moderate": {
+      "label": "Średnio zaawansowani",
+      "description": "Wymagane podstawy jazdy w grupie: znaki kolarskie, jazda na kole, równy tor jazdy."
+    },
+    "advanced": {
+      "label": "Zaawansowani",
+      "description": "Dla tych, co śpią z rowerem — wysokie tempo, ciasny szyk i zmiany na przodzie."
     }
   },
   "Errors": {

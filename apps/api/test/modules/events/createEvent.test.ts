@@ -16,6 +16,7 @@ describe('POST /events', () => {
     drop_policy: 'no_drop',
     pace_policy: 'slowest_rider',
     formation_policy: 'free',
+    experience_policy: 'first_timers',
     is_private: false,
   };
 
@@ -177,6 +178,44 @@ describe('POST /events', () => {
 
   it('returns 400 when formation_policy is missing', async () => {
     const { formation_policy: _omitted, ...body } = eventBody;
+
+    const response = await appRef.app.inject({
+      method: 'POST',
+      url: '/events',
+      body,
+      cookies: { accessToken: auth.accessToken },
+    });
+
+    expect(response.statusCode).toBe(400);
+  });
+
+  it.each(['first_timers', 'moderate', 'advanced'])(
+    'accepts experience_policy %s',
+    async (experience_policy) => {
+      const response = await appRef.app.inject({
+        method: 'POST',
+        url: '/events',
+        body: { ...eventBody, experience_policy },
+        cookies: { accessToken: auth.accessToken },
+      });
+
+      expect(response.statusCode).toBe(200);
+    },
+  );
+
+  it('returns 400 for unknown experience_policy', async () => {
+    const response = await appRef.app.inject({
+      method: 'POST',
+      url: '/events',
+      body: { ...eventBody, experience_policy: 'pro' },
+      cookies: { accessToken: auth.accessToken },
+    });
+
+    expect(response.statusCode).toBe(400);
+  });
+
+  it('returns 400 when experience_policy is missing', async () => {
+    const { experience_policy: _omitted, ...body } = eventBody;
 
     const response = await appRef.app.inject({
       method: 'POST',

@@ -34,7 +34,8 @@
     "pacePolicyLabel": "Pace rules",
     "averagePaceLabel": "Average pace (km/h)",
     "averagePacePlaceholder": "e.g. 28",
-    "formationPolicyLabel": "Ride organisation"
+    "formationPolicyLabel": "Ride organisation",
+    "experiencePolicyLabel": "Experience needed"
   },
   "BikeTypes": {
     "all": "All",
@@ -105,6 +106,20 @@
     "rotation": {
       "label": "Rotation",
       "description": "Everyone takes a turn on the front, swapping at set intervals."
+    }
+  },
+  "ExperiencePolicies": {
+    "first_timers": {
+      "label": "First timers welcome",
+      "description": "No experience needed — we’ll show you how a group ride works."
+    },
+    "moderate": {
+      "label": "Moderate",
+      "description": "Group riding basics expected: hand signals, holding a wheel, a steady line."
+    },
+    "advanced": {
+      "label": "Advanced",
+      "description": "For riders who sleep with their bike — high pace, tight formation, turns on the front."
     }
   },
   "Errors": {

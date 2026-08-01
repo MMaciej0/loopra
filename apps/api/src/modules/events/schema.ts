@@ -62,6 +62,7 @@ export const CreateEventBodySchema = z
     drop_policy: z.enum(['no_drop', 'regroup', 'drop']),
     pace_policy: z.enum(['slowest_rider', 'leader', 'group_split']),
     formation_policy: z.enum(['free', 'leader', 'rotation']),
+    experience_policy: z.enum(['first_timers', 'moderate', 'advanced']),
     max_participants: z.coerce.number().int().min(1).optional(),
     is_private: z.boolean().default(false),
   })
@@ -117,6 +118,7 @@ export const UpdateEventBodySchema = z
     drop_policy: z.enum(['no_drop', 'regroup', 'drop']).optional(),
     pace_policy: z.enum(['slowest_rider', 'leader', 'group_split']).optional(),
     formation_policy: z.enum(['free', 'leader', 'rotation']).optional(),
+    experience_policy: z.enum(['first_timers', 'moderate', 'advanced']).optional(),
     max_participants: z.coerce.number().int().min(1).optional(),
     is_private: z.boolean().optional(),
   })

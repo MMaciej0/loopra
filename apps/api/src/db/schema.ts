@@ -59,6 +59,11 @@ export const participantStatusEnum = pgEnum('participant_status', [
 export const dropPolicyEnum = pgEnum('drop_policy', ['no_drop', 'regroup', 'drop']);
 export const pacePolicyEnum = pgEnum('pace_policy', ['slowest_rider', 'leader', 'group_split']);
 export const formationPolicyEnum = pgEnum('formation_policy', ['free', 'leader', 'rotation']);
+export const experiencePolicyEnum = pgEnum('experience_policy', [
+  'first_timers',
+  'moderate',
+  'advanced',
+]);
 export const bikeTypeEnum = pgEnum('bike_type', [
   'road',
   'gravel',
@@ -94,6 +99,7 @@ export const events = pgTable('events', {
   drop_policy: dropPolicyEnum().notNull().default('no_drop'),
   pace_policy: pacePolicyEnum().notNull().default('slowest_rider'),
   formation_policy: formationPolicyEnum().notNull().default('free'),
+  experience_policy: experiencePolicyEnum().notNull().default('first_timers'),
   max_participants: integer(), // null = unlimited
   is_private: boolean().notNull().default(false),
   status: eventStatusEnum().notNull().default('open'),
