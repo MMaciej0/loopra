@@ -2,6 +2,7 @@ import { z } from 'zod';
 import { APP_ERROR_TYPES } from '@/utils/errors';
 import {
   BIKE_TYPES,
+  DROP_POLICIES,
   LAT_MAX,
   LAT_MIN,
   LNG_MAX,
@@ -39,6 +40,7 @@ export const createRideSchema = z.object({
     return d.getTime() >= min.getTime();
   }, APP_ERROR_TYPES.START_TOO_SOON),
   bike_type: z.enum(['all', ...BIKE_TYPES]),
+  drop_policy: z.enum(DROP_POLICIES),
 });
 
 export type Coords = z.infer<typeof coordsSchema>;

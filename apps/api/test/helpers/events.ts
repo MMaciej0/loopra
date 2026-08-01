@@ -6,6 +6,7 @@ type NewEventProps = Partial<InferInsertModel<typeof events>> & { user_id: strin
 
 const BIKE_TYPES = ['road', 'gravel', 'mtb', 'trekking'] as const;
 const RIDE_TYPES = ['coffee_ride', 'sightseeing', 'casual', 'training'] as const;
+const DROP_POLICIES = ['no_drop', 'regroup', 'drop'] as const;
 
 export const newEvent = ({
   user_id,
@@ -13,6 +14,7 @@ export const newEvent = ({
   description,
   bike_type,
   ride_type,
+  drop_policy,
   start_location_name,
   start_time,
   start_location,
@@ -27,6 +29,7 @@ export const newEvent = ({
   description: description || 'Test Description',
   bike_type: bike_type || BIKE_TYPES[Math.floor(Math.random() * BIKE_TYPES.length)],
   ride_type: ride_type || RIDE_TYPES[Math.floor(Math.random() * RIDE_TYPES.length)],
+  drop_policy: drop_policy || DROP_POLICIES[Math.floor(Math.random() * DROP_POLICIES.length)],
   start_location_name: start_location_name || 'Test Location',
   start_time: start_time || new Date(Date.now() + 6 * 60 * 60 * 1000),
   ...(start_location && { start_location }),
