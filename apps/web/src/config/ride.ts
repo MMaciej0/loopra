@@ -44,3 +44,9 @@ export type PacePolicy = (typeof PACE_POLICIES)[number];
 // 'leader' is the only policy that requires average_pace_kmh.
 export const PACE_MIN_KMH = 5;
 export const PACE_MAX_KMH = 60;
+
+// Storage slugs — must match backend formation_policy enum exactly.
+export const FORMATION_POLICIES = ['free', 'leader', 'rotation'] as const;
+export type FormationPolicy = (typeof FORMATION_POLICIES)[number];
+
+// Display labels live in messages under FormationPolicies.

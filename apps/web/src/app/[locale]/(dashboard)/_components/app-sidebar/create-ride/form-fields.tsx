@@ -13,6 +13,7 @@ import { BikeTypeInput } from './bike-type-input';
 import { RideTypeInput } from './ride-type-input';
 import { DropPolicyInput } from './drop-policy-input';
 import { PacePolicyInput } from './pace-policy-input';
+import { FormationPolicyInput } from './formation-policy-input';
 
 export function FormFields({ onEditLocation }: { onEditLocation: () => void }) {
   const t = useTranslations('CreateRide');
@@ -65,6 +66,7 @@ export function FormFields({ onEditLocation }: { onEditLocation: () => void }) {
       <div className="flex flex-col gap-y-4">
         <DropPolicyInput />
         <PacePolicyInput />
+        <FormationPolicyInput />
       </div>
     </div>
   );

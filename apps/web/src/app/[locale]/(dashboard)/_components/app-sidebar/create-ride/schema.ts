@@ -3,6 +3,7 @@ import { APP_ERROR_TYPES } from '@/utils/errors';
 import {
   BIKE_TYPES,
   DROP_POLICIES,
+  FORMATION_POLICIES,
   LAT_MAX,
   LAT_MIN,
   LNG_MAX,
@@ -52,6 +53,7 @@ export const createRideSchema = z.object({
   bike_type: z.enum(['all', ...BIKE_TYPES]),
   drop_policy: z.enum(DROP_POLICIES),
   pace_policy: z.enum(PACE_POLICIES),
+  formation_policy: z.enum(FORMATION_POLICIES),
   average_pace_kmh: z
     .number(APP_ERROR_TYPES.PACE_REQUIRED)
     .int(APP_ERROR_TYPES.PACE_OUT_OF_RANGE)

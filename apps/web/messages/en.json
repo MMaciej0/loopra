@@ -33,7 +33,8 @@
     "dropPolicyLabel": "Drop policy",
     "pacePolicyLabel": "Pace rules",
     "averagePaceLabel": "Average pace (km/h)",
-    "averagePacePlaceholder": "e.g. 28"
+    "averagePacePlaceholder": "e.g. 28",
+    "formationPolicyLabel": "Ride organisation"
   },
   "BikeTypes": {
     "all": "All",
@@ -90,6 +91,20 @@
     "group_split": {
       "label": "Group split",
       "description": "The group splits into pace groups along the way."
+    }
+  },
+  "FormationPolicies": {
+    "free": {
+      "label": "Free",
+      "description": "No set formation — ride where you like, just stay predictable and safe."
+    },
+    "leader": {
+      "label": "Designated riders lead",
+      "description": "Designated riders stay on the front — nobody passes unless they call a change."
+    },
+    "rotation": {
+      "label": "Rotation",
+      "description": "Everyone takes a turn on the front, swapping at set intervals."
     }
   },
   "Errors": {

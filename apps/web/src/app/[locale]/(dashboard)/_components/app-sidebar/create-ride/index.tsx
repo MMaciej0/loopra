@@ -25,7 +25,7 @@ export function CreateRide() {
           // mobile + md: full screen
           'top-0 left-0 h-dvh w-screen max-w-none translate-x-0 translate-y-0 rounded-none ring-0 sm:max-w-none',
           // lg+: fluid up to 1000px, content height capped at 90vh, two columns
-          'lg:top-1/2 lg:left-1/2 lg:h-[90vh] lg:w-[calc(100%-2rem)] lg:max-w-[1000px] lg:-translate-x-1/2 lg:-translate-y-1/2 lg:grid-cols-[392px_1fr] lg:rounded-[20px] lg:ring-1',
+          'lg:top-1/2 lg:left-1/2 lg:h-[90vh] lg:w-[calc(100%-2rem)] lg:max-w-[1200px] lg:-translate-x-1/2 lg:-translate-y-1/2 lg:grid-cols-[392px_1fr] lg:rounded-[20px] lg:ring-1',
         )}
       >
         {/* left preview pane — lg+ only */}

@@ -20,11 +20,13 @@ export function RadioCardGroup<TValues extends FieldValues>({
   const { register } = useFormContext<TValues>();
 
   return (
-    <fieldset className="min-w-0 border-0 p-0">
+    // container, not viewport: the form column is a fixed 1fr of the dialog at lg+
+    // and full-bleed below, so its width never tracks the screen width
+    <fieldset className="@container min-w-0 border-0 p-0">
       <legend className="text-muted-foreground p-0 font-mono text-[9.5px] font-medium tracking-[0.12em] uppercase">
         {legend}
       </legend>
-      <div className="mt-2 grid gap-1.5 md:grid-cols-2">
+      <div className="mt-2 grid gap-1.5 @min-[26rem]:grid-cols-2 @min-[44rem]:grid-cols-3">
         {/* label is relative: the input is sr-only (position:absolute) — without a positioned
             label it resolves against the dialog and drags its scroll box open */}
         {options.map((option) => (
