@@ -1,6 +1,7 @@
 'use client';
 
 import { useFormContext } from 'react-hook-form';
+import { useTranslations } from 'next-intl';
 import { InputLabel } from '@/components/ui/input-label';
 import { Button } from '@/components/ui/button';
 import { MapPin } from 'lucide-react';
@@ -8,6 +9,8 @@ import { Text } from '@/components/ui/text';
 import type { CreateRideInput } from '../schema';
 
 export function LocationInput({ onOpen }: { onOpen: () => void }) {
+  const t = useTranslations('CreateRide');
+  const tErrors = useTranslations('Errors');
   const {
     watch,
     formState: { errors },
@@ -21,7 +24,7 @@ export function LocationInput({ onOpen }: { onOpen: () => void }) {
         <span className="inline-flex pr-2">
           <MapPin className="size-2.5" />
         </span>
-        WHERE (MEETUP START POINT)
+        {t('locationLabel')}
       </InputLabel>
       <Button type="button" variant="outline" onClick={onOpen} className="justify-start gap-x-2">
         <span className="border-accent bg-accent flex size-10 items-center justify-center rounded-xl text-[#0d0f12]">
@@ -30,13 +33,15 @@ export function LocationInput({ onOpen }: { onOpen: () => void }) {
         <span className="flex flex-col">
           <Text variant="body-m" className="text-start">
             {errors.start_location_name ? (
-              <span className="text-destructive">{errors.start_location_name.message}</span>
+              <span className="text-destructive">
+                {tErrors(errors.start_location_name.message ?? 'UNKNOWN')}
+              </span>
             ) : (
-              name || 'Choose a start point'
+              name || t('locationEmpty')
             )}
           </Text>
           <Text variant="body-xs" className="text-muted-foreground text-start">
-            {full_address ? full_address : 'Tap to pick on the map'}
+            {full_address ? full_address : t('locationHint')}
           </Text>
         </span>
       </Button>

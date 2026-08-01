@@ -16,9 +16,10 @@ interface UseMapProps {
   initialCoords?: Coords;
   onPick: (loc: PickedLocation) => void;
   language?: string; // ISO 639-1, localizes reverse-geocoded place names
+  searchPlaceholder?: string;
 }
 
-export function useMap({ onPick, initialCoords, language = 'en' }: UseMapProps) {
+export function useMap({ onPick, initialCoords, language = 'en', searchPlaceholder }: UseMapProps) {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<maptilersdk.Map | null>(null);
   // keep latest language for the click handler without re-creating the map
@@ -46,7 +47,7 @@ export function useMap({ onPick, initialCoords, language = 'en' }: UseMapProps) 
     const geocoder = new GeocodingControl({
       types: ['municipality', 'address', 'country'],
       proximity: [{ type: 'map-center' }],
-      placeholder: 'Search country, city or street',
+      placeholder: searchPlaceholder,
       language: languageRef.current,
       marker: false,
       showResultMarkers: false,

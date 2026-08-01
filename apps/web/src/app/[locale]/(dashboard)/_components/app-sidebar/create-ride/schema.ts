@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { APP_ERROR_TYPES } from '@/utils/errors';
 import {
   BIKE_TYPES,
   LAT_MAX,
@@ -20,21 +21,23 @@ export const createRideSchema = z.object({
   type: z.enum(RIDE_TYPES),
   title: z
     .string()
-    .min(TITLE_MIN_LENGTH, `Title must be at least ${TITLE_MIN_LENGTH} characters`)
-    .max(TITLE_MAX_LENGTH, 'Title is too long'),
-  start_location: coordsSchema.optional().refine((v) => v !== undefined, 'Pick a start point'),
-  start_location_name: z.string().min(1, 'Name this location'),
-  country: z.string().min(1, 'Pick a start point'),
-  municipality: z.string().min(1, 'Pick a start point'),
-  region: z.string().min(1, 'Pick a start point'),
-  city: z.string().min(1, 'Pick a start point'),
-  postal_code: z.string().min(1, 'Pick a start point'),
-  full_address: z.string().min(1, 'Pick a start point'),
-  start_time: z.date({ error: 'Pick a date' }).refine((d) => {
+    .min(TITLE_MIN_LENGTH, APP_ERROR_TYPES.TITLE_TOO_SHORT)
+    .max(TITLE_MAX_LENGTH, APP_ERROR_TYPES.TITLE_TOO_LONG),
+  start_location: coordsSchema
+    .optional()
+    .refine((v) => v !== undefined, APP_ERROR_TYPES.START_POINT_REQUIRED),
+  start_location_name: z.string().min(1, APP_ERROR_TYPES.LOCATION_NAME_REQUIRED),
+  country: z.string().min(1, APP_ERROR_TYPES.START_POINT_REQUIRED),
+  municipality: z.string().min(1, APP_ERROR_TYPES.START_POINT_REQUIRED),
+  region: z.string().min(1, APP_ERROR_TYPES.START_POINT_REQUIRED),
+  city: z.string().min(1, APP_ERROR_TYPES.START_POINT_REQUIRED),
+  postal_code: z.string().min(1, APP_ERROR_TYPES.START_POINT_REQUIRED),
+  full_address: z.string().min(1, APP_ERROR_TYPES.START_POINT_REQUIRED),
+  start_time: z.date({ error: APP_ERROR_TYPES.DATE_REQUIRED }).refine((d) => {
     const min = new Date();
     min.setHours(min.getHours() + MIN_LEAD_HOURS);
     return d.getTime() >= min.getTime();
-  }, `Start must be at least ${MIN_LEAD_HOURS} hours from now`),
+  }, APP_ERROR_TYPES.START_TOO_SOON),
   bike_type: z.enum(['all', ...BIKE_TYPES]),
 });
 

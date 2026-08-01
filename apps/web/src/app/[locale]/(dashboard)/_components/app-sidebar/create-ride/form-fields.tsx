@@ -1,7 +1,9 @@
 'use client';
 
 import { useFormContext } from 'react-hook-form';
+import { useTranslations } from 'next-intl';
 import { Field } from '@/components/ui/field';
+import { MIN_LEAD_HOURS, TITLE_MIN_LENGTH } from '@/config/ride';
 import { DividerHeader } from './divider-header';
 import { LocationInput } from './location/input';
 import { DateTimeInput } from './date-time-input';
@@ -10,6 +12,8 @@ import { Separator } from '@/components/ui/separator';
 import { BikeTypeInput } from './bike-type-input';
 
 export function FormFields({ onEditLocation }: { onEditLocation: () => void }) {
+  const t = useTranslations('CreateRide');
+  const tErrors = useTranslations('Errors');
   const {
     register,
     formState: { errors },
@@ -18,16 +22,16 @@ export function FormFields({ onEditLocation }: { onEditLocation: () => void }) {
   return (
     <div>
       <div className="pb-6">
-        <DividerHeader text="THE BASICS" />
+        <DividerHeader text={t('basicsSection')} />
       </div>
       <div className="flex flex-col gap-y-4">
         <Field
           id="title"
-          label="Ride Title"
-          placeholder="e.g. Sunday Coffee Ride to your favorite cafe"
+          label={t('titleLabel')}
+          placeholder={t('titlePlaceholder')}
           size="sm"
           {...register('title')}
-          error={errors.title?.message}
+          error={errors.title?.message && tErrors(errors.title.message, { min: TITLE_MIN_LENGTH })}
         />
 
         <div className="flex flex-col gap-y-1.5">
@@ -38,14 +42,14 @@ export function FormFields({ onEditLocation }: { onEditLocation: () => void }) {
           <DateTimeInput />
           {errors.start_time && (
             <p role="alert" className="text-destructive text-[11.5px]">
-              {errors.start_time.message}
+              {tErrors(errors.start_time.message ?? 'UNKNOWN', { hours: MIN_LEAD_HOURS })}
             </p>
           )}
         </div>
       </div>
       <Separator className="my-6 w-full" />
       <div className="pb-6">
-        <DividerHeader text="THE RIDE SHAPE" />
+        <DividerHeader text={t('shapeSection')} />
       </div>
       <div className="flex flex-col gap-y-4">
         <BikeTypeInput />

@@ -1,7 +1,8 @@
-import { BIKE_TYPES, BIKE_TYPE_LABELS } from '@/config/ride';
+import { BIKE_TYPES } from '@/config/ride';
 import { Button } from '@/components/ui/button';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { useCallback, useRef } from 'react';
+import { useTranslations } from 'next-intl';
 import { CreateRideInput } from './schema';
 import { useRadioGroupKeyNavigation } from '@/hooks/use-key-navigation';
 
@@ -9,6 +10,8 @@ const BIKE_TYPE_OPTIONS = ['all', ...BIKE_TYPES] as const;
 type BikeTypeOption = (typeof BIKE_TYPE_OPTIONS)[number];
 
 export function BikeTypeInput() {
+  const t = useTranslations('CreateRide');
+  const tBikeTypes = useTranslations('CreateRide.bikeTypes');
   const { control, setValue } = useFormContext<CreateRideInput>();
   const groupRef = useRef<HTMLDivElement>(null);
 
@@ -30,7 +33,7 @@ export function BikeTypeInput() {
         id="bike-type-label"
         className="text-muted-foreground font-mono text-[9.5px] font-medium tracking-[0.12em] uppercase"
       >
-        Bike type
+        {t('bikeTypeLabel')}
       </span>
       <div
         ref={groupRef}
@@ -50,7 +53,7 @@ export function BikeTypeInput() {
             onKeyDown={(event) => onKeyDown(event, index)}
             onClick={() => select(option)}
           >
-            {BIKE_TYPE_LABELS[option]}
+            {tBikeTypes(option)}
           </Button>
         ))}
       </div>

@@ -1,7 +1,7 @@
 'use client';
 
 import { useFormContext, useWatch } from 'react-hook-form';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 
 import type { CreateRideInput } from '../schema';
 import { useMap, type PickedLocation } from '@/hooks/use-map';
@@ -11,6 +11,7 @@ import { StartingPointInputBanner } from './starting-point-input-banner';
 export function LocationPicker() {
   const { setValue } = useFormContext<CreateRideInput>();
   const locale = useLocale();
+  const t = useTranslations('CreateRide');
 
   const onPick = useCallback(
     (loc: PickedLocation) => {
@@ -26,7 +27,12 @@ export function LocationPicker() {
   );
   const startLocation = useWatch<CreateRideInput, 'start_location'>({ name: 'start_location' });
 
-  const { mapContainerRef } = useMap({ onPick, initialCoords: startLocation, language: locale });
+  const { mapContainerRef } = useMap({
+    onPick,
+    initialCoords: startLocation,
+    language: locale,
+    searchPlaceholder: t('mapSearchPlaceholder'),
+  });
 
   return (
     // min-h-full fills the scroll body; map region flex-1 takes the leftover space

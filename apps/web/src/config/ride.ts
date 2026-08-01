@@ -21,18 +21,8 @@ export const BIKE_TYPES = [
 ] as const;
 export type BikeType = (typeof BIKE_TYPES)[number];
 
-// Display labels. 'all' = UI-only sentinel (any bike welcome), not a storage type.
-export const BIKE_TYPE_LABELS: Record<BikeType | 'all', string> = {
-  all: 'All',
-  road: 'Road',
-  gravel: 'Gravel',
-  mtb: 'MTB',
-  trekking: 'Trekking',
-  urban: 'Urban',
-  cyclocross: 'Cyclocross',
-  tt: 'TT / Triathlon',
-  electric: 'Electric',
-};
+// Display labels live in messages under CreateRide.bikeTypes.
+// 'all' = UI-only sentinel (any bike welcome), not a storage type.
 
 export const RIDE_TYPES = ['trip', 'training'] as const;
 export type RideType = (typeof RIDE_TYPES)[number];
