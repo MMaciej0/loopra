@@ -54,4 +54,24 @@ describe('DELETE /events/:id/leave', () => {
     expect(data.event_id).toBe(eventId);
     expect(data.user_id).toBe(participantAuth.userId);
   });
+
+  it('returns 400 when the creator tries to leave their own event', async () => {
+    const eventResponse = await appRef.app.inject({
+      method: 'POST',
+      url: '/events',
+      body: newEvent({ user_id: creatorAuth.userId, city: 'Warsaw', country: 'PL' }),
+      cookies: { accessToken: creatorAuth.accessToken },
+    });
+
+    const eventId = eventResponse.json().data.id as string;
+
+    const response = await appRef.app.inject({
+      method: 'DELETE',
+      url: `/events/${eventId}/leave`,
+      cookies: { accessToken: creatorAuth.accessToken },
+    });
+
+    expect(response.statusCode).toBe(400);
+    expect(response.json()).toMatchObject({ type: 'CREATOR_CANNOT_LEAVE' });
+  });
 });

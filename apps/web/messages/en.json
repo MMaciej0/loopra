@@ -35,7 +35,10 @@
     "averagePaceLabel": "Average pace (km/h)",
     "averagePacePlaceholder": "e.g. 28",
     "formationPolicyLabel": "Ride organisation",
-    "experiencePolicyLabel": "Experience needed"
+    "experiencePolicyLabel": "Experience needed",
+    "maxParticipantsLabel": "Rider limit",
+    "maxParticipantsPlaceholder": "e.g. 15",
+    "maxParticipantsHint": "Leave empty for no limit"
   },
   "BikeTypes": {
     "all": "All",
@@ -141,7 +144,8 @@
     "START_TOO_SOON": "Start must be at least {hours} hours from now.",
     "UNKNOWN": "Something went wrong. Try again.",
     "PACE_REQUIRED": "Enter the average pace the leader will hold.",
-    "PACE_OUT_OF_RANGE": "Pace must be between {min} and {max} km/h."
+    "PACE_OUT_OF_RANGE": "Pace must be between {min} and {max} km/h.",
+    "MAX_PARTICIPANTS_OUT_OF_RANGE": "Limit must be between {min} and {max} riders."
   },
   "Auth": {
     "or": "OR",

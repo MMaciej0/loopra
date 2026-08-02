@@ -12,6 +12,7 @@ import {
   ParticipantExistsError,
   MaxParticipantsError,
   ParticipantNotFoundError,
+  CreatorCannotLeaveError,
 } from './errors.js';
 import { AppError, ErrorType } from '../../utils/errors.js';
 import { joinEvent } from './services/joinEvent.js';
@@ -109,6 +110,9 @@ export const eventsRoutes = async (fastify: FastifyInstance) => {
     } catch (error) {
       if (error instanceof ParticipantNotFoundError) {
         throw new AppError(404, ErrorType.PARTICIPANT_NOT_FOUND, 'Participant not found');
+      }
+      if (error instanceof CreatorCannotLeaveError) {
+        throw new AppError(400, ErrorType.CREATOR_CANNOT_LEAVE, 'Creator cannot leave own event');
       }
       throw error;
     }

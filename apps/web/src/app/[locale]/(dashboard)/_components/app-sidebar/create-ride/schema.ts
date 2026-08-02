@@ -9,6 +9,8 @@ import {
   LAT_MIN,
   LNG_MAX,
   LNG_MIN,
+  MAX_PARTICIPANTS_MAX,
+  MAX_PARTICIPANTS_MIN,
   MIN_LEAD_HOURS,
   PACE_MAX_KMH,
   PACE_MIN_KMH,
@@ -56,6 +58,13 @@ export const createRideSchema = z.object({
   pace_policy: z.enum(PACE_POLICIES),
   formation_policy: z.enum(FORMATION_POLICIES),
   experience_policy: z.enum(EXPERIENCE_POLICIES),
+  // undefined = no cap
+  max_participants: z
+    .number(APP_ERROR_TYPES.MAX_PARTICIPANTS_OUT_OF_RANGE)
+    .int(APP_ERROR_TYPES.MAX_PARTICIPANTS_OUT_OF_RANGE)
+    .min(MAX_PARTICIPANTS_MIN, APP_ERROR_TYPES.MAX_PARTICIPANTS_OUT_OF_RANGE)
+    .max(MAX_PARTICIPANTS_MAX, APP_ERROR_TYPES.MAX_PARTICIPANTS_OUT_OF_RANGE)
+    .optional(),
   average_pace_kmh: z
     .number(APP_ERROR_TYPES.PACE_REQUIRED)
     .int(APP_ERROR_TYPES.PACE_OUT_OF_RANGE)

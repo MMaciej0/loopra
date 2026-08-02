@@ -44,6 +44,7 @@ describe('GET /events/:id', () => {
     expect(data.country).toBe('PL');
     expect(data.creator.id).toBe(auth.userId);
     expect(data.creator.password_hash).toBeUndefined();
-    expect(data.participants).toEqual([]);
+    expect(data.participants).toHaveLength(1);
+    expect(data.participants[0].user_id).toBe(auth.userId);
   });
 });

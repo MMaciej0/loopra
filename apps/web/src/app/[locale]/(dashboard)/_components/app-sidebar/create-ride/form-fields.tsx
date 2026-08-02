@@ -3,7 +3,12 @@
 import { useFormContext } from 'react-hook-form';
 import { useTranslations } from 'next-intl';
 import { Field } from '@/components/ui/field';
-import { MIN_LEAD_HOURS, TITLE_MIN_LENGTH } from '@/config/ride';
+import {
+  MAX_PARTICIPANTS_MAX,
+  MAX_PARTICIPANTS_MIN,
+  MIN_LEAD_HOURS,
+  TITLE_MIN_LENGTH,
+} from '@/config/ride';
 import { DividerHeader } from './divider-header';
 import { LocationInput } from './location/input';
 import { DateTimeInput } from './date-time-input';
@@ -51,6 +56,28 @@ export function FormFields({ onEditLocation }: { onEditLocation: () => void }) {
             </p>
           )}
         </div>
+
+        <Field
+          id="max_participants"
+          type="number"
+          inputMode="numeric"
+          min={MAX_PARTICIPANTS_MIN}
+          max={MAX_PARTICIPANTS_MAX}
+          label={t('maxParticipantsLabel')}
+          placeholder={t('maxParticipantsPlaceholder')}
+          hint={t('maxParticipantsHint')}
+          size="sm"
+          {...register('max_participants', {
+            setValueAs: (v) => (v === '' || v === null ? undefined : Number(v)),
+          })}
+          error={
+            errors.max_participants?.message &&
+            tErrors(errors.max_participants.message, {
+              min: MAX_PARTICIPANTS_MIN,
+              max: MAX_PARTICIPANTS_MAX,
+            })
+          }
+        />
       </div>
       <Separator className="my-6 w-full" />
       <div className="pb-6">

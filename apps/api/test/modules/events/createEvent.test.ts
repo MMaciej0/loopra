@@ -45,6 +45,38 @@ describe('POST /events', () => {
     expect(response.statusCode).toBe(200);
   });
 
+  it('seats the creator as a participant', async () => {
+    const createResponse = await appRef.app.inject({
+      method: 'POST',
+      url: '/events',
+      body: eventBody,
+      cookies: { accessToken: auth.accessToken },
+    });
+
+    const eventId = createResponse.json().data.id as string;
+
+    const response = await appRef.app.inject({
+      method: 'GET',
+      url: `/events/${eventId}`,
+      cookies: { accessToken: auth.accessToken },
+    });
+
+    const { participants } = response.json().data;
+    expect(participants).toHaveLength(1);
+    expect(participants[0].user_id).toBe(auth.userId);
+  });
+
+  it('returns 400 when max_participants leaves no room beside the creator', async () => {
+    const response = await appRef.app.inject({
+      method: 'POST',
+      url: '/events',
+      body: { ...eventBody, max_participants: 1 },
+      cookies: { accessToken: auth.accessToken },
+    });
+
+    expect(response.statusCode).toBe(400);
+  });
+
   it.each(['road', 'gravel', 'mtb', 'trekking', 'urban', 'electric', 'cyclocross', 'tt'])(
     'accepts bike_type %s',
     async (bike_type) => {
