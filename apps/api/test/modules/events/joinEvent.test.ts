@@ -90,7 +90,8 @@ describe('POST /events/:eventId/join', () => {
         user_id: creatorAuth.userId,
         city: 'Warsaw',
         country: 'Poland',
-        max_participants: 1,
+        // the creator holds one of these two seats
+        max_participants: 2,
       }),
       cookies: { accessToken: creatorAuth.accessToken },
     });

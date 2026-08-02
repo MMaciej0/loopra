@@ -35,7 +35,10 @@
     "averagePaceLabel": "Średnie tempo (km/h)",
     "averagePacePlaceholder": "np. 28",
     "formationPolicyLabel": "Organizacja jazdy",
-    "experiencePolicyLabel": "Wymagane doświadczenie"
+    "experiencePolicyLabel": "Wymagane doświadczenie",
+    "maxParticipantsLabel": "Limit uczestników",
+    "maxParticipantsPlaceholder": "np. 15",
+    "maxParticipantsHint": "Puste = bez limitu"
   },
   "BikeTypes": {
     "all": "Wszystkie",
@@ -141,7 +144,8 @@
     "START_TOO_SOON": "Start musi być za co najmniej {hours, plural, one {# godzinę} few {# godziny} many {# godzin} other {# godziny}}.",
     "UNKNOWN": "Coś poszło nie tak. Spróbuj ponownie.",
     "PACE_REQUIRED": "Podaj średnie tempo prowadzącego.",
-    "PACE_OUT_OF_RANGE": "Tempo musi mieścić się między {min} a {max} km/h."
+    "PACE_OUT_OF_RANGE": "Tempo musi mieścić się między {min} a {max} km/h.",
+    "MAX_PARTICIPANTS_OUT_OF_RANGE": "Limit musi mieścić się między {min} a {max} osobami."
   },
   "Auth": {
     "or": "LUB",

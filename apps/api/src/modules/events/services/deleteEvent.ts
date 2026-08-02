@@ -1,4 +1,4 @@
-import { count, eq } from 'drizzle-orm';
+import { and, count, eq, ne } from 'drizzle-orm';
 import { Db } from '../../../db/index.js';
 import { event_participants, events } from '../../../db/schema.js';
 import { EventNotFoundError, EventHasParticipantsError } from '../errors.js';
@@ -10,10 +10,11 @@ export const deleteEvent = async (db: Db, id: string, creatorId: string) => {
     throw new EventNotFoundError();
   }
 
+  // the creator always holds a row of their own — only other riders block deletion
   const [{ count: participantCount }] = await db
     .select({ count: count() })
     .from(event_participants)
-    .where(eq(event_participants.event_id, id));
+    .where(and(eq(event_participants.event_id, id), ne(event_participants.user_id, creatorId)));
 
   if (Number(participantCount) > 0) {
     throw new EventHasParticipantsError();

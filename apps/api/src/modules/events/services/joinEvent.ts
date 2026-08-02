@@ -15,10 +15,8 @@ export const joinEvent = async (db: Db, userId: string, eventId: string) => {
     throw new EventNotFoundError();
   }
 
-  if (
-    existingEvent.participants.some((participant) => participant.user_id === userId) ||
-    existingEvent.creator_id === userId
-  ) {
+  // the creator has a participant row of their own, so this covers them too
+  if (existingEvent.participants.some((participant) => participant.user_id === userId)) {
     throw new ParticipantExistsError();
   }
 
