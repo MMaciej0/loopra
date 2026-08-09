@@ -20,6 +20,7 @@ import { DropPolicyInput } from './drop-policy-input';
 import { PacePolicyInput } from './pace-policy-input';
 import { FormationPolicyInput } from './formation-policy-input';
 import { ExperiencePolicyInput } from './experience-policy-input';
+import { Textarea } from '@/components/ui/textarea';
 
 export function FormFields({ onEditLocation }: { onEditLocation: () => void }) {
   const t = useTranslations('CreateRide');
@@ -97,6 +98,17 @@ export function FormFields({ onEditLocation }: { onEditLocation: () => void }) {
         <FormationPolicyInput />
         <ExperiencePolicyInput />
       </div>
+      <Separator className="my-6 w-full" />
+      <div className="pb-6">
+        <DividerHeader text={t('additionalInfoSection')} />
+      </div>
+      <Textarea
+        id="description"
+        aria-label={t('additionalInfoSection')}
+        placeholder={t('descriptionPlaceholder')}
+        className="bg-secondary font-ui hover:border-foreground/30 focus-visible:border-foreground min-h-32 rounded-[10px] px-3 py-2 transition-[border-color] duration-150 focus-visible:ring-0 md:text-sm"
+        {...register('description')}
+      />
     </div>
   );
 }

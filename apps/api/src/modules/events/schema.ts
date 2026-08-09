@@ -27,7 +27,7 @@ export const ListEventsQuerySchema = z
 
 export const CreateEventBodySchema = z
   .object({
-    title: z.string().min(5).max(50),
+    title: z.string().trim().min(5).max(50),
     description: z.string().optional(),
     start_location: z
       .object({
@@ -81,7 +81,7 @@ export const CreateEventBodySchema = z
 
 export const UpdateEventBodySchema = z
   .object({
-    title: z.string().min(5).max(50).optional(),
+    title: z.string().trim().min(5).max(50).optional(),
     description: z.string().optional(),
     start_location: z
       .object({
