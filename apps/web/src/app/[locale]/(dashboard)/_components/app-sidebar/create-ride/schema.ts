@@ -29,8 +29,10 @@ export const createRideSchema = z.object({
   ride_type: z.enum(RIDE_TYPES),
   title: z
     .string()
+    .trim()
     .min(TITLE_MIN_LENGTH, APP_ERROR_TYPES.TITLE_TOO_SHORT)
     .max(TITLE_MAX_LENGTH, APP_ERROR_TYPES.TITLE_TOO_LONG),
+  description: z.string().trim().optional(),
   start_location: coordsSchema
     .optional()
     .refine((v) => v !== undefined, APP_ERROR_TYPES.START_POINT_REQUIRED),

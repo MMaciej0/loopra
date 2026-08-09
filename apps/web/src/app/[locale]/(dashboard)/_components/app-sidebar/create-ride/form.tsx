@@ -32,9 +32,8 @@ export function RideForm() {
     defaultValues: {
       ride_type: 'casual',
       title: '',
+      description: '',
       start_location: undefined,
-      // key must exist: zod skips optional fields whose key is absent, which
-      // would silently drop the start_time checks
       start_time: undefined,
       start_location_name: '',
       city: '',

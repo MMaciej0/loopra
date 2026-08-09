@@ -38,7 +38,9 @@
     "experiencePolicyLabel": "Wymagane doświadczenie",
     "maxParticipantsLabel": "Limit uczestników",
     "maxParticipantsPlaceholder": "np. 15",
-    "maxParticipantsHint": "Puste = bez limitu"
+    "maxParticipantsHint": "Puste = bez limitu",
+    "additionalInfoSection": "DODATKOWE INFORMACJE",
+    "descriptionPlaceholder": "Dodatkowe wymagania lub informacje"
   },
   "BikeTypes": {
     "all": "Wszystkie",

@@ -38,7 +38,9 @@
     "experiencePolicyLabel": "Experience needed",
     "maxParticipantsLabel": "Rider limit",
     "maxParticipantsPlaceholder": "e.g. 15",
-    "maxParticipantsHint": "Leave empty for no limit"
+    "maxParticipantsHint": "Leave empty for no limit",
+    "additionalInfoSection": "ADDITIONAL INFO",
+    "descriptionPlaceholder": "Additional requirements or info"
   },
   "BikeTypes": {
     "all": "All",
