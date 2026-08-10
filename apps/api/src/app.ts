@@ -5,6 +5,7 @@ import authPlugin from './plugins/auth.js';
 import oauthPlugin from './plugins/oauth.js';
 import mailerPlugin from './plugins/mailer.js';
 import corsPlugin from './plugins/cors.js';
+import storagePlugin from './plugins/storage.js';
 import globalErrorHandler from './plugins/globalErrorHandler.js';
 
 import authModule from './modules/auth/index.js';
@@ -23,6 +24,7 @@ export const buildApp = () => {
   app.register(authPlugin);
   app.register(oauthPlugin);
   app.register(mailerPlugin);
+  app.register(storagePlugin);
 
   app.register(globalErrorHandler);
 
