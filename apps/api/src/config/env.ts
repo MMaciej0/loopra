@@ -11,6 +11,11 @@ const schema = z.object({
   GOOGLE_CLIENT_ID: z.string(),
   GOOGLE_CLIENT_SECRET: z.string(),
   GOOGLE_CALLBACK_URL: z.url(),
+  S3_ENDPOINT: z.url(),
+  S3_BUCKET: z.string(),
+  S3_ACCESS_KEY_ID: z.string(),
+  S3_SECRET_ACCESS_KEY: z.string(),
+  S3_REGION: z.string().default('auto'),
 });
 
 export const {
@@ -24,4 +29,9 @@ export const {
   GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET,
   GOOGLE_CALLBACK_URL,
+  S3_ENDPOINT,
+  S3_BUCKET,
+  S3_ACCESS_KEY_ID,
+  S3_SECRET_ACCESS_KEY,
+  S3_REGION,
 } = schema.parse(process.env);
