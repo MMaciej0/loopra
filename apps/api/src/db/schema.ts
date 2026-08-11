@@ -75,6 +75,19 @@ export const bikeTypeEnum = pgEnum('bike_type', [
   'tt',
 ]);
 
+export const routes = pgTable('routes', {
+  id: uuid().primaryKey().defaultRandom(),
+  user_id: uuid().references(() => users.id, { onDelete: 'set null' }),
+  name: text().notNull(),
+  s3_key: text().notNull().unique(),
+  distance_km: numeric({ precision: 6, scale: 2 }),
+  descent_m: numeric({ precision: 6, scale: 2 }),
+  ascent_m: numeric({ precision: 6, scale: 2 }),
+  point_count: integer(),
+  created_at: timestamp({ withTimezone: true }).notNull().defaultNow(),
+  updated_at: timestamp({ withTimezone: true }).notNull().defaultNow(),
+});
+
 export const events = pgTable('events', {
   id: uuid().primaryKey().defaultRandom(),
   title: text().notNull(),
@@ -82,6 +95,7 @@ export const events = pgTable('events', {
   creator_id: uuid()
     .notNull()
     .references(() => users.id, { onDelete: 'cascade' }),
+  route_id: uuid().references(() => routes.id, { onDelete: 'set null' }),
   start_location: geometry({ type: 'point', mode: 'xy', srid: 4326 }),
   start_location_name: text(),
   city: text(),
@@ -125,9 +139,15 @@ export const event_participants = pgTable(
 export const eventsRelations = relations(events, ({ many, one }) => ({
   participants: many(event_participants),
   creator: one(users, { fields: [events.creator_id], references: [users.id] }),
+  route: one(routes, { fields: [events.route_id], references: [routes.id] }),
 }));
 
 export const eventParticipantsRelations = relations(event_participants, ({ one }) => ({
   event: one(events, { fields: [event_participants.event_id], references: [events.id] }),
   user: one(users, { fields: [event_participants.user_id], references: [users.id] }),
+}));
+
+export const routesRelations = relations(routes, ({ one, many }) => ({
+  user: one(users, { fields: [routes.user_id], references: [users.id] }),
+  events: many(events),
 }));
