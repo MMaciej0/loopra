@@ -1,0 +1,2 @@
+CREATE TYPE "public"."experience_policy" AS ENUM('first_timers', 'moderate', 'advanced');--> statement-breakpoint
+ALTER TABLE "events" ADD COLUMN "experience_policy" "experience_policy" DEFAULT 'first_timers' NOT NULL;
