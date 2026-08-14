@@ -1,0 +1,30 @@
+{
+  "name": "@loopra/gpx",
+  "version": "1.0.0",
+  "description": "",
+  "private": true,
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.28.0",
+  "devDependencies": {
+    "@types/geojson": "^7946.0.16",
+    "prettier": "^3.8.1",
+    "tsx": "^4.21.0",
+    "typescript": "5.9.3"
+  },
+  "dependencies": {
+    "@tmcw/togeojson": "^7.1.2",
+    "@turf/length": "^7.4.0",
+    "@xmldom/xmldom": "^0.9.10"
+  }
+}

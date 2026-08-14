@@ -8,7 +8,8 @@ COPY pnpm-workspace.yaml ./
 COPY pnpm-lock.yaml ./
 COPY package.json ./
 COPY apps/api/package.json ./apps/api/
+COPY packages/gpx/package.json ./packages/gpx/
 
-RUN pnpm install --frozen-lockfile --filter api
+RUN pnpm install --frozen-lockfile --filter api...
 
 COPY . ./
