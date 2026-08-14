@@ -10,6 +10,7 @@ services:
       - .:/app
       - /app/node_modules
       - /app/apps/api/node_modules
+      - /app/packages/gpx/node_modules
     command: "tail -f /dev/null"
     depends_on:
       postgres:
