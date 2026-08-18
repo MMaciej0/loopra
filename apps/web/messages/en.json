@@ -147,7 +147,8 @@
     "UNKNOWN": "Something went wrong. Try again.",
     "PACE_REQUIRED": "Enter the average pace the leader will hold.",
     "PACE_OUT_OF_RANGE": "Pace must be between {min} and {max} km/h.",
-    "MAX_PARTICIPANTS_OUT_OF_RANGE": "Limit must be between {min} and {max} riders."
+    "MAX_PARTICIPANTS_OUT_OF_RANGE": "Limit must be between {min} and {max} riders.",
+    "FILE_TOO_LARGE": "File is too large. Maximum size is {maxSizeMb} MB."
   },
   "Auth": {
     "or": "OR",

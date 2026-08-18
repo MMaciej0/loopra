@@ -18,6 +18,7 @@ export const ErrorType = {
   CREATOR_CANNOT_LEAVE: 'CREATOR_CANNOT_LEAVE',
   EMAIL_NOT_VERIFIED: 'EMAIL_NOT_VERIFIED',
   RATE_LIMIT_EXCEEDED: 'RATE_LIMIT_EXCEEDED',
+  FILE_TOO_LARGE: 'FILE_TOO_LARGE',
 } as const;
 
 export type ErrorType = (typeof ErrorType)[keyof typeof ErrorType];

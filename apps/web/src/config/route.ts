@@ -1,0 +1,2 @@
+export const MAX_GPX_FILE_SIZE_MB = 10;
+export const MAX_GPX_FILE_SIZE_BYTES = MAX_GPX_FILE_SIZE_MB * 1024 * 1024;
