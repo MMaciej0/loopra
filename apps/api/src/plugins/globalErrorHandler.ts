@@ -12,7 +12,21 @@ export default fastifyPlugin((fastify: FastifyInstance) => {
       });
     }
 
+    if (
+      error instanceof fastify.multipartErrors.RequestFileTooLargeError ||
+      error instanceof fastify.multipartErrors.FieldsLimitError ||
+      error instanceof fastify.multipartErrors.FilesLimitError ||
+      error instanceof fastify.multipartErrors.PartsLimitError
+    ) {
+      return reply.status(413).send({
+        type: ErrorType.FILE_TOO_LARGE,
+        message: 'File too large',
+      });
+    }
+
     fastify.log.error(error);
-    return reply.status(500).send({ type: ErrorType.INTERNAL_ERROR, message: 'Internal server error' });
+    return reply
+      .status(500)
+      .send({ type: ErrorType.INTERNAL_ERROR, message: 'Internal server error' });
   });
 });
