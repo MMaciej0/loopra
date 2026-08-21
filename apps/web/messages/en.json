@@ -148,7 +148,10 @@
     "PACE_REQUIRED": "Enter the average pace the leader will hold.",
     "PACE_OUT_OF_RANGE": "Pace must be between {min} and {max} km/h.",
     "MAX_PARTICIPANTS_OUT_OF_RANGE": "Limit must be between {min} and {max} riders.",
-    "FILE_TOO_LARGE": "File is too large. Maximum size is {maxSizeMb} MB."
+    "FILE_TOO_LARGE": "File is too large. Maximum size is {maxSizeMb} MB.",
+    "FILE_REQUIRED": "Attach a GPX file.",
+    "INVALID_GPX": "This file is not a valid GPX route.",
+    "ROUTE_NOT_FOUND": "That route is no longer available. Upload it again."
   },
   "Auth": {
     "or": "OR",

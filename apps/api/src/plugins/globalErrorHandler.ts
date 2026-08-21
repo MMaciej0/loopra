@@ -24,6 +24,13 @@ export default fastifyPlugin((fastify: FastifyInstance) => {
       });
     }
 
+    if (error instanceof fastify.multipartErrors.InvalidMultipartContentTypeError) {
+      return reply.status(400).send({
+        type: ErrorType.FILE_REQUIRED,
+        message: 'File is required',
+      });
+    }
+
     fastify.log.error(error);
     return reply
       .status(500)
