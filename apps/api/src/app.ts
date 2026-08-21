@@ -12,6 +12,7 @@ import multipartPlugin from './plugins/multipart.js';
 import authModule from './modules/auth/index.js';
 import usersModule from './modules/users/index.js';
 import eventsModule from './modules/events/index.js';
+import routesModule from './modules/routes/index.js';
 
 export const buildApp = () => {
   const app = Fastify({
@@ -42,6 +43,7 @@ export const buildApp = () => {
 
     protectedApp.register(usersModule, { prefix: '/users' });
     protectedApp.register(eventsModule, { prefix: '/events' });
+    protectedApp.register(routesModule, { prefix: '/routes' });
   });
 
   return app;

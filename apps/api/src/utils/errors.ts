@@ -19,6 +19,9 @@ export const ErrorType = {
   EMAIL_NOT_VERIFIED: 'EMAIL_NOT_VERIFIED',
   RATE_LIMIT_EXCEEDED: 'RATE_LIMIT_EXCEEDED',
   FILE_TOO_LARGE: 'FILE_TOO_LARGE',
+  FILE_REQUIRED: 'FILE_REQUIRED',
+  INVALID_GPX: 'INVALID_GPX',
+  ROUTE_NOT_FOUND: 'ROUTE_NOT_FOUND',
 } as const;
 
 export type ErrorType = (typeof ErrorType)[keyof typeof ErrorType];

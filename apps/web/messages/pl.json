@@ -148,7 +148,10 @@
     "PACE_REQUIRED": "Podaj średnie tempo prowadzącego.",
     "PACE_OUT_OF_RANGE": "Tempo musi mieścić się między {min} a {max} km/h.",
     "MAX_PARTICIPANTS_OUT_OF_RANGE": "Limit musi mieścić się między {min} a {max} osobami.",
-    "FILE_TOO_LARGE": "Plik jest za duży. Maksymalny rozmiar to {maxSizeMb} MB."
+    "FILE_TOO_LARGE": "Plik jest za duży. Maksymalny rozmiar to {maxSizeMb} MB.",
+    "FILE_REQUIRED": "Dodaj plik GPX.",
+    "INVALID_GPX": "Ten plik nie jest prawidłową trasą GPX.",
+    "ROUTE_NOT_FOUND": "Ta trasa nie jest już dostępna. Wgraj ją ponownie."
   },
   "Auth": {
     "or": "LUB",

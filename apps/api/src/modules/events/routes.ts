@@ -13,6 +13,7 @@ import {
   MaxParticipantsError,
   ParticipantNotFoundError,
   CreatorCannotLeaveError,
+  RouteNotFoundError,
 } from './errors.js';
 import { AppError, ErrorType } from '../../utils/errors.js';
 import { joinEvent } from './services/joinEvent.js';
@@ -29,8 +30,16 @@ export const eventsRoutes = async (fastify: FastifyInstance) => {
   fastify.post('/', { preHandler: fastify.requireVerifiedEmail }, async (request, reply) => {
     const parsedBody = parseBody(request.body, CreateEventBodySchema);
     const creatorId = request.user.sub;
-    const [newEvent] = await createEvent(fastify.db, creatorId, parsedBody);
-    return reply.send({ data: newEvent });
+
+    try {
+      const [newEvent] = await createEvent(fastify.db, creatorId, parsedBody);
+      return reply.send({ data: newEvent });
+    } catch (error) {
+      if (error instanceof RouteNotFoundError) {
+        throw new AppError(404, ErrorType.ROUTE_NOT_FOUND, 'Route not found');
+      }
+      throw error;
+    }
   });
 
   fastify.get('/:id', async (request, reply) => {

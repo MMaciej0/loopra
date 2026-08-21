@@ -66,6 +66,7 @@ export const CreateEventBodySchema = z
     // 2 = the creator plus one other rider; the creator holds a seat
     max_participants: z.coerce.number().int().min(2).optional(),
     is_private: z.boolean().default(false),
+    route_id: z.uuid().optional(),
   })
   .refine((f) => {
     const startTime = f.start_time;
