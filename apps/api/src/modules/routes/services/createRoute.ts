@@ -30,7 +30,7 @@ export const createRoute = async (
     throw new InvalidGpxError(error instanceof Error ? error.message : undefined);
   }
 
-  const { ascentM, descentM, distanceKm, pointCount, name } = parsed;
+  const { ascentM, descentM, distanceKm, pointCount, name, simplifiedTrack } = parsed;
 
   await uploadToS3(s3, buffer, s3Key, 'application/gpx+xml');
 
@@ -45,6 +45,7 @@ export const createRoute = async (
         distance_km: distanceKm.toString(),
         point_count: pointCount,
         name: toRouteName(name, filename),
+        simplified_track: simplifiedTrack,
       })
       .returning();
 

@@ -1,5 +1,6 @@
 import { it, describe, expect, vi, beforeEach } from 'vitest';
 import { readFileSync } from 'node:fs';
+import { sql } from 'drizzle-orm';
 import { useApp } from '../../helpers/app.js';
 import { useAuthenticatedUser } from '../../helpers/auth.js';
 import { uploadToS3 } from '../../../src/utils/s3.js';
@@ -9,6 +10,9 @@ vi.mock('../../../src/utils/s3.js');
 
 const namedFixture = readFileSync(new URL('../../fixtures/route.gpx', import.meta.url));
 const unnamedFixture = readFileSync(new URL('../../fixtures/route-unnamed.gpx', import.meta.url));
+const multisegmentFixture = readFileSync(
+  new URL('../../fixtures/route-multisegment.gpx', import.meta.url),
+);
 
 describe('POST /routes', () => {
   const appRef = useApp();
@@ -83,6 +87,49 @@ describe('POST /routes', () => {
       point_count: 4,
       user_id: auth.userId,
     });
+  });
+
+  it('stores the simplified track as a queryable jsonb array', async () => {
+    const response = await upload(namedFixture);
+
+    expect(response.json().data.simplified_track).toEqual([
+      [
+        [21.01, 52.23, 100],
+        [21.01, 52.231, 105],
+        [21.01, 52.232, 103],
+        [21.01, 52.233, 110],
+      ],
+    ]);
+
+    const stored = await appRef.app.db.execute(
+      sql`select jsonb_typeof(simplified_track) as kind,
+                 jsonb_array_length(simplified_track) as segments,
+                 jsonb_array_length(simplified_track->0) as points
+          from routes where id = ${response.json().data.id}`,
+    );
+
+    expect(stored.rows[0]).toEqual({ kind: 'array', segments: 1, points: 4 });
+  });
+
+  it('keeps segments nested for a multi-segment track', async () => {
+    const response = await upload(multisegmentFixture, 'two-segments.gpx');
+
+    expect(response.json().data).toMatchObject({
+      name: 'Two Segment Ride',
+      distance_km: '0.56',
+      ascent_m: '22.00',
+      descent_m: '7.00',
+      point_count: 7,
+    });
+
+    const stored = await appRef.app.db.execute(
+      sql`select jsonb_array_length(simplified_track) as segments,
+                 jsonb_array_length(simplified_track->0) as first_segment,
+                 jsonb_array_length(simplified_track->1) as second_segment
+          from routes where id = ${response.json().data.id}`,
+    );
+
+    expect(stored.rows[0]).toEqual({ segments: 2, first_segment: 4, second_segment: 3 });
   });
 
   it('uploads the file under a namespaced key before inserting', async () => {

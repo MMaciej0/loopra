@@ -92,6 +92,13 @@
       "when": 1786473100980,
       "tag": "0012_wooden_talkback",
       "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1787327329921,
+      "tag": "0013_low_kid_colt",
+      "breakpoints": true
     }
   ]
 }

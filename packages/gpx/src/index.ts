@@ -1,9 +1,11 @@
 import { DOMParser } from '@xmldom/xmldom';
 import { gpx } from '@tmcw/togeojson';
 import { length } from '@turf/length';
-import type { Geometry, Position } from 'geojson';
-
-const ELEVATION_THRESHOLD_M = 1;
+import { toSegments } from './segments.js';
+import { measureElevation } from './elevation.js';
+import { countPoints, round2 } from './utils.js';
+import { simplifyTrack } from './track-simplifier.js';
+import type { Position } from 'geojson';
 
 export interface GpxMetadata {
   name: string | null;
@@ -11,61 +13,8 @@ export interface GpxMetadata {
   ascentM: number;
   descentM: number;
   pointCount: number;
+  simplifiedTrack: Position[][];
 }
-
-const round2 = (value: number) => Math.round(value * 100) / 100;
-
-const toSegments = (geometry: Geometry): Position[][] => {
-  if (geometry.type === 'LineString') {
-    return [geometry.coordinates];
-  }
-
-  if (geometry.type === 'MultiLineString') {
-    return geometry.coordinates;
-  }
-
-  throw new Error('Unsupported geometry type');
-};
-
-const countPoints = (segments: Position[][]): number => {
-  return segments.reduce((acc, segment) => acc + segment.length, 0);
-};
-
-const measureElevation = (segments: Position[][]): { ascentM: number; descentM: number } => {
-  let ascentM = 0;
-  let descentM = 0;
-
-  for (const segment of segments) {
-    let lastMesurement: number | null = null;
-
-    for (const point of segment) {
-      const elevation = point[2];
-
-      if (elevation === null || elevation === undefined) {
-        continue;
-      }
-
-      if (lastMesurement === null) {
-        lastMesurement = elevation;
-        continue;
-      }
-
-      const delta = elevation - lastMesurement;
-
-      if (Math.abs(delta) > ELEVATION_THRESHOLD_M) {
-        if (delta > 0) {
-          ascentM += delta;
-        } else {
-          descentM += -delta;
-        }
-
-        lastMesurement = elevation;
-      }
-    }
-  }
-
-  return { ascentM: round2(ascentM), descentM: round2(descentM) };
-};
 
 export const parseGPX = (gpxString: string): GpxMetadata => {
   const gpxDom = new DOMParser().parseFromString(gpxString, 'text/xml');
@@ -84,12 +33,14 @@ export const parseGPX = (gpxString: string): GpxMetadata => {
   }
 
   const { ascentM, descentM } = measureElevation(segments);
+  const pointsCount = countPoints(segments);
 
   return {
     name: feature.properties?.name || null,
     distanceKm: round2(length(feature, { units: 'kilometers' })),
-    pointCount: countPoints(segments),
+    pointCount: pointsCount,
     ascentM,
     descentM,
+    simplifiedTrack: simplifyTrack(segments, pointsCount),
   };
 };
