@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gpx version="1.1" creator="loopra-test" xmlns="http://www.topografix.com/GPX/1/1">
+  <trk>
+    <name>Two Segment Ride</name>
+    <trkseg>
+      <trkpt lat="52.230000" lon="21.010000">
+        <ele>100</ele>
+      </trkpt>
+      <trkpt lat="52.231000" lon="21.010000">
+        <ele>105</ele>
+      </trkpt>
+      <trkpt lat="52.232000" lon="21.010000">
+        <ele>103</ele>
+      </trkpt>
+      <trkpt lat="52.233000" lon="21.010000">
+        <ele>110</ele>
+      </trkpt>
+    </trkseg>
+    <trkseg>
+      <trkpt lat="52.250000" lon="21.010000">
+        <ele>200</ele>
+      </trkpt>
+      <trkpt lat="52.251000" lon="21.010000">
+        <ele>210</ele>
+      </trkpt>
+      <trkpt lat="52.252000" lon="21.010000">
+        <ele>205</ele>
+      </trkpt>
+    </trkseg>
+  </trk>
+</gpx>

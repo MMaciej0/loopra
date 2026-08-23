@@ -1,0 +1,1 @@
+ALTER TABLE "routes" ADD COLUMN "simplified_track" jsonb;

@@ -2,6 +2,7 @@ import {
   boolean,
   geometry,
   integer,
+  jsonb,
   numeric,
   pgEnum,
   pgTable,
@@ -12,6 +13,7 @@ import {
   uuid,
 } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
+import type { GpxMetadata } from '@loopra/gpx';
 
 export const users = pgTable('users', {
   id: uuid().primaryKey().defaultRandom(),
@@ -84,6 +86,7 @@ export const routes = pgTable('routes', {
   descent_m: numeric({ precision: 6, scale: 2 }),
   ascent_m: numeric({ precision: 6, scale: 2 }),
   point_count: integer(),
+  simplified_track: jsonb().$type<GpxMetadata['simplifiedTrack']>(),
   created_at: timestamp({ withTimezone: true }).notNull().defaultNow(),
   updated_at: timestamp({ withTimezone: true }).notNull().defaultNow(),
 });
