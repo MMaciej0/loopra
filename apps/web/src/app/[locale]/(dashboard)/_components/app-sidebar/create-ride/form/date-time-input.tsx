@@ -10,7 +10,7 @@ import { Clock } from 'lucide-react';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { MIN_LEAD_HOURS } from '@/config/ride';
-import type { CreateRideInput } from './schema';
+import type { CreateRideInput } from '../schema';
 
 export function DateTimeInput() {
   const t = useTranslations('CreateRide');

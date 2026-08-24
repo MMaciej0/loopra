@@ -6,7 +6,7 @@ import { InputLabel } from '@/components/ui/input-label';
 import { Button } from '@/components/ui/button';
 import { MapPin } from 'lucide-react';
 import { Text } from '@/components/ui/text';
-import type { CreateRideInput } from '../schema';
+import type { CreateRideInput } from '../../schema';
 
 export function LocationInput({ onOpen }: { onOpen: () => void }) {
   const t = useTranslations('CreateRide');
