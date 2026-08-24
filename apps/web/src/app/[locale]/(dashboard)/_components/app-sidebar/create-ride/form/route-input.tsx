@@ -54,6 +54,7 @@ export function RouteInput() {
       }
 
       setValue('route', payload.data, { shouldDirty: true });
+      setValue('distance_km', Number(payload.data.distance_km), { shouldDirty: true });
     } catch {
       setError(APP_ERROR_TYPES.UNKNOWN);
     } finally {
@@ -64,6 +65,7 @@ export function RouteInput() {
   const onRemove = () => {
     setError(null);
     setValue('route', undefined, { shouldDirty: true });
+    setValue('distance_km', undefined, { shouldDirty: true });
   };
 
   const onDrop = (event: React.DragEvent) => {

@@ -34,6 +34,7 @@ export function CreateRide() {
       experience_policy: 'first_timers',
       max_participants: undefined,
       route: undefined,
+      distance_km: undefined,
     },
   });
 
