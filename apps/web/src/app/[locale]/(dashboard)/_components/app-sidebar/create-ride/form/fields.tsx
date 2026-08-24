@@ -22,6 +22,7 @@ import { FormationPolicyInput } from './formation-policy-input';
 import { ExperiencePolicyInput } from './experience-policy-input';
 import { Textarea } from '@/components/ui/textarea';
 import { RouteInput } from './route-input';
+import { DistanceInput } from './distance-input';
 
 export function FormFields({ onEditLocation }: { onEditLocation: () => void }) {
   const t = useTranslations('CreateRide');
@@ -89,6 +90,7 @@ export function FormFields({ onEditLocation }: { onEditLocation: () => void }) {
         <BikeTypeInput />
         <RideTypeInput />
         <RouteInput />
+        <DistanceInput />
       </div>
       <Separator className="my-6 w-full" />
       <div className="pb-6">

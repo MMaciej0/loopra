@@ -7,6 +7,9 @@ export const TITLE_MAX_LENGTH = 50;
 export const MAX_PARTICIPANTS_MIN = 2;
 export const MAX_PARTICIPANTS_MAX = 500;
 
+export const DISTANCE_MIN_KM = 1;
+export const DISTANCE_MAX_KM = 9999;
+
 export const LNG_MIN = -180;
 export const LNG_MAX = 180;
 export const LAT_MIN = -90;

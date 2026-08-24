@@ -3,6 +3,8 @@ import { APP_ERROR_TYPES } from '@/utils/errors';
 import type { RouteMetadata } from '@/types/route';
 import {
   BIKE_TYPES,
+  DISTANCE_MAX_KM,
+  DISTANCE_MIN_KM,
   DROP_POLICIES,
   EXPERIENCE_POLICIES,
   FORMATION_POLICIES,
@@ -70,6 +72,11 @@ export const createRideSchema = z
       .max(MAX_PARTICIPANTS_MAX, APP_ERROR_TYPES.MAX_PARTICIPANTS_OUT_OF_RANGE)
       .optional(),
     route: z.custom<RouteMetadata>().optional(),
+    distance_km: z
+      .number(APP_ERROR_TYPES.DISTANCE_OUT_OF_RANGE)
+      .min(DISTANCE_MIN_KM, APP_ERROR_TYPES.DISTANCE_OUT_OF_RANGE)
+      .max(DISTANCE_MAX_KM, APP_ERROR_TYPES.DISTANCE_OUT_OF_RANGE)
+      .optional(),
     average_pace_kmh: z
       .number(APP_ERROR_TYPES.PACE_REQUIRED)
       .int(APP_ERROR_TYPES.PACE_OUT_OF_RANGE)
