@@ -3,7 +3,7 @@
 import { useFormContext, useWatch } from 'react-hook-form';
 import { useLocale, useTranslations } from 'next-intl';
 
-import type { CreateRideInput } from '../schema';
+import type { CreateRideInput } from '../../schema';
 import { useMap, type PickedLocation } from '@/hooks/use-map';
 import { useCallback } from 'react';
 import { StartingPointInputBanner } from './starting-point-input-banner';

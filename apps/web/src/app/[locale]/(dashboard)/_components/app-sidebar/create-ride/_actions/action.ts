@@ -8,6 +8,8 @@ export async function createRide(input: CreateRideInput) {
 
   const payload = {
     ...data,
+    route: undefined,
+    route_id: data.route?.id,
     description: data.description || undefined,
     bike_type: data.bike_type.toLowerCase() === 'all' ? undefined : data.bike_type,
     // drop a pace left over from switching away from the leader policy

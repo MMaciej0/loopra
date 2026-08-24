@@ -12,7 +12,7 @@ import {
 import { DividerHeader } from './divider-header';
 import { LocationInput } from './location/input';
 import { DateTimeInput } from './date-time-input';
-import type { CreateRideInput } from './schema';
+import type { CreateRideInput } from '../schema';
 import { Separator } from '@/components/ui/separator';
 import { BikeTypeInput } from './bike-type-input';
 import { RideTypeInput } from './ride-type-input';
@@ -21,6 +21,7 @@ import { PacePolicyInput } from './pace-policy-input';
 import { FormationPolicyInput } from './formation-policy-input';
 import { ExperiencePolicyInput } from './experience-policy-input';
 import { Textarea } from '@/components/ui/textarea';
+import { RouteInput } from './route-input';
 
 export function FormFields({ onEditLocation }: { onEditLocation: () => void }) {
   const t = useTranslations('CreateRide');
@@ -87,6 +88,7 @@ export function FormFields({ onEditLocation }: { onEditLocation: () => void }) {
       <div className="flex flex-col gap-y-4">
         <BikeTypeInput />
         <RideTypeInput />
+        <RouteInput />
       </div>
       <Separator className="my-6 w-full" />
       <div className="pb-6">

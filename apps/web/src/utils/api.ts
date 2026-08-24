@@ -106,11 +106,15 @@ export async function redirectToLogin(): Promise<never> {
   redirect('/login');
 }
 
+function jsonContentType(body: RequestInit['body']): Record<string, string> {
+  return body && !(body instanceof FormData) ? { 'Content-Type': 'application/json' } : {};
+}
+
 export async function apiRequest(url: string, options?: RequestInit) {
   return fetch(`${process.env.API_URL}${url}`, {
     ...options,
     headers: {
-      ...(options?.body ? { 'Content-Type': 'application/json' } : {}),
+      ...jsonContentType(options?.body),
       ...options?.headers,
     },
   });
@@ -120,7 +124,7 @@ export async function apiRequestWithCookie(url: string, cookie: string, options?
   return fetch(`${process.env.API_URL}${url}`, {
     ...options,
     headers: {
-      ...(options?.body ? { 'Content-Type': 'application/json' } : {}),
+      ...jsonContentType(options?.body),
       ...options?.headers,
       Cookie: cookie,
     },

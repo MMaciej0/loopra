@@ -1,12 +1,42 @@
 'use client';
 
+import { FormProvider, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { SidebarGroup, SidebarMenu, SidebarMenuItem } from '@/components/ui/sidebar';
 import { cn } from '@/lib/utils';
 import { TriggerButton } from './trigger';
 import { RideForm } from './form';
+import { createRideSchema, type CreateRideInput } from './schema';
 
 export function CreateRide() {
+  const form = useForm<CreateRideInput>({
+    resolver: zodResolver(createRideSchema),
+    mode: 'onBlur',
+    defaultValues: {
+      ride_type: 'casual',
+      title: '',
+      description: '',
+      start_location: undefined,
+      start_time: undefined,
+      start_location_name: '',
+      city: '',
+      country: '',
+      region: '',
+      municipality: '',
+      postal_code: '',
+      full_address: '',
+      bike_type: 'all',
+      drop_policy: 'no_drop',
+      pace_policy: 'slowest_rider',
+      average_pace_kmh: undefined,
+      formation_policy: 'free',
+      experience_policy: 'first_timers',
+      max_participants: undefined,
+      route: undefined,
+    },
+  });
+
   return (
     <Dialog>
       <SidebarGroup>
@@ -28,11 +58,13 @@ export function CreateRide() {
           'lg:top-1/2 lg:left-1/2 lg:h-[90vh] lg:w-[calc(100%-2rem)] lg:max-w-[1200px] lg:-translate-x-1/2 lg:-translate-y-1/2 lg:grid-cols-[392px_1fr] lg:rounded-[20px] lg:ring-1',
         )}
       >
-        {/* left preview pane — lg+ only */}
-        <aside className="bg-muted hidden p-4 md:px-7.5 md:pt-5.5 lg:block">preview</aside>
+        <FormProvider {...form}>
+          {/* left preview pane — lg+ only */}
+          <aside className="bg-muted hidden p-4 md:px-7.5 md:pt-5.5 lg:block">preview</aside>
 
-        {/* right form column */}
-        <RideForm />
+          {/* right form column */}
+          <RideForm />
+        </FormProvider>
       </DialogContent>
     </Dialog>
   );

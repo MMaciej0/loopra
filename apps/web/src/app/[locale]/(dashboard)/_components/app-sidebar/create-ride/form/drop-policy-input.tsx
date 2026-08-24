@@ -1,7 +1,7 @@
 import { DROP_POLICIES } from '@/config/ride';
 import { useTranslations } from 'next-intl';
 import { RadioCardGroup } from '@/components/ui/radio-card-group';
-import { CreateRideInput } from './schema';
+import { CreateRideInput } from '../schema';
 
 export function DropPolicyInput() {
   const t = useTranslations('CreateRide');

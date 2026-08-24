@@ -47,7 +47,16 @@ export const createRoute = async (
         name: toRouteName(name, filename),
         simplified_track: simplifiedTrack,
       })
-      .returning();
+      .returning({
+        id: routes.id,
+        user_id: routes.user_id,
+        name: routes.name,
+        distance_km: routes.distance_km,
+        ascent_m: routes.ascent_m,
+        descent_m: routes.descent_m,
+        point_count: routes.point_count,
+        simplified_track: routes.simplified_track,
+      });
 
     return newRoute;
   } catch (error) {

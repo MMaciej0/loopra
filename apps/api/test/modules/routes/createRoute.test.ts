@@ -140,7 +140,13 @@ describe('POST /routes', () => {
     expect(uploadToS3).toHaveBeenCalledTimes(1);
     expect(key).toMatch(new RegExp(`^routes/${auth.userId}/[0-9a-f-]{36}\\.gpx$`));
     expect(contentType).toBe('application/gpx+xml');
-    expect(response.json().data.s3_key).toBe(key);
+
+    const stored = await appRef.app.db.execute(
+      sql`select s3_key from routes where id = ${response.json().data.id}`,
+    );
+
+    expect(stored.rows[0]).toEqual({ s3_key: key });
+    expect(response.json().data).not.toHaveProperty('s3_key');
   });
 
   it('falls back to the uploaded filename when the gpx has no name', async () => {

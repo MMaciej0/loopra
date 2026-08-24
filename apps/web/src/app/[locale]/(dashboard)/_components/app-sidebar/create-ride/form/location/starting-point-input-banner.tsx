@@ -3,7 +3,7 @@
 import { useFormContext } from 'react-hook-form';
 import { useTranslations } from 'next-intl';
 import { Field } from '@/components/ui/field';
-import type { CreateRideInput } from '../schema';
+import type { CreateRideInput } from '../../schema';
 
 export function StartingPointInputBanner() {
   const t = useTranslations('CreateRide');
