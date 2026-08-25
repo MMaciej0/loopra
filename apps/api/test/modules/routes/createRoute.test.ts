@@ -89,26 +89,35 @@ describe('POST /routes', () => {
     });
   });
 
-  it('stores the simplified track as a queryable jsonb array', async () => {
+  it('stores the elevation profile as a queryable jsonb array', async () => {
     const response = await upload(namedFixture);
 
-    expect(response.json().data.simplified_track).toEqual([
+    expect(response.json().data.elevation_profile).toEqual([
       [
-        [21.01, 52.23, 100],
-        [21.01, 52.231, 105],
-        [21.01, 52.232, 103],
-        [21.01, 52.233, 110],
+        [0, 100],
+        [0.11, 105],
+        [0.22, 103],
+        [0.33, 110],
       ],
     ]);
 
     const stored = await appRef.app.db.execute(
-      sql`select jsonb_typeof(simplified_track) as kind,
-                 jsonb_array_length(simplified_track) as segments,
-                 jsonb_array_length(simplified_track->0) as points
+      sql`select jsonb_typeof(elevation_profile) as kind,
+                 jsonb_array_length(elevation_profile) as segments,
+                 jsonb_array_length(elevation_profile->0) as points
           from routes where id = ${response.json().data.id}`,
     );
 
     expect(stored.rows[0]).toEqual({ kind: 'array', segments: 1, points: 4 });
+  });
+
+  it('ends the profile at the stated distance', async () => {
+    const response = await upload(namedFixture);
+
+    const profile = response.json().data.elevation_profile.at(-1);
+
+    expect(profile.at(0)[0]).toBe(0);
+    expect(profile.at(-1)[0]).toBe(Number(response.json().data.distance_km));
   });
 
   it('keeps segments nested for a multi-segment track', async () => {
@@ -123,9 +132,9 @@ describe('POST /routes', () => {
     });
 
     const stored = await appRef.app.db.execute(
-      sql`select jsonb_array_length(simplified_track) as segments,
-                 jsonb_array_length(simplified_track->0) as first_segment,
-                 jsonb_array_length(simplified_track->1) as second_segment
+      sql`select jsonb_array_length(elevation_profile) as segments,
+                 jsonb_array_length(elevation_profile->0) as first_segment,
+                 jsonb_array_length(elevation_profile->1) as second_segment
           from routes where id = ${response.json().data.id}`,
     );
 

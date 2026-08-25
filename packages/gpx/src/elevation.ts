@@ -7,7 +7,7 @@ export const measureElevation = (segments: Position[][]): { ascentM: number; des
   let descentM = 0;
 
   for (const segment of segments) {
-    let lastMesurement: number | null = null;
+    let lastMeasurement: number | null = null;
 
     for (const point of segment) {
       const elevation = readPointElevation(point);
@@ -16,12 +16,12 @@ export const measureElevation = (segments: Position[][]): { ascentM: number; des
         continue;
       }
 
-      if (lastMesurement === null) {
-        lastMesurement = elevation;
+      if (lastMeasurement === null) {
+        lastMeasurement = elevation;
         continue;
       }
 
-      const delta = elevation - lastMesurement;
+      const delta = elevation - lastMeasurement;
 
       if (Math.abs(delta) > ELEVATION_THRESHOLD_M) {
         if (delta > 0) {
@@ -30,7 +30,7 @@ export const measureElevation = (segments: Position[][]): { ascentM: number; des
           descentM += -delta;
         }
 
-        lastMesurement = elevation;
+        lastMeasurement = elevation;
       }
     }
   }
