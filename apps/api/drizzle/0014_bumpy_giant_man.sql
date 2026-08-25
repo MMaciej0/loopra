@@ -1,0 +1,1 @@
+ALTER TABLE "routes" RENAME COLUMN "simplified_track" TO "elevation_profile";

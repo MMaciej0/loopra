@@ -99,6 +99,13 @@
       "when": 1787327329921,
       "tag": "0013_low_kid_colt",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1787679999835,
+      "tag": "0014_bumpy_giant_man",
+      "breakpoints": true
     }
   ]
 }

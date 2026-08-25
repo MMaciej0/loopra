@@ -1,11 +1,9 @@
 import { DOMParser } from '@xmldom/xmldom';
 import { gpx } from '@tmcw/togeojson';
-import { length } from '@turf/length';
 import { toSegments } from './segments.js';
 import { measureElevation } from './elevation.js';
-import { countPoints, round2 } from './utils.js';
-import { simplifyTrack } from './track-simplifier.js';
-import type { Position } from 'geojson';
+import { createElevationProfile } from './elevation-profile.js';
+import { countPoints } from './utils.js';
 
 export interface GpxMetadata {
   name: string | null;
@@ -13,7 +11,7 @@ export interface GpxMetadata {
   ascentM: number;
   descentM: number;
   pointCount: number;
-  simplifiedTrack: Position[][];
+  elevationProfile: [number, number][][];
 }
 
 export const parseGPX = (gpxString: string): GpxMetadata => {
@@ -33,14 +31,14 @@ export const parseGPX = (gpxString: string): GpxMetadata => {
   }
 
   const { ascentM, descentM } = measureElevation(segments);
-  const pointsCount = countPoints(segments);
+  const { distanceKm, elevationProfile } = createElevationProfile(segments);
 
   return {
     name: feature.properties?.name || null,
-    distanceKm: round2(length(feature, { units: 'kilometers' })),
-    pointCount: pointsCount,
+    distanceKm,
     ascentM,
     descentM,
-    simplifiedTrack: simplifyTrack(segments, pointsCount),
+    pointCount: countPoints(segments),
+    elevationProfile,
   };
 };
