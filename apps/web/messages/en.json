@@ -6,6 +6,8 @@
   },
   "CreateRide": {
     "eyebrow": "NEW RIDE",
+    "previewLabel": "LIVE PREVIEW",
+    "previewHint": "How riders see it",
     "backToDetails": "BACK TO DETAILS",
     "title": "Post your ride",
     "locationTitle": "Pick a location",
@@ -59,6 +61,20 @@
     "maxParticipantsHint": "Leave empty for no limit",
     "additionalInfoSection": "ADDITIONAL INFO",
     "descriptionPlaceholder": "Additional requirements or info"
+  },
+  "RideCard": {
+    "unitKm": "km",
+    "unitM": "m",
+    "elevationEmpty": "No elevation data",
+    "elevationMissing": "Add a route to preview the elevation",
+    "titlePlaceholder": "Your ride title",
+    "locationPlaceholder": "Starting point",
+    "datePlaceholder": "Date & time",
+    "creatorPlaceholder": "You",
+    "distance": "{value} km",
+    "paceAverage": "AVG: {value} km/h",
+    "participants": "{count}/{max}",
+    "participantsOpen": "{count} going"
   },
   "BikeTypes": {
     "all": "All",

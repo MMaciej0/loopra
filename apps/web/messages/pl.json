@@ -6,6 +6,8 @@
   },
   "CreateRide": {
     "eyebrow": "NOWA JAZDA",
+    "previewLabel": "PODGLĄD NA ŻYWO",
+    "previewHint": "Tak widzą to inni",
     "backToDetails": "WRÓĆ DO SZCZEGÓŁÓW",
     "title": "Opublikuj swoją jazdę",
     "locationTitle": "Wybierz lokalizację",
@@ -59,6 +61,20 @@
     "maxParticipantsHint": "Puste = bez limitu",
     "additionalInfoSection": "DODATKOWE INFORMACJE",
     "descriptionPlaceholder": "Dodatkowe wymagania lub informacje"
+  },
+  "RideCard": {
+    "unitKm": "km",
+    "unitM": "m",
+    "elevationEmpty": "Brak danych o przewyższeniu",
+    "elevationMissing": "Dodaj trasę, aby zobaczyć profil",
+    "titlePlaceholder": "Tytuł przejazdu",
+    "locationPlaceholder": "Miejsce startu",
+    "datePlaceholder": "Data i godzina",
+    "creatorPlaceholder": "Ty",
+    "distance": "{value} km",
+    "paceAverage": "ŚR.: {value} km/h",
+    "participants": "{count}/{max}",
+    "participantsOpen": "{count} jedzie"
   },
   "BikeTypes": {
     "all": "Wszystkie",

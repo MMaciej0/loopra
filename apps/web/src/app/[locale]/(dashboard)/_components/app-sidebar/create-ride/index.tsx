@@ -7,6 +7,7 @@ import { SidebarGroup, SidebarMenu, SidebarMenuItem } from '@/components/ui/side
 import { cn } from '@/lib/utils';
 import { TriggerButton } from './trigger';
 import { RideForm } from './form';
+import { RidePreview } from './aside';
 import { createRideSchema, type CreateRideInput } from './schema';
 
 export function CreateRide() {
@@ -61,7 +62,7 @@ export function CreateRide() {
       >
         <FormProvider {...form}>
           {/* left preview pane — lg+ only */}
-          <aside className="bg-muted hidden p-4 md:px-7.5 md:pt-5.5 lg:block">preview</aside>
+          <RidePreview />
 
           {/* right form column */}
           <RideForm />
