@@ -20,7 +20,12 @@ export function BikeTypeInput() {
       <div className="mt-2 flex flex-wrap gap-2">
         {BIKE_TYPE_OPTIONS.map((option) => (
           <label key={option}>
-            <input type="radio" value={option} {...register('bike_type')} className="peer sr-only" />
+            <input
+              type="radio"
+              value={option}
+              {...register('bike_type')}
+              className="peer sr-only"
+            />
             <span className={cn(buttonVariants({ variant: 'chip', size: 'sm' }))}>
               {tBikeTypes(option)}
             </span>
