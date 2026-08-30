@@ -11,20 +11,36 @@ import {
   timestamp,
   unique,
   uuid,
+  index,
 } from 'drizzle-orm/pg-core';
-import { relations } from 'drizzle-orm';
+import { relations, sql } from 'drizzle-orm';
 import type { GpxMetadata } from '@loopra/gpx';
 
-export const users = pgTable('users', {
-  id: uuid().primaryKey().defaultRandom(),
-  email: text().notNull().unique(),
-  password_hash: text(),
-  username: text(),
-  created_at: timestamp({ withTimezone: true }).notNull().defaultNow(),
-  updated_at: timestamp({ withTimezone: true }).notNull().defaultNow(),
-  email_verified: boolean().notNull().default(false),
-  email_verified_at: timestamp({ withTimezone: true }),
-});
+export const users = pgTable(
+  'users',
+  {
+    id: uuid().primaryKey().defaultRandom(),
+    email: text().notNull().unique(),
+    password_hash: text(),
+    username: text(),
+    created_at: timestamp({ withTimezone: true }).notNull().defaultNow(),
+    updated_at: timestamp({ withTimezone: true }).notNull().defaultNow(),
+    email_verified: boolean().notNull().default(false),
+    email_verified_at: timestamp({ withTimezone: true }),
+    favorite_location: geometry({ type: 'point', mode: 'xy', srid: 4326 }),
+    favorite_city: text(),
+    favorite_municipality: text(),
+    favorite_region: text(),
+    favorite_country: text(),
+    favorite_postal_code: text(),
+    location_prompt_dismissed_at: timestamp({ withTimezone: true }),
+  },
+  (t) => [
+    index('users_favorite_location_idx')
+      .using('gist', t.favorite_location)
+      .where(sql`${t.favorite_location} is not null`),
+  ],
+);
 
 export const oauth_accounts = pgTable(
   'oauth_accounts',
@@ -91,38 +107,42 @@ export const routes = pgTable('routes', {
   updated_at: timestamp({ withTimezone: true }).notNull().defaultNow(),
 });
 
-export const events = pgTable('events', {
-  id: uuid().primaryKey().defaultRandom(),
-  title: text().notNull(),
-  description: text(),
-  creator_id: uuid()
-    .notNull()
-    .references(() => users.id, { onDelete: 'cascade' }),
-  route_id: uuid().references(() => routes.id, { onDelete: 'set null' }),
-  start_location: geometry({ type: 'point', mode: 'xy', srid: 4326 }),
-  start_location_name: text(),
-  city: text(),
-  municipality: text(),
-  region: text(),
-  country: text(),
-  postal_code: text(),
-  full_address: text(),
-  start_time: timestamp({ withTimezone: true }).notNull(),
-  end_time: timestamp({ withTimezone: true }),
-  distance_km: numeric({ precision: 6, scale: 2 }),
-  average_pace_kmh: integer(),
-  ride_type: rideTypeEnum().notNull(),
-  bike_type: bikeTypeEnum(),
-  drop_policy: dropPolicyEnum().notNull().default('no_drop'),
-  pace_policy: pacePolicyEnum().notNull().default('slowest_rider'),
-  formation_policy: formationPolicyEnum().notNull().default('free'),
-  experience_policy: experiencePolicyEnum().notNull().default('first_timers'),
-  max_participants: integer(), // null = unlimited
-  is_private: boolean().notNull().default(false),
-  status: eventStatusEnum().notNull().default('open'),
-  created_at: timestamp({ withTimezone: true }).notNull().defaultNow(),
-  updated_at: timestamp({ withTimezone: true }).notNull().defaultNow(),
-});
+export const events = pgTable(
+  'events',
+  {
+    id: uuid().primaryKey().defaultRandom(),
+    title: text().notNull(),
+    description: text(),
+    creator_id: uuid()
+      .notNull()
+      .references(() => users.id, { onDelete: 'cascade' }),
+    route_id: uuid().references(() => routes.id, { onDelete: 'set null' }),
+    start_location: geometry({ type: 'point', mode: 'xy', srid: 4326 }),
+    start_location_name: text(),
+    city: text(),
+    municipality: text(),
+    region: text(),
+    country: text(),
+    postal_code: text(),
+    full_address: text(),
+    start_time: timestamp({ withTimezone: true }).notNull(),
+    end_time: timestamp({ withTimezone: true }),
+    distance_km: numeric({ precision: 6, scale: 2 }),
+    average_pace_kmh: integer(),
+    ride_type: rideTypeEnum().notNull(),
+    bike_type: bikeTypeEnum(),
+    drop_policy: dropPolicyEnum().notNull().default('no_drop'),
+    pace_policy: pacePolicyEnum().notNull().default('slowest_rider'),
+    formation_policy: formationPolicyEnum().notNull().default('free'),
+    experience_policy: experiencePolicyEnum().notNull().default('first_timers'),
+    max_participants: integer(), // null = unlimited
+    is_private: boolean().notNull().default(false),
+    status: eventStatusEnum().notNull().default('open'),
+    created_at: timestamp({ withTimezone: true }).notNull().defaultNow(),
+    updated_at: timestamp({ withTimezone: true }).notNull().defaultNow(),
+  },
+  (t) => [index('events_start_location_idx').using('gist', t.start_location)],
+);
 
 export const event_participants = pgTable(
   'event_participants',
