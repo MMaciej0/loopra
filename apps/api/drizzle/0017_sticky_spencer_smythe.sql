@@ -1,0 +1,1 @@
+DROP INDEX "users_favorite_location_idx";
