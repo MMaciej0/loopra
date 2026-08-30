@@ -11,13 +11,14 @@ export function LogoutButton() {
     <Button
       loading={isPending}
       variant="outline"
+      size="sm"
       onClick={() =>
         startTransition(async () => {
           await logout();
         })
       }
     >
-      Logout
+      Log out
     </Button>
   );
 }
