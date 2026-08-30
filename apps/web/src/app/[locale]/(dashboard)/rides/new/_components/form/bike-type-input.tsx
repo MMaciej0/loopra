@@ -1,8 +1,10 @@
+'use client';
+
 import { BIKE_TYPES } from '@/config/ride';
 import { buttonVariants } from '@/components/ui/button';
 import { useFormContext } from 'react-hook-form';
 import { useTranslations } from 'next-intl';
-import { CreateRideInput } from '../schema';
+import { CreateRideInput } from '../../schema';
 import { cn } from '@/lib/utils';
 
 const BIKE_TYPE_OPTIONS = ['all', ...BIKE_TYPES] as const;

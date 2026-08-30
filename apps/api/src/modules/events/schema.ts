@@ -35,7 +35,7 @@ export const CreateEventBodySchema = z
         y: z.coerce.number().min(-90).max(90),
       })
       .optional(),
-    start_location_name: z.string().optional(),
+    start_location_name: z.string().trim().max(40).optional(),
     city: z.string(),
     municipality: z.string().optional(),
     region: z.string().optional(),
@@ -90,7 +90,7 @@ export const UpdateEventBodySchema = z
         y: z.coerce.number().min(-90).max(90),
       })
       .optional(),
-    start_location_name: z.string().optional(),
+    start_location_name: z.string().trim().max(40).optional(),
     city: z.string().optional(),
     municipality: z.string().optional(),
     region: z.string().optional(),

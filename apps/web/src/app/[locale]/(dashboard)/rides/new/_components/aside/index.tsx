@@ -4,8 +4,10 @@ import { useFormContext } from 'react-hook-form';
 import { useTranslations } from 'next-intl';
 import { RideCard } from '@/components/ride-card';
 import { Text } from '@/components/ui/text';
+import { RideContract } from './ride-contract';
+import { SafetyNotice } from './safety-notice';
 import { toRideCard } from './to-ride-card';
-import type { CreateRideInput } from '../schema';
+import type { CreateRideInput } from '../../schema';
 
 export function RidePreview() {
   const t = useTranslations('CreateRide');
@@ -13,7 +15,7 @@ export function RidePreview() {
   const values = watch();
 
   return (
-    <aside className="bg-muted hidden flex-col gap-4 p-4 md:px-5 md:pt-5.5 lg:flex">
+    <aside className="sticky top-[26px] hidden max-h-[calc(100svh-11rem)] flex-col gap-3.5 overflow-y-auto lg:flex [&>*]:shrink-0">
       <div className="flex items-center justify-between gap-2">
         <Text variant="label" className="text-muted-foreground flex items-center gap-2">
           <span aria-hidden className="relative flex size-3 shrink-0 items-center justify-center">
@@ -29,6 +31,8 @@ export function RidePreview() {
       </div>
 
       <RideCard data={toRideCard(values)} />
+      <RideContract values={values} />
+      <SafetyNotice />
     </aside>
   );
 }

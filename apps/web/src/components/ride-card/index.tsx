@@ -1,10 +1,10 @@
 import { useFormatter, useTranslations } from 'next-intl';
-import { Clock, MapPin } from 'lucide-react';
+import { Bike, Clock, MapPin } from 'lucide-react';
 import { Avatar, AvatarFallback, getAvatarColorIndex } from '@/components/ui/avatar';
-import { Badge, BadgeDot } from '@/components/ui/badge';
+import { Badge } from '@/components/ui/badge';
 import { Text } from '@/components/ui/text';
 import { cn } from '@/lib/utils';
-import { ElevationHeader } from './elevation-header';
+import { RideBanner } from './banner';
 import type { RideCardData } from './types';
 
 interface RideCardProps {
@@ -15,9 +15,6 @@ interface RideCardProps {
 export function RideCard({ data, className }: RideCardProps) {
   const t = useTranslations('RideCard');
   const tBike = useTranslations('BikeTypes');
-  const tRide = useTranslations('RideTypes');
-  const tDrop = useTranslations('DropPolicies');
-  const tPace = useTranslations('PacePolicies');
   const tExperience = useTranslations('ExperiencePolicies');
   const format = useFormatter();
 
@@ -40,15 +37,7 @@ export function RideCard({ data, className }: RideCardProps) {
   const creatorName = data.creator?.name || t('creatorPlaceholder');
   const participants = data.participant_count ?? 1;
 
-  const stats = [
-    !data.elevation && data.distance_km !== undefined
-      ? t('distance', { value: Math.round(data.distance_km) })
-      : null,
-    data.average_pace_kmh !== undefined
-      ? t('paceAverage', { value: data.average_pace_kmh })
-      : tPace(`${data.pace_policy}.label`),
-    tDrop(`${data.drop_policy}.label`),
-  ].filter((stat) => stat !== null);
+  const distanceKm = data.elevation?.distance_km ?? data.distance_km;
 
   return (
     <article
@@ -57,15 +46,18 @@ export function RideCard({ data, className }: RideCardProps) {
         className,
       )}
     >
-      <ElevationHeader elevation={data.elevation} />
+      <RideBanner
+        rideType={data.ride_type}
+        distanceKm={distanceKm}
+        paceKmh={data.average_pace_kmh}
+        ascentM={data.elevation?.ascent_m}
+      />
 
       <div className="flex flex-col gap-2.5 p-4">
         <div className="flex flex-wrap items-center gap-1.5">
-          <Badge variant="accent" size="sm">
-            <BadgeDot />
-            {data.bike_type === 'all'
-              ? tRide(`${data.ride_type}.label`)
-              : `${tBike(data.bike_type)} · ${tRide(`${data.ride_type}.label`)}`}
+          <Badge variant="accentDeep" size="sm">
+            <Bike aria-hidden className="size-3 shrink-0" />
+            {tBike(data.bike_type)}
           </Badge>
           <Badge size="sm">{tExperience(`${data.experience_policy}.label`)}</Badge>
         </div>
@@ -74,7 +66,7 @@ export function RideCard({ data, className }: RideCardProps) {
           variant="body-l"
           as="h3"
           className={cn(
-            'font-semibold',
+            'line-clamp-2 font-semibold',
             isTitlePlaceholder ? 'text-muted-foreground' : 'text-foreground',
           )}
         >
@@ -91,16 +83,15 @@ export function RideCard({ data, className }: RideCardProps) {
           </Text>
           <Text
             variant="body-s"
-            className={cn('flex items-center gap-1.5', isLocationPlaceholder && 'opacity-60')}
+            className={cn(
+              'flex min-w-0 items-center gap-1.5',
+              isLocationPlaceholder && 'opacity-60',
+            )}
           >
             <MapPin aria-hidden className="size-3.5 shrink-0" />
-            {location}
+            <span className="truncate">{location}</span>
           </Text>
         </div>
-
-        <Text variant="meta" className="text-foreground/70">
-          {stats.join('  ·  ')}
-        </Text>
       </div>
 
       <footer className="border-border flex items-center justify-between border-t px-4 py-3">

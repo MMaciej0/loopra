@@ -15,6 +15,7 @@ export function ElevationBanner({ paths, className }: ElevationBannerProps) {
   return (
     <svg
       viewBox={`0 0 ${CHART_WIDTH} ${CHART_HEIGHT}`}
+      preserveAspectRatio="none"
       aria-hidden="true"
       className={cn('block h-full w-full', className)}
     >

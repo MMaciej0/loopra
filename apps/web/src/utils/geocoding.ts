@@ -1,5 +1,5 @@
 import * as maptilersdk from '@maptiler/sdk';
-import type { Coords } from '@/app/[locale]/(dashboard)/_components/app-sidebar/create-ride/schema';
+import type { Coords } from '@/app/[locale]/(dashboard)/rides/new/schema';
 
 export interface RideLocation {
   city: string;

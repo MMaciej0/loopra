@@ -1,7 +1,9 @@
+'use client';
+
 import { EXPERIENCE_POLICIES } from '@/config/ride';
 import { useTranslations } from 'next-intl';
 import { RadioCardGroup } from '@/components/ui/radio-card-group';
-import { CreateRideInput } from '../schema';
+import { CreateRideInput } from '../../schema';
 
 export function ExperiencePolicyInput() {
   const t = useTranslations('CreateRide');

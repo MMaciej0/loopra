@@ -3,10 +3,9 @@
 import { useFormContext, useWatch } from 'react-hook-form';
 import { useLocale, useTranslations } from 'next-intl';
 
-import type { CreateRideInput } from '../../schema';
+import type { CreateRideInput } from '../../../schema';
 import { useMap, type PickedLocation } from '@/hooks/use-map';
 import { useCallback } from 'react';
-import { StartingPointInputBanner } from './starting-point-input-banner';
 
 export function LocationPicker() {
   const { setValue } = useFormContext<CreateRideInput>();
@@ -35,14 +34,6 @@ export function LocationPicker() {
   });
 
   return (
-    // min-h-full fills the scroll body; map region flex-1 takes the leftover space
-    <div className="flex min-h-full flex-col gap-3">
-      <div
-        ref={mapContainerRef}
-        className="relative min-h-0 w-full flex-1 overflow-hidden rounded-sm"
-      >
-        {startLocation && <StartingPointInputBanner />}
-      </div>
-    </div>
+    <div ref={mapContainerRef} className="relative min-h-0 w-full flex-1 overflow-hidden" />
   );
 }

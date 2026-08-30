@@ -10,6 +10,7 @@ import {
   FORMATION_POLICIES,
   LAT_MAX,
   LAT_MIN,
+  LOCATION_NAME_MAX_LENGTH,
   LNG_MAX,
   LNG_MIN,
   MAX_PARTICIPANTS_MAX,
@@ -40,7 +41,11 @@ export const createRideSchema = z
     start_location: coordsSchema
       .optional()
       .refine((v) => v !== undefined, APP_ERROR_TYPES.START_POINT_REQUIRED),
-    start_location_name: z.string().min(1, APP_ERROR_TYPES.LOCATION_NAME_REQUIRED),
+    start_location_name: z
+      .string()
+      .trim()
+      .min(1, APP_ERROR_TYPES.LOCATION_NAME_REQUIRED)
+      .max(LOCATION_NAME_MAX_LENGTH, APP_ERROR_TYPES.LOCATION_NAME_TOO_LONG),
     country: z.string().min(1, APP_ERROR_TYPES.START_POINT_REQUIRED),
     municipality: z.string().min(1, APP_ERROR_TYPES.START_POINT_REQUIRED),
     region: z.string().min(1, APP_ERROR_TYPES.START_POINT_REQUIRED),
@@ -64,13 +69,11 @@ export const createRideSchema = z
     pace_policy: z.enum(PACE_POLICIES),
     formation_policy: z.enum(FORMATION_POLICIES),
     experience_policy: z.enum(EXPERIENCE_POLICIES),
-    // undefined = no cap
     max_participants: z
-      .number(APP_ERROR_TYPES.MAX_PARTICIPANTS_OUT_OF_RANGE)
+      .number(APP_ERROR_TYPES.MAX_PARTICIPANTS_REQUIRED)
       .int(APP_ERROR_TYPES.MAX_PARTICIPANTS_OUT_OF_RANGE)
       .min(MAX_PARTICIPANTS_MIN, APP_ERROR_TYPES.MAX_PARTICIPANTS_OUT_OF_RANGE)
-      .max(MAX_PARTICIPANTS_MAX, APP_ERROR_TYPES.MAX_PARTICIPANTS_OUT_OF_RANGE)
-      .optional(),
+      .max(MAX_PARTICIPANTS_MAX, APP_ERROR_TYPES.MAX_PARTICIPANTS_OUT_OF_RANGE),
     route: z.custom<RouteMetadata>().optional(),
     distance_km: z
       .number(APP_ERROR_TYPES.DISTANCE_OUT_OF_RANGE)

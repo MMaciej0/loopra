@@ -3,6 +3,8 @@ export const MIN_LEAD_HOURS = 5;
 export const TITLE_MIN_LENGTH = 5;
 export const TITLE_MAX_LENGTH = 50;
 
+export const LOCATION_NAME_MAX_LENGTH = 40;
+
 // Empty input = no cap (stored as null). The creator counts toward the cap.
 export const MAX_PARTICIPANTS_MIN = 2;
 export const MAX_PARTICIPANTS_MAX = 500;
