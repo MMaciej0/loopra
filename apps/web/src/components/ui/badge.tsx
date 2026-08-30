@@ -10,6 +10,7 @@ const badgeVariants = cva(
       variant: {
         default: 'bg-muted text-foreground/60 border-border',
         accent: 'bg-accent/10 text-accent border-accent/30',
+        accentDeep: 'bg-accent-deep/10 text-accent-deep border-accent-deep/25',
         destructive: 'bg-destructive/10 text-destructive border-destructive/20',
         inverse: 'bg-primary text-primary-foreground border-primary',
         soft: 'bg-transparent text-muted-foreground border-border',
@@ -52,7 +53,7 @@ function PosterBadge({ className, style, ...props }: React.ComponentProps<'span'
     <span
       data-slot="poster-badge"
       className={cn(
-        'inline-flex items-center gap-[9px] w-max rounded-full border',
+        'inline-flex w-max items-center gap-[9px] rounded-full border',
         'px-[15px] py-[7px]',
         'font-data text-[16px] tracking-[0.06em] uppercase',
         className,
@@ -69,7 +70,7 @@ function PosterBadge({ className, style, ...props }: React.ComponentProps<'span'
 }
 
 function PosterBadgeDot({ className }: { className?: string }) {
-  return <span aria-hidden className={cn('size-2 shrink-0 rounded-full bg-accent', className)} />;
+  return <span aria-hidden className={cn('bg-accent size-2 shrink-0 rounded-full', className)} />;
 }
 
 export { Badge, BadgeDot, badgeVariants, PosterBadge, PosterBadgeDot };

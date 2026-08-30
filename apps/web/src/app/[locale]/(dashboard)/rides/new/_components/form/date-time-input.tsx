@@ -10,11 +10,15 @@ import { Clock } from 'lucide-react';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { MIN_LEAD_HOURS } from '@/config/ride';
-import type { CreateRideInput } from '../schema';
+import type { CreateRideInput } from '../../schema';
 
 export function DateTimeInput() {
   const t = useTranslations('CreateRide');
-  const { control } = useFormContext<CreateRideInput>();
+  const tErrors = useTranslations('Errors');
+  const {
+    control,
+    formState: { errors },
+  } = useFormContext<CreateRideInput>();
   const [open, setOpen] = useState(false);
 
   const minDate = useMemo(() => {
@@ -24,7 +28,7 @@ export function DateTimeInput() {
   }, [open]);
 
   return (
-    <>
+    <div className="flex flex-col gap-y-1.5">
       <InputLabel id="start_time" className="flex items-center">
         <span className="inline-flex pr-2">
           <Clock className="size-2.5" />
@@ -88,6 +92,11 @@ export function DateTimeInput() {
           </Popover>
         )}
       />
-    </>
+      {errors.start_time && (
+        <p role="alert" className="text-destructive text-[11.5px]">
+          {tErrors(errors.start_time.message ?? 'UNKNOWN', { hours: MIN_LEAD_HOURS })}
+        </p>
+      )}
+    </div>
   );
 }

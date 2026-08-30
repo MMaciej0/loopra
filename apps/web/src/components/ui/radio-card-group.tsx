@@ -1,3 +1,5 @@
+'use client';
+
 import { useFormContext, type FieldValues, type Path } from 'react-hook-form';
 
 export type RadioCardOption = {

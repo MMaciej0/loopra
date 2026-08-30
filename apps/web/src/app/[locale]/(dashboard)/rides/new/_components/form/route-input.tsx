@@ -4,13 +4,15 @@ import { useRef, useState } from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 import { useTranslations } from 'next-intl';
 import { LoaderCircle, Route, Upload, X } from 'lucide-react';
+import { ElevationBanner } from '@/components/ride-card/elevation-banner';
+import { buildElevationPaths } from '@/components/ride-card/geometry';
 import { Button } from '@/components/ui/button';
 import { InputLabel } from '@/components/ui/input-label';
 import { Text } from '@/components/ui/text';
 import { MAX_GPX_FILE_SIZE_BYTES, MAX_GPX_FILE_SIZE_MB } from '@/config/route';
 import { APP_ERROR_TYPES, isAppErrorType, type AppErrorType } from '@/utils/errors';
 import { cn } from '@/lib/utils';
-import type { CreateRideInput } from '../schema';
+import type { CreateRideInput } from '../../schema';
 
 export function RouteInput() {
   const t = useTranslations('CreateRide');
@@ -68,6 +70,10 @@ export function RouteInput() {
     setValue('distance_km', undefined, { shouldDirty: true });
   };
 
+  const profilePaths = route
+    ? buildElevationPaths(route.elevation_profile, Number(route.distance_km))
+    : [];
+
   const onDrop = (event: React.DragEvent) => {
     event.preventDefault();
     setDragging(false);
@@ -101,12 +107,23 @@ export function RouteInput() {
         </InputLabel>
 
         {route ? (
-          <div className="border-accent bg-accent/10 flex min-h-40 flex-col justify-between gap-y-4 rounded-[10px] border p-4">
+          <div className="border-accent bg-accent/10 flex h-56 flex-col gap-y-3 rounded-[10px] border p-4">
             <div className="flex items-start gap-x-2">
               <Route aria-hidden className="text-accent mt-0.5 size-4 shrink-0" />
               <Text variant="body-s" className="min-w-0 flex-1 truncate">
                 {route.name}
               </Text>
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon-sm"
+                loading={pending}
+                onClick={() => inputRef.current?.click()}
+                aria-label={t('routeReplace')}
+                className="text-muted-foreground hover:text-accent -mt-1 shrink-0"
+              >
+                <Upload />
+              </Button>
               <Button
                 type="button"
                 variant="ghost"
@@ -120,7 +137,11 @@ export function RouteInput() {
               </Button>
             </div>
 
-            <div className="flex gap-x-3">
+            <div className="min-h-0 flex-1">
+              {profilePaths.length > 0 && <ElevationBanner paths={profilePaths} />}
+            </div>
+
+            <div className="grid grid-cols-3 gap-x-3">
               {[
                 {
                   label: t('routeDistanceLabel'),
@@ -135,7 +156,7 @@ export function RouteInput() {
                   value: t('routeM', { value: Math.round(Number(route.descent_m)) }),
                 },
               ].map((stat) => (
-                <div key={stat.label} className="flex flex-1 flex-col gap-y-1">
+                <div key={stat.label} className="flex flex-col items-center gap-y-1">
                   <Text variant="stat">{stat.value}</Text>
                   <Text variant="label" className="text-muted-foreground">
                     {stat.label}
@@ -143,16 +164,6 @@ export function RouteInput() {
                 </div>
               ))}
             </div>
-
-            <Button
-              type="button"
-              variant="secondary"
-              size="sm"
-              loading={pending}
-              onClick={() => inputRef.current?.click()}
-            >
-              {t('routeReplace')}
-            </Button>
           </div>
         ) : (
           <button
@@ -169,7 +180,7 @@ export function RouteInput() {
             }}
             onDrop={onDrop}
             className={cn(
-              'flex min-h-40 cursor-pointer flex-col items-center justify-center gap-y-2 rounded-[10px] border border-dashed px-3 py-4 transition-colors',
+              'flex h-56 cursor-pointer flex-col items-center justify-center gap-y-2 rounded-[10px] border border-dashed px-3 py-4 transition-colors',
               dragging ? 'border-accent bg-accent/10' : 'border-border hover:border-accent',
               pending && 'cursor-default opacity-60',
             )}
