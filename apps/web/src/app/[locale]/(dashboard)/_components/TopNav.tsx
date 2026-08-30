@@ -1,4 +1,5 @@
 import { SidebarTrigger } from '@/components/ui/sidebar';
+import { UserSettingsPanel } from './user-settings-panel';
 
 type Props = Readonly<{
   children?: React.ReactNode;
@@ -6,9 +7,10 @@ type Props = Readonly<{
 
 export default function TopNav({ children }: Props) {
   return (
-    <header className="flex h-14 shrink-0 items-center gap-2 px-2 md:px-4">
-      <SidebarTrigger />
+    <header className="flex h-14 shrink-0 items-center gap-2 px-2 md:px-4 lg:px-8">
+      <SidebarTrigger size="icon" />
       <div className="min-w-0 flex-1">{children}</div>
+      <UserSettingsPanel />
     </header>
   );
 }
