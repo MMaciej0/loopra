@@ -56,7 +56,7 @@ export function LoginForm({ redirectTo }: { redirectTo: string }) {
             }
           />
 
-          <Button type="submit" size="lg" className="mt-[18px] w-full" loading={isLoading}>
+          <Button type="submit" size="lg" className="w-full" loading={isLoading}>
             {t('submit')}
           </Button>
         </>
