@@ -13,34 +13,26 @@ import {
   uuid,
   index,
 } from 'drizzle-orm/pg-core';
-import { relations, sql } from 'drizzle-orm';
+import { relations } from 'drizzle-orm';
 import type { GpxMetadata } from '@loopra/gpx';
 
-export const users = pgTable(
-  'users',
-  {
-    id: uuid().primaryKey().defaultRandom(),
-    email: text().notNull().unique(),
-    password_hash: text(),
-    username: text(),
-    created_at: timestamp({ withTimezone: true }).notNull().defaultNow(),
-    updated_at: timestamp({ withTimezone: true }).notNull().defaultNow(),
-    email_verified: boolean().notNull().default(false),
-    email_verified_at: timestamp({ withTimezone: true }),
-    favorite_location: geometry({ type: 'point', mode: 'xy', srid: 4326 }),
-    favorite_city: text(),
-    favorite_municipality: text(),
-    favorite_region: text(),
-    favorite_country: text(),
-    favorite_postal_code: text(),
-    location_prompt_dismissed_at: timestamp({ withTimezone: true }),
-  },
-  (t) => [
-    index('users_favorite_location_idx')
-      .using('gist', t.favorite_location)
-      .where(sql`${t.favorite_location} is not null`),
-  ],
-);
+export const users = pgTable('users', {
+  id: uuid().primaryKey().defaultRandom(),
+  email: text().notNull().unique(),
+  password_hash: text(),
+  username: text(),
+  created_at: timestamp({ withTimezone: true }).notNull().defaultNow(),
+  updated_at: timestamp({ withTimezone: true }).notNull().defaultNow(),
+  email_verified: boolean().notNull().default(false),
+  email_verified_at: timestamp({ withTimezone: true }),
+  favorite_location: geometry({ type: 'point', mode: 'xy', srid: 4326 }),
+  favorite_city: text(),
+  favorite_municipality: text(),
+  favorite_region: text(),
+  favorite_country: text(),
+  favorite_postal_code: text(),
+  location_prompt_dismissed_at: timestamp({ withTimezone: true }),
+});
 
 export const oauth_accounts = pgTable(
   'oauth_accounts',
