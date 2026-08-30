@@ -35,7 +35,7 @@ export function ForgotPasswordForm() {
             autoFocus
           />
 
-          <Button type="submit" size="lg" loading={isLoading} className="mt-[18px] w-full">
+          <Button type="submit" size="lg" loading={isLoading} className="w-full">
             {t('submit')}
           </Button>
         </>
