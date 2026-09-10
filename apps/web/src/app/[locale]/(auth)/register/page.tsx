@@ -1,9 +1,9 @@
 import { getTranslations } from 'next-intl/server';
-import { AuthHeader } from '../_components/AuthHeader';
-import { AuthDivider } from '../_components/AuthDivider';
-import { AuthSwitchLink } from '../_components/AuthSwitchLink';
-import { GoogleAuthButton } from '../_components/GoogleAuthButton';
-import { RegisterForm } from './_components/RegisterForm';
+import { AuthHeader } from '../_components/auth-header';
+import { AuthDivider } from '../_components/auth-divider';
+import { AuthSwitchLink } from '../_components/auth-switch-link';
+import { GoogleAuthButton } from '../_components/google-auth-button';
+import { RegisterForm } from './_components/register-form';
 
 export default async function Register() {
   const t = await getTranslations('RegisterPage');
