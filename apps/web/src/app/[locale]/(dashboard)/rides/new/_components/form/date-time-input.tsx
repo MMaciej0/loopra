@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { format, isSameDay } from 'date-fns';
 import { Controller, useFormContext } from 'react-hook-form';
 import { useTranslations } from 'next-intl';
@@ -21,11 +21,8 @@ export function DateTimeInput() {
   } = useFormContext<CreateRideInput>();
   const [open, setOpen] = useState(false);
 
-  const minDate = useMemo(() => {
-    const d = new Date();
-    d.setHours(d.getHours() + MIN_LEAD_HOURS);
-    return d;
-  }, [open]);
+  const minDate = new Date();
+  minDate.setHours(minDate.getHours() + MIN_LEAD_HOURS);
 
   return (
     <div className="flex flex-col gap-y-1.5">

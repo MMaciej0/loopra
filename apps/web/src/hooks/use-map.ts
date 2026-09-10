@@ -24,7 +24,14 @@ export function useMap({ onPick, initialCoords, language = 'en', searchPlacehold
   const mapRef = useRef<maptilersdk.Map | null>(null);
   // keep latest language for the click handler without re-creating the map
   const languageRef = useRef(language);
-  languageRef.current = language;
+  const onPickRef = useRef(onPick);
+  const initialCoordsRef = useRef(initialCoords);
+  const searchPlaceholderRef = useRef(searchPlaceholder);
+
+  useEffect(() => {
+    languageRef.current = language;
+    onPickRef.current = onPick;
+  });
 
   useEffect(() => {
     if (mapRef.current || !mapContainerRef.current) return;
@@ -34,7 +41,9 @@ export function useMap({ onPick, initialCoords, language = 'en', searchPlacehold
     const map = new maptilersdk.Map({
       container: mapContainerRef.current,
       style: maptilersdk.MapStyle.STREETS,
-      center: initialCoords ? [initialCoords.x, initialCoords.y] : DEFAULT_CENTER,
+      center: initialCoordsRef.current
+        ? [initialCoordsRef.current.x, initialCoordsRef.current.y]
+        : DEFAULT_CENTER,
       zoom: DEFAULT_ZOOM,
       navigationControl: false,
       geolocateControl: false,
@@ -47,7 +56,7 @@ export function useMap({ onPick, initialCoords, language = 'en', searchPlacehold
     const geocoder = new GeocodingControl({
       types: ['municipality', 'address', 'country'],
       proximity: [{ type: 'map-center' }],
-      placeholder: searchPlaceholder,
+      placeholder: searchPlaceholderRef.current,
       language: languageRef.current,
       marker: false,
       showResultMarkers: false,
@@ -59,8 +68,9 @@ export function useMap({ onPick, initialCoords, language = 'en', searchPlacehold
     const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
     const pointer = new maptilersdk.Marker({ color: accent });
 
-    if (initialCoords) {
-      pointer.setLngLat([initialCoords.x, initialCoords.y]).addTo(map);
+    const startCoords = initialCoordsRef.current;
+    if (startCoords) {
+      pointer.setLngLat([startCoords.x, startCoords.y]).addTo(map);
     }
 
     // Compact attribution renders expanded on load and only minimizes after the
@@ -76,7 +86,7 @@ export function useMap({ onPick, initialCoords, language = 'en', searchPlacehold
       pointer.setLngLat(e.lngLat).addTo(map); // instant marker, no wait
       map.easeTo({ center: e.lngLat }); // recenter on the picked point
       const location = await reverseGeocode(coords, languageRef.current);
-      onPick({ coords, ...location });
+      onPickRef.current({ coords, ...location });
     });
 
     return () => {
