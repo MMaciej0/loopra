@@ -27,23 +27,35 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Docker & Local Development
 
-The entire project runs in Docker. **All services are managed via Docker Compose.**
+The compose file is named **`docker-compose-dev.yml`**, not `docker-compose.yml`. Bare `docker compose` commands fail with `no configuration file provided` — always pass `-f`.
 
 ```bash
-docker compose up           # Start all services (API, PostgreSQL, Redis)
-docker compose up --build   # Rebuild images and start
-docker compose down         # Stop all services
-docker compose logs -f api  # Tail API logs
+docker compose -f docker-compose-dev.yml up -d              # Start all four services
+docker compose -f docker-compose-dev.yml ps                 # Status
+docker compose -f docker-compose-dev.yml restart api web    # Restart just the app containers
+docker compose -f docker-compose-dev.yml down               # Stop all services
+docker compose -f docker-compose-dev.yml logs -f api        # Tail container logs
 ```
 
-Local development still uses `pnpm --filter api dev` (with hot reload via tsx watch), but the database and Redis always run in Docker. A `.env` file (see `.env.example`) configures connection strings pointing to the local Docker services.
+Four services run: `api`, `web`, `loopra-postgres`, `loopra-redis`.
+
+**The `api` and `web` containers do not start the dev servers.** Both use `command: "tail -f /dev/null"` and idle. Exec in and start them by hand — this is also how tests are run:
+
+```bash
+docker exec -it api sh    # then: pnpm api:dev
+docker exec -it web sh    # then: pnpm web:dev
+```
+
+Host ports: api `8080`, web `3000`, Postgres `5433`, Redis `6380`. A healthy api answers `404` on `/` (it has no root route); a healthy web answers `307` (next-intl locale redirect). Neither is an error.
+
+A `.env` file at the repo root configures connection strings pointing at the Docker services.
 
 ## CI/CD — GitHub Actions
 
 CI runs on every push and pull request to `main`. **No deployment actions** — servers are not provisioned yet. Pipeline:
 
 1. **Test** — runs `pnpm --filter api test` against a test database spun up in the workflow
-2. **Lint + Typecheck** — `pnpm -r lint && pnpm -r typecheck`
+2. **Lint + Typecheck** — `pnpm -r lint && pnpm -r typecheck` (only `web` defines a `lint` script, so `-r lint` covers `web` alone; `-r typecheck` covers `api`, `web`, and `packages/gpx`)
 
 Deployment actions will be added when servers are available.
 
@@ -61,8 +73,9 @@ pnpm --filter api db:generate            # Generate Drizzle migrations
 pnpm --filter api db:studio              # Open Drizzle Studio
 pnpm --filter web dev                    # Run web in dev mode
 pnpm -r build                            # Build all packages
-pnpm -r lint                             # Lint all packages
-pnpm -r typecheck                        # Type-check all packages
+pnpm -r lint                             # Lint — web only; api has no lint script
+pnpm --filter web lint                   # Same thing, explicit
+pnpm -r typecheck                        # Type-check api, web, packages/gpx
 ```
 
 ## Monorepo Structure

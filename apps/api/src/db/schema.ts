@@ -22,7 +22,10 @@ export const users = pgTable('users', {
   password_hash: text(),
   username: text(),
   created_at: timestamp({ withTimezone: true }).notNull().defaultNow(),
-  updated_at: timestamp({ withTimezone: true }).notNull().defaultNow(),
+  updated_at: timestamp({ withTimezone: true })
+    .notNull()
+    .defaultNow()
+    .$onUpdate(() => new Date()),
   email_verified: boolean().notNull().default(false),
   email_verified_at: timestamp({ withTimezone: true }),
   favorite_location: geometry({ type: 'point', mode: 'xy', srid: 4326 }),
@@ -96,7 +99,10 @@ export const routes = pgTable('routes', {
   point_count: integer(),
   elevation_profile: jsonb().$type<GpxMetadata['elevationProfile']>(),
   created_at: timestamp({ withTimezone: true }).notNull().defaultNow(),
-  updated_at: timestamp({ withTimezone: true }).notNull().defaultNow(),
+  updated_at: timestamp({ withTimezone: true })
+    .notNull()
+    .defaultNow()
+    .$onUpdate(() => new Date()),
 });
 
 export const events = pgTable(
@@ -131,7 +137,10 @@ export const events = pgTable(
     is_private: boolean().notNull().default(false),
     status: eventStatusEnum().notNull().default('open'),
     created_at: timestamp({ withTimezone: true }).notNull().defaultNow(),
-    updated_at: timestamp({ withTimezone: true }).notNull().defaultNow(),
+    updated_at: timestamp({ withTimezone: true })
+      .notNull()
+      .defaultNow()
+      .$onUpdate(() => new Date()),
   },
   (t) => [index('events_start_location_idx').using('gist', t.start_location)],
 );
