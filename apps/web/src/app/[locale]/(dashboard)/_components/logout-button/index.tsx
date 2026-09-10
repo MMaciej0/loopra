@@ -2,7 +2,7 @@
 
 import { useTransition } from 'react';
 import { Button } from '@/components/ui/button';
-import { logout } from '../_actions/logout';
+import { logout } from './action';
 
 export function LogoutButton() {
   const [isPending, startTransition] = useTransition();
