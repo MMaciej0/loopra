@@ -1,7 +1,7 @@
 import { AppSidebar } from './_components/app-sidebar';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { TooltipProvider } from '@/components/ui/tooltip';
-import TopNav from './_components/TopNav';
+import TopNav from './_components/top-nav';
 import { FavoriteLocationModal } from './_components/favorite-location-modal';
 
 type Props = Readonly<{
