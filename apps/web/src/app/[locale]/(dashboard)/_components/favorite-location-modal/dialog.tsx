@@ -1,0 +1,254 @@
+'use client';
+
+import { Loader2, MapPin } from 'lucide-react';
+import { useEffect, useRef, useState, useTransition, type RefObject } from 'react';
+import { useLocale } from 'next-intl';
+import { Button } from '@/components/ui/button';
+import {
+  Combobox,
+  ComboboxContent,
+  ComboboxEmpty,
+  ComboboxInput,
+  ComboboxItem,
+  ComboboxList,
+} from '@/components/ui/combobox';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogSubheader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { forwardGeocode, type LocationSuggestion } from '@/utils/geocoding';
+import { dismissFavoriteLocationPrompt, saveFavoriteLocation } from './actions';
+
+export function FavoriteLocationDialog() {
+  const [open, setOpen] = useState(true);
+  const [isDismissing, startDismissTransition] = useTransition();
+  const [isSaving, startSaveTransition] = useTransition();
+  const [hasSaveError, setHasSaveError] = useState(false);
+  const [selectedLocation, setSelectedLocation] = useState<LocationSuggestion | null>(null);
+  const comboboxPortalRef = useRef<HTMLDivElement>(null);
+
+  const dismiss = () => {
+    if (isDismissing || isSaving) return;
+
+    startDismissTransition(async () => {
+      const result = await dismissFavoriteLocationPrompt();
+      if (result.ok) setOpen(false);
+    });
+  };
+
+  const save = () => {
+    if (!selectedLocation || isSaving) return;
+
+    setHasSaveError(false);
+    startSaveTransition(async () => {
+      const result = await saveFavoriteLocation(selectedLocation);
+
+      if (result.ok) {
+        setOpen(false);
+      } else {
+        setHasSaveError(true);
+      }
+    });
+  };
+
+  return (
+    <Dialog open={open} onOpenChange={(nextOpen) => !nextOpen && dismiss()}>
+      <DialogContent className="gap-5 p-5 sm:max-w-md">
+        <DialogHeader className="gap-2">
+          <DialogSubheader>Make Loopra yours</DialogSubheader>
+          <DialogTitle>Where do you usually ride?</DialogTitle>
+          <DialogDescription>
+            Set a favourite location to find rides and cyclists near you.
+          </DialogDescription>
+        </DialogHeader>
+
+        <div ref={comboboxPortalRef} className="space-y-3">
+          <LocationCombobox
+            value={selectedLocation}
+            onSelect={(location) => {
+              setHasSaveError(false);
+              setSelectedLocation(location);
+            }}
+            portalContainer={comboboxPortalRef}
+          />
+
+          <div className="border-border bg-muted/40 flex min-h-40 flex-col items-center justify-center rounded-xl border border-dashed p-5 text-center">
+            <span className="bg-secondary text-accent flex size-10 items-center justify-center rounded-full">
+              <MapPin className="size-5" />
+            </span>
+            <p className="mt-3 text-sm font-medium">
+              {selectedLocation?.label ?? 'Choose a location'}
+            </p>
+            <p className="text-muted-foreground mt-1 text-xs">
+              {selectedLocation
+                ? `${selectedLocation.city || selectedLocation.municipality}, ${selectedLocation.country}`
+                : 'Search for a place to use as your favourite location.'}
+            </p>
+          </div>
+
+          {hasSaveError && (
+            <p className="text-destructive text-xs">
+              Could not save your location. Try again.
+            </p>
+          )}
+        </div>
+
+        <DialogFooter>
+          <Button variant="ghost" loading={isDismissing} onClick={dismiss}>
+            Not now
+          </Button>
+          <Button
+            variant="accent"
+            disabled={!selectedLocation}
+            loading={isSaving}
+            onClick={save}
+          >
+            Save location
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+  );
+}
+
+function LocationCombobox({
+  value: selectedLocation,
+  onSelect,
+  portalContainer,
+}: {
+  value: LocationSuggestion | null;
+  onSelect: (location: LocationSuggestion | null) => void;
+  portalContainer: RefObject<HTMLDivElement | null>;
+}) {
+  const locale = useLocale();
+  const [inputValue, setInputValue] = useState('');
+  const [suggestions, setSuggestions] = useState<LocationSuggestion[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [hasError, setHasError] = useState(false);
+  const cache = useRef(new Map<string, LocationSuggestion[]>());
+
+  useEffect(() => {
+    const query = inputValue.trim();
+    if (!query) return;
+
+    const cacheKey = `${locale}:${query}`;
+    const cached = cache.current.get(cacheKey);
+
+    if (cached) {
+      setSuggestions(cached);
+      setIsSearching(false);
+      setHasError(false);
+      return;
+    }
+
+    let cancelled = false;
+
+    const timeout = window.setTimeout(async () => {
+      setIsSearching(true);
+      setHasError(false);
+
+      try {
+        const nextSuggestions = await forwardGeocode(query, locale);
+        if (cancelled) return;
+
+        cache.current.set(cacheKey, nextSuggestions);
+        setSuggestions(nextSuggestions);
+      } catch {
+        if (cancelled) return;
+
+        setSuggestions([]);
+        setHasError(true);
+      } finally {
+        if (!cancelled) setIsSearching(false);
+      }
+    }, 300);
+
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timeout);
+    };
+  }, [inputValue, locale]);
+
+  const items =
+    selectedLocation && !suggestions.some((item) => item.id === selectedLocation.id)
+      ? [selectedLocation, ...suggestions]
+      : suggestions;
+
+  const selectLocation = (location: LocationSuggestion | null) => {
+    onSelect(location);
+
+    if (location) {
+      setInputValue(location.label);
+    }
+  };
+
+  return (
+    <Combobox<LocationSuggestion>
+      items={items}
+      filteredItems={suggestions}
+      filter={null}
+      inputValue={inputValue}
+      value={selectedLocation}
+      autoHighlight
+      itemToStringLabel={(location) => location.label}
+      itemToStringValue={(location) => location.id}
+      isItemEqualToValue={(item, value) => item.id === value.id}
+      onInputValueChange={(value, details) => {
+        if (details.reason !== 'input-change') return;
+
+        setInputValue(value);
+        if (!value.trim()) {
+          setSuggestions([]);
+          setIsSearching(false);
+          setHasError(false);
+        }
+        selectLocation(null);
+      }}
+      onValueChange={selectLocation}
+    >
+      <ComboboxInput
+        aria-label="Search for a city or area"
+        placeholder="Search for a city or area"
+        showTrigger={false}
+      />
+      <ComboboxContent portalContainer={portalContainer} aria-busy={isSearching || undefined}>
+        <ComboboxEmpty>
+          {isSearching ? (
+            <span className="flex items-center gap-2">
+              <Loader2 className="size-3.5 animate-spin" /> Searching locations...
+            </span>
+          ) : hasError ? (
+            'Could not load locations. Try again.'
+          ) : inputValue.trim() ? (
+            'No locations found.'
+          ) : (
+            'Start typing to search for a location.'
+          )}
+        </ComboboxEmpty>
+        <ComboboxList>
+          {(location: LocationSuggestion) => (
+            <ComboboxItem
+              key={location.id}
+              value={location}
+              onClick={() => selectLocation(location)}
+            >
+              <span className="min-w-0">
+                <span className="block truncate">{location.label}</span>
+                {(location.city || location.country) && (
+                  <span className="text-muted-foreground block truncate text-xs">
+                    {[location.city, location.country].filter(Boolean).join(', ')}
+                  </span>
+                )}
+              </span>
+            </ComboboxItem>
+          )}
+        </ComboboxList>
+      </ComboboxContent>
+    </Combobox>
+  );
+}
