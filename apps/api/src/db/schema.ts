@@ -134,7 +134,7 @@ export const rides = pgTable(
     pace_policy: pacePolicyEnum().notNull().default('slowest_rider'),
     formation_policy: formationPolicyEnum().notNull().default('free'),
     experience_policy: experiencePolicyEnum().notNull().default('first_timers'),
-    max_participants: integer(), // null = unlimited
+    max_participants: integer().notNull(),
     is_private: boolean().notNull().default(false),
     status: rideStatusEnum().notNull().default('open'),
     created_at: timestamp({ withTimezone: true }).notNull().defaultNow(),

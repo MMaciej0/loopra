@@ -120,7 +120,7 @@ Unified model for both **trips** (social group rides) and **trainings** (structu
 | distance_km | numeric | estimated |
 | pace_kmh | integer | target pace |
 | difficulty | enum | `easy` \| `moderate` \| `hard` \| `expert` |
-| max_participants | integer | null = unlimited |
+| max_participants | integer NOT NULL | 2-500; the creator holds a seat |
 | is_private | boolean | |
 | status | enum | `draft` \| `open` \| `full` \| `cancelled` \| `completed` |
 | created_at | timestamptz | |

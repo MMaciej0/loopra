@@ -20,10 +20,7 @@ export const joinRide = async (db: Db, userId: string, rideId: string) => {
     throw new ParticipantExistsError();
   }
 
-  if (
-    existingRide.max_participants &&
-    existingRide.participants.length >= existingRide.max_participants
-  ) {
+  if (existingRide.participants.length >= existingRide.max_participants) {
     throw new MaxParticipantsError();
   }
 

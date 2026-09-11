@@ -5,7 +5,8 @@ export const TITLE_MAX_LENGTH = 50;
 
 export const LOCATION_NAME_MAX_LENGTH = 40;
 
-// Empty input = no cap (stored as null). The creator counts toward the cap.
+// Every ride is capped. The creator counts toward the cap, so 2 is the smallest
+// ride that admits anyone else.
 export const MAX_PARTICIPANTS_MIN = 2;
 export const MAX_PARTICIPANTS_MAX = 500;
 

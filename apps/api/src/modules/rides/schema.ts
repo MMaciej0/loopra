@@ -66,7 +66,7 @@ export const CreateRideBodySchema = z
     formation_policy: z.enum(['free', 'leader', 'rotation']),
     experience_policy: z.enum(['first_timers', 'moderate', 'advanced']),
     // 2 = the creator plus one other rider; the creator holds a seat
-    max_participants: z.coerce.number().int().min(2).optional(),
+    max_participants: z.coerce.number().int().min(2).max(500),
     is_private: z.boolean().default(false),
     route_id: z.uuid().optional(),
   })
@@ -126,7 +126,7 @@ export const UpdateRideBodySchema = z
     formation_policy: z.enum(['free', 'leader', 'rotation']).optional(),
     experience_policy: z.enum(['first_timers', 'moderate', 'advanced']).optional(),
     // 2 = the creator plus one other rider; the creator holds a seat
-    max_participants: z.coerce.number().int().min(2).optional(),
+    max_participants: z.coerce.number().int().min(2).max(500).optional(),
     is_private: z.boolean().optional(),
   })
   .refine((f) => {
