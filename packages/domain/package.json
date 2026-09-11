@@ -6,6 +6,16 @@
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./schemas": {
+      "types": "./dist/schemas/index.d.ts",
+      "default": "./dist/schemas/index.js"
+    }
+  },
   "scripts": {
     "build": "tsc",
     "prepare": "tsc",
@@ -20,5 +30,8 @@
   "devDependencies": {
     "prettier": "^3.8.1",
     "typescript": "5.9.3"
+  },
+  "dependencies": {
+    "typebox": "^1.3.30"
   }
 }

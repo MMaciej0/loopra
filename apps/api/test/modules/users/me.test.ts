@@ -18,7 +18,10 @@ describe('GET /users/me', () => {
   });
 
   it('returns 404 when user has a valid token but account no longer exists', async () => {
-    const ghostToken = appRef.app.jwt.sign({ sub: '00000000-0000-0000-0000-000000000000', email_verified: true });
+    const ghostToken = appRef.app.jwt.sign({
+      sub: '00000000-0000-0000-0000-000000000000',
+      email_verified: true,
+    });
 
     const response = await appRef.app.inject({
       method: 'GET',
@@ -41,6 +44,59 @@ describe('GET /users/me', () => {
     expect(response.json()).toMatchObject({
       user: { id: auth.userId, email: auth.email },
     });
+  });
+
+  it('serializes the current user as the wire DTO', async () => {
+    const response = await appRef.app.inject({
+      method: 'GET',
+      url: '/users/me',
+      cookies: { accessToken: auth.accessToken },
+    });
+
+    const { user } = response.json();
+
+    expect(Object.keys(user).sort()).toEqual(
+      [
+        'created_at',
+        'email',
+        'email_verified',
+        'favorite_city',
+        'favorite_country',
+        'favorite_location',
+        'favorite_municipality',
+        'favorite_postal_code',
+        'favorite_region',
+        'id',
+        'location_prompt_dismissed_at',
+        'username',
+      ].sort(),
+    );
+    expect(user.created_at).toBe(new Date(user.created_at).toISOString());
+    expect(user.location_prompt_dismissed_at).toBeNull();
+  });
+
+  it.each(['password_hash', 'email_verified_at', 'updated_at'])(
+    'does not expose %s',
+    async (column) => {
+      const response = await appRef.app.inject({
+        method: 'GET',
+        url: '/users/me',
+        cookies: { accessToken: auth.accessToken },
+      });
+
+      expect(response.json().user).not.toHaveProperty(column);
+    },
+  );
+
+  it('does not expose password_hash on update', async () => {
+    const response = await appRef.app.inject({
+      method: 'PATCH',
+      url: '/users/me',
+      cookies: { accessToken: auth.accessToken },
+      payload: { username: 'KrakowRider' },
+    });
+
+    expect(response.json().updatedUser).not.toHaveProperty('password_hash');
   });
 
   it('updates the current user profile', async () => {
@@ -129,25 +185,5 @@ describe('GET /users/me', () => {
       favorite_postal_code: '31-234',
       location_prompt_dismissed_at: dismissedAt.toISOString(),
     });
-  });
-
-  it('does not expose favourite location fields on another user profile', async () => {
-    await appRef.app.db
-      .update(users)
-      .set({
-        favorite_location: { x: 19.931061973572554, y: 50.06231629701497 },
-        favorite_city: 'Kraków',
-      })
-      .where(eq(users.id, auth.userId));
-
-    const response = await appRef.app.inject({
-      method: 'GET',
-      url: `/users/${auth.userId}`,
-      cookies: { accessToken: auth.accessToken },
-    });
-
-    expect(response.statusCode).toBe(200);
-    expect(response.json().user).not.toHaveProperty('favorite_location');
-    expect(response.json().user).not.toHaveProperty('favorite_city');
   });
 });
