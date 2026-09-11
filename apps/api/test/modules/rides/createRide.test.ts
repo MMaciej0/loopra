@@ -77,7 +77,7 @@ describe('POST /rides', () => {
     expect(response.statusCode).toBe(400);
   });
 
-  it.each(['road', 'gravel', 'mtb', 'trekking', 'urban', 'electric', 'cyclocross', 'tt'])(
+  it.each(['any', 'road', 'gravel', 'mtb', 'trekking', 'urban', 'electric', 'cyclocross', 'tt'])(
     'accepts bike_type %s',
     async (bike_type) => {
       const response = await appRef.app.inject({
@@ -90,6 +90,19 @@ describe('POST /rides', () => {
       expect(response.statusCode).toBe(200);
     },
   );
+
+  it('returns 400 when bike_type is missing', async () => {
+    const { bike_type: _omitted, ...body } = rideBody;
+
+    const response = await appRef.app.inject({
+      method: 'POST',
+      url: '/rides',
+      body,
+      cookies: { accessToken: auth.accessToken },
+    });
+
+    expect(response.statusCode).toBe(400);
+  });
 
   it('returns 400 for unknown bike_type', async () => {
     const response = await appRef.app.inject({

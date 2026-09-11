@@ -24,7 +24,7 @@ export function RideFormWrapper({ children }: { children: React.ReactNode }) {
       municipality: '',
       postal_code: '',
       full_address: '',
-      bike_type: 'all',
+      bike_type: 'any',
       drop_policy: 'no_drop',
       pace_policy: 'slowest_rider',
       average_pace_kmh: undefined,

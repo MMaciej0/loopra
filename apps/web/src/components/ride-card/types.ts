@@ -14,7 +14,7 @@ export interface RideCardCreator {
 
 export interface RideCardData {
   ride_type: RideType;
-  bike_type: BikeType | 'all';
+  bike_type: BikeType;
   drop_policy: DropPolicy;
   pace_policy: PacePolicy;
   experience_policy: ExperiencePolicy;

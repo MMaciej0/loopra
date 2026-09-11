@@ -64,7 +64,7 @@ export const createRideSchema = z
         min.setHours(min.getHours() + MIN_LEAD_HOURS);
         return d.getTime() >= min.getTime();
       }, APP_ERROR_TYPES.START_TOO_SOON),
-    bike_type: z.enum(['all', ...BIKE_TYPES]),
+    bike_type: z.enum(BIKE_TYPES),
     drop_policy: z.enum(DROP_POLICIES),
     pace_policy: z.enum(PACE_POLICIES),
     formation_policy: z.enum(FORMATION_POLICIES),

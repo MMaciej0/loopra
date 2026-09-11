@@ -78,6 +78,7 @@ export const experiencePolicyEnum = pgEnum('experience_policy', [
   'advanced',
 ]);
 export const bikeTypeEnum = pgEnum('bike_type', [
+  'any',
   'road',
   'gravel',
   'mtb',
@@ -128,7 +129,7 @@ export const rides = pgTable(
     distance_km: numeric({ precision: 6, scale: 2 }),
     average_pace_kmh: integer(),
     ride_type: rideTypeEnum().notNull(),
-    bike_type: bikeTypeEnum(),
+    bike_type: bikeTypeEnum().notNull(),
     drop_policy: dropPolicyEnum().notNull().default('no_drop'),
     pace_policy: pacePolicyEnum().notNull().default('slowest_rider'),
     formation_policy: formationPolicyEnum().notNull().default('free'),

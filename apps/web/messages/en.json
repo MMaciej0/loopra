@@ -86,7 +86,7 @@
     "participantsOpen": "{count} going"
   },
   "BikeTypes": {
-    "all": "All",
+    "any": "Any",
     "road": "Road",
     "gravel": "Gravel",
     "mtb": "MTB",

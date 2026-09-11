@@ -18,7 +18,9 @@ export const LAT_MIN = -90;
 export const LAT_MAX = 90;
 
 // Storage slugs — must match backend bike_type enum exactly.
+// 'any' means every bike is welcome. It is a stored value, not the absence of one.
 export const BIKE_TYPES = [
+  'any',
   'road',
   'gravel',
   'mtb',
@@ -31,7 +33,6 @@ export const BIKE_TYPES = [
 export type BikeType = (typeof BIKE_TYPES)[number];
 
 // Display labels live in messages under BikeTypes.
-// 'all' = UI-only sentinel (any bike welcome), not a storage type.
 
 // Storage slugs — must match backend ride_type enum exactly.
 export const RIDE_TYPES = ['casual', 'coffee_ride', 'sightseeing', 'training'] as const;

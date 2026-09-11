@@ -134,6 +134,13 @@
       "when": 1789105605099,
       "tag": "0018_rename_events_to_rides",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1789106948765,
+      "tag": "0019_bike_type_any_not_null",
+      "breakpoints": true
     }
   ]
 }
