@@ -4,7 +4,7 @@ import { ArrowUp } from 'lucide-react';
 import { Text } from '@/components/ui/text';
 import { cn } from '@/lib/utils';
 import { RideTypeIcon } from './ride-type-artwork';
-import type { RideType } from '@/config/ride';
+import type { RideType } from '@loopra/domain';
 
 const BANNER_WIDTH = 360;
 const BANNER_HEIGHT = 80;

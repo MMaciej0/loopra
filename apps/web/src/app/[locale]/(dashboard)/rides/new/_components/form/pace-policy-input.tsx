@@ -2,7 +2,7 @@
 
 import { useFormContext, useWatch } from 'react-hook-form';
 import { useTranslations } from 'next-intl';
-import { PACE_MAX_KMH, PACE_MIN_KMH, PACE_POLICIES } from '@/config/ride';
+import { PACE_MAX_KMH, PACE_MIN_KMH, PACE_POLICIES } from '@loopra/domain';
 import { RadioCardGroup } from '@/components/ui/radio-card-group';
 import { Field } from '@/components/ui/field';
 import { CreateRideInput } from '../../schema';

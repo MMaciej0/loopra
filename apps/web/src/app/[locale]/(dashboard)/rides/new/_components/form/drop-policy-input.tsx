@@ -1,6 +1,6 @@
 'use client';
 
-import { DROP_POLICIES } from '@/config/ride';
+import { DROP_POLICIES } from '@loopra/domain';
 import { useTranslations } from 'next-intl';
 import { RadioCardGroup } from '@/components/ui/radio-card-group';
 import { CreateRideInput } from '../../schema';

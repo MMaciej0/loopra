@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { MAX_GPX_FILE_SIZE_BYTES } from '@/config/route';
+import { MAX_GPX_FILE_SIZE_BYTES } from '@loopra/domain';
 import { protectedRequest } from '@/utils/api';
 import { APP_ERROR_TYPES } from '@/utils/errors';
 

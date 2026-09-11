@@ -1,4 +1,4 @@
-import type { BikeType, DropPolicy, ExperiencePolicy, PacePolicy, RideType } from '@/config/ride';
+import type { BikeType, DropPolicy, ExperiencePolicy, PacePolicy, RideType } from '@loopra/domain';
 import type { ElevationPoint } from './geometry';
 
 export interface RideCardElevation {

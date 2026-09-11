@@ -1,6 +1,6 @@
 'use client';
 
-import { BIKE_TYPES } from '@/config/ride';
+import { BIKE_TYPES } from '@loopra/domain';
 import { buttonVariants } from '@/components/ui/button';
 import { useFormContext } from 'react-hook-form';
 import { useTranslations } from 'next-intl';

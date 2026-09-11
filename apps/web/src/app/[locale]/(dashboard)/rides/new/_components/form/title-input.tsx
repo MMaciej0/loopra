@@ -3,7 +3,7 @@
 import { useFormContext } from 'react-hook-form';
 import { useTranslations } from 'next-intl';
 import { Field } from '@/components/ui/field';
-import { TITLE_MAX_LENGTH, TITLE_MIN_LENGTH } from '@/config/ride';
+import { TITLE_MAX_LENGTH, TITLE_MIN_LENGTH } from '@loopra/domain';
 import type { CreateRideInput } from '../../schema';
 
 export function TitleInput() {
