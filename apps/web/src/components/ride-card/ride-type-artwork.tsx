@@ -1,6 +1,6 @@
 import { Camera, Coffee, Sun, Timer, type LucideIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import type { RideType } from '@/config/ride';
+import type { RideType } from '@loopra/domain';
 
 const RIDE_TYPE_ICON: Record<RideType, LucideIcon> = {
   casual: Sun,

@@ -3,7 +3,7 @@
 import { useFormContext } from 'react-hook-form';
 import { useTranslations } from 'next-intl';
 import { Field } from '@/components/ui/field';
-import { MAX_PARTICIPANTS_MAX, MAX_PARTICIPANTS_MIN } from '@/config/ride';
+import { PARTICIPANTS_MAX, PARTICIPANTS_MIN } from '@loopra/domain';
 import type { CreateRideInput } from '../../schema';
 
 export function MaxParticipantsInput() {
@@ -19,13 +19,13 @@ export function MaxParticipantsInput() {
       id="max_participants"
       type="number"
       inputMode="numeric"
-      min={MAX_PARTICIPANTS_MIN}
-      max={MAX_PARTICIPANTS_MAX}
+      min={PARTICIPANTS_MIN}
+      max={PARTICIPANTS_MAX}
       label={t('maxParticipantsLabel')}
       placeholder={t('maxParticipantsPlaceholder')}
       hint={t('maxParticipantsHint', {
-        min: MAX_PARTICIPANTS_MIN,
-        max: MAX_PARTICIPANTS_MAX,
+        min: PARTICIPANTS_MIN,
+        max: PARTICIPANTS_MAX,
       })}
       size="sm"
       {...register('max_participants', {
@@ -34,8 +34,8 @@ export function MaxParticipantsInput() {
       error={
         errors.max_participants?.message &&
         tErrors(errors.max_participants.message, {
-          min: MAX_PARTICIPANTS_MIN,
-          max: MAX_PARTICIPANTS_MAX,
+          min: PARTICIPANTS_MIN,
+          max: PARTICIPANTS_MAX,
         })
       }
     />

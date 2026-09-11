@@ -9,7 +9,7 @@ import { InputLabel } from '@/components/ui/input-label';
 import { Clock } from 'lucide-react';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
-import { MIN_LEAD_HOURS } from '@/config/ride';
+import { MIN_LEAD_HOURS } from '@loopra/domain';
 import type { CreateRideInput } from '../../schema';
 
 export function DateTimeInput() {

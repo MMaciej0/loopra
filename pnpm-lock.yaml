@@ -101,6 +101,9 @@ importers:
       '@hookform/resolvers':
         specifier: ^5.5.7
         version: 5.5.7(@standard-schema/spec@1.1.0)(ajv@8.18.0)(joi@17.13.3)(react-hook-form@7.80.0(react@19.2.4))(zod@4.3.6)
+      '@loopra/domain':
+        specifier: workspace:*
+        version: link:../../packages/domain
       '@maptiler/geocoding-control':
         specifier: ^3.0.0
         version: 3.0.0(@maptiler/sdk@4.0.2(eslint@9.39.4(jiti@2.7.0)))(maplibre-gl@5.24.0)
