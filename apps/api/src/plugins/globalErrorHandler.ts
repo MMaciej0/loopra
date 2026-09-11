@@ -1,6 +1,7 @@
 import fastifyPlugin from 'fastify-plugin';
 import { FastifyInstance } from 'fastify';
-import { AppError, ErrorType } from '../utils/errors.js';
+import { ERROR_TYPES } from '@loopra/domain';
+import { AppError } from '../utils/errors.js';
 
 export default fastifyPlugin((fastify: FastifyInstance) => {
   fastify.setErrorHandler((error, _request, reply) => {
@@ -19,14 +20,14 @@ export default fastifyPlugin((fastify: FastifyInstance) => {
       error instanceof fastify.multipartErrors.PartsLimitError
     ) {
       return reply.status(413).send({
-        type: ErrorType.FILE_TOO_LARGE,
+        type: ERROR_TYPES.FILE_TOO_LARGE,
         message: 'File too large',
       });
     }
 
     if (error instanceof fastify.multipartErrors.InvalidMultipartContentTypeError) {
       return reply.status(400).send({
-        type: ErrorType.FILE_REQUIRED,
+        type: ERROR_TYPES.FILE_REQUIRED,
         message: 'File is required',
       });
     }
@@ -34,6 +35,6 @@ export default fastifyPlugin((fastify: FastifyInstance) => {
     fastify.log.error(error);
     return reply
       .status(500)
-      .send({ type: ErrorType.INTERNAL_ERROR, message: 'Internal server error' });
+      .send({ type: ERROR_TYPES.INTERNAL_ERROR, message: 'Internal server error' });
   });
 });

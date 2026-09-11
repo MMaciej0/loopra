@@ -3,7 +3,8 @@ import fastifyCookie from '@fastify/cookie';
 import fastifyJwt from '@fastify/jwt';
 import { JWT_ACCESS_SECRET } from '../config/env.js';
 import type { FastifyReply, FastifyRequest } from 'fastify';
-import { AppError, ErrorType } from '../utils/errors.js';
+import { ERROR_TYPES } from '@loopra/domain';
+import { AppError } from '../utils/errors.js';
 
 declare module 'fastify' {
   interface FastifyInstance {
@@ -37,13 +38,13 @@ export default fastifyPlugin(async (fastify) => {
     try {
       await request.jwtVerify();
     } catch {
-      throw new AppError(401, ErrorType.STALE_TOKEN, 'Stale token');
+      throw new AppError(401, ERROR_TYPES.STALE_TOKEN, 'Stale token');
     }
   });
 
   fastify.decorate('requireVerifiedEmail', async (request: FastifyRequest, _reply: FastifyReply) => {
     if (!request.user.email_verified) {
-      throw new AppError(403, ErrorType.EMAIL_NOT_VERIFIED, 'Email not verified');
+      throw new AppError(403, ERROR_TYPES.EMAIL_NOT_VERIFIED, 'Email not verified');
     }
   });
 });

@@ -1,5 +1,6 @@
 import { FastifyInstance } from 'fastify';
-import { AppError, ErrorType } from '../../utils/errors.js';
+import { ERROR_TYPES } from '@loopra/domain';
+import { AppError } from '../../utils/errors.js';
 import { createRoute } from './services/createRoute.js';
 import { InvalidGpxError } from './errors.js';
 
@@ -10,7 +11,7 @@ export const routesRoutes = async (fastify: FastifyInstance) => {
     const data = await request.file();
 
     if (!data) {
-      throw new AppError(400, ErrorType.FILE_REQUIRED, 'File is required');
+      throw new AppError(400, ERROR_TYPES.FILE_REQUIRED, 'File is required');
     }
 
     const buffer = await data.toBuffer();
@@ -20,7 +21,7 @@ export const routesRoutes = async (fastify: FastifyInstance) => {
       return reply.status(201).send({ data: newRoute });
     } catch (error) {
       if (error instanceof InvalidGpxError) {
-        throw new AppError(400, ErrorType.INVALID_GPX, 'Invalid GPX file');
+        throw new AppError(400, ERROR_TYPES.INVALID_GPX, 'Invalid GPX file');
       }
       throw error;
     }

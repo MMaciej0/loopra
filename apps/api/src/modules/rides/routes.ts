@@ -15,7 +15,8 @@ import {
   CreatorCannotLeaveError,
   RouteNotFoundError,
 } from './errors.js';
-import { AppError, ErrorType } from '../../utils/errors.js';
+import { ERROR_TYPES } from '@loopra/domain';
+import { AppError } from '../../utils/errors.js';
 import { joinRide } from './services/joinRide.js';
 import { leaveRide } from './services/leaveRide.js';
 import { getRide } from './services/getRide.js';
@@ -36,7 +37,7 @@ export const ridesRoutes = async (fastify: FastifyInstance) => {
       return reply.send({ data: newRide });
     } catch (error) {
       if (error instanceof RouteNotFoundError) {
-        throw new AppError(404, ErrorType.ROUTE_NOT_FOUND, 'Route not found');
+        throw new AppError(404, ERROR_TYPES.ROUTE_NOT_FOUND, 'Route not found');
       }
       throw error;
     }
@@ -49,7 +50,7 @@ export const ridesRoutes = async (fastify: FastifyInstance) => {
       return reply.send({ data: ride });
     } catch (error) {
       if (error instanceof RideNotFoundError) {
-        throw new AppError(404, ErrorType.RIDE_NOT_FOUND, 'Ride not found');
+        throw new AppError(404, ERROR_TYPES.RIDE_NOT_FOUND, 'Ride not found');
       }
       throw error;
     }
@@ -64,10 +65,10 @@ export const ridesRoutes = async (fastify: FastifyInstance) => {
       return reply.send({ data: updatedRide });
     } catch (error) {
       if (error instanceof RideNotFoundError) {
-        throw new AppError(404, ErrorType.RIDE_NOT_FOUND, 'Ride not found');
+        throw new AppError(404, ERROR_TYPES.RIDE_NOT_FOUND, 'Ride not found');
       }
       if (error instanceof RideUpdateBadBodyError) {
-        throw new AppError(400, ErrorType.RIDE_UPDATE_BAD_BODY, error.message);
+        throw new AppError(400, ERROR_TYPES.RIDE_UPDATE_BAD_BODY, error.message);
       }
       throw error;
     }
@@ -81,10 +82,10 @@ export const ridesRoutes = async (fastify: FastifyInstance) => {
       return reply.send({ data: deletedRide });
     } catch (error) {
       if (error instanceof RideNotFoundError) {
-        throw new AppError(404, ErrorType.RIDE_NOT_FOUND, 'Ride not found');
+        throw new AppError(404, ERROR_TYPES.RIDE_NOT_FOUND, 'Ride not found');
       }
       if (error instanceof RideHasParticipantsError) {
-        throw new AppError(400, ErrorType.RIDE_HAS_PARTICIPANTS, 'Ride has participants');
+        throw new AppError(400, ERROR_TYPES.RIDE_HAS_PARTICIPANTS, 'Ride has participants');
       }
       throw error;
     }
@@ -98,13 +99,13 @@ export const ridesRoutes = async (fastify: FastifyInstance) => {
       return reply.send({ data: newParticipant });
     } catch (error) {
       if (error instanceof RideNotFoundError) {
-        throw new AppError(404, ErrorType.RIDE_NOT_FOUND, 'Ride not found');
+        throw new AppError(404, ERROR_TYPES.RIDE_NOT_FOUND, 'Ride not found');
       }
       if (error instanceof ParticipantExistsError) {
-        throw new AppError(400, ErrorType.PARTICIPANT_EXISTS, 'Participant already exists');
+        throw new AppError(400, ERROR_TYPES.PARTICIPANT_EXISTS, 'Participant already exists');
       }
       if (error instanceof MaxParticipantsError) {
-        throw new AppError(400, ErrorType.MAX_PARTICIPANTS, 'Max participants reached');
+        throw new AppError(400, ERROR_TYPES.MAX_PARTICIPANTS, 'Max participants reached');
       }
       throw error;
     }
@@ -118,10 +119,10 @@ export const ridesRoutes = async (fastify: FastifyInstance) => {
       return reply.send({ data: deleted });
     } catch (error) {
       if (error instanceof ParticipantNotFoundError) {
-        throw new AppError(404, ErrorType.PARTICIPANT_NOT_FOUND, 'Participant not found');
+        throw new AppError(404, ERROR_TYPES.PARTICIPANT_NOT_FOUND, 'Participant not found');
       }
       if (error instanceof CreatorCannotLeaveError) {
-        throw new AppError(400, ErrorType.CREATOR_CANNOT_LEAVE, 'Creator cannot leave own ride');
+        throw new AppError(400, ERROR_TYPES.CREATOR_CANNOT_LEAVE, 'Creator cannot leave own ride');
       }
       throw error;
     }

@@ -1,6 +1,7 @@
 import { FastifyRequest } from 'fastify';
 import { Redis } from 'ioredis';
-import { AppError, ErrorType } from '../../../utils/errors.js';
+import { ERROR_TYPES } from '@loopra/domain';
+import { AppError } from '../../../utils/errors.js';
 
 interface Options {
   maxAttempts: number;
@@ -12,7 +13,7 @@ const upsertRateLimit = async (redis: Redis, key: string, options: Options) => {
 
   if (value) {
     if (Number(value) >= options.maxAttempts) {
-      throw new AppError(429, ErrorType.RATE_LIMIT_EXCEEDED, 'Rate limit exceeded');
+      throw new AppError(429, ERROR_TYPES.RATE_LIMIT_EXCEEDED, 'Rate limit exceeded');
     } else {
       await redis.incr(key);
     }

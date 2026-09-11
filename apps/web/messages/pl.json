@@ -197,7 +197,20 @@
     "FILE_REQUIRED": "Dodaj plik GPX.",
     "INVALID_GPX": "Ten plik nie jest prawidłową trasą GPX.",
     "ROUTE_NOT_FOUND": "Ta trasa nie jest już dostępna. Wgraj ją ponownie.",
-    "MAX_PARTICIPANTS_REQUIRED": "Podaj, ilu uczestników może dołączyć."
+    "MAX_PARTICIPANTS_REQUIRED": "Podaj, ilu uczestników może dołączyć.",
+    "USER_NOT_FOUND": "Nie znaleźliśmy tego rowerzysty.",
+    "INVALID_PASSWORD": "Nieprawidłowe hasło.",
+    "INVALID_INPUT": "Niektóre dane są nieprawidłowe. Sprawdź formularz i spróbuj ponownie.",
+    "INTERNAL_ERROR": "Coś poszło nie tak po naszej stronie. Spróbuj ponownie za chwilę.",
+    "INVALID_TOKEN": "Ten link nie jest już ważny. Poproś o nowy.",
+    "EMAIL_NOT_VERIFIED": "Najpierw potwierdź swój adres e-mail.",
+    "RIDE_NOT_FOUND": "Ta przejażdżka nie jest już dostępna.",
+    "RIDE_UPDATE_BAD_BODY": "Niektóre dane są nieprawidłowe. Sprawdź formularz i spróbuj ponownie.",
+    "RIDE_HAS_PARTICIPANTS": "Inni rowerzyści już dołączyli. Zamiast usuwać, odwołaj przejażdżkę.",
+    "PARTICIPANT_EXISTS": "Już dołączyłeś do tej przejażdżki.",
+    "PARTICIPANT_NOT_FOUND": "Nie jesteś zapisany na tę przejażdżkę.",
+    "MAX_PARTICIPANTS": "Ta przejażdżka jest pełna.",
+    "CREATOR_CANNOT_LEAVE": "Organizujesz tę przejażdżkę, więc nie możesz jej opuścić. Zamiast tego odwołaj ją."
   },
   "Auth": {
     "or": "LUB",
