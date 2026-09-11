@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import { APP_ERROR_TYPES } from '@/utils/errors';
-import type { RouteMetadata } from '@/types/route';
+import type { Route } from '@loopra/domain';
 import {
   BIKE_TYPES,
   DISTANCE_MAX_KM,
@@ -74,7 +74,7 @@ export const createRideSchema = z
       .int(APP_ERROR_TYPES.MAX_PARTICIPANTS_OUT_OF_RANGE)
       .min(PARTICIPANTS_MIN, APP_ERROR_TYPES.MAX_PARTICIPANTS_OUT_OF_RANGE)
       .max(PARTICIPANTS_MAX, APP_ERROR_TYPES.MAX_PARTICIPANTS_OUT_OF_RANGE),
-    route: z.custom<RouteMetadata>().optional(),
+    route: z.custom<Route>().optional(),
     distance_km: z
       .number(APP_ERROR_TYPES.DISTANCE_OUT_OF_RANGE)
       .min(DISTANCE_MIN_KM, APP_ERROR_TYPES.DISTANCE_OUT_OF_RANGE)
