@@ -15,6 +15,16 @@ import {
 } from 'drizzle-orm/pg-core';
 import { relations } from 'drizzle-orm';
 import type { GpxMetadata } from '@loopra/gpx';
+import {
+  BIKE_TYPES,
+  DROP_POLICIES,
+  EXPERIENCE_POLICIES,
+  FORMATION_POLICIES,
+  PACE_POLICIES,
+  PARTICIPANT_STATUSES,
+  RIDE_STATUSES,
+  RIDE_TYPES,
+} from '@loopra/domain';
 
 export const users = pgTable('users', {
   id: uuid().primaryKey().defaultRandom(),
@@ -51,43 +61,14 @@ export const oauth_accounts = pgTable(
   (t) => [unique().on(t.provider, t.provider_user_id)],
 );
 
-export const rideTypeEnum = pgEnum('ride_type', [
-  'coffee_ride',
-  'sightseeing',
-  'casual',
-  'training',
-]);
-export const rideStatusEnum = pgEnum('ride_status', [
-  'draft',
-  'open',
-  'full',
-  'cancelled',
-  'completed',
-]);
-export const participantStatusEnum = pgEnum('participant_status', [
-  'pending',
-  'confirmed',
-  'declined',
-]);
-export const dropPolicyEnum = pgEnum('drop_policy', ['no_drop', 'regroup', 'drop']);
-export const pacePolicyEnum = pgEnum('pace_policy', ['slowest_rider', 'leader', 'group_split']);
-export const formationPolicyEnum = pgEnum('formation_policy', ['free', 'leader', 'rotation']);
-export const experiencePolicyEnum = pgEnum('experience_policy', [
-  'first_timers',
-  'moderate',
-  'advanced',
-]);
-export const bikeTypeEnum = pgEnum('bike_type', [
-  'any',
-  'road',
-  'gravel',
-  'mtb',
-  'trekking',
-  'urban',
-  'electric',
-  'cyclocross',
-  'tt',
-]);
+export const rideTypeEnum = pgEnum('ride_type', RIDE_TYPES);
+export const rideStatusEnum = pgEnum('ride_status', RIDE_STATUSES);
+export const participantStatusEnum = pgEnum('participant_status', PARTICIPANT_STATUSES);
+export const dropPolicyEnum = pgEnum('drop_policy', DROP_POLICIES);
+export const pacePolicyEnum = pgEnum('pace_policy', PACE_POLICIES);
+export const formationPolicyEnum = pgEnum('formation_policy', FORMATION_POLICIES);
+export const experiencePolicyEnum = pgEnum('experience_policy', EXPERIENCE_POLICIES);
+export const bikeTypeEnum = pgEnum('bike_type', BIKE_TYPES);
 
 export const routes = pgTable('routes', {
   id: uuid().primaryKey().defaultRandom(),

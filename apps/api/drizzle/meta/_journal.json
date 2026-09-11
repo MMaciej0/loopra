@@ -148,6 +148,13 @@
       "when": 1789107624807,
       "tag": "0020_max_participants_required",
       "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1789113757274,
+      "tag": "0021_reorder_ride_and_bike_type_enums",
+      "breakpoints": true
     }
   ]
 }
