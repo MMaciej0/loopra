@@ -17,6 +17,7 @@ describe('POST /rides', () => {
     pace_policy: 'slowest_rider',
     formation_policy: 'free',
     experience_policy: 'first_timers',
+    max_participants: 10,
     is_private: false,
   };
 
@@ -64,6 +65,19 @@ describe('POST /rides', () => {
     const { participants } = response.json().data;
     expect(participants).toHaveLength(1);
     expect(participants[0].user_id).toBe(auth.userId);
+  });
+
+  it('returns 400 when max_participants is missing', async () => {
+    const { max_participants: _omitted, ...body } = rideBody;
+
+    const response = await appRef.app.inject({
+      method: 'POST',
+      url: '/rides',
+      body,
+      cookies: { accessToken: auth.accessToken },
+    });
+
+    expect(response.statusCode).toBe(400);
   });
 
   it('returns 400 when max_participants leaves no room beside the creator', async () => {

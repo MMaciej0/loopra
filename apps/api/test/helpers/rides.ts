@@ -57,7 +57,7 @@ export const newRide = ({
     city: city || 'Warsaw',
     ...(region && { region }),
     country: country || 'Poland',
-    ...(max_participants && { max_participants }),
+    max_participants: max_participants || 10,
   };
 };
 
