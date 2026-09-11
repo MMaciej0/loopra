@@ -2,11 +2,11 @@ import { describe, expect, it } from 'vitest';
 import { useApp } from '../../helpers/app.js';
 import { useAuthenticatedUser } from '../../helpers/auth.js';
 
-describe('POST /events', () => {
+describe('POST /rides', () => {
   const appRef = useApp();
   const auth = useAuthenticatedUser(appRef);
 
-  const eventBody = {
+  const rideBody = {
     ride_type: 'casual',
     title: 'Warsaw Morning Ride',
     city: 'Warsaw',
@@ -25,8 +25,8 @@ describe('POST /events', () => {
 
     const response = await appRef.app.inject({
       method: 'POST',
-      url: '/events',
-      body: eventBody,
+      url: '/rides',
+      body: rideBody,
       cookies: { accessToken: unverifiedToken },
     });
 
@@ -37,8 +37,8 @@ describe('POST /events', () => {
   it('returns 200 when correct body is sent', async () => {
     const response = await appRef.app.inject({
       method: 'POST',
-      url: '/events',
-      body: eventBody,
+      url: '/rides',
+      body: rideBody,
       cookies: { accessToken: auth.accessToken },
     });
 
@@ -48,16 +48,16 @@ describe('POST /events', () => {
   it('seats the creator as a participant', async () => {
     const createResponse = await appRef.app.inject({
       method: 'POST',
-      url: '/events',
-      body: eventBody,
+      url: '/rides',
+      body: rideBody,
       cookies: { accessToken: auth.accessToken },
     });
 
-    const eventId = createResponse.json().data.id as string;
+    const rideId = createResponse.json().data.id as string;
 
     const response = await appRef.app.inject({
       method: 'GET',
-      url: `/events/${eventId}`,
+      url: `/rides/${rideId}`,
       cookies: { accessToken: auth.accessToken },
     });
 
@@ -69,8 +69,8 @@ describe('POST /events', () => {
   it('returns 400 when max_participants leaves no room beside the creator', async () => {
     const response = await appRef.app.inject({
       method: 'POST',
-      url: '/events',
-      body: { ...eventBody, max_participants: 1 },
+      url: '/rides',
+      body: { ...rideBody, max_participants: 1 },
       cookies: { accessToken: auth.accessToken },
     });
 
@@ -82,8 +82,8 @@ describe('POST /events', () => {
     async (bike_type) => {
       const response = await appRef.app.inject({
         method: 'POST',
-        url: '/events',
-        body: { ...eventBody, bike_type },
+        url: '/rides',
+        body: { ...rideBody, bike_type },
         cookies: { accessToken: auth.accessToken },
       });
 
@@ -94,8 +94,8 @@ describe('POST /events', () => {
   it('returns 400 for unknown bike_type', async () => {
     const response = await appRef.app.inject({
       method: 'POST',
-      url: '/events',
-      body: { ...eventBody, bike_type: 'unicycle' },
+      url: '/rides',
+      body: { ...rideBody, bike_type: 'unicycle' },
       cookies: { accessToken: auth.accessToken },
     });
 
@@ -105,8 +105,8 @@ describe('POST /events', () => {
   it.each(['no_drop', 'regroup', 'drop'])('accepts drop_policy %s', async (drop_policy) => {
     const response = await appRef.app.inject({
       method: 'POST',
-      url: '/events',
-      body: { ...eventBody, drop_policy },
+      url: '/rides',
+      body: { ...rideBody, drop_policy },
       cookies: { accessToken: auth.accessToken },
     });
 
@@ -116,8 +116,8 @@ describe('POST /events', () => {
   it('returns 400 for unknown drop_policy', async () => {
     const response = await appRef.app.inject({
       method: 'POST',
-      url: '/events',
-      body: { ...eventBody, drop_policy: 'sweeper' },
+      url: '/rides',
+      body: { ...rideBody, drop_policy: 'sweeper' },
       cookies: { accessToken: auth.accessToken },
     });
 
@@ -125,11 +125,11 @@ describe('POST /events', () => {
   });
 
   it('returns 400 when drop_policy is missing', async () => {
-    const { drop_policy: _omitted, ...body } = eventBody;
+    const { drop_policy: _omitted, ...body } = rideBody;
 
     const response = await appRef.app.inject({
       method: 'POST',
-      url: '/events',
+      url: '/rides',
       body,
       cookies: { accessToken: auth.accessToken },
     });
@@ -140,8 +140,8 @@ describe('POST /events', () => {
   it.each(['slowest_rider', 'group_split'])('accepts pace_policy %s', async (pace_policy) => {
     const response = await appRef.app.inject({
       method: 'POST',
-      url: '/events',
-      body: { ...eventBody, pace_policy },
+      url: '/rides',
+      body: { ...rideBody, pace_policy },
       cookies: { accessToken: auth.accessToken },
     });
 
@@ -151,8 +151,8 @@ describe('POST /events', () => {
   it('accepts pace_policy leader when average_pace_kmh is given', async () => {
     const response = await appRef.app.inject({
       method: 'POST',
-      url: '/events',
-      body: { ...eventBody, pace_policy: 'leader', average_pace_kmh: 28 },
+      url: '/rides',
+      body: { ...rideBody, pace_policy: 'leader', average_pace_kmh: 28 },
       cookies: { accessToken: auth.accessToken },
     });
 
@@ -162,8 +162,8 @@ describe('POST /events', () => {
   it('returns 400 for pace_policy leader without average_pace_kmh', async () => {
     const response = await appRef.app.inject({
       method: 'POST',
-      url: '/events',
-      body: { ...eventBody, pace_policy: 'leader' },
+      url: '/rides',
+      body: { ...rideBody, pace_policy: 'leader' },
       cookies: { accessToken: auth.accessToken },
     });
 
@@ -171,11 +171,11 @@ describe('POST /events', () => {
   });
 
   it('returns 400 when pace_policy is missing', async () => {
-    const { pace_policy: _omitted, ...body } = eventBody;
+    const { pace_policy: _omitted, ...body } = rideBody;
 
     const response = await appRef.app.inject({
       method: 'POST',
-      url: '/events',
+      url: '/rides',
       body,
       cookies: { accessToken: auth.accessToken },
     });
@@ -188,8 +188,8 @@ describe('POST /events', () => {
     async (formation_policy) => {
       const response = await appRef.app.inject({
         method: 'POST',
-        url: '/events',
-        body: { ...eventBody, formation_policy },
+        url: '/rides',
+        body: { ...rideBody, formation_policy },
         cookies: { accessToken: auth.accessToken },
       });
 
@@ -200,8 +200,8 @@ describe('POST /events', () => {
   it('returns 400 for unknown formation_policy', async () => {
     const response = await appRef.app.inject({
       method: 'POST',
-      url: '/events',
-      body: { ...eventBody, formation_policy: 'echelon' },
+      url: '/rides',
+      body: { ...rideBody, formation_policy: 'echelon' },
       cookies: { accessToken: auth.accessToken },
     });
 
@@ -209,11 +209,11 @@ describe('POST /events', () => {
   });
 
   it('returns 400 when formation_policy is missing', async () => {
-    const { formation_policy: _omitted, ...body } = eventBody;
+    const { formation_policy: _omitted, ...body } = rideBody;
 
     const response = await appRef.app.inject({
       method: 'POST',
-      url: '/events',
+      url: '/rides',
       body,
       cookies: { accessToken: auth.accessToken },
     });
@@ -226,8 +226,8 @@ describe('POST /events', () => {
     async (experience_policy) => {
       const response = await appRef.app.inject({
         method: 'POST',
-        url: '/events',
-        body: { ...eventBody, experience_policy },
+        url: '/rides',
+        body: { ...rideBody, experience_policy },
         cookies: { accessToken: auth.accessToken },
       });
 
@@ -238,8 +238,8 @@ describe('POST /events', () => {
   it('returns 400 for unknown experience_policy', async () => {
     const response = await appRef.app.inject({
       method: 'POST',
-      url: '/events',
-      body: { ...eventBody, experience_policy: 'pro' },
+      url: '/rides',
+      body: { ...rideBody, experience_policy: 'pro' },
       cookies: { accessToken: auth.accessToken },
     });
 
@@ -247,11 +247,11 @@ describe('POST /events', () => {
   });
 
   it('returns 400 when experience_policy is missing', async () => {
-    const { experience_policy: _omitted, ...body } = eventBody;
+    const { experience_policy: _omitted, ...body } = rideBody;
 
     const response = await appRef.app.inject({
       method: 'POST',
-      url: '/events',
+      url: '/rides',
       body,
       cookies: { accessToken: auth.accessToken },
     });

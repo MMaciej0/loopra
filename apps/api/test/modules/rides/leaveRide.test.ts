@@ -1,26 +1,26 @@
 import { describe, expect, it } from 'vitest';
 import { useApp } from '../../helpers/app.js';
 import { useAuthenticatedUser } from '../../helpers/auth.js';
-import { newEvent } from '../../helpers/events.js';
+import { newRide } from '../../helpers/rides.js';
 
-describe('DELETE /events/:id/leave', () => {
+describe('DELETE /rides/:id/leave', () => {
   const appRef = useApp();
   const creatorAuth = useAuthenticatedUser(appRef);
   const participantAuth = useAuthenticatedUser(appRef, 'participant@example.com');
 
   it('returns 404 when not a participant', async () => {
-    const eventResponse = await appRef.app.inject({
+    const rideResponse = await appRef.app.inject({
       method: 'POST',
-      url: '/events',
-      body: newEvent({ user_id: creatorAuth.userId, city: 'Warsaw', country: 'PL' }),
+      url: '/rides',
+      body: newRide({ user_id: creatorAuth.userId, city: 'Warsaw', country: 'PL' }),
       cookies: { accessToken: creatorAuth.accessToken },
     });
 
-    const eventId = eventResponse.json().data.id as string;
+    const rideId = rideResponse.json().data.id as string;
 
     const response = await appRef.app.inject({
       method: 'DELETE',
-      url: `/events/${eventId}/leave`,
+      url: `/rides/${rideId}/leave`,
       cookies: { accessToken: participantAuth.accessToken },
     });
 
@@ -28,46 +28,46 @@ describe('DELETE /events/:id/leave', () => {
   });
 
   it('returns 200 and removes participant when joined', async () => {
-    const eventResponse = await appRef.app.inject({
+    const rideResponse = await appRef.app.inject({
       method: 'POST',
-      url: '/events',
-      body: newEvent({ user_id: creatorAuth.userId, city: 'Warsaw', country: 'PL' }),
+      url: '/rides',
+      body: newRide({ user_id: creatorAuth.userId, city: 'Warsaw', country: 'PL' }),
       cookies: { accessToken: creatorAuth.accessToken },
     });
 
-    const eventId = eventResponse.json().data.id as string;
+    const rideId = rideResponse.json().data.id as string;
 
     await appRef.app.inject({
       method: 'POST',
-      url: `/events/${eventId}/join`,
+      url: `/rides/${rideId}/join`,
       cookies: { accessToken: participantAuth.accessToken },
     });
 
     const response = await appRef.app.inject({
       method: 'DELETE',
-      url: `/events/${eventId}/leave`,
+      url: `/rides/${rideId}/leave`,
       cookies: { accessToken: participantAuth.accessToken },
     });
 
     expect(response.statusCode).toBe(200);
     const { data } = response.json();
-    expect(data.event_id).toBe(eventId);
+    expect(data.ride_id).toBe(rideId);
     expect(data.user_id).toBe(participantAuth.userId);
   });
 
-  it('returns 400 when the creator tries to leave their own event', async () => {
-    const eventResponse = await appRef.app.inject({
+  it('returns 400 when the creator tries to leave their own ride', async () => {
+    const rideResponse = await appRef.app.inject({
       method: 'POST',
-      url: '/events',
-      body: newEvent({ user_id: creatorAuth.userId, city: 'Warsaw', country: 'PL' }),
+      url: '/rides',
+      body: newRide({ user_id: creatorAuth.userId, city: 'Warsaw', country: 'PL' }),
       cookies: { accessToken: creatorAuth.accessToken },
     });
 
-    const eventId = eventResponse.json().data.id as string;
+    const rideId = rideResponse.json().data.id as string;
 
     const response = await appRef.app.inject({
       method: 'DELETE',
-      url: `/events/${eventId}/leave`,
+      url: `/rides/${rideId}/leave`,
       cookies: { accessToken: creatorAuth.accessToken },
     });
 

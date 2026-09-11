@@ -16,7 +16,7 @@ export async function createRide(input: CreateRideInput) {
     average_pace_kmh: data.pace_policy === 'leader' ? data.average_pace_kmh : undefined,
   };
 
-  const response = await protectedRequest('/events', {
+  const response = await protectedRequest('/rides', {
     method: 'POST',
     body: JSON.stringify(payload),
   });

@@ -127,6 +127,13 @@
       "when": 1788111771164,
       "tag": "0017_sticky_spencer_smythe",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1789105605099,
+      "tag": "0018_rename_events_to_rides",
+      "breakpoints": true
     }
   ]
 }

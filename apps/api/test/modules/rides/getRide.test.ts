@@ -1,44 +1,44 @@
 import { describe, expect, it } from 'vitest';
 import { useApp } from '../../helpers/app.js';
 import { useAuthenticatedUser } from '../../helpers/auth.js';
-import { newEvent } from '../../helpers/events.js';
+import { newRide } from '../../helpers/rides.js';
 
-describe('GET /events/:id', () => {
+describe('GET /rides/:id', () => {
   const appRef = useApp();
   const auth = useAuthenticatedUser(appRef);
 
-  it('returns 404 when event does not exist', async () => {
+  it('returns 404 when ride does not exist', async () => {
     const response = await appRef.app.inject({
       method: 'GET',
-      url: '/events/00000000-0000-0000-0000-000000000000',
+      url: '/rides/00000000-0000-0000-0000-000000000000',
       cookies: { accessToken: auth.accessToken },
     });
 
     expect(response.statusCode).toBe(404);
   });
 
-  it('returns event when found', async () => {
-    const body = newEvent({ user_id: auth.userId, title: 'Morning Ride', city: 'Warsaw', country: 'PL' });
+  it('returns ride when found', async () => {
+    const body = newRide({ user_id: auth.userId, title: 'Morning Ride', city: 'Warsaw', country: 'PL' });
 
     const createResponse = await appRef.app.inject({
       method: 'POST',
-      url: '/events',
+      url: '/rides',
       body,
       cookies: { accessToken: auth.accessToken },
     });
 
-    const eventId = createResponse.json().data.id as string;
+    const rideId = createResponse.json().data.id as string;
 
     const response = await appRef.app.inject({
       method: 'GET',
-      url: `/events/${eventId}`,
+      url: `/rides/${rideId}`,
       cookies: { accessToken: auth.accessToken },
     });
 
     expect(response.statusCode).toBe(200);
 
     const { data } = response.json();
-    expect(data.id).toBe(eventId);
+    expect(data.id).toBe(rideId);
     expect(data.title).toBe('Morning Ride');
     expect(data.city).toBe('Warsaw');
     expect(data.country).toBe('PL');

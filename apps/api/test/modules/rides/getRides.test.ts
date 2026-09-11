@@ -1,20 +1,20 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { useApp } from '../../helpers/app.js';
-import { createMultipleRandomEvents, newEvent } from '../../helpers/events.js';
-import { events } from '../../../src/db/schema.js';
+import { createMultipleRandomRides, newRide } from '../../helpers/rides.js';
+import { rides } from '../../../src/db/schema.js';
 import { useAuthenticatedUser } from '../../helpers/auth.js';
 
-describe('GET /events', () => {
+describe('GET /rides', () => {
   const appRef = useApp();
   const auth = useAuthenticatedUser(appRef);
   const LIMIT = 20;
 
   it('returns first 20 records (limit) when cursor is not defined', async () => {
-    await createMultipleRandomEvents(appRef.app.db, LIMIT + 1, auth.userId);
+    await createMultipleRandomRides(appRef.app.db, LIMIT + 1, auth.userId);
 
     const response = await appRef.app.inject({
       method: 'GET',
-      url: '/events',
+      url: '/rides',
       cookies: { accessToken: auth.accessToken },
     });
 
@@ -24,11 +24,11 @@ describe('GET /events', () => {
   });
 
   it('returns next 20 records (limit) when cursor is defined', async () => {
-    await createMultipleRandomEvents(appRef.app.db, LIMIT * 2, auth.userId);
+    await createMultipleRandomRides(appRef.app.db, LIMIT * 2, auth.userId);
 
     const initialResponse = await appRef.app.inject({
       method: 'GET',
-      url: '/events',
+      url: '/rides',
       cookies: { accessToken: auth.accessToken },
     });
 
@@ -39,7 +39,7 @@ describe('GET /events', () => {
 
     const nextResponse = await appRef.app.inject({
       method: 'GET',
-      url: '/events',
+      url: '/rides',
       cookies: { accessToken: auth.accessToken },
       query: {
         cursor: nextCursor,
@@ -51,25 +51,25 @@ describe('GET /events', () => {
     expect(nextResponse.json().nextCursor).toBe(null);
   });
 
-  it('returns events near Warsaw when Warsaw lat/long is provided', async () => {
-    const warsawEvent1 = newEvent({
+  it('returns rides near Warsaw when Warsaw lat/long is provided', async () => {
+    const warsawRide1 = newRide({
       user_id: auth.userId,
       start_location: { x: 21.01178, y: 52.22977 },
     });
-    const warsawEvent2 = newEvent({
+    const warsawRide2 = newRide({
       user_id: auth.userId,
       start_location: { x: 21.01178, y: 52.22977 },
     });
-    const tokyoEvent = newEvent({
+    const tokyoRide = newRide({
       user_id: auth.userId,
       start_location: { x: 139.69171, y: 35.6895 },
     });
 
-    await appRef.app.db.insert(events).values([warsawEvent1, warsawEvent2, tokyoEvent]).returning();
+    await appRef.app.db.insert(rides).values([warsawRide1, warsawRide2, tokyoRide]).returning();
 
     const response = await appRef.app.inject({
       method: 'GET',
-      url: '/events',
+      url: '/rides',
       cookies: { accessToken: auth.accessToken },
       query: {
         lat: '52.22977',

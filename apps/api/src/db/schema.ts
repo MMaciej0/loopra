@@ -57,7 +57,7 @@ export const rideTypeEnum = pgEnum('ride_type', [
   'casual',
   'training',
 ]);
-export const eventStatusEnum = pgEnum('event_status', [
+export const rideStatusEnum = pgEnum('ride_status', [
   'draft',
   'open',
   'full',
@@ -105,8 +105,8 @@ export const routes = pgTable('routes', {
     .$onUpdate(() => new Date()),
 });
 
-export const events = pgTable(
-  'events',
+export const rides = pgTable(
+  'rides',
   {
     id: uuid().primaryKey().defaultRandom(),
     title: text().notNull(),
@@ -135,43 +135,43 @@ export const events = pgTable(
     experience_policy: experiencePolicyEnum().notNull().default('first_timers'),
     max_participants: integer(), // null = unlimited
     is_private: boolean().notNull().default(false),
-    status: eventStatusEnum().notNull().default('open'),
+    status: rideStatusEnum().notNull().default('open'),
     created_at: timestamp({ withTimezone: true }).notNull().defaultNow(),
     updated_at: timestamp({ withTimezone: true })
       .notNull()
       .defaultNow()
       .$onUpdate(() => new Date()),
   },
-  (t) => [index('events_start_location_idx').using('gist', t.start_location)],
+  (t) => [index('rides_start_location_idx').using('gist', t.start_location)],
 );
 
-export const event_participants = pgTable(
-  'event_participants',
+export const ride_participants = pgTable(
+  'ride_participants',
   {
-    event_id: uuid()
+    ride_id: uuid()
       .notNull()
-      .references(() => events.id, { onDelete: 'cascade' }),
+      .references(() => rides.id, { onDelete: 'cascade' }),
     user_id: uuid()
       .notNull()
       .references(() => users.id, { onDelete: 'cascade' }),
     status: participantStatusEnum().notNull().default('confirmed'),
     joined_at: timestamp({ withTimezone: true }).notNull().defaultNow(),
   },
-  (t) => [primaryKey({ columns: [t.event_id, t.user_id] })],
+  (t) => [primaryKey({ columns: [t.ride_id, t.user_id] })],
 );
 
-export const eventsRelations = relations(events, ({ many, one }) => ({
-  participants: many(event_participants),
-  creator: one(users, { fields: [events.creator_id], references: [users.id] }),
-  route: one(routes, { fields: [events.route_id], references: [routes.id] }),
+export const ridesRelations = relations(rides, ({ many, one }) => ({
+  participants: many(ride_participants),
+  creator: one(users, { fields: [rides.creator_id], references: [users.id] }),
+  route: one(routes, { fields: [rides.route_id], references: [routes.id] }),
 }));
 
-export const eventParticipantsRelations = relations(event_participants, ({ one }) => ({
-  event: one(events, { fields: [event_participants.event_id], references: [events.id] }),
-  user: one(users, { fields: [event_participants.user_id], references: [users.id] }),
+export const rideParticipantsRelations = relations(ride_participants, ({ one }) => ({
+  ride: one(rides, { fields: [ride_participants.ride_id], references: [rides.id] }),
+  user: one(users, { fields: [ride_participants.user_id], references: [users.id] }),
 }));
 
 export const routesRelations = relations(routes, ({ one, many }) => ({
   user: one(users, { fields: [routes.user_id], references: [users.id] }),
-  events: many(events),
+  rides: many(rides),
 }));
