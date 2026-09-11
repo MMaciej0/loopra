@@ -4,7 +4,7 @@
 
 **Strava** is great for tracking and performance, but assumes you already know who to ride with. No proactive discovery, no open ride feed, no messaging.
 
-**Facebook groups** have community and chat, but terrible UX for rides: no searchable events, RSVP is just comments, no headcount, no map, no pace info.
+**Facebook groups** have community and chat, but terrible UX for rides: no searchable rides, RSVP is just comments, no headcount, no map, no pace info.
 
 **Loopra** = structured, searchable ride discovery with real RSVPs and per-ride chat. The dedicated tool for finding people to ride with.
 
@@ -17,14 +17,14 @@ The minimum to be useful to a cyclist in any city.
 | Feature | Description |
 |---------|-------------|
 | **Email verification gate** | Users can register and search rides immediately, but must verify email before creating rides, joining rides, chatting, or otherwise participating |
-| **Structured ride events** | Title, date/time, meetup point (map pin), distance, estimated pace, discipline (road/mtb/gravel/cx), max spots, difficulty |
+| **Structured rides** | Title, date/time, meetup point (map pin), distance, estimated pace, discipline (road/mtb/gravel/cx), max spots, difficulty |
 | **RSVP with real headcount** | Join / Leave / Waitlist. Participant count visible upfront — no counting comments |
 | **Searchable ride feed** | Filter by location + radius, date range, discipline, pace, difficulty |
 | **Map view of nearby rides** | Pins on a map showing upcoming rides — the core killer feature vs Facebook |
-| **Event chat** | Per-ride discussion thread (chronological, proper chat UX) |
+| **Ride chat** | Per-ride discussion thread (chronological, proper chat UX) |
 | **User profiles** | Discipline preferences, avg pace range, city, short bio |
-| **GPX route attachment** | Attach a `.gpx` file to a ride event; display the route on a map |
-| **Recurring rides** | "Every Sunday 8am" — auto-generates events on a schedule |
+| **GPX route attachment** | Attach a `.gpx` file to a ride; display the route on a map |
+| **Recurring rides** | "Every Sunday 8am" — auto-generates rides on a schedule |
 
 ## Phase 2 — Community
 

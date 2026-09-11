@@ -1,8 +1,8 @@
 import { InferInsertModel } from 'drizzle-orm';
 import { Db } from '../../src/db/index.js';
-import { events } from '../../src/db/schema.js';
+import { rides } from '../../src/db/schema.js';
 
-type NewEventProps = Partial<InferInsertModel<typeof events>> & { user_id: string };
+type NewRideProps = Partial<InferInsertModel<typeof rides>> & { user_id: string };
 
 const BIKE_TYPES = ['road', 'gravel', 'mtb', 'trekking'] as const;
 const RIDE_TYPES = ['coffee_ride', 'sightseeing', 'casual', 'training'] as const;
@@ -11,7 +11,7 @@ const PACE_POLICIES = ['slowest_rider', 'leader', 'group_split'] as const;
 const FORMATION_POLICIES = ['free', 'leader', 'rotation'] as const;
 const EXPERIENCE_POLICIES = ['first_timers', 'moderate', 'advanced'] as const;
 
-export const newEvent = ({
+export const newRide = ({
   user_id,
   title,
   description,
@@ -30,12 +30,12 @@ export const newEvent = ({
   region,
   country,
   max_participants,
-}: NewEventProps) => {
+}: NewRideProps) => {
   const pacePolicy = pace_policy || PACE_POLICIES[Math.floor(Math.random() * PACE_POLICIES.length)];
 
   return {
     creator_id: user_id,
-    title: title || 'Test Event',
+    title: title || 'Test Ride',
     description: description || 'Test Description',
     bike_type: bike_type || BIKE_TYPES[Math.floor(Math.random() * BIKE_TYPES.length)],
     ride_type: ride_type || RIDE_TYPES[Math.floor(Math.random() * RIDE_TYPES.length)],
@@ -46,7 +46,7 @@ export const newEvent = ({
     experience_policy:
       experience_policy ||
       EXPERIENCE_POLICIES[Math.floor(Math.random() * EXPERIENCE_POLICIES.length)],
-    // leader-paced rides must carry a pace — see CreateEventBodySchema
+    // leader-paced rides must carry a pace — see CreateRideBodySchema
     ...((average_pace_kmh || pacePolicy === 'leader') && {
       average_pace_kmh: average_pace_kmh || 28,
     }),
@@ -61,11 +61,11 @@ export const newEvent = ({
   };
 };
 
-export const createMultipleRandomEvents = (db: Db, count: number, user_id: string) => {
-  const newEvents = [];
+export const createMultipleRandomRides = (db: Db, count: number, user_id: string) => {
+  const newRides = [];
   for (let i = 0; i < count; i++) {
-    newEvents.push(newEvent({ user_id }));
+    newRides.push(newRide({ user_id }));
   }
 
-  return db.insert(events).values(newEvents).returning();
+  return db.insert(rides).values(newRides).returning();
 };

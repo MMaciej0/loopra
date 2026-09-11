@@ -25,7 +25,7 @@ apps/api/
 │   ├── modules/              # Feature modules — each is a Fastify plugin
 │   │   ├── auth/
 │   │   ├── users/
-│   │   ├── events/
+│   │   ├── rides/
 │   │   ├── groups/
 │   │   ├── routes/
 │   │   ├── discovery/
@@ -102,7 +102,7 @@ Links external OAuth identities to local users. Supports multiple providers per 
 | created_at | timestamptz | |
 | — | UNIQUE | `(provider, provider_user_id)` — one identity per provider |
 
-### `events`
+### `rides`
 Unified model for both **trips** (social group rides) and **trainings** (structured workouts).
 
 | Column | Type | Notes |
@@ -126,10 +126,10 @@ Unified model for both **trips** (social group rides) and **trainings** (structu
 | created_at | timestamptz | |
 | updated_at | timestamptz | |
 
-### `event_participants`
+### `ride_participants`
 | Column | Type | Notes |
 |--------|------|-------|
-| event_id | uuid FK | composite PK |
+| ride_id | uuid FK | composite PK |
 | user_id | uuid FK | composite PK |
 | status | enum | `pending` \| `confirmed` \| `declined` |
 | joined_at | timestamptz | |
@@ -190,7 +190,7 @@ Cycling clubs or local communities.
 |--------|------|-------|
 | id | uuid PK | |
 | user_id | uuid FK → users | recipient |
-| type | enum | `event_join`, `event_reminder`, `group_invite`, `new_follower`, `event_cancelled` |
+| type | enum | `ride_join`, `ride_reminder`, `group_invite`, `new_follower`, `ride_cancelled` |
 | payload | jsonb | type-specific data |
 | is_read | boolean | default false |
 | created_at | timestamptz | |
@@ -221,23 +221,23 @@ No base URL prefix — routes are mounted directly (e.g. `/auth`, `/users`).
 | GET | `/users/me` | ✓ | Current user profile |
 | PATCH | `/users/me` | ✓ | Update profile |
 | GET | `/users/:id` | ✓ | Public profile |
-| GET | `/users/:id/events` | ✓ | User's events |
+| GET | `/users/:id/rides` | ✓ | User's rides |
 | POST | `/users/:id/follow` | ✓ | Follow user |
 | DELETE | `/users/:id/follow` | ✓ | Unfollow user |
 | GET | `/users/me/followers` | ✓ | My followers |
 | GET | `/users/me/following` | ✓ | Who I follow |
 
-### Events — `/events`
+### Rides — `/rides`
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
-| GET | `/events` | ✓ | List (filter: type, lat/lng/radius, date, difficulty) |
-| POST | `/events` | ✓ + verified | Create event |
-| GET | `/events/:id` | ✓ | Event details |
-| PATCH | `/events/:id` | ✓ | Update (creator only) |
-| DELETE | `/events/:id` | ✓ | Cancel (creator only) |
-| POST | `/events/:id/join` | ✓ + verified | Join event |
-| DELETE | `/events/:id/leave` | ✓ | Leave event |
-| GET | `/events/:id/participants` | ✓ | Participant list |
+| GET | `/rides` | ✓ | List (filter: type, lat/lng/radius, date, difficulty) |
+| POST | `/rides` | ✓ + verified | Create ride |
+| GET | `/rides/:id` | ✓ | Ride details |
+| PATCH | `/rides/:id` | ✓ | Update (creator only) |
+| DELETE | `/rides/:id` | ✓ | Cancel (creator only) |
+| POST | `/rides/:id/join` | ✓ + verified | Join ride |
+| DELETE | `/rides/:id/leave` | ✓ | Leave ride |
+| GET | `/rides/:id/participants` | ✓ | Participant list |
 
 ### Groups — `/groups`
 | Method | Path | Auth | Description |
@@ -250,7 +250,7 @@ No base URL prefix — routes are mounted directly (e.g. `/auth`, `/users`).
 | POST | `/groups/:id/join` | ✓ + verified | Join group |
 | DELETE | `/groups/:id/leave` | ✓ | Leave group |
 | GET | `/groups/:id/members` | ✓ | Member list |
-| GET | `/groups/:id/events` | ✓ | Group events |
+| GET | `/groups/:id/rides` | ✓ | Group rides |
 
 ### Routes — `/routes`
 | Method | Path | Auth | Description |
@@ -264,7 +264,7 @@ No base URL prefix — routes are mounted directly (e.g. `/auth`, `/users`).
 | Method | Path | Auth | Description |
 |--------|------|------|-------------|
 | GET | `/discovery/riders` | ✓ | Nearby riders (lat, lng, radius_km) |
-| GET | `/discovery/events` | ✓ | Nearby upcoming events |
+| GET | `/discovery/rides` | ✓ | Nearby upcoming rides |
 | GET | `/discovery/groups` | ✓ | Nearby groups |
 
 ### Notifications — `/notifications`
@@ -296,7 +296,7 @@ Unverified authenticated users cannot:
 
 - create rides
 - join/request to join rides
-- write in event chat
+- write in ride chat
 - create groups/clubs
 - upload routes/GPX
 - send direct messages
@@ -501,14 +501,14 @@ React Native (Expo) does not have an automatic cookie jar — httpOnly cookies f
 
 All location-based queries use PostGIS `ST_DWithin` with geography type for accurate distance in meters.
 
-Example — nearby events within 50km:
+Example — nearby rides within 50km:
 ```sql
 WHERE ST_DWithin(
-  events.start_location::geography,
+  rides.start_location::geography,
   ST_SetSRID(ST_MakePoint($lng, $lat), 4326)::geography,
   50000  -- meters
 )
-ORDER BY events.start_location <-> ST_SetSRID(ST_MakePoint($lng, $lat), 4326)
+ORDER BY rides.start_location <-> ST_SetSRID(ST_MakePoint($lng, $lat), 4326)
 ```
 
 ---
@@ -527,8 +527,8 @@ Response: `{ data: [...], nextCursor: "<string>" | null }`
 ```json
 {
   "error": {
-    "code": "EVENT_FULL",
-    "message": "This event has reached its maximum participant limit",
+    "code": "RIDE_FULL",
+    "message": "This ride has reached its maximum participant limit",
     "statusCode": 409
   }
 }

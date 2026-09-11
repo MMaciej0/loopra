@@ -1,6 +1,6 @@
 import z from 'zod';
 
-export const ListEventsQuerySchema = z
+export const ListRidesQuerySchema = z
   .object({
     cursor: z.string().optional(),
     limit: z.coerce.number().int().min(1).max(100).default(20),
@@ -25,7 +25,7 @@ export const ListEventsQuerySchema = z
     { message: 'lat, lng, and radius_km must all be provided together' },
   );
 
-export const CreateEventBodySchema = z
+export const CreateRideBodySchema = z
   .object({
     title: z.string().trim().min(5).max(50),
     description: z.string().optional(),
@@ -43,7 +43,7 @@ export const CreateEventBodySchema = z
     postal_code: z.string().optional(),
     full_address: z.string().optional(),
 
-    // Minimum 5h lead time — prevents ghost events nobody can find in time
+    // Minimum 5h lead time — prevents ghost rides nobody can find in time
     start_time: z.coerce.date().refine((d) => {
       const now = new Date();
       now.setHours(now.getHours() + 5);
@@ -80,7 +80,7 @@ export const CreateEventBodySchema = z
     path: ['average_pace_kmh'],
   });
 
-export const UpdateEventBodySchema = z
+export const UpdateRideBodySchema = z
   .object({
     title: z.string().trim().min(5).max(50).optional(),
     description: z.string().optional(),
@@ -98,7 +98,7 @@ export const UpdateEventBodySchema = z
     postal_code: z.string().optional(),
     full_address: z.string().optional(),
 
-    // Minimum 5h lead time — prevents ghost events nobody can find in time
+    // Minimum 5h lead time — prevents ghost rides nobody can find in time
     start_time: z.coerce
       .date()
       .refine((d) => {
@@ -137,6 +137,6 @@ export const UpdateEventBodySchema = z
     path: ['average_pace_kmh'],
   });
 
-export type UpdateEventBody = z.infer<typeof UpdateEventBodySchema>;
-export type CreateEventBody = z.infer<typeof CreateEventBodySchema>;
-export type ListEventsQuery = z.infer<typeof ListEventsQuerySchema>;
+export type UpdateRideBody = z.infer<typeof UpdateRideBodySchema>;
+export type CreateRideBody = z.infer<typeof CreateRideBodySchema>;
+export type ListRidesQuery = z.infer<typeof ListRidesQuerySchema>;

@@ -1,14 +1,14 @@
 import { FastifyInstance } from 'fastify';
 import { parseBody, parseSearchParams } from '../../utils/validation.js';
-import { CreateEventBodySchema, ListEventsQuerySchema, UpdateEventBodySchema } from './schema.js';
-import { listEvents } from './services/listEvents.js';
-import { createEvent } from './services/createEvent.js';
-import { updateEvent } from './services/updateEvent.js';
-import { deleteEvent } from './services/deleteEvent.js';
+import { CreateRideBodySchema, ListRidesQuerySchema, UpdateRideBodySchema } from './schema.js';
+import { listRides } from './services/listRides.js';
+import { createRide } from './services/createRide.js';
+import { updateRide } from './services/updateRide.js';
+import { deleteRide } from './services/deleteRide.js';
 import {
-  EventNotFoundError,
-  EventUpdateBadBodyError,
-  EventHasParticipantsError,
+  RideNotFoundError,
+  RideUpdateBadBodyError,
+  RideHasParticipantsError,
   ParticipantExistsError,
   MaxParticipantsError,
   ParticipantNotFoundError,
@@ -16,24 +16,24 @@ import {
   RouteNotFoundError,
 } from './errors.js';
 import { AppError, ErrorType } from '../../utils/errors.js';
-import { joinEvent } from './services/joinEvent.js';
-import { leaveEvent } from './services/leaveEvent.js';
-import { getEvent } from './services/getEvent.js';
+import { joinRide } from './services/joinRide.js';
+import { leaveRide } from './services/leaveRide.js';
+import { getRide } from './services/getRide.js';
 
-export const eventsRoutes = async (fastify: FastifyInstance) => {
+export const ridesRoutes = async (fastify: FastifyInstance) => {
   fastify.get('/', async (request, reply) => {
-    const searchParams = parseSearchParams(request.query, ListEventsQuerySchema);
-    const { data, nextCursor } = await listEvents(fastify.db, searchParams);
+    const searchParams = parseSearchParams(request.query, ListRidesQuerySchema);
+    const { data, nextCursor } = await listRides(fastify.db, searchParams);
     return reply.send({ data, nextCursor });
   });
 
   fastify.post('/', { preHandler: fastify.requireVerifiedEmail }, async (request, reply) => {
-    const parsedBody = parseBody(request.body, CreateEventBodySchema);
+    const parsedBody = parseBody(request.body, CreateRideBodySchema);
     const creatorId = request.user.sub;
 
     try {
-      const [newEvent] = await createEvent(fastify.db, creatorId, parsedBody);
-      return reply.send({ data: newEvent });
+      const [newRide] = await createRide(fastify.db, creatorId, parsedBody);
+      return reply.send({ data: newRide });
     } catch (error) {
       if (error instanceof RouteNotFoundError) {
         throw new AppError(404, ErrorType.ROUTE_NOT_FOUND, 'Route not found');
@@ -45,29 +45,29 @@ export const eventsRoutes = async (fastify: FastifyInstance) => {
   fastify.get('/:id', async (request, reply) => {
     const { id } = request.params as { id: string };
     try {
-      const event = await getEvent(fastify.db, id);
-      return reply.send({ data: event });
+      const ride = await getRide(fastify.db, id);
+      return reply.send({ data: ride });
     } catch (error) {
-      if (error instanceof EventNotFoundError) {
-        throw new AppError(404, ErrorType.EVENT_NOT_FOUND, 'Event not found');
+      if (error instanceof RideNotFoundError) {
+        throw new AppError(404, ErrorType.RIDE_NOT_FOUND, 'Ride not found');
       }
       throw error;
     }
   });
 
   fastify.patch('/:id', { preHandler: fastify.requireVerifiedEmail }, async (request, reply) => {
-    const parsedBody = parseBody(request.body, UpdateEventBodySchema);
+    const parsedBody = parseBody(request.body, UpdateRideBodySchema);
     const { id } = request.params as { id: string };
     const creatorId = request.user.sub;
     try {
-      const updatedEvent = await updateEvent(fastify.db, id, creatorId, parsedBody);
-      return reply.send({ data: updatedEvent });
+      const updatedRide = await updateRide(fastify.db, id, creatorId, parsedBody);
+      return reply.send({ data: updatedRide });
     } catch (error) {
-      if (error instanceof EventNotFoundError) {
-        throw new AppError(404, ErrorType.EVENT_NOT_FOUND, 'Event not found');
+      if (error instanceof RideNotFoundError) {
+        throw new AppError(404, ErrorType.RIDE_NOT_FOUND, 'Ride not found');
       }
-      if (error instanceof EventUpdateBadBodyError) {
-        throw new AppError(400, ErrorType.EVENT_UPDATE_BAD_BODY, error.message);
+      if (error instanceof RideUpdateBadBodyError) {
+        throw new AppError(400, ErrorType.RIDE_UPDATE_BAD_BODY, error.message);
       }
       throw error;
     }
@@ -77,14 +77,14 @@ export const eventsRoutes = async (fastify: FastifyInstance) => {
     const { id } = request.params as { id: string };
     const creatorId = request.user.sub;
     try {
-      const deletedEvent = await deleteEvent(fastify.db, id, creatorId);
-      return reply.send({ data: deletedEvent });
+      const deletedRide = await deleteRide(fastify.db, id, creatorId);
+      return reply.send({ data: deletedRide });
     } catch (error) {
-      if (error instanceof EventNotFoundError) {
-        throw new AppError(404, ErrorType.EVENT_NOT_FOUND, 'Event not found');
+      if (error instanceof RideNotFoundError) {
+        throw new AppError(404, ErrorType.RIDE_NOT_FOUND, 'Ride not found');
       }
-      if (error instanceof EventHasParticipantsError) {
-        throw new AppError(400, ErrorType.EVENT_HAS_PARTICIPANTS, 'Event has participants');
+      if (error instanceof RideHasParticipantsError) {
+        throw new AppError(400, ErrorType.RIDE_HAS_PARTICIPANTS, 'Ride has participants');
       }
       throw error;
     }
@@ -94,11 +94,11 @@ export const eventsRoutes = async (fastify: FastifyInstance) => {
     const { id } = request.params as { id: string };
     const userId = request.user.sub;
     try {
-      const newParticipant = await joinEvent(fastify.db, userId, id);
+      const newParticipant = await joinRide(fastify.db, userId, id);
       return reply.send({ data: newParticipant });
     } catch (error) {
-      if (error instanceof EventNotFoundError) {
-        throw new AppError(404, ErrorType.EVENT_NOT_FOUND, 'Event not found');
+      if (error instanceof RideNotFoundError) {
+        throw new AppError(404, ErrorType.RIDE_NOT_FOUND, 'Ride not found');
       }
       if (error instanceof ParticipantExistsError) {
         throw new AppError(400, ErrorType.PARTICIPANT_EXISTS, 'Participant already exists');
@@ -114,14 +114,14 @@ export const eventsRoutes = async (fastify: FastifyInstance) => {
     const { id } = request.params as { id: string };
     const userId = request.user.sub;
     try {
-      const deleted = await leaveEvent(fastify.db, userId, id);
+      const deleted = await leaveRide(fastify.db, userId, id);
       return reply.send({ data: deleted });
     } catch (error) {
       if (error instanceof ParticipantNotFoundError) {
         throw new AppError(404, ErrorType.PARTICIPANT_NOT_FOUND, 'Participant not found');
       }
       if (error instanceof CreatorCannotLeaveError) {
-        throw new AppError(400, ErrorType.CREATOR_CANNOT_LEAVE, 'Creator cannot leave own event');
+        throw new AppError(400, ErrorType.CREATOR_CANNOT_LEAVE, 'Creator cannot leave own ride');
       }
       throw error;
     }

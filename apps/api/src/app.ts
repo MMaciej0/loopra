@@ -11,7 +11,7 @@ import multipartPlugin from './plugins/multipart.js';
 
 import authModule from './modules/auth/index.js';
 import usersModule from './modules/users/index.js';
-import eventsModule from './modules/events/index.js';
+import ridesModule from './modules/rides/index.js';
 import routesModule from './modules/routes/index.js';
 
 export const buildApp = () => {
@@ -42,7 +42,7 @@ export const buildApp = () => {
     protectedApp.addHook('onRequest', protectedApp.authenticate);
 
     protectedApp.register(usersModule, { prefix: '/users' });
-    protectedApp.register(eventsModule, { prefix: '/events' });
+    protectedApp.register(ridesModule, { prefix: '/rides' });
     protectedApp.register(routesModule, { prefix: '/routes' });
   });
 
