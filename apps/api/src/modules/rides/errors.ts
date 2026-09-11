@@ -1,14 +1,50 @@
-export class RideNotFoundError extends Error {}
-export class RouteNotFoundError extends Error {}
-export class RideUpdateBadBodyError extends Error {
-  constructor(message?: string) {
-    super(message);
-    this.name = 'RideUpdateBadBodyError';
+import { ERROR_TYPES } from '@loopra/domain';
+import { AppError } from '../../utils/errors.js';
+
+export class RideNotFoundError extends AppError {
+  constructor() {
+    super(404, ERROR_TYPES.RIDE_NOT_FOUND, 'Ride not found');
   }
 }
-export class RideHasParticipantsError extends Error {}
 
-export class ParticipantExistsError extends Error {}
-export class MaxParticipantsError extends Error {}
-export class ParticipantNotFoundError extends Error {}
-export class CreatorCannotLeaveError extends Error {}
+export class RouteNotFoundError extends AppError {
+  constructor() {
+    super(404, ERROR_TYPES.ROUTE_NOT_FOUND, 'Route not found');
+  }
+}
+
+export class RideUpdateBadBodyError extends AppError {
+  constructor(message: string) {
+    super(400, ERROR_TYPES.RIDE_UPDATE_BAD_BODY, message);
+  }
+}
+
+export class RideHasParticipantsError extends AppError {
+  constructor() {
+    super(400, ERROR_TYPES.RIDE_HAS_PARTICIPANTS, 'Ride has participants');
+  }
+}
+
+export class ParticipantExistsError extends AppError {
+  constructor() {
+    super(400, ERROR_TYPES.PARTICIPANT_EXISTS, 'Participant already exists');
+  }
+}
+
+export class MaxParticipantsError extends AppError {
+  constructor() {
+    super(400, ERROR_TYPES.MAX_PARTICIPANTS, 'Max participants reached');
+  }
+}
+
+export class ParticipantNotFoundError extends AppError {
+  constructor() {
+    super(404, ERROR_TYPES.PARTICIPANT_NOT_FOUND, 'Participant not found');
+  }
+}
+
+export class CreatorCannotLeaveError extends AppError {
+  constructor() {
+    super(400, ERROR_TYPES.CREATOR_CANNOT_LEAVE, 'Creator cannot leave own ride');
+  }
+}

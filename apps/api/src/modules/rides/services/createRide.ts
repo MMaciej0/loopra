@@ -19,12 +19,10 @@ export const createRide = async (db: Db, creatorId: string, ride: CreateRideBody
       }
     }
 
-    const created = await tx.insert(rides).values(rideWithCreatorId).returning();
+    const [created] = await tx.insert(rides).values(rideWithCreatorId).returning();
 
     // the creator rides too — they hold a seat and belong in the participant list
-    await tx
-      .insert(ride_participants)
-      .values({ ride_id: created[0].id, user_id: creatorId });
+    await tx.insert(ride_participants).values({ ride_id: created.id, user_id: creatorId });
 
     return created;
   });
