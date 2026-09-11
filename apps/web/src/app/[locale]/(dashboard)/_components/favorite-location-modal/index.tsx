@@ -1,5 +1,5 @@
 import { protectedRequest } from '@/utils/api';
-import type { GetCurrentUserResponse } from '@/types/user';
+import type { GetCurrentUserResponse } from '@loopra/domain';
 import { FavoriteLocationDialog } from './dialog';
 
 export async function FavoriteLocationModal() {
