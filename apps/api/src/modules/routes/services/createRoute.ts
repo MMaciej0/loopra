@@ -35,7 +35,7 @@ export const createRoute = async (
   await uploadToS3(s3, buffer, s3Key, 'application/gpx+xml');
 
   try {
-    const newRoute = await db
+    const [newRoute] = await db
       .insert(routes)
       .values({
         s3_key: s3Key,

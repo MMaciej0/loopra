@@ -1,29 +1,32 @@
 import { FastifyInstance } from 'fastify';
-import { ERROR_TYPES } from '@loopra/domain';
-import { AppError } from '../../utils/errors.js';
+import { CreateRouteResponseSchema } from '@loopra/domain/schemas';
 import { createRoute } from './services/createRoute.js';
-import { InvalidGpxError } from './errors.js';
+import { FileRequiredError } from './errors.js';
 
 export const routesRoutes = async (fastify: FastifyInstance) => {
-  fastify.post('/', { preHandler: fastify.requireVerifiedEmail }, async (request, reply) => {
-    const userId = request.user.sub;
+  fastify.post(
+    '/',
+    {
+      preHandler: fastify.requireVerifiedEmail,
+      schema: { response: { 201: CreateRouteResponseSchema } },
+    },
+    async (request, reply) => {
+      const data = await request.file();
 
-    const data = await request.file();
-
-    if (!data) {
-      throw new AppError(400, ERROR_TYPES.FILE_REQUIRED, 'File is required');
-    }
-
-    const buffer = await data.toBuffer();
-
-    try {
-      const [newRoute] = await createRoute(fastify.db, fastify.s3, buffer, userId, data.filename);
-      return reply.status(201).send({ data: newRoute });
-    } catch (error) {
-      if (error instanceof InvalidGpxError) {
-        throw new AppError(400, ERROR_TYPES.INVALID_GPX, 'Invalid GPX file');
+      if (!data) {
+        throw new FileRequiredError();
       }
-      throw error;
-    }
-  });
+
+      const buffer = await data.toBuffer();
+      const newRoute = await createRoute(
+        fastify.db,
+        fastify.s3,
+        buffer,
+        request.user.sub,
+        data.filename,
+      );
+
+      return reply.status(201).send({ data: newRoute });
+    },
+  );
 };
