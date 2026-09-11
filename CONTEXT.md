@@ -48,8 +48,8 @@ How the group arranges itself on the road: free, behind a leader, or rotating.
 Who the ride is aimed at: first timers, moderate, or advanced. A statement of intent, not an enforced gate.
 
 **Bike Type**:
-The bike a ride is meant for. `any` is a real value meaning every bike is welcome — it is not the absence of an answer.
-_Avoid_: "all" as a value; a missing bike type means the ride predates this field, never "any bike welcome"
+The bike a ride is meant for. Every ride states one, and `any` is a real value meaning every bike is welcome — never the absence of an answer.
+_Avoid_: "all" as a value
 
 **Capacity**:
 The maximum number of participants a ride accepts, organiser included. Every ride is capped; there is no uncapped ride.

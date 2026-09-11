@@ -7,8 +7,6 @@ import { useTranslations } from 'next-intl';
 import { CreateRideInput } from '../../schema';
 import { cn } from '@/lib/utils';
 
-const BIKE_TYPE_OPTIONS = ['all', ...BIKE_TYPES] as const;
-
 export function BikeTypeInput() {
   const t = useTranslations('CreateRide');
   const tBikeTypes = useTranslations('BikeTypes');
@@ -20,7 +18,7 @@ export function BikeTypeInput() {
         {t('bikeTypeLabel')}
       </legend>
       <div className="mt-2 flex flex-wrap gap-2">
-        {BIKE_TYPE_OPTIONS.map((option) => (
+        {BIKE_TYPES.map((option) => (
           <label key={option}>
             <input
               type="radio"

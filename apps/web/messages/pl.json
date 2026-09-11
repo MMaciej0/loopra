@@ -86,7 +86,7 @@
     "participantsOpen": "{count} jedzie"
   },
   "BikeTypes": {
-    "all": "Wszystkie",
+    "any": "Dowolny",
     "road": "Szosa",
     "gravel": "Gravel",
     "mtb": "MTB",

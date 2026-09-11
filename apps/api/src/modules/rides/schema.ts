@@ -4,7 +4,9 @@ export const ListRidesQuerySchema = z
   .object({
     cursor: z.string().optional(),
     limit: z.coerce.number().int().min(1).max(100).default(20),
-    bike_type: z.enum(['road', 'gravel', 'mtb', 'trekking', 'urban', 'electric', 'cyclocross', 'tt']).optional(),
+    bike_type: z
+      .enum(['any', 'road', 'gravel', 'mtb', 'trekking', 'urban', 'electric', 'cyclocross', 'tt'])
+      .optional(),
     ride_type: z.enum(['coffee_ride', 'sightseeing', 'casual', 'training']).optional(),
     city: z.string().optional(),
     region: z.string().optional(),
@@ -58,7 +60,7 @@ export const CreateRideBodySchema = z
       .optional(),
     average_pace_kmh: z.coerce.number().int().min(1).optional(),
     ride_type: z.enum(['coffee_ride', 'sightseeing', 'casual', 'training']),
-    bike_type: z.enum(['road', 'gravel', 'mtb', 'trekking', 'urban', 'electric', 'cyclocross', 'tt']).optional(),
+    bike_type: z.enum(['any', 'road', 'gravel', 'mtb', 'trekking', 'urban', 'electric', 'cyclocross', 'tt']),
     drop_policy: z.enum(['no_drop', 'regroup', 'drop']),
     pace_policy: z.enum(['slowest_rider', 'leader', 'group_split']),
     formation_policy: z.enum(['free', 'leader', 'rotation']),
@@ -116,7 +118,9 @@ export const UpdateRideBodySchema = z
       .optional(),
     average_pace_kmh: z.coerce.number().int().min(1).optional(),
     ride_type: z.enum(['coffee_ride', 'sightseeing', 'casual', 'training']).optional(),
-    bike_type: z.enum(['road', 'gravel', 'mtb', 'trekking', 'urban', 'electric', 'cyclocross', 'tt']).optional(),
+    bike_type: z
+      .enum(['any', 'road', 'gravel', 'mtb', 'trekking', 'urban', 'electric', 'cyclocross', 'tt'])
+      .optional(),
     drop_policy: z.enum(['no_drop', 'regroup', 'drop']).optional(),
     pace_policy: z.enum(['slowest_rider', 'leader', 'group_split']).optional(),
     formation_policy: z.enum(['free', 'leader', 'rotation']).optional(),
