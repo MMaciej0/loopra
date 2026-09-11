@@ -1,0 +1,24 @@
+{
+  "name": "@loopra/domain",
+  "version": "1.0.0",
+  "description": "Shared Loopra domain vocabulary: enums, bounds, errors, response DTOs",
+  "private": true,
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "prepare": "tsc",
+    "typecheck": "tsc --noEmit",
+    "format": "prettier . --write",
+    "format:check": "prettier . --check"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.28.0",
+  "devDependencies": {
+    "prettier": "^3.8.1",
+    "typescript": "5.9.3"
+  }
+}
