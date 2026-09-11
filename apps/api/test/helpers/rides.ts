@@ -1,15 +1,16 @@
 import { InferInsertModel } from 'drizzle-orm';
+import {
+  BIKE_TYPES,
+  DROP_POLICIES,
+  EXPERIENCE_POLICIES,
+  FORMATION_POLICIES,
+  PACE_POLICIES,
+  RIDE_TYPES,
+} from '@loopra/domain';
 import { Db } from '../../src/db/index.js';
 import { rides } from '../../src/db/schema.js';
 
 type NewRideProps = Partial<InferInsertModel<typeof rides>> & { user_id: string };
-
-const BIKE_TYPES = ['road', 'gravel', 'mtb', 'trekking'] as const;
-const RIDE_TYPES = ['coffee_ride', 'sightseeing', 'casual', 'training'] as const;
-const DROP_POLICIES = ['no_drop', 'regroup', 'drop'] as const;
-const PACE_POLICIES = ['slowest_rider', 'leader', 'group_split'] as const;
-const FORMATION_POLICIES = ['free', 'leader', 'rotation'] as const;
-const EXPERIENCE_POLICIES = ['first_timers', 'moderate', 'advanced'] as const;
 
 export const newRide = ({
   user_id,

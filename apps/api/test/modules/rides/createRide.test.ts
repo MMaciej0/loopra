@@ -1,4 +1,15 @@
 import { describe, expect, it } from 'vitest';
+import {
+  BIKE_TYPES,
+  DISTANCE_MAX_KM,
+  DISTANCE_MIN_KM,
+  DROP_POLICIES,
+  EXPERIENCE_POLICIES,
+  FORMATION_POLICIES,
+  PACE_MAX_KMH,
+  PACE_MIN_KMH,
+  PACE_POLICIES,
+} from '@loopra/domain';
 import { useApp } from '../../helpers/app.js';
 import { useAuthenticatedUser } from '../../helpers/auth.js';
 
@@ -91,19 +102,16 @@ describe('POST /rides', () => {
     expect(response.statusCode).toBe(400);
   });
 
-  it.each(['any', 'road', 'gravel', 'mtb', 'trekking', 'urban', 'electric', 'cyclocross', 'tt'])(
-    'accepts bike_type %s',
-    async (bike_type) => {
-      const response = await appRef.app.inject({
-        method: 'POST',
-        url: '/rides',
-        body: { ...rideBody, bike_type },
-        cookies: { accessToken: auth.accessToken },
-      });
+  it.each(BIKE_TYPES)('accepts bike_type %s', async (bike_type) => {
+    const response = await appRef.app.inject({
+      method: 'POST',
+      url: '/rides',
+      body: { ...rideBody, bike_type },
+      cookies: { accessToken: auth.accessToken },
+    });
 
-      expect(response.statusCode).toBe(200);
-    },
-  );
+    expect(response.statusCode).toBe(200);
+  });
 
   it('returns 400 when bike_type is missing', async () => {
     const { bike_type: _omitted, ...body } = rideBody;
@@ -129,7 +137,7 @@ describe('POST /rides', () => {
     expect(response.statusCode).toBe(400);
   });
 
-  it.each(['no_drop', 'regroup', 'drop'])('accepts drop_policy %s', async (drop_policy) => {
+  it.each(DROP_POLICIES)('accepts drop_policy %s', async (drop_policy) => {
     const response = await appRef.app.inject({
       method: 'POST',
       url: '/rides',
@@ -164,16 +172,19 @@ describe('POST /rides', () => {
     expect(response.statusCode).toBe(400);
   });
 
-  it.each(['slowest_rider', 'group_split'])('accepts pace_policy %s', async (pace_policy) => {
-    const response = await appRef.app.inject({
-      method: 'POST',
-      url: '/rides',
-      body: { ...rideBody, pace_policy },
-      cookies: { accessToken: auth.accessToken },
-    });
+  it.each(PACE_POLICIES.filter((p) => p !== 'leader'))(
+    'accepts pace_policy %s',
+    async (pace_policy) => {
+      const response = await appRef.app.inject({
+        method: 'POST',
+        url: '/rides',
+        body: { ...rideBody, pace_policy },
+        cookies: { accessToken: auth.accessToken },
+      });
 
-    expect(response.statusCode).toBe(200);
-  });
+      expect(response.statusCode).toBe(200);
+    },
+  );
 
   it('accepts pace_policy leader when average_pace_kmh is given', async () => {
     const response = await appRef.app.inject({
@@ -210,19 +221,72 @@ describe('POST /rides', () => {
     expect(response.statusCode).toBe(400);
   });
 
-  it.each(['free', 'leader', 'rotation'])(
-    'accepts formation_policy %s',
-    async (formation_policy) => {
+  it.each([PACE_MIN_KMH - 1, PACE_MAX_KMH + 1])(
+    'returns 400 for average_pace_kmh %s',
+    async (average_pace_kmh) => {
       const response = await appRef.app.inject({
         method: 'POST',
         url: '/rides',
-        body: { ...rideBody, formation_policy },
+        body: { ...rideBody, pace_policy: 'leader', average_pace_kmh },
+        cookies: { accessToken: auth.accessToken },
+      });
+
+      expect(response.statusCode).toBe(400);
+    },
+  );
+
+  it.each([DISTANCE_MIN_KM - 1, DISTANCE_MAX_KM + 1])(
+    'returns 400 for distance_km %s',
+    async (distance_km) => {
+      const response = await appRef.app.inject({
+        method: 'POST',
+        url: '/rides',
+        body: { ...rideBody, distance_km },
+        cookies: { accessToken: auth.accessToken },
+      });
+
+      expect(response.statusCode).toBe(400);
+    },
+  );
+
+  it.each([PACE_MIN_KMH, PACE_MAX_KMH])(
+    'accepts average_pace_kmh %s at the boundary',
+    async (average_pace_kmh) => {
+      const response = await appRef.app.inject({
+        method: 'POST',
+        url: '/rides',
+        body: { ...rideBody, pace_policy: 'leader', average_pace_kmh },
         cookies: { accessToken: auth.accessToken },
       });
 
       expect(response.statusCode).toBe(200);
     },
   );
+
+  it.each([DISTANCE_MIN_KM, DISTANCE_MAX_KM])(
+    'accepts distance_km %s at the boundary',
+    async (distance_km) => {
+      const response = await appRef.app.inject({
+        method: 'POST',
+        url: '/rides',
+        body: { ...rideBody, distance_km },
+        cookies: { accessToken: auth.accessToken },
+      });
+
+      expect(response.statusCode).toBe(200);
+    },
+  );
+
+  it.each(FORMATION_POLICIES)('accepts formation_policy %s', async (formation_policy) => {
+    const response = await appRef.app.inject({
+      method: 'POST',
+      url: '/rides',
+      body: { ...rideBody, formation_policy },
+      cookies: { accessToken: auth.accessToken },
+    });
+
+    expect(response.statusCode).toBe(200);
+  });
 
   it('returns 400 for unknown formation_policy', async () => {
     const response = await appRef.app.inject({
@@ -248,19 +312,16 @@ describe('POST /rides', () => {
     expect(response.statusCode).toBe(400);
   });
 
-  it.each(['first_timers', 'moderate', 'advanced'])(
-    'accepts experience_policy %s',
-    async (experience_policy) => {
-      const response = await appRef.app.inject({
-        method: 'POST',
-        url: '/rides',
-        body: { ...rideBody, experience_policy },
-        cookies: { accessToken: auth.accessToken },
-      });
+  it.each(EXPERIENCE_POLICIES)('accepts experience_policy %s', async (experience_policy) => {
+    const response = await appRef.app.inject({
+      method: 'POST',
+      url: '/rides',
+      body: { ...rideBody, experience_policy },
+      cookies: { accessToken: auth.accessToken },
+    });
 
-      expect(response.statusCode).toBe(200);
-    },
-  );
+    expect(response.statusCode).toBe(200);
+  });
 
   it('returns 400 for unknown experience_policy', async () => {
     const response = await appRef.app.inject({
