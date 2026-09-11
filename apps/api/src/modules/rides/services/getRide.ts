@@ -10,9 +10,7 @@ export const getRide = async (db: Db, id: string) => {
       creator: {
         columns: {
           id: true,
-          email: true,
-          created_at: true,
-          updated_at: true,
+          username: true,
         },
       },
       participants: {
@@ -20,9 +18,7 @@ export const getRide = async (db: Db, id: string) => {
           user: {
             columns: {
               id: true,
-              email: true,
-              created_at: true,
-              updated_at: true,
+              username: true,
             },
           },
         },

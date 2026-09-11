@@ -1,4 +1,10 @@
 import { FastifyInstance } from 'fastify';
+import {
+  ListRidesResponseSchema,
+  RideDetailResponseSchema,
+  RideParticipantResponseSchema,
+  RideResponseSchema,
+} from '@loopra/domain/schemas';
 import { parseBody, parseSearchParams } from '../../utils/validation.js';
 import { CreateRideBodySchema, ListRidesQuerySchema, UpdateRideBodySchema } from './schema.js';
 import { listRides } from './services/listRides.js';
@@ -10,45 +16,77 @@ import { leaveRide } from './services/leaveRide.js';
 import { getRide } from './services/getRide.js';
 
 export const ridesRoutes = async (fastify: FastifyInstance) => {
-  fastify.get('/', async (request, reply) => {
-    const searchParams = parseSearchParams(request.query, ListRidesQuerySchema);
-    const { data, nextCursor } = await listRides(fastify.db, searchParams);
+  fastify.get(
+    '/',
+    { schema: { response: { 200: ListRidesResponseSchema } } },
+    async (request, reply) => {
+      const searchParams = parseSearchParams(request.query, ListRidesQuerySchema);
+      const { data, nextCursor } = await listRides(fastify.db, searchParams);
 
-    return reply.send({ data, nextCursor });
-  });
+      return reply.send({ data, nextCursor });
+    },
+  );
 
-  fastify.post('/', { preHandler: fastify.requireVerifiedEmail }, async (request, reply) => {
-    const parsedBody = parseBody(request.body, CreateRideBodySchema);
-    const newRide = await createRide(fastify.db, request.user.sub, parsedBody);
+  fastify.post(
+    '/',
+    {
+      preHandler: fastify.requireVerifiedEmail,
+      schema: { response: { 200: RideResponseSchema } },
+    },
+    async (request, reply) => {
+      const parsedBody = parseBody(request.body, CreateRideBodySchema);
+      const newRide = await createRide(fastify.db, request.user.sub, parsedBody);
 
-    return reply.send({ data: newRide });
-  });
+      return reply.send({ data: newRide });
+    },
+  );
 
-  fastify.get('/:id', async (request, reply) => {
-    const { id } = request.params as { id: string };
-    const ride = await getRide(fastify.db, id);
+  fastify.get(
+    '/:id',
+    { schema: { response: { 200: RideDetailResponseSchema } } },
+    async (request, reply) => {
+      const { id } = request.params as { id: string };
+      const ride = await getRide(fastify.db, id);
 
-    return reply.send({ data: ride });
-  });
+      return reply.send({ data: ride });
+    },
+  );
 
-  fastify.patch('/:id', { preHandler: fastify.requireVerifiedEmail }, async (request, reply) => {
-    const parsedBody = parseBody(request.body, UpdateRideBodySchema);
-    const { id } = request.params as { id: string };
-    const updatedRide = await updateRide(fastify.db, id, request.user.sub, parsedBody);
+  fastify.patch(
+    '/:id',
+    {
+      preHandler: fastify.requireVerifiedEmail,
+      schema: { response: { 200: RideResponseSchema } },
+    },
+    async (request, reply) => {
+      const parsedBody = parseBody(request.body, UpdateRideBodySchema);
+      const { id } = request.params as { id: string };
+      const updatedRide = await updateRide(fastify.db, id, request.user.sub, parsedBody);
 
-    return reply.send({ data: updatedRide });
-  });
+      return reply.send({ data: updatedRide });
+    },
+  );
 
-  fastify.delete('/:id', { preHandler: fastify.requireVerifiedEmail }, async (request, reply) => {
-    const { id } = request.params as { id: string };
-    const deletedRide = await deleteRide(fastify.db, id, request.user.sub);
+  fastify.delete(
+    '/:id',
+    {
+      preHandler: fastify.requireVerifiedEmail,
+      schema: { response: { 200: RideResponseSchema } },
+    },
+    async (request, reply) => {
+      const { id } = request.params as { id: string };
+      const deletedRide = await deleteRide(fastify.db, id, request.user.sub);
 
-    return reply.send({ data: deletedRide });
-  });
+      return reply.send({ data: deletedRide });
+    },
+  );
 
   fastify.post(
     '/:id/join',
-    { preHandler: fastify.requireVerifiedEmail },
+    {
+      preHandler: fastify.requireVerifiedEmail,
+      schema: { response: { 200: RideParticipantResponseSchema } },
+    },
     async (request, reply) => {
       const { id } = request.params as { id: string };
       const newParticipant = await joinRide(fastify.db, request.user.sub, id);
@@ -59,7 +97,10 @@ export const ridesRoutes = async (fastify: FastifyInstance) => {
 
   fastify.delete(
     '/:id/leave',
-    { preHandler: fastify.requireVerifiedEmail },
+    {
+      preHandler: fastify.requireVerifiedEmail,
+      schema: { response: { 200: RideParticipantResponseSchema } },
+    },
     async (request, reply) => {
       const { id } = request.params as { id: string };
       const deleted = await leaveRide(fastify.db, request.user.sub, id);
