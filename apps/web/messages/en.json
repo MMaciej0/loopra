@@ -197,7 +197,20 @@
     "FILE_REQUIRED": "Attach a GPX file.",
     "INVALID_GPX": "This file is not a valid GPX route.",
     "ROUTE_NOT_FOUND": "That route is no longer available. Upload it again.",
-    "MAX_PARTICIPANTS_REQUIRED": "Set how many riders can join."
+    "MAX_PARTICIPANTS_REQUIRED": "Set how many riders can join.",
+    "USER_NOT_FOUND": "We couldn't find that rider.",
+    "INVALID_PASSWORD": "Wrong password.",
+    "INVALID_INPUT": "Some details are not valid. Check the form and try again.",
+    "INTERNAL_ERROR": "Something went wrong on our side. Try again in a moment.",
+    "INVALID_TOKEN": "This link is no longer valid. Request a new one.",
+    "EMAIL_NOT_VERIFIED": "Verify your email address first.",
+    "RIDE_NOT_FOUND": "That ride is no longer available.",
+    "RIDE_UPDATE_BAD_BODY": "Some details are not valid. Check the form and try again.",
+    "RIDE_HAS_PARTICIPANTS": "Other riders have already joined. Cancel the ride instead of deleting it.",
+    "PARTICIPANT_EXISTS": "You have already joined this ride.",
+    "PARTICIPANT_NOT_FOUND": "You are not signed up for this ride.",
+    "MAX_PARTICIPANTS": "This ride is full.",
+    "CREATOR_CANNOT_LEAVE": "You organise this ride, so you can't leave it. Cancel it instead."
   },
   "Auth": {
     "or": "OR",

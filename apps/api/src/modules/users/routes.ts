@@ -1,7 +1,8 @@
 import { FastifyInstance } from 'fastify';
 import { eq } from 'drizzle-orm';
 import { users } from '../../db/schema.js';
-import { AppError, ErrorType } from '../../utils/errors.js';
+import { ERROR_TYPES } from '@loopra/domain';
+import { AppError } from '../../utils/errors.js';
 import { parseBody } from '../../utils/validation.js';
 import { UpdateUserBodySchema } from './schema.js';
 import { updateUser } from './services/updateUser.js';
@@ -29,7 +30,7 @@ export const usersRoutes = (fastify: FastifyInstance, _options: unknown) => {
     });
 
     if (!user) {
-      throw new AppError(404, ErrorType.USER_NOT_FOUND, 'User not found');
+      throw new AppError(404, ERROR_TYPES.USER_NOT_FOUND, 'User not found');
     }
 
     return reply.send({ user });
@@ -44,7 +45,7 @@ export const usersRoutes = (fastify: FastifyInstance, _options: unknown) => {
       return reply.send({ updatedUser });
     } catch (error) {
       if (error instanceof UserNotFoundError) {
-        throw new AppError(404, ErrorType.USER_NOT_FOUND, 'User not found');
+        throw new AppError(404, ERROR_TYPES.USER_NOT_FOUND, 'User not found');
       }
       throw error;
     }
@@ -64,7 +65,7 @@ export const usersRoutes = (fastify: FastifyInstance, _options: unknown) => {
     });
 
     if (!user) {
-      throw new AppError(404, ErrorType.USER_NOT_FOUND, 'User not found');
+      throw new AppError(404, ERROR_TYPES.USER_NOT_FOUND, 'User not found');
     }
 
     return reply.send({ user });

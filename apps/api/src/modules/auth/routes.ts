@@ -27,7 +27,8 @@ import {
 } from './errors.js';
 import { clearAuthCookies, setAuthCookies } from './services/cookies.js';
 import { parseBody } from '../../utils/validation.js';
-import { AppError, ErrorType } from '../../utils/errors.js';
+import { ERROR_TYPES } from '@loopra/domain';
+import { AppError } from '../../utils/errors.js';
 import { APP_URL } from '../../config/env.js';
 import { authRateLimiter, clearRateLimits, emailSendRateLimiter } from './services/rateLimiter.js';
 
@@ -54,11 +55,11 @@ export const authRoutes = (fastify: FastifyInstance, _options: unknown) => {
       if (error instanceof OAuthOnlyAccountError) {
         throw new AppError(
           409,
-          ErrorType.OAUTH_ONLY_ACCOUNT,
+          ERROR_TYPES.OAUTH_ONLY_ACCOUNT,
           'This email is registered via Google. Please log in with Google.',
         );
       } else if (error instanceof UserAlreadyExistsError) {
-        throw new AppError(409, ErrorType.USER_ALREADY_EXISTS, 'User already exists');
+        throw new AppError(409, ERROR_TYPES.USER_ALREADY_EXISTS, 'User already exists');
       }
       throw error;
     }
@@ -86,15 +87,15 @@ export const authRoutes = (fastify: FastifyInstance, _options: unknown) => {
       });
     } catch (error) {
       if (error instanceof UserNotFoundError) {
-        throw new AppError(401, ErrorType.INVALID_CREDENTIALS, 'Invalid credentials');
+        throw new AppError(401, ERROR_TYPES.INVALID_CREDENTIALS, 'Invalid credentials');
       } else if (error instanceof OAuthOnlyAccountError) {
         throw new AppError(
           401,
-          ErrorType.OAUTH_ONLY_ACCOUNT,
+          ERROR_TYPES.OAUTH_ONLY_ACCOUNT,
           'This account uses Google sign-in. Please log in with Google.',
         );
       } else if (error instanceof InvalidPasswordError) {
-        throw new AppError(401, ErrorType.INVALID_CREDENTIALS, 'Invalid credentials');
+        throw new AppError(401, ERROR_TYPES.INVALID_CREDENTIALS, 'Invalid credentials');
       }
       throw error;
     }
@@ -104,7 +105,7 @@ export const authRoutes = (fastify: FastifyInstance, _options: unknown) => {
     const refreshTokenCookie = request.cookies.refreshToken;
 
     if (!refreshTokenCookie) {
-      throw new AppError(401, ErrorType.UNAUTHORIZED, 'Unauthorized');
+      throw new AppError(401, ERROR_TYPES.UNAUTHORIZED, 'Unauthorized');
     }
 
     const [familyUuid, rawRefreshToken] = refreshTokenCookie.split('.');
@@ -120,7 +121,7 @@ export const authRoutes = (fastify: FastifyInstance, _options: unknown) => {
     } catch (error) {
       if (error instanceof InvalidTokenError) {
         clearAuthCookies(reply);
-        throw new AppError(401, ErrorType.INVALID_TOKEN, 'Invalid token');
+        throw new AppError(401, ERROR_TYPES.INVALID_TOKEN, 'Invalid token');
       }
       throw error;
     }
@@ -130,7 +131,7 @@ export const authRoutes = (fastify: FastifyInstance, _options: unknown) => {
     const refreshTokenCookie = request.cookies.refreshToken;
 
     if (!refreshTokenCookie) {
-      throw new AppError(401, ErrorType.UNAUTHORIZED, 'Unauthorized');
+      throw new AppError(401, ERROR_TYPES.UNAUTHORIZED, 'Unauthorized');
     }
 
     const [familyUuid] = refreshTokenCookie.split('.');
@@ -142,7 +143,7 @@ export const authRoutes = (fastify: FastifyInstance, _options: unknown) => {
     } catch (error) {
       if (error instanceof InvalidTokenError) {
         clearAuthCookies(reply);
-        throw new AppError(401, ErrorType.INVALID_TOKEN, 'Invalid token');
+        throw new AppError(401, ERROR_TYPES.INVALID_TOKEN, 'Invalid token');
       }
       throw error;
     }
@@ -165,7 +166,7 @@ export const authRoutes = (fastify: FastifyInstance, _options: unknown) => {
       return reply.send({ message: 'Password reset successful' });
     } catch (error) {
       if (error instanceof InvalidResetTokenError) {
-        throw new AppError(401, ErrorType.INVALID_TOKEN, 'Invalid token');
+        throw new AppError(401, ERROR_TYPES.INVALID_TOKEN, 'Invalid token');
       }
       throw error;
     }
@@ -190,7 +191,7 @@ export const authRoutes = (fastify: FastifyInstance, _options: unknown) => {
       return reply.send({ message: 'Email verification successful' });
     } catch (error) {
       if (error instanceof InvalidEmailVerificationTokenError) {
-        throw new AppError(400, ErrorType.INVALID_TOKEN, 'Invalid or expired verification token');
+        throw new AppError(400, ERROR_TYPES.INVALID_TOKEN, 'Invalid or expired verification token');
       }
       throw error;
     }
