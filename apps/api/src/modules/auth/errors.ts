@@ -7,6 +7,12 @@ export class UnauthorizedError extends AppError {
   }
 }
 
+export class RateLimitExceededError extends AppError {
+  constructor() {
+    super(429, ERROR_TYPES.RATE_LIMIT_EXCEEDED, 'Rate limit exceeded');
+  }
+}
+
 export class UserAlreadyExistsError extends AppError {
   constructor() {
     super(409, ERROR_TYPES.USER_ALREADY_EXISTS, 'User already exists');
