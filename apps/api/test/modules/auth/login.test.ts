@@ -50,6 +50,23 @@ describe('POST /auth/login', () => {
       });
     });
 
+    it('returns only the wire-DTO fields and never a password hash', async () => {
+      const response = await appRef.app.inject({
+        method: 'POST',
+        url: '/auth/login',
+        body: { email: TEST_EMAIL, password: TEST_PASSWORD },
+      });
+
+      expect(response.statusCode).toBe(200);
+      expect(Object.keys(response.json().user).sort()).toEqual([
+        'email',
+        'email_verified',
+        'id',
+        'username',
+      ]);
+      expect(response.body).not.toContain('password_hash');
+    });
+
     it('returns status 401 when password is incorrect', async () => {
       const response = await appRef.app.inject({
         method: 'POST',

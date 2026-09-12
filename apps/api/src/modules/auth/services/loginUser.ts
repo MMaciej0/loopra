@@ -3,7 +3,7 @@ import { eq } from 'drizzle-orm';
 import type { FastifyInstance } from 'fastify';
 import { users } from '../../../db/schema.js';
 import { createTokenFamily } from './tokenFamily.js';
-import { UserNotFoundError, InvalidPasswordError, OAuthOnlyAccountError } from '../errors.js';
+import { InvalidCredentialsError, OAuthLoginRequiredError } from '../errors.js';
 
 interface LoginUserParams {
   fastify: FastifyInstance;
@@ -15,17 +15,17 @@ export const loginUser = async ({ fastify, email, password }: LoginUserParams) =
   const [user] = await fastify.db.select().from(users).where(eq(users.email, email)).limit(1);
 
   if (!user) {
-    throw new UserNotFoundError();
+    throw new InvalidCredentialsError();
   }
 
   if (!user.password_hash) {
-    throw new OAuthOnlyAccountError();
+    throw new OAuthLoginRequiredError();
   }
 
   const isPasswordValid = await bcrypt.compare(password, user.password_hash);
 
   if (!isPasswordValid) {
-    throw new InvalidPasswordError();
+    throw new InvalidCredentialsError();
   }
 
   const { familyUuid, rawRefreshToken } = await createTokenFamily(fastify.redis, user.id);
