@@ -4,7 +4,7 @@ import type { FastifyInstance } from 'fastify';
 import { users } from '../../../db/schema.js';
 import { createTokenFamily } from './tokenFamily.js';
 import { sendEmailVerification } from './sendEmailVerification.js';
-import { UserAlreadyExistsError, OAuthOnlyAccountError } from '../errors.js';
+import { UserAlreadyExistsError, OAuthAccountExistsError } from '../errors.js';
 import { RegisterBody } from '../schema.js';
 
 interface RegisterUserParams {
@@ -22,7 +22,7 @@ export const registerUser = async ({ fastify, registerCredentials }: RegisterUse
 
   if (existingUser) {
     if (!existingUser.password_hash) {
-      throw new OAuthOnlyAccountError();
+      throw new OAuthAccountExistsError();
     }
     throw new UserAlreadyExistsError();
   }
