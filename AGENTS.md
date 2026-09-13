@@ -45,18 +45,44 @@ A `.env` file at the repo root configures connection strings pointing at the Doc
 
 ## Testing
 
-Run the suite inside the container, never on the host:
+Two ways to run the suite, both supported. Inside the container:
 
 ```bash
 docker exec api sh -c 'cd /app && pnpm --filter api test'
 docker exec api sh -c 'cd /app/apps/api && pnpm exec vitest run test/modules/users/me.test.ts'   # single file
 ```
 
+Or on the host, against the test stack — this is what CI does:
+
+```bash
+docker compose -f docker-compose-test.yml up -d --wait
+pnpm --filter api test
+```
+
+`docker-compose-test.yml` runs Postgres+PostGIS and Redis only, on **5434** and **6381**, under its own compose project name so it never touches the dev stack. Both stacks can run at once. It declares `name: loopra-test` for that reason — without it compose derives the project from the directory and reconciles against the dev stack, recreating its containers.
+
 `pnpm --filter api test -- <path>` does **not** filter — the argument never reaches vitest and the whole suite runs. Call `vitest` directly for one file.
 
 Vitest clones a template database per worker, so tests never touch the dev database. All external services are mocked or unreachable — the suite passes with entirely dummy `RESEND_API_KEY`, `GOOGLE_*` and `S3_*` values.
 
-**There is no CI.** No `.github/` workflow exists, so the suite, `pnpm -r typecheck` and `pnpm --filter web lint` only run when you run them. A GitHub remote exists, and the tests need nothing but Postgres+PostGIS and Redis service containers, so Actions is available whenever someone writes the workflow.
+Those dummies live in `apps/api/.env.test`, committed through a `.gitignore` negation and loaded by `vitest.config.ts`. The load **does not override** variables already set, which is what keeps the container flow working: compose injects the real connection strings there, and they win over the file's host-facing `localhost:5434`.
+
+## CI
+
+`.github/workflows/ci.yml` runs on every pull request and every push to `master`, cancelling superseded runs for the same ref. Two jobs in parallel:
+
+| job | runs |
+|---|---|
+| `checks` | `pnpm -r typecheck`, `pnpm -r lint`, `pnpm -r format:check`, `pnpm --filter web build` |
+| `api-test` | `docker compose -f docker-compose-test.yml up -d --wait`, then `pnpm --filter api test` |
+
+**The workflow holds no logic of its own** — every step invokes a workspace script you can run yourself. So "will CI pass" is answerable locally by running those five commands; there is no CI-only path to reason about. Keep it that way: put new logic in a script, not in the YAML.
+
+The web build gets placeholder `API_URL`, `NEXT_PUBLIC_API_URL` and `NEXT_PUBLIC_MAPTILER_KEY`. It needs them — some routes are SSG and prerender at build time, so an undefined base URL fails the build.
+
+Node comes from `.nvmrc`, pnpm from the root `packageManager` field, and install is `--frozen-lockfile`, which also builds `packages/domain` and `packages/gpx` through their `prepare` scripts.
+
+Nothing is enforced yet: `master` has no branch protection, so a red run blocks nothing. Not checked by CI: migration drift (`drizzle-kit generate` reporting "No schema changes"), which is still a manual step.
 
 ## Package Manager
 
