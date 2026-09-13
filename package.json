@@ -17,9 +17,12 @@
     "web:typecheck": "pnpm --filter web typecheck",
     "web:ui:add": "pnpm dlx shadcn@latest add -c apps/web",
     "lint": "pnpm -r lint",
-    "format": "pnpm -r format",
-    "format:check": "pnpm -r format:check",
+    "format": "pnpm -r format && prettier --write \"*.{json,md,yml,yaml}\" \"docs/**/*.md\" \".github/**/*.{yml,yaml}\"",
+    "format:check": "pnpm -r format:check && prettier --check \"*.{json,md,yml,yaml}\" \"docs/**/*.md\" \".github/**/*.{yml,yaml}\"",
     "typecheck": "pnpm -r typecheck"
   },
-  "packageManager": "pnpm@10.28.0"
+  "packageManager": "pnpm@10.28.0",
+  "devDependencies": {
+    "prettier": "^3.8.1"
+  }
 }
