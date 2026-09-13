@@ -98,7 +98,7 @@ const chipOptions = ['All', 'Road', 'Gravel', 'MTB', 'Urban'] as const;
 
 function Label({ children }: { children: React.ReactNode }) {
   return (
-    <span className="font-data text-[9.5px] font-medium tracking-[0.12em] uppercase text-muted-foreground">
+    <span className="font-data text-muted-foreground text-[9.5px] font-medium tracking-[0.12em] uppercase">
       {children}
     </span>
   );
@@ -107,10 +107,10 @@ function Label({ children }: { children: React.ReactNode }) {
 function SectionHeader({ eyebrow, title, desc }: { eyebrow: string; title: string; desc: string }) {
   return (
     <div className="mb-8">
-      <p className="font-data text-[10px] font-medium tracking-[0.14em] uppercase text-muted-foreground mb-2">
+      <p className="font-data text-muted-foreground mb-2 text-[10px] font-medium tracking-[0.14em] uppercase">
         {eyebrow}
       </p>
-      <h2 className="font-editorial text-3xl font-normal tracking-tight mb-1">{title}</h2>
+      <h2 className="font-editorial mb-1 text-3xl font-normal tracking-tight">{title}</h2>
       <p className="text-muted-foreground text-sm">{desc}</p>
     </div>
   );
@@ -118,11 +118,11 @@ function SectionHeader({ eyebrow, title, desc }: { eyebrow: string; title: strin
 
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
-    <div className="border-t border-border pt-4 pb-4">
-      <p className="font-data text-[10px] tracking-widest uppercase text-muted-foreground mb-3">
+    <div className="border-border border-t pt-4 pb-4">
+      <p className="font-data text-muted-foreground mb-3 text-[10px] tracking-widest uppercase">
         {label}
       </p>
-      <div className="flex flex-wrap gap-3 items-center">{children}</div>
+      <div className="flex flex-wrap items-center gap-3">{children}</div>
     </div>
   );
 }
@@ -134,7 +134,7 @@ export default function ShowcasePage() {
   const t = useTranslations('HomePage');
 
   return (
-    <main className="min-h-screen bg-background p-12 space-y-20">
+    <main className="bg-background min-h-screen space-y-20 p-12">
       <h1>{t('title')}</h1>
 
       {/* ── Typography ── */}
@@ -145,11 +145,13 @@ export default function ShowcasePage() {
           desc="Bricolage Grotesque for headings · Geist for body · Geist Mono for data"
         />
 
-        <div className="border-t border-border pt-6 space-y-1">
+        <div className="border-border space-y-1 border-t pt-6">
           <p className="type-label text-muted-foreground mb-6">Heading · Bricolage Grotesque</p>
           <div className="space-y-6">
             <div className="flex items-baseline gap-6">
-              <span className="type-label text-muted-foreground w-28 shrink-0">XXL · 64/64 −2.5%</span>
+              <span className="type-label text-muted-foreground w-28 shrink-0">
+                XXL · 64/64 −2.5%
+              </span>
               <Text variant="heading-xxl">Find rides you belong on</Text>
             </div>
             <div className="flex items-baseline gap-6">
@@ -157,11 +159,15 @@ export default function ShowcasePage() {
               <Text variant="heading-xl">Join loopra</Text>
             </div>
             <div className="flex items-baseline gap-6">
-              <span className="type-label text-muted-foreground w-28 shrink-0">L · 30/34 −1.5%</span>
+              <span className="type-label text-muted-foreground w-28 shrink-0">
+                L · 30/34 −1.5%
+              </span>
               <Text variant="heading-l">Saturday morning gravel</Text>
             </div>
             <div className="flex items-baseline gap-6">
-              <span className="type-label text-muted-foreground w-28 shrink-0">M · 22/30 italic</span>
+              <span className="type-label text-muted-foreground w-28 shrink-0">
+                M · 22/30 italic
+              </span>
               <Text variant="heading-m">
                 &quot;The best rides start before the city wakes up.&quot;
               </Text>
@@ -169,55 +175,78 @@ export default function ShowcasePage() {
           </div>
         </div>
 
-        <div className="border-t border-border pt-6 mt-8 space-y-1">
+        <div className="border-border mt-8 space-y-1 border-t pt-6">
           <p className="type-label text-muted-foreground mb-6">Body · Geist</p>
-          <div className="space-y-4 max-w-xl">
+          <div className="max-w-xl space-y-4">
             <div className="flex items-baseline gap-6">
               <span className="type-label text-muted-foreground w-28 shrink-0">L · 17/26</span>
-              <Text variant="body-l">A global community platform for cyclists who want to explore more, ride together, and find their local scene.</Text>
+              <Text variant="body-l">
+                A global community platform for cyclists who want to explore more, ride together,
+                and find their local scene.
+              </Text>
             </div>
             <div className="flex items-baseline gap-6">
               <span className="type-label text-muted-foreground w-28 shrink-0">M · 14/22 500</span>
-              <Text variant="body-m">Cobbles &amp; Coffee — Sunday, 07:00 · 62 km · 820 m gain</Text>
+              <Text variant="body-m">
+                Cobbles &amp; Coffee — Sunday, 07:00 · 62 km · 820 m gain
+              </Text>
             </div>
             <div className="flex items-baseline gap-6">
               <span className="type-label text-muted-foreground w-28 shrink-0">S · 13/20</span>
-              <Text variant="body-s">Moderate pace, no drop policy. Road bikes and gravel welcome. Café stop at km 38.</Text>
+              <Text variant="body-s">
+                Moderate pace, no drop policy. Road bikes and gravel welcome. Café stop at km 38.
+              </Text>
             </div>
             <div className="flex items-baseline gap-6">
-              <span className="type-label text-muted-foreground w-28 shrink-0">Caption · 11.5/16</span>
-              <Text variant="caption" className="text-muted-foreground">Posted 4 hours ago · by aleks.k</Text>
+              <span className="type-label text-muted-foreground w-28 shrink-0">
+                Caption · 11.5/16
+              </span>
+              <Text variant="caption" className="text-muted-foreground">
+                Posted 4 hours ago · by aleks.k
+              </Text>
             </div>
           </div>
         </div>
 
-        <div className="border-t border-border pt-6 mt-8 space-y-1">
+        <div className="border-border mt-8 space-y-1 border-t pt-6">
           <p className="type-label text-muted-foreground mb-6">Mono · Geist Mono</p>
           <div className="space-y-4">
             <div className="flex items-baseline gap-6">
               <span className="type-label text-muted-foreground w-28 shrink-0">Label · 10px</span>
-              <Text variant="label" className="text-muted-foreground">Section label · Contract label</Text>
+              <Text variant="label" className="text-muted-foreground">
+                Section label · Contract label
+              </Text>
             </div>
             <div className="flex items-baseline gap-6">
-              <span className="type-label text-muted-foreground w-28 shrink-0">Stat · 15px 600</span>
+              <span className="type-label text-muted-foreground w-28 shrink-0">
+                Stat · 15px 600
+              </span>
               <div className="flex gap-8">
                 <div>
                   <Text variant="stat">42 km</Text>
-                  <Text variant="label" className="block text-muted-foreground mt-0.5">Distance</Text>
+                  <Text variant="label" className="text-muted-foreground mt-0.5 block">
+                    Distance
+                  </Text>
                 </div>
                 <div>
                   <Text variant="stat">580 m</Text>
-                  <Text variant="label" className="block text-muted-foreground mt-0.5">Elevation</Text>
+                  <Text variant="label" className="text-muted-foreground mt-0.5 block">
+                    Elevation
+                  </Text>
                 </div>
                 <div>
                   <Text variant="stat">24</Text>
-                  <Text variant="label" className="block text-muted-foreground mt-0.5">Riders</Text>
+                  <Text variant="label" className="text-muted-foreground mt-0.5 block">
+                    Riders
+                  </Text>
                 </div>
               </div>
             </div>
             <div className="flex items-baseline gap-6">
               <span className="type-label text-muted-foreground w-28 shrink-0">Meta · 11px</span>
-              <Text variant="meta" className="text-muted-foreground">04/12 CONFIRMED · 07:00 CET</Text>
+              <Text variant="meta" className="text-muted-foreground">
+                04/12 CONFIRMED · 07:00 CET
+              </Text>
             </div>
           </div>
         </div>
@@ -234,13 +263,13 @@ export default function ShowcasePage() {
           <table className="w-full border-collapse">
             <thead>
               <tr>
-                <th className="text-left pb-4 pr-8 font-data text-[10px] tracking-widest uppercase text-muted-foreground">
+                <th className="font-data text-muted-foreground pr-8 pb-4 text-left text-[10px] tracking-widest uppercase">
                   Variant
                 </th>
                 {sizes.map((s) => (
                   <th
                     key={s}
-                    className="text-left pb-4 px-4 font-data text-[10px] tracking-widest uppercase text-muted-foreground whitespace-nowrap"
+                    className="font-data text-muted-foreground px-4 pb-4 text-left text-[10px] tracking-widest whitespace-nowrap uppercase"
                   >
                     {sizeLabels[s]}
                   </th>
@@ -249,12 +278,12 @@ export default function ShowcasePage() {
             </thead>
             <tbody>
               {variants.map((v) => (
-                <tr key={v} className="border-t border-border">
-                  <td className="py-5 pr-8 font-data text-[11px] tracking-wide text-muted-foreground whitespace-nowrap">
+                <tr key={v} className="border-border border-t">
+                  <td className="font-data text-muted-foreground py-5 pr-8 text-[11px] tracking-wide whitespace-nowrap">
                     {variantLabels[v]}
                   </td>
                   {sizes.map((s) => (
-                    <td key={s} className="py-5 px-4">
+                    <td key={s} className="px-4 py-5">
                       <Button variant={v} size={s}>
                         {s.startsWith('icon') ? '+' : variantLabels[v]}
                       </Button>
@@ -286,16 +315,16 @@ export default function ShowcasePage() {
         <div className="space-y-6">
           <Row label="States">
             {inputStates.map(({ label, props, hint }) => (
-              <div key={label} className="flex flex-col gap-1.5 w-56">
+              <div key={label} className="flex w-56 flex-col gap-1.5">
                 <Label>{label}</Label>
                 <Input type="email" {...props} />
-                {hint && <span className="text-[11.5px] text-destructive">{hint}</span>}
+                {hint && <span className="text-destructive text-[11.5px]">{hint}</span>}
               </div>
             ))}
           </Row>
           <Row label="Types">
             {inputTypes.map(({ label, type, placeholder }) => (
-              <div key={label} className="flex flex-col gap-1.5 w-44">
+              <div key={label} className="flex w-44 flex-col gap-1.5">
                 <Label>{label}</Label>
                 <Input type={type} placeholder={placeholder} />
               </div>
@@ -411,7 +440,7 @@ export default function ShowcasePage() {
                   {name[0].toUpperCase()}
                 </AvatarFallback>
               </Avatar>
-              <span className="font-data text-[9px] tracking-wide text-muted-foreground">
+              <span className="font-data text-muted-foreground text-[9px] tracking-wide">
                 {name}
               </span>
             </div>

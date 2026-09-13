@@ -30,11 +30,11 @@ One question: **used by more than one route?**
 
 Three buckets, nothing else:
 
-| Location | Holds |
-|---|---|
-| `app/**/_components/` | UI used by exactly one route or route group |
-| `src/components/ui/` | Design-system primitives only (button, input, dialog…) |
-| `src/components/<name>/` | UI shared across two or more routes |
+| Location                 | Holds                                                  |
+| ------------------------ | ------------------------------------------------------ |
+| `app/**/_components/`    | UI used by exactly one route or route group            |
+| `src/components/ui/`     | Design-system primitives only (button, input, dialog…) |
+| `src/components/<name>/` | UI shared across two or more routes                    |
 
 Colocation is the default. Delete a route folder → its components go with it, no orphans.
 

@@ -33,7 +33,5 @@ export function LocationPicker() {
     searchPlaceholder: t('mapSearchPlaceholder'),
   });
 
-  return (
-    <div ref={mapContainerRef} className="relative min-h-0 w-full flex-1 overflow-hidden" />
-  );
+  return <div ref={mapContainerRef} className="relative min-h-0 w-full flex-1 overflow-hidden" />;
 }

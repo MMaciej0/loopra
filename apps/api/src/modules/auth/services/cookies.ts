@@ -3,7 +3,7 @@ import { NODE_ENV } from '../../../config/env.js';
 
 const isProduction = NODE_ENV === 'production';
 
-const ACCESS_TOKEN_MAX_AGE = 60 * 15;           // 15 minutes
+const ACCESS_TOKEN_MAX_AGE = 60 * 15; // 15 minutes
 const REFRESH_TOKEN_MAX_AGE = 60 * 60 * 24 * 30; // 30 days
 
 export const setAuthCookies = (
@@ -30,7 +30,5 @@ export const setAuthCookies = (
 };
 
 export const clearAuthCookies = (reply: FastifyReply) => {
-  reply
-    .clearCookie('accessToken', { path: '/' })
-    .clearCookie('refreshToken', { path: '/' });
+  reply.clearCookie('accessToken', { path: '/' }).clearCookie('refreshToken', { path: '/' });
 };

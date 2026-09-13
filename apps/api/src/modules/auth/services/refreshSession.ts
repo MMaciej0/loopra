@@ -9,8 +9,16 @@ interface RefreshSessionParams {
   rawRefreshToken: string;
 }
 
-export const refreshSession = async ({ fastify, familyUuid, rawRefreshToken }: RefreshSessionParams) => {
-  const { newRawRefreshToken, userId } = await rotateTokenFamily(fastify.redis, familyUuid, rawRefreshToken);
+export const refreshSession = async ({
+  fastify,
+  familyUuid,
+  rawRefreshToken,
+}: RefreshSessionParams) => {
+  const { newRawRefreshToken, userId } = await rotateTokenFamily(
+    fastify.redis,
+    familyUuid,
+    rawRefreshToken,
+  );
 
   const [user] = await fastify.db
     .select({ email_verified: users.email_verified })
@@ -18,7 +26,10 @@ export const refreshSession = async ({ fastify, familyUuid, rawRefreshToken }: R
     .where(eq(users.id, userId))
     .limit(1);
 
-  const accessToken = fastify.jwt.sign({ sub: userId, email_verified: user?.email_verified ?? false });
+  const accessToken = fastify.jwt.sign({
+    sub: userId,
+    email_verified: user?.email_verified ?? false,
+  });
 
   return { accessToken, newRawRefreshToken, userId };
 };
