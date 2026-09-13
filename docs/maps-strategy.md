@@ -3,9 +3,11 @@
 ## The Two Distinct Map Needs
 
 ### 1. Meetup point (simple)
+
 A single pin — "where we meet". Just latitude + longitude. Easy.
 
 ### 2. Ride route (complex)
+
 The actual path the group will ride. This is where decisions matter.
 
 ---
@@ -13,6 +15,7 @@ The actual path the group will ride. This is where decisions matter.
 ## Why Not Build a Route Planner
 
 Drawing cycling routes from scratch requires:
+
 - Cycling-aware routing engine (roads, bike paths, surface type)
 - Turn-by-turn awareness
 - Elevation profile data
@@ -39,12 +42,14 @@ Alternative considered: **Leaflet.js + OpenStreetMap** — completely free, slig
 ### Route input: **GPX upload**
 
 GPX is the universal cycling format. Any platform exports it:
+
 - Komoot → Export GPX (free)
 - Strava → Export GPX (free, even without Premium)
 - Garmin Connect → Export GPX
 - RideWithGPS → Export GPX
 
 When a user attaches a GPX to a ride event:
+
 1. Parse the GPX server-side → extract distance, elevation gain, encoded polyline
 2. Store raw GPX in S3 (for download by participants)
 3. Store encoded polyline in DB (for fast map rendering)
@@ -53,6 +58,7 @@ When a user attaches a GPX to a ride event:
 ### Phase 2 addition: Route link parsing
 
 Accept a Komoot or Strava URL pasted into the event form:
+
 - Fetch route metadata via their public APIs (or scrape public route pages)
 - Extract GPX automatically
 - Same processing pipeline as manual upload
@@ -61,15 +67,15 @@ Accept a Komoot or Strava URL pasted into the event form:
 
 ## Stack Summary
 
-| Need | Solution | Cost |
-|------|----------|------|
-| Map tiles & display | Mapbox GL JS (`react-map-gl`) | Free up to 50k loads/mo |
-| Meetup pin | Mapbox marker | Included |
-| Route display | Parse GPX → polyline on Mapbox | Included |
-| Route input | GPX file upload | Free |
-| Routing engine | None needed (users bring their own routes) | — |
-| Geocoding (city search) | Mapbox Geocoding API | Free tier: 100k requests/mo |
-| Server-side GPX parsing | `@tmcw/togeojson` or `gpxparser` | Open source |
+| Need                    | Solution                                   | Cost                        |
+| ----------------------- | ------------------------------------------ | --------------------------- |
+| Map tiles & display     | Mapbox GL JS (`react-map-gl`)              | Free up to 50k loads/mo     |
+| Meetup pin              | Mapbox marker                              | Included                    |
+| Route display           | Parse GPX → polyline on Mapbox             | Included                    |
+| Route input             | GPX file upload                            | Free                        |
+| Routing engine          | None needed (users bring their own routes) | —                           |
+| Geocoding (city search) | Mapbox Geocoding API                       | Free tier: 100k requests/mo |
+| Server-side GPX parsing | `@tmcw/togeojson` or `gpxparser`           | Open source                 |
 
 ---
 

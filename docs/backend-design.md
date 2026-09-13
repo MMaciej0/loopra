@@ -72,128 +72,137 @@ Services receive `db` and `redis` as parameters, making them independently testa
 PostgreSQL with PostGIS. Managed by Drizzle ORM (`drizzle-kit` for migrations).
 
 ### `users`
-| Column | Type | Notes |
-|--------|------|-------|
-| id | uuid PK | |
-| email | text unique | |
-| email_verified_at | timestamptz nullable | null until email confirmation; set immediately for trusted OAuth emails |
-| username | text unique | |
-| password_hash | text nullable | bcrypt — null for OAuth-only accounts |
-| full_name | text | |
-| avatar_url | text | S3 key |
-| bio | text | |
-| location | geometry(Point, 4326) | PostGIS — home/last location |
-| city | text | |
-| country | text | ISO 3166-1 alpha-2 |
-| avg_speed_kmh | integer | for ride matching |
-| ride_styles | text[] | road, mtb, gravel, urban, cx |
-| created_at | timestamptz | |
-| updated_at | timestamptz | |
+
+| Column            | Type                  | Notes                                                                   |
+| ----------------- | --------------------- | ----------------------------------------------------------------------- |
+| id                | uuid PK               |                                                                         |
+| email             | text unique           |                                                                         |
+| email_verified_at | timestamptz nullable  | null until email confirmation; set immediately for trusted OAuth emails |
+| username          | text unique           |                                                                         |
+| password_hash     | text nullable         | bcrypt — null for OAuth-only accounts                                   |
+| full_name         | text                  |                                                                         |
+| avatar_url        | text                  | S3 key                                                                  |
+| bio               | text                  |                                                                         |
+| location          | geometry(Point, 4326) | PostGIS — home/last location                                            |
+| city              | text                  |                                                                         |
+| country           | text                  | ISO 3166-1 alpha-2                                                      |
+| avg_speed_kmh     | integer               | for ride matching                                                       |
+| ride_styles       | text[]                | road, mtb, gravel, urban, cx                                            |
+| created_at        | timestamptz           |                                                                         |
+| updated_at        | timestamptz           |                                                                         |
 
 ### `oauth_accounts`
+
 Links external OAuth identities to local users. Supports multiple providers per user (e.g. Google + Strava on the same account).
 
-| Column | Type | Notes |
-|--------|------|-------|
-| id | uuid PK | |
-| user_id | uuid FK → users | |
-| provider | text | `google` — extensible to `strava`, `apple`, etc. |
-| provider_user_id | text | Stable ID from provider (`sub` in Google's case) |
-| created_at | timestamptz | |
-| — | UNIQUE | `(provider, provider_user_id)` — one identity per provider |
+| Column           | Type            | Notes                                                      |
+| ---------------- | --------------- | ---------------------------------------------------------- |
+| id               | uuid PK         |                                                            |
+| user_id          | uuid FK → users |                                                            |
+| provider         | text            | `google` — extensible to `strava`, `apple`, etc.           |
+| provider_user_id | text            | Stable ID from provider (`sub` in Google's case)           |
+| created_at       | timestamptz     |                                                            |
+| —                | UNIQUE          | `(provider, provider_user_id)` — one identity per provider |
 
 ### `rides`
+
 Unified model for both **trips** (social group rides) and **trainings** (structured workouts).
 
-| Column | Type | Notes |
-|--------|------|-------|
-| id | uuid PK | |
-| type | enum | `trip` \| `training` |
-| title | text | |
-| description | text | |
-| creator_id | uuid FK → users | |
-| route_id | uuid FK → routes | optional |
-| start_location | geometry(Point, 4326) | meetup point |
-| start_location_name | text | human-readable address |
-| start_time | timestamptz | |
-| end_time | timestamptz | optional |
-| distance_km | numeric | estimated |
-| pace_kmh | integer | target pace |
-| difficulty | enum | `easy` \| `moderate` \| `hard` \| `expert` |
-| max_participants | integer NOT NULL | 2-500; the creator holds a seat |
-| is_private | boolean | |
-| status | enum | `draft` \| `open` \| `full` \| `cancelled` \| `completed` |
-| created_at | timestamptz | |
-| updated_at | timestamptz | |
+| Column              | Type                  | Notes                                                     |
+| ------------------- | --------------------- | --------------------------------------------------------- |
+| id                  | uuid PK               |                                                           |
+| type                | enum                  | `trip` \| `training`                                      |
+| title               | text                  |                                                           |
+| description         | text                  |                                                           |
+| creator_id          | uuid FK → users       |                                                           |
+| route_id            | uuid FK → routes      | optional                                                  |
+| start_location      | geometry(Point, 4326) | meetup point                                              |
+| start_location_name | text                  | human-readable address                                    |
+| start_time          | timestamptz           |                                                           |
+| end_time            | timestamptz           | optional                                                  |
+| distance_km         | numeric               | estimated                                                 |
+| pace_kmh            | integer               | target pace                                               |
+| difficulty          | enum                  | `easy` \| `moderate` \| `hard` \| `expert`                |
+| max_participants    | integer NOT NULL      | 2-500; the creator holds a seat                           |
+| is_private          | boolean               |                                                           |
+| status              | enum                  | `draft` \| `open` \| `full` \| `cancelled` \| `completed` |
+| created_at          | timestamptz           |                                                           |
+| updated_at          | timestamptz           |                                                           |
 
 ### `ride_participants`
-| Column | Type | Notes |
-|--------|------|-------|
-| ride_id | uuid FK | composite PK |
-| user_id | uuid FK | composite PK |
-| status | enum | `pending` \| `confirmed` \| `declined` |
-| joined_at | timestamptz | |
+
+| Column    | Type        | Notes                                  |
+| --------- | ----------- | -------------------------------------- |
+| ride_id   | uuid FK     | composite PK                           |
+| user_id   | uuid FK     | composite PK                           |
+| status    | enum        | `pending` \| `confirmed` \| `declined` |
+| joined_at | timestamptz |                                        |
 
 ### `routes`
+
 Saved cycling routes with GPX data.
 
-| Column | Type | Notes |
-|--------|------|-------|
-| id | uuid PK | |
-| creator_id | uuid FK → users | |
-| title | text | |
-| description | text | |
-| gpx_url | text | S3 key |
-| distance_km | numeric | |
-| elevation_gain_m | integer | |
-| polyline | text | encoded polyline for map preview |
-| tags | text[] | e.g. ["scenic", "flat", "gravel"] |
-| is_public | boolean | |
-| created_at | timestamptz | |
+| Column           | Type            | Notes                             |
+| ---------------- | --------------- | --------------------------------- |
+| id               | uuid PK         |                                   |
+| creator_id       | uuid FK → users |                                   |
+| title            | text            |                                   |
+| description      | text            |                                   |
+| gpx_url          | text            | S3 key                            |
+| distance_km      | numeric         |                                   |
+| elevation_gain_m | integer         |                                   |
+| polyline         | text            | encoded polyline for map preview  |
+| tags             | text[]          | e.g. ["scenic", "flat", "gravel"] |
+| is_public        | boolean         |                                   |
+| created_at       | timestamptz     |                                   |
 
 ### `groups`
+
 Cycling clubs or local communities.
 
-| Column | Type | Notes |
-|--------|------|-------|
-| id | uuid PK | |
-| name | text | |
-| description | text | |
-| avatar_url | text | |
-| creator_id | uuid FK → users | |
-| location | geometry(Point, 4326) | group's base location |
-| city | text | |
-| country | text | |
-| is_private | boolean | |
-| ride_styles | text[] | |
-| member_count | integer | denormalized, updated on trigger |
-| created_at | timestamptz | |
-| updated_at | timestamptz | |
+| Column       | Type                  | Notes                            |
+| ------------ | --------------------- | -------------------------------- |
+| id           | uuid PK               |                                  |
+| name         | text                  |                                  |
+| description  | text                  |                                  |
+| avatar_url   | text                  |                                  |
+| creator_id   | uuid FK → users       |                                  |
+| location     | geometry(Point, 4326) | group's base location            |
+| city         | text                  |                                  |
+| country      | text                  |                                  |
+| is_private   | boolean               |                                  |
+| ride_styles  | text[]                |                                  |
+| member_count | integer               | denormalized, updated on trigger |
+| created_at   | timestamptz           |                                  |
+| updated_at   | timestamptz           |                                  |
 
 ### `group_members`
-| Column | Type | Notes |
-|--------|------|-------|
-| group_id | uuid FK | composite PK |
-| user_id | uuid FK | composite PK |
-| role | enum | `owner` \| `admin` \| `member` |
-| joined_at | timestamptz | |
+
+| Column    | Type        | Notes                          |
+| --------- | ----------- | ------------------------------ |
+| group_id  | uuid FK     | composite PK                   |
+| user_id   | uuid FK     | composite PK                   |
+| role      | enum        | `owner` \| `admin` \| `member` |
+| joined_at | timestamptz |                                |
 
 ### `follows`
-| Column | Type | Notes |
-|--------|------|-------|
-| follower_id | uuid FK → users | composite PK |
+
+| Column       | Type            | Notes        |
+| ------------ | --------------- | ------------ |
+| follower_id  | uuid FK → users | composite PK |
 | following_id | uuid FK → users | composite PK |
-| created_at | timestamptz | |
+| created_at   | timestamptz     |              |
 
 ### `notifications`
-| Column | Type | Notes |
-|--------|------|-------|
-| id | uuid PK | |
-| user_id | uuid FK → users | recipient |
-| type | enum | `ride_join`, `ride_reminder`, `group_invite`, `new_follower`, `ride_cancelled` |
-| payload | jsonb | type-specific data |
-| is_read | boolean | default false |
-| created_at | timestamptz | |
+
+| Column     | Type            | Notes                                                                          |
+| ---------- | --------------- | ------------------------------------------------------------------------------ |
+| id         | uuid PK         |                                                                                |
+| user_id    | uuid FK → users | recipient                                                                      |
+| type       | enum            | `ride_join`, `ride_reminder`, `group_invite`, `new_follower`, `ride_cancelled` |
+| payload    | jsonb           | type-specific data                                                             |
+| is_read    | boolean         | default false                                                                  |
+| created_at | timestamptz     |                                                                                |
 
 ---
 
@@ -202,78 +211,85 @@ Cycling clubs or local communities.
 No base URL prefix — routes are mounted directly (e.g. `/auth`, `/users`).
 
 ### Auth — `/auth`
-| Method | Path | Auth | Description |
-|--------|------|------|-------------|
-| POST | `/auth/register` | — | Create account with email + password |
-| POST | `/auth/login` | — | Returns access + refresh tokens |
-| POST | `/auth/refresh` | — | Exchange refresh token |
-| DELETE | `/auth/logout` | — | Invalidate refresh token |
-| GET | `/auth/verify-email?token=...` | — | Confirm email address from verification link |
-| POST | `/auth/resend-verification` | ✓ | Send a new verification email for the current unverified user |
-| POST | `/auth/forgot-password` | — | Send reset email |
-| POST | `/auth/reset-password` | — | Complete password reset |
-| GET | `/auth/google` | — | Redirect to Google OAuth consent screen |
-| GET | `/auth/google/callback` | — | Handle Google callback, set cookies, redirect to frontend |
+
+| Method | Path                           | Auth | Description                                                   |
+| ------ | ------------------------------ | ---- | ------------------------------------------------------------- |
+| POST   | `/auth/register`               | —    | Create account with email + password                          |
+| POST   | `/auth/login`                  | —    | Returns access + refresh tokens                               |
+| POST   | `/auth/refresh`                | —    | Exchange refresh token                                        |
+| DELETE | `/auth/logout`                 | —    | Invalidate refresh token                                      |
+| GET    | `/auth/verify-email?token=...` | —    | Confirm email address from verification link                  |
+| POST   | `/auth/resend-verification`    | ✓    | Send a new verification email for the current unverified user |
+| POST   | `/auth/forgot-password`        | —    | Send reset email                                              |
+| POST   | `/auth/reset-password`         | —    | Complete password reset                                       |
+| GET    | `/auth/google`                 | —    | Redirect to Google OAuth consent screen                       |
+| GET    | `/auth/google/callback`        | —    | Handle Google callback, set cookies, redirect to frontend     |
 
 ### Users — `/users`
-| Method | Path | Auth | Description |
-|--------|------|------|-------------|
-| GET | `/users/me` | ✓ | Current user profile |
-| PATCH | `/users/me` | ✓ | Update profile |
-| GET | `/users/:id` | ✓ | Public profile |
-| GET | `/users/:id/rides` | ✓ | User's rides |
-| POST | `/users/:id/follow` | ✓ | Follow user |
-| DELETE | `/users/:id/follow` | ✓ | Unfollow user |
-| GET | `/users/me/followers` | ✓ | My followers |
-| GET | `/users/me/following` | ✓ | Who I follow |
+
+| Method | Path                  | Auth | Description          |
+| ------ | --------------------- | ---- | -------------------- |
+| GET    | `/users/me`           | ✓    | Current user profile |
+| PATCH  | `/users/me`           | ✓    | Update profile       |
+| GET    | `/users/:id`          | ✓    | Public profile       |
+| GET    | `/users/:id/rides`    | ✓    | User's rides         |
+| POST   | `/users/:id/follow`   | ✓    | Follow user          |
+| DELETE | `/users/:id/follow`   | ✓    | Unfollow user        |
+| GET    | `/users/me/followers` | ✓    | My followers         |
+| GET    | `/users/me/following` | ✓    | Who I follow         |
 
 ### Rides — `/rides`
-| Method | Path | Auth | Description |
-|--------|------|------|-------------|
-| GET | `/rides` | ✓ | List (filter: type, lat/lng/radius, date, difficulty) |
-| POST | `/rides` | ✓ + verified | Create ride |
-| GET | `/rides/:id` | ✓ | Ride details |
-| PATCH | `/rides/:id` | ✓ | Update (creator only) |
-| DELETE | `/rides/:id` | ✓ | Cancel (creator only) |
-| POST | `/rides/:id/join` | ✓ + verified | Join ride |
-| DELETE | `/rides/:id/leave` | ✓ | Leave ride |
-| GET | `/rides/:id/participants` | ✓ | Participant list |
+
+| Method | Path                      | Auth         | Description                                           |
+| ------ | ------------------------- | ------------ | ----------------------------------------------------- |
+| GET    | `/rides`                  | ✓            | List (filter: type, lat/lng/radius, date, difficulty) |
+| POST   | `/rides`                  | ✓ + verified | Create ride                                           |
+| GET    | `/rides/:id`              | ✓            | Ride details                                          |
+| PATCH  | `/rides/:id`              | ✓            | Update (creator only)                                 |
+| DELETE | `/rides/:id`              | ✓            | Cancel (creator only)                                 |
+| POST   | `/rides/:id/join`         | ✓ + verified | Join ride                                             |
+| DELETE | `/rides/:id/leave`        | ✓            | Leave ride                                            |
+| GET    | `/rides/:id/participants` | ✓            | Participant list                                      |
 
 ### Groups — `/groups`
-| Method | Path | Auth | Description |
-|--------|------|------|-------------|
-| GET | `/groups` | ✓ | Search groups (city, country, ride_style) |
-| POST | `/groups` | ✓ + verified | Create group |
-| GET | `/groups/:id` | ✓ | Group details |
-| PATCH | `/groups/:id` | ✓ | Update (admin only) |
-| DELETE | `/groups/:id` | ✓ | Delete (owner only) |
-| POST | `/groups/:id/join` | ✓ + verified | Join group |
-| DELETE | `/groups/:id/leave` | ✓ | Leave group |
-| GET | `/groups/:id/members` | ✓ | Member list |
-| GET | `/groups/:id/rides` | ✓ | Group rides |
+
+| Method | Path                  | Auth         | Description                               |
+| ------ | --------------------- | ------------ | ----------------------------------------- |
+| GET    | `/groups`             | ✓            | Search groups (city, country, ride_style) |
+| POST   | `/groups`             | ✓ + verified | Create group                              |
+| GET    | `/groups/:id`         | ✓            | Group details                             |
+| PATCH  | `/groups/:id`         | ✓            | Update (admin only)                       |
+| DELETE | `/groups/:id`         | ✓            | Delete (owner only)                       |
+| POST   | `/groups/:id/join`    | ✓ + verified | Join group                                |
+| DELETE | `/groups/:id/leave`   | ✓            | Leave group                               |
+| GET    | `/groups/:id/members` | ✓            | Member list                               |
+| GET    | `/groups/:id/rides`   | ✓            | Group rides                               |
 
 ### Routes — `/routes`
-| Method | Path | Auth | Description |
-|--------|------|------|-------------|
-| GET | `/routes` | ✓ | Browse public routes |
-| POST | `/routes` | ✓ + verified | Upload GPX + metadata |
-| GET | `/routes/:id` | ✓ | Route details + download |
-| DELETE | `/routes/:id` | ✓ | Delete (creator only) |
+
+| Method | Path          | Auth         | Description              |
+| ------ | ------------- | ------------ | ------------------------ |
+| GET    | `/routes`     | ✓            | Browse public routes     |
+| POST   | `/routes`     | ✓ + verified | Upload GPX + metadata    |
+| GET    | `/routes/:id` | ✓            | Route details + download |
+| DELETE | `/routes/:id` | ✓            | Delete (creator only)    |
 
 ### Discovery — `/discovery`
-| Method | Path | Auth | Description |
-|--------|------|------|-------------|
-| GET | `/discovery/riders` | ✓ | Nearby riders (lat, lng, radius_km) |
-| GET | `/discovery/rides` | ✓ | Nearby upcoming rides |
-| GET | `/discovery/groups` | ✓ | Nearby groups |
+
+| Method | Path                | Auth | Description                         |
+| ------ | ------------------- | ---- | ----------------------------------- |
+| GET    | `/discovery/riders` | ✓    | Nearby riders (lat, lng, radius_km) |
+| GET    | `/discovery/rides`  | ✓    | Nearby upcoming rides               |
+| GET    | `/discovery/groups` | ✓    | Nearby groups                       |
 
 ### Notifications — `/notifications`
-| Method | Path | Auth | Description |
-|--------|------|------|-------------|
-| GET | `/notifications` | ✓ | List (paginated, unread first) |
-| PATCH | `/notifications/:id/read` | ✓ | Mark as read |
-| POST | `/notifications/mark-all-read` | ✓ | Bulk mark read |
-| POST | `/notifications/push-token` | ✓ | Register device push token |
+
+| Method | Path                           | Auth | Description                    |
+| ------ | ------------------------------ | ---- | ------------------------------ |
+| GET    | `/notifications`               | ✓    | List (paginated, unread first) |
+| PATCH  | `/notifications/:id/read`      | ✓    | Mark as read                   |
+| POST   | `/notifications/mark-all-read` | ✓    | Bulk mark read                 |
+| POST   | `/notifications/push-token`    | ✓    | Register device push token     |
 
 ---
 
@@ -314,10 +330,10 @@ Example response:
 
 ### Cookies
 
-| Cookie | Value | httpOnly | Path | Max-Age |
-|--------|-------|----------|------|---------|
-| `accessToken` | signed JWT | ✓ | `/` | 15 min |
-| `refreshToken` | `{familyUuid}.{rawToken}` | ✓ | `/auth` | 30 days |
+| Cookie         | Value                     | httpOnly | Path    | Max-Age |
+| -------------- | ------------------------- | -------- | ------- | ------- |
+| `accessToken`  | signed JWT                | ✓        | `/`     | 15 min  |
+| `refreshToken` | `{familyUuid}.{rawToken}` | ✓        | `/auth` | 30 days |
 
 Restricting `refreshToken` to `/auth` ensures the browser only sends it to auth endpoints (refresh, logout), not to the rest of the API.
 
@@ -346,6 +362,7 @@ email-verification:{tokenHash} → userId                          TTL: 24h
 ### Flows
 
 **Register**
+
 1. `familyUuid = uuid()`
 2. `rawToken = crypto.randomBytes(32).toString('hex')`
 3. `tokenHash = sha256(rawToken)`
@@ -357,23 +374,27 @@ email-verification:{tokenHash} → userId                          TTL: 24h
 9. Return `{ user: { id, email, email_verified_at: null } }` — no tokens in body
 
 **Login**
+
 1. Validate email + password.
 2. Create token family using the same cookie/session flow as register.
 3. Return `{ user: { id, email, email_verified_at } }`.
 4. Do not block login for unverified accounts; block participation routes instead.
 
 **Authenticated request** (any protected route)
+
 1. `@fastify/jwt` reads `accessToken` cookie, verifies signature
 2. Populates `request.user = { sub: userId }`
 3. Zero DB or Redis lookups
 
 **Verified participation request** (create/join/chat/etc.)
+
 1. Run the normal auth guard.
 2. Load the current user from DB.
 3. If `email_verified_at` is null, return `403 EMAIL_NOT_VERIFIED`.
 4. Otherwise continue to the handler.
 
 **Verify email** (`GET /auth/verify-email?token=...`)
+
 1. Hash the raw token from the URL.
 2. Look up the hash in Redis.
 3. If missing or expired, return `401 INVALID_TOKEN`.
@@ -382,6 +403,7 @@ email-verification:{tokenHash} → userId                          TTL: 24h
 6. Redirect to the frontend email-verified state or return success for API clients.
 
 **Resend verification** (`POST /auth/resend-verification`)
+
 1. Require authentication.
 2. Load the current user.
 3. If already verified, return success without sending a new email.
@@ -389,6 +411,7 @@ email-verification:{tokenHash} → userId                          TTL: 24h
 5. Rate-limit this endpoint to prevent email abuse.
 
 **Refresh** (`POST /auth/refresh`)
+
 1. Parse `refreshToken` cookie → `[familyUuid, rawToken]`
 2. `tokenHash = sha256(rawToken)`
 3. `family = redis.get(family:{familyUuid})`
@@ -406,6 +429,7 @@ email-verification:{tokenHash} → userId                          TTL: 24h
    - Set both cookies with new values
 
 **Logout** (`DELETE /auth/logout`) — this device only
+
 1. Parse `refreshToken` cookie → `familyUuid`
 2. `redis.del(family:{familyUuid})`
 3. `redis.srem(user:families:{userId}, familyUuid)`
@@ -450,12 +474,12 @@ OAuth is an alternative identity verification path. Once the user's identity is 
 fastify.register(jwt, {
   secret: config.JWT_ACCESS_SECRET,
   cookie: { cookieName: 'accessToken', signed: false },
-})
-fastify.register(cookie)
+});
+fastify.register(cookie);
 
 fastify.decorate('authenticate', async (request, reply) => {
-  await request.jwtVerify() // reads accessToken cookie automatically
-})
+  await request.jwtVerify(); // reads accessToken cookie automatically
+});
 ```
 
 ```ts
@@ -467,29 +491,30 @@ fastify.register(oauth2, {
     client: { id: config.GOOGLE_CLIENT_ID, secret: config.GOOGLE_CLIENT_SECRET },
     auth: oauth2.GOOGLE_CONFIGURATION,
   },
-  startRedirectPath: '/auth/google',          // GET /auth/google → redirect to Google
-  callbackUri: config.GOOGLE_CALLBACK_URL,    // Google redirects back here with ?code=
-})
+  startRedirectPath: '/auth/google', // GET /auth/google → redirect to Google
+  callbackUri: config.GOOGLE_CALLBACK_URL, // Google redirects back here with ?code=
+});
 // Exposes: fastify.googleOAuth2.getAccessTokenFromAuthorizationCodeFlow(request)
 // state CSRF token is handled automatically by the plugin
 ```
 
 **Note:** `userinfo()` from the plugin only works with the `discovery` option. We use static config, so after token exchange we call Google's userinfo endpoint directly:
+
 ```ts
 const resp = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
   headers: { Authorization: `Bearer ${token.access_token.token}` },
-})
-const { sub, email, name, picture } = await resp.json()
+});
+const { sub, email, name, picture } = await resp.json();
 ```
 
 ### Required env vars for OAuth
 
-| Variable | Description |
-|----------|-------------|
-| `GOOGLE_CLIENT_ID` | From Google Cloud Console → APIs & Services → Credentials |
-| `GOOGLE_CLIENT_SECRET` | Same as above — **never expose to browser** |
-| `GOOGLE_CALLBACK_URL` | Must match exactly what's registered in Google Console — e.g. `http://localhost:3000/auth/google/callback` |
-| `FRONTEND_URL` | Redirect destination after successful OAuth — e.g. `http://localhost:3001` |
+| Variable               | Description                                                                                                |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `GOOGLE_CLIENT_ID`     | From Google Cloud Console → APIs & Services → Credentials                                                  |
+| `GOOGLE_CLIENT_SECRET` | Same as above — **never expose to browser**                                                                |
+| `GOOGLE_CALLBACK_URL`  | Must match exactly what's registered in Google Console — e.g. `http://localhost:3000/auth/google/callback` |
+| `FRONTEND_URL`         | Redirect destination after successful OAuth — e.g. `http://localhost:3001`                                 |
 
 ### Mobile note
 
@@ -502,6 +527,7 @@ React Native (Expo) does not have an automatic cookie jar — httpOnly cookies f
 All location-based queries use PostGIS `ST_DWithin` with geography type for accurate distance in meters.
 
 Example — nearby rides within 50km:
+
 ```sql
 WHERE ST_DWithin(
   rides.start_location::geography,
