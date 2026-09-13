@@ -23,7 +23,12 @@ export function LogoMark({ height = 24, className }: LogoProps) {
     >
       <circle cx="12.7" cy="12.7" r="11" stroke="currentColor" strokeWidth="4.4" />
       <circle cx="25.7" cy="12.7" r="11" stroke="currentColor" strokeWidth="4.4" />
-      <path d="M 23.7 12.7 a 11 11 0 0 1 -22 0" stroke="currentColor" strokeWidth="4.4" fill="none" />
+      <path
+        d="M 23.7 12.7 a 11 11 0 0 1 -22 0"
+        stroke="currentColor"
+        strokeWidth="4.4"
+        fill="none"
+      />
     </svg>
   );
 }
@@ -34,7 +39,7 @@ export function Logo({ height = 32, className }: LogoProps) {
 
   return (
     <span
-      className={cn('inline-flex items-baseline font-ui', className)}
+      className={cn('font-ui inline-flex items-baseline', className)}
       style={{ height, fontSize, fontWeight: 700, letterSpacing: '-0.03em', lineHeight: 1 }}
     >
       l

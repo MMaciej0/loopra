@@ -50,12 +50,7 @@ export function PageBar() {
         <Button type="button" variant="ghost" onClick={onCancel} className="hidden sm:inline-flex">
           {t('cancel')}
         </Button>
-        <Button
-          type="submit"
-          variant="accent"
-          loading={isSubmitting}
-          className="px-3 md:px-4"
-        >
+        <Button type="submit" variant="accent" loading={isSubmitting} className="px-3 md:px-4">
           {t('submit')}
           <ArrowRight className="hidden md:block" />
         </Button>

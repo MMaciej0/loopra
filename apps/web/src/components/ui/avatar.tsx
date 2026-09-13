@@ -37,8 +37,8 @@ function Avatar({
       data-slot="avatar"
       data-size={size}
       className={cn(
-        'group/avatar relative flex shrink-0 select-none rounded-full',
-        'size-8 data-[size=sm]:size-[26px] data-[size=lg]:size-10',
+        'group/avatar relative flex shrink-0 rounded-full select-none',
+        'size-8 data-[size=lg]:size-10 data-[size=sm]:size-[26px]',
         className,
       )}
       {...props}
@@ -70,10 +70,10 @@ function AvatarFallback({
       data-slot="avatar-fallback"
       style={bg ? { background: bg } : undefined}
       className={cn(
-        'flex size-full items-center justify-center rounded-full font-ui font-semibold',
+        'font-ui flex size-full items-center justify-center rounded-full font-semibold',
         bg ? 'text-[#101317]' : 'bg-muted text-foreground/60',
         // text size matches the three avatar sizes
-        'text-[13px] group-data-[size=sm]/avatar:text-[11px] group-data-[size=lg]/avatar:text-[17px]',
+        'text-[13px] group-data-[size=lg]/avatar:text-[17px] group-data-[size=sm]/avatar:text-[11px]',
         className,
       )}
       {...props}
@@ -86,7 +86,7 @@ function AvatarBadge({ className, ...props }: React.ComponentProps<'span'>) {
     <span
       data-slot="avatar-badge"
       className={cn(
-        'absolute right-0 bottom-0 z-10 inline-flex items-center justify-center rounded-full bg-primary text-primary-foreground ring-2 ring-background select-none',
+        'bg-primary text-primary-foreground ring-background absolute right-0 bottom-0 z-10 inline-flex items-center justify-center rounded-full ring-2 select-none',
         'size-2.5 [&>svg]:size-2',
         'group-data-[size=sm]/avatar:size-2 group-data-[size=sm]/avatar:[&>svg]:hidden',
         'group-data-[size=lg]/avatar:size-3 group-data-[size=lg]/avatar:[&>svg]:size-2',
@@ -105,7 +105,7 @@ function AvatarGroup({ className, ...props }: React.ComponentProps<'div'>) {
       className={cn(
         'group/avatar-group flex items-center',
         // each avatar gets a 2px background-colored ring to separate discs
-        '*:data-[slot=avatar]:ring-2 *:data-[slot=avatar]:ring-background',
+        '*:data-[slot=avatar]:ring-background *:data-[slot=avatar]:ring-2',
         // overlap: -8px (matches design's margin-left: -8px)
         '-space-x-2',
         className,
@@ -123,9 +123,9 @@ function AvatarGroupCount({ className, ...props }: React.ComponentProps<'div'>) 
       className={cn(
         'relative flex shrink-0 items-center justify-center rounded-full',
         'bg-muted text-foreground/60 font-ui font-semibold',
-        'text-[10px] ring-2 ring-background',
+        'ring-background text-[10px] ring-2',
         // size mirrors Avatar sizes
-        'size-8 group-has-data-[size=sm]/avatar-group:size-[26px] group-has-data-[size=lg]/avatar-group:size-10',
+        'size-8 group-has-data-[size=lg]/avatar-group:size-10 group-has-data-[size=sm]/avatar-group:size-[26px]',
         className,
       )}
       {...props}

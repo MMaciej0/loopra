@@ -5,12 +5,7 @@ import { useTranslations } from 'next-intl';
 
 import { Link, usePathname } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
-import {
-  SidebarGroup,
-  SidebarMenu,
-  SidebarMenuItem,
-  useSidebar,
-} from '@/components/ui/sidebar';
+import { SidebarGroup, SidebarMenu, SidebarMenuItem, useSidebar } from '@/components/ui/sidebar';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 
@@ -41,7 +36,7 @@ export function AppSidebarNav() {
                     size="lg"
                     data-active={isActive}
                     className={cn(
-                      'w-full justify-start gap-2.5 px-3 text-muted-foreground',
+                      'text-muted-foreground w-full justify-start gap-2.5 px-3',
                       'data-[active=true]:bg-muted data-[active=true]:text-foreground',
                       'group-data-[collapsible=icon]:w-full group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0',
                     )}

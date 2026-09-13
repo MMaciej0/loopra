@@ -56,7 +56,10 @@ describe('GET /auth/google/callback', () => {
 
   describe('when user exists by email but has no oauth account (first google login)', () => {
     beforeEach(async () => {
-      await appRef.app.db.insert(users).values({ email: EMAIL, password_hash: 'hashed' }).returning();
+      await appRef.app.db
+        .insert(users)
+        .values({ email: EMAIL, password_hash: 'hashed' })
+        .returning();
     });
 
     it('links oauth account to existing user', async () => {

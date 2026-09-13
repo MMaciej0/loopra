@@ -92,9 +92,7 @@ export function FavoriteLocationDialog() {
           </div>
 
           {hasSaveError && (
-            <p className="text-destructive text-xs">
-              Could not save your location. Try again.
-            </p>
+            <p className="text-destructive text-xs">Could not save your location. Try again.</p>
           )}
         </div>
 
@@ -102,12 +100,7 @@ export function FavoriteLocationDialog() {
           <Button variant="ghost" loading={isDismissing} onClick={dismiss}>
             Not now
           </Button>
-          <Button
-            variant="accent"
-            disabled={!selectedLocation}
-            loading={isSaving}
-            onClick={save}
-          >
+          <Button variant="accent" disabled={!selectedLocation} loading={isSaving} onClick={save}>
             Save location
           </Button>
         </DialogFooter>
