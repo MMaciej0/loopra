@@ -1,0 +1,28 @@
+name: loopra-test
+
+services:
+  postgres:
+    image: postgis/postgis:16-3.4
+    ports:
+      - "5434:5432"
+    environment:
+      POSTGRES_USER: loopra
+      POSTGRES_PASSWORD: loopra
+      POSTGRES_DB: loopra
+    tmpfs:
+      - /var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U loopra -d loopra"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6381:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
