@@ -42,9 +42,12 @@ export default fastifyPlugin(async (fastify) => {
     }
   });
 
-  fastify.decorate('requireVerifiedEmail', async (request: FastifyRequest, _reply: FastifyReply) => {
-    if (!request.user.email_verified) {
-      throw new AppError(403, ERROR_TYPES.EMAIL_NOT_VERIFIED, 'Email not verified');
-    }
-  });
+  fastify.decorate(
+    'requireVerifiedEmail',
+    async (request: FastifyRequest, _reply: FastifyReply) => {
+      if (!request.user.email_verified) {
+        throw new AppError(403, ERROR_TYPES.EMAIL_NOT_VERIFIED, 'Email not verified');
+      }
+    },
+  );
 });

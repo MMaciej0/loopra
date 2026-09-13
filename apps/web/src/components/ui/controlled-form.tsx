@@ -9,8 +9,10 @@ export interface ControlledFormRenderProps {
   showErrors: boolean;
 }
 
-export interface ControlledFormProps
-  extends Omit<ComponentProps<'form'>, 'onChange' | 'onSubmit' | 'children'> {
+export interface ControlledFormProps extends Omit<
+  ComponentProps<'form'>,
+  'onChange' | 'onSubmit' | 'children'
+> {
   isLoading: boolean;
   formError?: ReactNode;
   children: (props: ControlledFormRenderProps) => ReactNode;
