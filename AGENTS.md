@@ -11,18 +11,18 @@ It is the single source: `CLAUDE.md` imports it, so edit this file, not that one
 
 ## Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
-| Monorepo | pnpm workspaces |
-| API | Fastify + TypeScript |
-| Web | Next.js (App Router) |
-| Database | PostgreSQL + PostGIS |
-| ORM | Drizzle ORM |
-| Auth | JWT (access + refresh tokens) via `@fastify/jwt` |
-| Cache | Redis |
-| Storage | S3-compatible (GPX files, avatars) |
-| Request validation | Zod |
-| Response schemas | TypeBox, in `packages/domain` |
+| Layer              | Technology                                       |
+| ------------------ | ------------------------------------------------ |
+| Monorepo           | pnpm workspaces                                  |
+| API                | Fastify + TypeScript                             |
+| Web                | Next.js (App Router)                             |
+| Database           | PostgreSQL + PostGIS                             |
+| ORM                | Drizzle ORM                                      |
+| Auth               | JWT (access + refresh tokens) via `@fastify/jwt` |
+| Cache              | Redis                                            |
+| Storage            | S3-compatible (GPX files, avatars)               |
+| Request validation | Zod                                              |
+| Response schemas   | TypeBox, in `packages/domain`                    |
 
 Planned, not installed: Expo mobile app, `@fastify/websocket` for real-time, `@fastify/swagger` for API docs.
 
@@ -65,15 +65,15 @@ pnpm --filter api test
 
 Vitest clones a template database per worker, so tests never touch the dev database. All external services are mocked or unreachable — the suite passes with entirely dummy `RESEND_API_KEY`, `GOOGLE_*` and `S3_*` values.
 
-Those dummies live in `apps/api/.env.test`, committed through a `.gitignore` negation and loaded by `vitest.config.ts`. The load **does not override** variables already set, which is what keeps the container flow working: compose injects the real connection strings there, and they win over the file's host-facing `localhost:5434`.
+Those dummies live in `apps/api/.env.test`, committed through a `.gitignore` negation and loaded by `vitest.config.ts`. It is the one env file in this repo that is **tracked**, so never paste a real credential into it, even briefly — `git add -A` would commit it. To experiment locally, `git update-index --skip-worktree apps/api/.env.test` first. The load **does not override** variables already set, which is what keeps the container flow working: compose injects the real connection strings there, and they win over the file's host-facing `localhost:5434`.
 
 ## CI
 
 `.github/workflows/ci.yml` runs on every pull request and every push to `master`, cancelling superseded runs for the same ref. Two jobs in parallel:
 
-| job | runs |
-|---|---|
-| `checks` | `pnpm -r typecheck`, `pnpm -r lint`, `pnpm -r format:check`, `pnpm --filter web build` |
+| job        | runs                                                                                    |
+| ---------- | --------------------------------------------------------------------------------------- |
+| `checks`   | `pnpm -r typecheck`, `pnpm -r lint`, `pnpm -r format:check`, `pnpm --filter web build`  |
 | `api-test` | `docker compose -f docker-compose-test.yml up -d --wait`, then `pnpm --filter api test` |
 
 **The workflow holds no logic of its own** — every step invokes a workspace script you can run yourself. So "will CI pass" is answerable locally by running those five commands; there is no CI-only path to reason about. Keep it that way: put new logic in a script, not in the YAML.
@@ -81,6 +81,8 @@ Those dummies live in `apps/api/.env.test`, committed through a `.gitignore` neg
 The web build gets placeholder `API_URL`, `NEXT_PUBLIC_API_URL` and `NEXT_PUBLIC_MAPTILER_KEY`. It needs them — some routes are SSG and prerender at build time, so an undefined base URL fails the build.
 
 Node comes from `.nvmrc`, pnpm from the root `packageManager` field, and install is `--frozen-lockfile`, which also builds `packages/domain` and `packages/gpx` through their `prepare` scripts.
+
+`pnpm -r` skips the workspace **root**, so the root `format`/`format:check` scripts run the recursive pass and then a second, glob-scoped prettier over the files no project owns: root `*.{json,md,yml,yaml}`, `docs/**/*.md`, and `.github/**`. Without that second pass this file, the README, the compose files and the workflow itself would be in no formatter's scope. YAML keeps double quotes via an override in the root `.prettierrc`, so formatting never rewrites compose port mappings.
 
 Nothing is enforced yet: `master` has no branch protection, so a red run blocks nothing. Not checked by CI: migration drift (`drizzle-kit generate` reporting "No schema changes"), which is still a manual step.
 
@@ -109,10 +111,10 @@ Everything the API and web must agree on lives here, and nowhere else: slug enum
 
 Two entry points, and the split is load-bearing:
 
-| import | holds | dependencies |
-|---|---|---|
-| `@loopra/domain` | enums, bounds, error codes, DTO **types** | none |
-| `@loopra/domain/schemas` | TypeBox response **schemas** | typebox |
+| import                   | holds                                     | dependencies |
+| ------------------------ | ----------------------------------------- | ------------ |
+| `@loopra/domain`         | enums, bounds, error codes, DTO **types** | none         |
+| `@loopra/domain/schemas` | TypeBox response **schemas**              | typebox      |
 
 The main barrel has no path to `schemas/`, which is what keeps TypeBox out of the web bundle. `dto/*.ts` reaches its schemas through `import type` only, so the emitted JS is `export {}`. **Adding a `schemas/` re-export to `src/index.ts` would ship TypeBox to the browser silently** — no error, no failing test.
 
