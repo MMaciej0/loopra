@@ -158,3 +158,17 @@ Services throw them; controllers let them fall through to `plugins/globalErrorHa
 - Enum declaration order is UI display order, and the default value comes first. `drizzle-kit generate` reporting **"No schema changes"** is the check that `db/schema.ts` and `packages/domain/src/enums.ts` still agree
 - All routes are registered as Fastify plugins for clean encapsulation
 - `packages/domain` is the contract between API, web, and mobile
+
+## Agent skills
+
+### Issue tracker
+
+Issues live as GitHub issues in `MMaciej0/loopra`, operated via the `gh` CLI. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+The five canonical triage roles, each label string equal to its name. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: `CONTEXT.md` plus `docs/adr/` at the repo root. See `docs/agents/domain.md`.
