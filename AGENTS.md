@@ -78,6 +78,8 @@ Those dummies live in `apps/api/.env.test`, committed through a `.gitignore` neg
 
 **The workflow holds no logic of its own** — every step invokes a workspace script you can run yourself. So "will CI pass" is answerable locally by running those five commands; there is no CI-only path to reason about. Keep it that way: put new logic in a script, not in the YAML.
 
+`checks` runs `next typegen` before typechecking. `apps/web/next-env.d.ts` and `.next/types/` are gitignored build output, and `tsc` needs them to resolve `.svg` imports and route types — so `pnpm -r typecheck` passes on a machine that has built the app and fails on a fresh clone until something generates them. `next typegen` does that without a full build.
+
 The web build gets placeholder `API_URL`, `NEXT_PUBLIC_API_URL` and `NEXT_PUBLIC_MAPTILER_KEY`. It needs them — some routes are SSG and prerender at build time, so an undefined base URL fails the build.
 
 Node comes from `.nvmrc`, pnpm from the root `packageManager` field, and install is `--frozen-lockfile`, which also builds `packages/domain` and `packages/gpx` through their `prepare` scripts.
