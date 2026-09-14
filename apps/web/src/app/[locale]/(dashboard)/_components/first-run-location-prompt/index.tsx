@@ -1,8 +1,8 @@
 import { protectedRequest } from '@/utils/api';
 import type { GetCurrentUserResponse } from '@loopra/domain';
-import { FavoriteLocationDialog } from './dialog';
+import { FirstRunLocationDialog } from './dialog';
 
-export async function FavoriteLocationModal() {
+export async function FirstRunLocationPrompt() {
   const response = await protectedRequest<GetCurrentUserResponse>('/users/me');
 
   if (!response.ok) {
@@ -15,5 +15,5 @@ export async function FavoriteLocationModal() {
     return null;
   }
 
-  return <FavoriteLocationDialog />;
+  return <FirstRunLocationDialog />;
 }
