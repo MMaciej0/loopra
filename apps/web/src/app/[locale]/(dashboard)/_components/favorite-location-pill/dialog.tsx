@@ -73,21 +73,23 @@ export function FavoriteLocationPillDialog({ storedLocation }: Props) {
           </DialogDescription>
         </DialogHeader>
 
-        <div ref={comboboxPortalRef} className="space-y-3">
-          <LocationPicker
-            value={selectedLocation}
-            onSelect={(location) => {
-              setHasSaveError(false);
-              setSelectedLocation(location);
-            }}
-            portalContainer={comboboxPortalRef}
-          />
+        <div ref={comboboxPortalRef}>
+          <div className="flex flex-col gap-3">
+            <LocationPicker
+              value={selectedLocation}
+              onSelect={(location) => {
+                setHasSaveError(false);
+                setSelectedLocation(location);
+              }}
+              portalContainer={comboboxPortalRef}
+            />
 
-          <SelectedLocationPreview location={selectedLocation} />
+            <SelectedLocationPreview location={selectedLocation} />
 
-          {hasSaveError && (
-            <p className="text-destructive text-xs">Could not save your location. Try again.</p>
-          )}
+            {hasSaveError && (
+              <p className="text-destructive text-xs">Could not save your location. Try again.</p>
+            )}
+          </div>
         </div>
 
         <DialogFooter showCancel>

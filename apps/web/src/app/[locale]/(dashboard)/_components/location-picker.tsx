@@ -28,6 +28,7 @@ export function LocationPicker({
   const [isSearching, setIsSearching] = useState(false);
   const [hasError, setHasError] = useState(false);
   const cache = useRef(new Map<string, LocationSuggestion[]>());
+  const anchorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const query = inputValue.trim();
@@ -108,12 +109,18 @@ export function LocationPicker({
       }}
       onValueChange={selectLocation}
     >
-      <ComboboxInput
-        aria-label="Search for a city or area"
-        placeholder="Search for a city or area"
-        showTrigger={false}
-      />
-      <ComboboxContent portalContainer={portalContainer} aria-busy={isSearching || undefined}>
+      <div ref={anchorRef}>
+        <ComboboxInput
+          aria-label="Search for a city or area"
+          placeholder="Search for a city or area"
+          showTrigger={false}
+        />
+      </div>
+      <ComboboxContent
+        anchor={anchorRef}
+        portalContainer={portalContainer}
+        aria-busy={isSearching || undefined}
+      >
         <ComboboxEmpty>
           {isSearching ? (
             <span className="flex items-center gap-2">

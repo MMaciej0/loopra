@@ -6,7 +6,7 @@ export const LAT_MAX = 90;
 export const LOCATION_NAME_MAX_LENGTH = 40;
 
 export const DEFAULT_FAVORITE_LOCATION = {
-  favorite_location: { x: 19.937952607870102, y: 50.06052139064339 },
+  favorite_location: { x: 20.037364158779383, y: 50.07271576504815 },
   favorite_city: 'Kraków',
   favorite_country: 'Poland',
 } as const;
