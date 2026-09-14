@@ -43,8 +43,13 @@ export function useRidesMap({ lng, lat, language }: UseRidesMapProps) {
 
     maptilersdk.config.apiKey = process.env.NEXT_PUBLIC_MAPTILER_KEY!;
 
+    const mapElement = document.createElement('div');
+    mapElement.style.width = '100%';
+    mapElement.style.height = '100%';
+    container.appendChild(mapElement);
+
     const map = new maptilersdk.Map({
-      container,
+      container: mapElement,
       style: toMapStyle(themeRef.current),
       center: centerRef.current,
       zoom: CITY_ZOOM,
@@ -63,13 +68,14 @@ export function useRidesMap({ lng, lat, language }: UseRidesMapProps) {
     map.addControl(new maptilersdk.NavigationControl({ showCompass: false }), 'top-right');
 
     map.on('load', () => {
-      container
+      mapElement
         .querySelector('.maplibregl-ctrl-attrib')
         ?.classList.remove('maplibregl-compact-show');
     });
 
     return () => {
       mapRef.current = null;
+      mapElement.remove();
 
       if (isStyleLoaded) {
         map.remove();
