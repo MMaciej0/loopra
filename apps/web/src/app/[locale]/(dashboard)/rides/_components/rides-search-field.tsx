@@ -6,7 +6,7 @@ export async function RidesSearchField() {
   const t = await getTranslations('RidesPage');
 
   return (
-    <InputGroup>
+    <InputGroup className="h-10">
       <InputGroupAddon>
         <Search className="size-4" />
       </InputGroupAddon>
