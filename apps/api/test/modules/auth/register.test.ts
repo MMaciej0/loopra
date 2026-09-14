@@ -50,6 +50,7 @@ describe('POST /auth/register', () => {
 
     expect(user.favorite_location).toEqual(DEFAULT_FAVORITE_LOCATION.favorite_location);
     expect(user.favorite_city).toBe('Kraków');
+    expect(user.favorite_district).toBe(DEFAULT_FAVORITE_LOCATION.favorite_district);
     expect(user.favorite_country).toBe('Poland');
     expect(user.favorite_location_chosen).toBe(false);
   });
