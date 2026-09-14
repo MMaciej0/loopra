@@ -68,24 +68,27 @@ export function FirstRunLocationDialog() {
           <DialogSubheader>Make Loopra yours</DialogSubheader>
           <DialogTitle>Where do you usually ride?</DialogTitle>
           <DialogDescription>
-            Until you pick your own, Loopra uses Kraków city centre to find rides and cyclists near
-            you.
+            Pick the area you ride in — roughly is fine, no address needed. Loopra centres your map
+            there and finds rides and riders near you. Skip it and you&apos;ll start in Nowa Huta,
+            Kraków, Poland — where Loopra was born.
           </DialogDescription>
         </DialogHeader>
 
-        <div ref={comboboxPortalRef} className="space-y-3">
-          <LocationPicker
-            value={selectedLocation}
-            onSelect={(location) => {
-              setErrorMessage(null);
-              setSelectedLocation(location);
-            }}
-            portalContainer={comboboxPortalRef}
-          />
+        <div ref={comboboxPortalRef}>
+          <div className="flex flex-col gap-3">
+            <LocationPicker
+              value={selectedLocation}
+              onSelect={(location) => {
+                setErrorMessage(null);
+                setSelectedLocation(location);
+              }}
+              portalContainer={comboboxPortalRef}
+            />
 
-          <SelectedLocationPreview location={selectedLocation} />
+            <SelectedLocationPreview location={selectedLocation} />
 
-          {errorMessage && <p className="text-destructive text-xs">{errorMessage}</p>}
+            {errorMessage && <p className="text-destructive text-xs">{errorMessage}</p>}
+          </div>
         </div>
 
         <DialogFooter>
