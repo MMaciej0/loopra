@@ -3,10 +3,6 @@ import type { LocationSuggestion } from '@/utils/geocoding';
 import { getCurrentUser } from '@/utils/user';
 import { FavoriteLocationPillDialog } from './dialog';
 
-// The stored record has no geocoder feature id and no formatted label, so a
-// genuine search result cannot be reconstructed from it. The picker compares
-// selections by id, so this one is namespaced to never collide with a real
-// MapTiler id (`place.4663402`, `municipality.91784`, …).
 const STORED_LOCATION_ID = 'loopra:stored-favorite-location';
 
 function toStoredLocation(user: CurrentUser): LocationSuggestion {
