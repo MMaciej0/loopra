@@ -22,7 +22,10 @@ describe('GET /auth/google/callback', () => {
 
   describe('when oauth account already exists (returning user)', () => {
     beforeEach(async () => {
-      const [user] = await appRef.app.db.insert(users).values({ email: EMAIL }).returning();
+      const [user] = await appRef.app.db
+        .insert(users)
+        .values({ email: EMAIL, ...DEFAULT_FAVORITE_LOCATION })
+        .returning();
       await appRef.app.db.insert(oauth_accounts).values({
         provider: 'google',
         provider_user_id: GOOGLE_SUB,
@@ -59,7 +62,7 @@ describe('GET /auth/google/callback', () => {
     beforeEach(async () => {
       await appRef.app.db
         .insert(users)
-        .values({ email: EMAIL, password_hash: 'hashed' })
+        .values({ email: EMAIL, password_hash: 'hashed', ...DEFAULT_FAVORITE_LOCATION })
         .returning();
     });
 

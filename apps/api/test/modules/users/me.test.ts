@@ -69,12 +69,10 @@ describe('GET /users/me', () => {
         'favorite_region',
         'favorite_location_chosen',
         'id',
-        'location_prompt_dismissed_at',
         'username',
       ].sort(),
     );
     expect(user.created_at).toBe(new Date(user.created_at).toISOString());
-    expect(user.location_prompt_dismissed_at).toBeNull();
   });
 
   it.each(['password_hash', 'email_verified_at', 'updated_at'])(
@@ -157,18 +155,6 @@ describe('GET /users/me', () => {
     });
   });
 
-  it('dismisses the favourite location prompt', async () => {
-    const response = await appRef.app.inject({
-      method: 'PATCH',
-      url: '/users/me',
-      cookies: { accessToken: auth.accessToken },
-      payload: { dismiss_location_prompt: true },
-    });
-
-    expect(response.statusCode).toBe(200);
-    expect(response.json().updatedUser.location_prompt_dismissed_at).toEqual(expect.any(String));
-  });
-
   it('returns the seeded default favourite location for a freshly registered rider', async () => {
     const response = await appRef.app.inject({
       method: 'GET',
@@ -185,13 +171,10 @@ describe('GET /users/me', () => {
       favorite_region: null,
       favorite_postal_code: null,
       favorite_location_chosen: false,
-      location_prompt_dismissed_at: null,
     });
   });
 
   it('returns the stored favourite location once set', async () => {
-    const dismissedAt = new Date('2026-01-15T10:00:00.000Z');
-
     await appRef.app.db
       .update(users)
       .set({
@@ -201,7 +184,6 @@ describe('GET /users/me', () => {
         favorite_region: 'Lesser Poland Voivodeship',
         favorite_country: 'Poland',
         favorite_postal_code: '31-234',
-        location_prompt_dismissed_at: dismissedAt,
       })
       .where(eq(users.id, auth.userId));
 
@@ -219,7 +201,6 @@ describe('GET /users/me', () => {
       favorite_region: 'Lesser Poland Voivodeship',
       favorite_country: 'Poland',
       favorite_postal_code: '31-234',
-      location_prompt_dismissed_at: dismissedAt.toISOString(),
     });
   });
 });

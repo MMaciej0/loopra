@@ -9,16 +9,16 @@ export const CurrentUserSchema = Type.Object(
     username: Nullable(Type.String()),
     created_at: Type.String({ format: 'date-time' }),
     email_verified: Type.Boolean(),
-    favorite_location: Nullable(
-      Type.Object({ x: Type.Number(), y: Type.Number() }, { additionalProperties: false }),
+    favorite_location: Type.Object(
+      { x: Type.Number(), y: Type.Number() },
+      { additionalProperties: false },
     ),
-    favorite_city: Nullable(Type.String()),
+    favorite_city: Type.String(),
     favorite_municipality: Nullable(Type.String()),
     favorite_region: Nullable(Type.String()),
-    favorite_country: Nullable(Type.String()),
+    favorite_country: Type.String(),
     favorite_postal_code: Nullable(Type.String()),
     favorite_location_chosen: Type.Boolean(),
-    location_prompt_dismissed_at: Nullable(Type.String({ format: 'date-time' })),
   },
   { additionalProperties: false },
 );
