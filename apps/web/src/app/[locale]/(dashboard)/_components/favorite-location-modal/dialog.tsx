@@ -22,21 +22,21 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import { forwardGeocode, type LocationSuggestion } from '@/utils/geocoding';
-import { dismissFavoriteLocationPrompt, saveFavoriteLocation } from './actions';
+import { acceptDefaultFavoriteLocation, saveFavoriteLocation } from './actions';
 
 export function FavoriteLocationDialog() {
   const [open, setOpen] = useState(true);
-  const [isDismissing, startDismissTransition] = useTransition();
+  const [isAcceptingDefault, startAcceptDefaultTransition] = useTransition();
   const [isSaving, startSaveTransition] = useTransition();
   const [hasSaveError, setHasSaveError] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState<LocationSuggestion | null>(null);
   const comboboxPortalRef = useRef<HTMLDivElement>(null);
 
-  const dismiss = () => {
-    if (isDismissing || isSaving) return;
+  const acceptDefault = () => {
+    if (isAcceptingDefault || isSaving) return;
 
-    startDismissTransition(async () => {
-      const result = await dismissFavoriteLocationPrompt();
+    startAcceptDefaultTransition(async () => {
+      const result = await acceptDefaultFavoriteLocation();
       if (result.ok) setOpen(false);
     });
   };
@@ -57,7 +57,7 @@ export function FavoriteLocationDialog() {
   };
 
   return (
-    <Dialog open={open} onOpenChange={(nextOpen) => !nextOpen && dismiss()}>
+    <Dialog open={open} onOpenChange={(nextOpen) => !nextOpen && acceptDefault()}>
       <DialogContent className="gap-5 p-5 sm:max-w-md">
         <DialogHeader className="gap-2">
           <DialogSubheader>Make Loopra yours</DialogSubheader>
@@ -97,8 +97,8 @@ export function FavoriteLocationDialog() {
         </div>
 
         <DialogFooter>
-          <Button variant="ghost" loading={isDismissing} onClick={dismiss}>
-            Not now
+          <Button variant="ghost" loading={isAcceptingDefault} onClick={acceptDefault}>
+            Use default location
           </Button>
           <Button variant="accent" disabled={!selectedLocation} loading={isSaving} onClick={save}>
             Save location
