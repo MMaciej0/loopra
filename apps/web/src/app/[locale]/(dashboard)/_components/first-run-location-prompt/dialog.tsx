@@ -22,30 +22,36 @@ export function FirstRunLocationDialog() {
   const [open, setOpen] = useState(true);
   const [isAcceptingDefault, startAcceptDefaultTransition] = useTransition();
   const [isSaving, startSaveTransition] = useTransition();
-  const [hasSaveError, setHasSaveError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [selectedLocation, setSelectedLocation] = useState<LocationSuggestion | null>(null);
   const comboboxPortalRef = useRef<HTMLDivElement>(null);
 
   const acceptDefault = () => {
     if (isAcceptingDefault || isSaving) return;
 
+    setErrorMessage(null);
     startAcceptDefaultTransition(async () => {
       const result = await acceptDefaultFavoriteLocation();
-      if (result.ok) setOpen(false);
+
+      if (result.ok) {
+        setOpen(false);
+      } else {
+        setErrorMessage('Could not use the default location. Try again.');
+      }
     });
   };
 
   const save = () => {
     if (!selectedLocation || isSaving) return;
 
-    setHasSaveError(false);
+    setErrorMessage(null);
     startSaveTransition(async () => {
       const result = await saveFavoriteLocation(selectedLocation);
 
       if (result.ok) {
         setOpen(false);
       } else {
-        setHasSaveError(true);
+        setErrorMessage('Could not save your location. Try again.');
       }
     });
   };
@@ -71,7 +77,7 @@ export function FirstRunLocationDialog() {
           <LocationPicker
             value={selectedLocation}
             onSelect={(location) => {
-              setHasSaveError(false);
+              setErrorMessage(null);
               setSelectedLocation(location);
             }}
             portalContainer={comboboxPortalRef}
@@ -79,9 +85,7 @@ export function FirstRunLocationDialog() {
 
           <SelectedLocationPreview location={selectedLocation} />
 
-          {hasSaveError && (
-            <p className="text-destructive text-xs">Could not save your location. Try again.</p>
-          )}
+          {errorMessage && <p className="text-destructive text-xs">{errorMessage}</p>}
         </div>
 
         <DialogFooter>

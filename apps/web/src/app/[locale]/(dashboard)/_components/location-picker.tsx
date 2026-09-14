@@ -31,7 +31,7 @@ export function LocationPicker({
 
   useEffect(() => {
     const query = inputValue.trim();
-    if (!query) return;
+    if (!query || query === selectedLocation?.label) return;
 
     const cacheKey = `${locale}:${query}`;
     const cached = cache.current.get(cacheKey);
@@ -69,7 +69,7 @@ export function LocationPicker({
       cancelled = true;
       window.clearTimeout(timeout);
     };
-  }, [inputValue, locale]);
+  }, [inputValue, locale, selectedLocation?.label]);
 
   const items =
     selectedLocation && !suggestions.some((item) => item.id === selectedLocation.id)
