@@ -9,6 +9,7 @@ export const UpdateUserBodySchema = z.object({
     })
     .optional(),
   favorite_city: z.string().trim().optional(),
+  favorite_district: z.string().trim().nullable().optional(),
   favorite_municipality: z.string().trim().nullable().optional(),
   favorite_region: z.string().trim().nullable().optional(),
   favorite_country: z.string().trim().optional(),

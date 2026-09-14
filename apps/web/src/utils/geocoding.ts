@@ -4,6 +4,7 @@ import type { Coords } from '@/app/[locale]/(dashboard)/rides/new/schema';
 
 export interface RideLocation {
   city: string;
+  district: string;
   country: string;
   region: string;
   municipality: string;
@@ -27,6 +28,7 @@ type Ctx = {
 
 const EMPTY: RideLocation = {
   city: '',
+  district: '',
   country: '',
   region: '',
   municipality: '',
@@ -54,6 +56,12 @@ const SETTLEMENT = ['city', 'town', 'village'];
 // settlement (city/town/village) is identified by `place_designation` rather
 // than a type prefix, because in many countries the `municipality.*` level is
 // an administrative commune (e.g. "gmina Charsznica"), not the place name.
+// The `country.*` entry is excluded from that scan: MapTiler designates India's
+// country entry a `town`, which otherwise resolves Bandra's city to "India".
+//
+// The district is positional: the picked feature's own name when it differs from
+// the settlement's. Neither id prefix nor place_designation identifies one —
+// both were tried and both are wrong in every direction.
 function featureToLocation(feature: GeocodingFeature): RideLocation {
   // feature itself may be a settlement (rural click) → include it; its
   // place_designation lives under .properties, context entries have it flat
@@ -67,22 +75,42 @@ function featureToLocation(feature: GeocodingFeature): RideLocation {
   const name = (h?: Ctx) => h?.text || '';
   const byPrefix = (prefix: string) => hierarchy.find((h) => h.id?.startsWith(`${prefix}.`));
   const settlement = () => {
+    const settlements = hierarchy.filter((h) => !h.id?.startsWith('country.'));
+
     for (const d of SETTLEMENT) {
-      const m = hierarchy.find((h) => h.place_designation === d);
+      const m = settlements.find((h) => h.place_designation === d);
       if (m) return m;
     }
     // fallback for features without a city/town/village designation
-    return byPrefix('locality') ?? byPrefix('municipal_district') ?? byPrefix('place');
+    return (
+      byPrefix('locality') ??
+      byPrefix('municipal_district') ??
+      byPrefix('place') ??
+      byPrefix('municipality')
+    );
   };
+
+  const city = name(settlement());
+  const picked = name(self);
 
   return {
     full_address: feature.place_name || '',
     country: name(byPrefix('country')),
     region: name(byPrefix('region')),
     municipality: name(byPrefix('municipality')),
-    city: name(settlement()),
+    city,
+    district: picked && picked !== city ? picked : '',
     postal_code: name(byPrefix('postal_code')),
   };
+}
+
+// The only thing that turns a favourite location into a display string.
+export function formatLocationLabel({
+  district,
+  city,
+  country,
+}: Pick<RideLocation, 'district' | 'city' | 'country'>): string {
+  return [district, city === district ? '' : city, country].filter(Boolean).join(', ');
 }
 
 // Reverse geocode picked coords → the location fields our ride form needs,
@@ -116,10 +144,14 @@ export async function forwardGeocode(
     limit: 5,
   });
 
-  return res.features.map((feature) => ({
-    id: feature.id,
-    label: feature.place_name || feature.text || '',
-    coords: { x: feature.center[0], y: feature.center[1] },
-    ...featureToLocation(feature),
-  }));
+  return res.features.map((feature) => {
+    const location = featureToLocation(feature);
+
+    return {
+      id: feature.id,
+      label: formatLocationLabel(location) || feature.place_name || feature.text || '',
+      coords: { x: feature.center[0], y: feature.center[1] },
+      ...location,
+    };
+  });
 }

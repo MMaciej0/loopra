@@ -21,7 +21,8 @@ export async function acceptDefaultFavoriteLocation() {
 export async function saveFavoriteLocation(location: LocationSuggestion) {
   const payload = {
     favorite_location: location.coords,
-    favorite_city: location.city || location.municipality,
+    favorite_city: location.city,
+    favorite_district: location.district || null,
     favorite_country: location.country,
     favorite_municipality: location.municipality || null,
     favorite_region: location.region || null,
