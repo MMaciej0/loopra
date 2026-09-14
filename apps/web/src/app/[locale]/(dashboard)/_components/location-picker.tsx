@@ -1,6 +1,6 @@
 'use client';
 
-import { Loader2 } from 'lucide-react';
+import { Loader2, MapPin } from 'lucide-react';
 import { useEffect, useRef, useState, type RefObject } from 'react';
 import { useLocale } from 'next-intl';
 import {
@@ -23,7 +23,7 @@ export function LocationPicker({
   portalContainer: RefObject<HTMLDivElement | null>;
 }) {
   const locale = useLocale();
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState(selectedLocation?.label ?? '');
   const [suggestions, setSuggestions] = useState<LocationSuggestion[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [hasError, setHasError] = useState(false);
@@ -147,5 +147,21 @@ export function LocationPicker({
         </ComboboxList>
       </ComboboxContent>
     </Combobox>
+  );
+}
+
+export function SelectedLocationPreview({ location }: { location: LocationSuggestion | null }) {
+  return (
+    <div className="border-border bg-muted/40 flex min-h-40 flex-col items-center justify-center rounded-xl border border-dashed p-5 text-center">
+      <span className="bg-secondary text-accent flex size-10 items-center justify-center rounded-full">
+        <MapPin className="size-5" />
+      </span>
+      <p className="mt-3 text-sm font-medium">{location?.label ?? 'Choose a location'}</p>
+      <p className="text-muted-foreground mt-1 text-xs">
+        {location
+          ? `${location.city || location.municipality}, ${location.country}`
+          : 'Search for a place to use as your favourite location.'}
+      </p>
+    </div>
   );
 }

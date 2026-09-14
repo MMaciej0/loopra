@@ -1,6 +1,5 @@
 'use client';
 
-import { MapPin } from 'lucide-react';
 import { useRef, useState, useTransition } from 'react';
 import { Button } from '@/components/ui/button';
 import {
@@ -13,8 +12,11 @@ import {
   DialogTitle,
 } from '@/components/ui/dialog';
 import type { LocationSuggestion } from '@/utils/geocoding';
-import { LocationPicker } from '../location-picker';
-import { acceptDefaultFavoriteLocation, saveFavoriteLocation } from './actions';
+import { LocationPicker, SelectedLocationPreview } from '../location-picker';
+import {
+  acceptDefaultFavoriteLocation,
+  saveFavoriteLocation,
+} from '../../_actions/favorite-location';
 
 export function FirstRunLocationDialog() {
   const [open, setOpen] = useState(true);
@@ -75,19 +77,7 @@ export function FirstRunLocationDialog() {
             portalContainer={comboboxPortalRef}
           />
 
-          <div className="border-border bg-muted/40 flex min-h-40 flex-col items-center justify-center rounded-xl border border-dashed p-5 text-center">
-            <span className="bg-secondary text-accent flex size-10 items-center justify-center rounded-full">
-              <MapPin className="size-5" />
-            </span>
-            <p className="mt-3 text-sm font-medium">
-              {selectedLocation?.label ?? 'Choose a location'}
-            </p>
-            <p className="text-muted-foreground mt-1 text-xs">
-              {selectedLocation
-                ? `${selectedLocation.city || selectedLocation.municipality}, ${selectedLocation.country}`
-                : 'Search for a place to use as your favourite location.'}
-            </p>
-          </div>
+          <SelectedLocationPreview location={selectedLocation} />
 
           {hasSaveError && (
             <p className="text-destructive text-xs">Could not save your location. Try again.</p>
