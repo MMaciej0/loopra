@@ -61,8 +61,7 @@ export function FavoriteLocationPillDialog({ storedLocation }: Props) {
       <DialogTrigger asChild>
         <Button
           variant="outline"
-          size="sm"
-          className="rounded-full"
+          className="h-10 py-0"
           aria-label={t('pill.triggerLabel', { location: storedLocation.label })}
         >
           <MapPin />
