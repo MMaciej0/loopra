@@ -58,10 +58,8 @@ const SETTLEMENT = ['city', 'town', 'village'];
 // an administrative commune (e.g. "gmina Charsznica"), not the place name.
 // The `country.*` entry is excluded from that scan: MapTiler designates India's
 // country entry a `town`, which otherwise resolves Bandra's city to "India".
-//
-// The district is positional: the picked feature's own name when it differs from
-// the settlement's. Neither id prefix nor place_designation identifies one —
-// both were tried and both are wrong in every direction.
+// The district is positional: the picked feature's own name when it differs
+// from the settlement's. Neither id prefix nor place_designation identifies one.
 function featureToLocation(feature: GeocodingFeature): RideLocation {
   // feature itself may be a settlement (rural click) → include it; its
   // place_designation lives under .properties, context entries have it flat
@@ -104,7 +102,6 @@ function featureToLocation(feature: GeocodingFeature): RideLocation {
   };
 }
 
-// The only thing that turns a favourite location into a display string.
 export function formatLocationLabel({
   district,
   city,
