@@ -17,6 +17,7 @@ export const CurrentUserSchema = Type.Object(
     favorite_region: Nullable(Type.String()),
     favorite_country: Nullable(Type.String()),
     favorite_postal_code: Nullable(Type.String()),
+    favorite_location_chosen: Type.Boolean(),
     location_prompt_dismissed_at: Nullable(Type.String({ format: 'date-time' })),
   },
   { additionalProperties: false },

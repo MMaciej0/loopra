@@ -67,6 +67,7 @@ describe('GET /users/me', () => {
         'favorite_municipality',
         'favorite_postal_code',
         'favorite_region',
+        'favorite_location_chosen',
         'id',
         'location_prompt_dismissed_at',
         'username',
@@ -123,6 +124,39 @@ describe('GET /users/me', () => {
     });
   });
 
+  it('records the choice when a favourite location is patched, without the client sending it', async () => {
+    const response = await appRef.app.inject({
+      method: 'PATCH',
+      url: '/users/me',
+      cookies: { accessToken: auth.accessToken },
+      payload: {
+        favorite_location: { x: 21.017532, y: 52.237049 },
+        favorite_city: 'Warsaw',
+        favorite_country: 'Poland',
+      },
+    });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.json().updatedUser.favorite_location_chosen).toBe(true);
+  });
+
+  it('records the choice on its own, leaving the rider coordinates untouched', async () => {
+    const response = await appRef.app.inject({
+      method: 'PATCH',
+      url: '/users/me',
+      cookies: { accessToken: auth.accessToken },
+      payload: { favorite_location_chosen: true },
+    });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.json().updatedUser).toMatchObject({
+      favorite_location_chosen: true,
+      favorite_location: DEFAULT_FAVORITE_LOCATION.favorite_location,
+      favorite_city: 'Kraków',
+      favorite_country: 'Poland',
+    });
+  });
+
   it('dismisses the favourite location prompt', async () => {
     const response = await appRef.app.inject({
       method: 'PATCH',
@@ -150,6 +184,7 @@ describe('GET /users/me', () => {
       favorite_municipality: null,
       favorite_region: null,
       favorite_postal_code: null,
+      favorite_location_chosen: false,
       location_prompt_dismissed_at: null,
     });
   });

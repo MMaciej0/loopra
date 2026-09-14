@@ -10,6 +10,7 @@ export const updateUser = async (db: Db, userId: string, body: UpdateUserBody) =
     .update(users)
     .set({
       ...updates,
+      ...(updates.favorite_location ? { favorite_location_chosen: true } : {}),
       ...(dismiss_location_prompt ? { location_prompt_dismissed_at: new Date() } : {}),
     })
     .where(eq(users.id, userId))
