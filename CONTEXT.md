@@ -74,5 +74,9 @@ _Avoid_: User — reserve for the auth/account record, not the person in cycling
 A named set of riders who ride together and can publish rides collectively. The word is deliberately unresolved until this is built; note that "group" already means the riders on a single ride (see Pace Policy `group_split`).
 _Avoid_: Team
 
+**Favourite Location**:
+Where a rider usually rides from: coordinates plus the resolved place. Every rider has one from the moment their account exists — new accounts are seeded with Kraków city centre — and it is the origin point for Nearby. Distinct from Start Point, which belongs to a single ride.
+_Avoid_: Home, base, hometown
+
 **Nearby**:
 Within a rider's chosen radius of a point, measured geographically rather than by administrative area.
