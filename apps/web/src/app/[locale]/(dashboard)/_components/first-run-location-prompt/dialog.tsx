@@ -16,7 +16,7 @@ import type { LocationSuggestion } from '@/utils/geocoding';
 import { LocationPicker } from '../location-picker';
 import { acceptDefaultFavoriteLocation, saveFavoriteLocation } from './actions';
 
-export function FavoriteLocationDialog() {
+export function FirstRunLocationDialog() {
   const [open, setOpen] = useState(true);
   const [isAcceptingDefault, startAcceptDefaultTransition] = useTransition();
   const [isSaving, startSaveTransition] = useTransition();
@@ -49,13 +49,19 @@ export function FavoriteLocationDialog() {
   };
 
   return (
-    <Dialog open={open} onOpenChange={(nextOpen) => !nextOpen && acceptDefault()}>
-      <DialogContent className="gap-5 p-5 sm:max-w-md">
+    <Dialog open={open}>
+      <DialogContent
+        className="gap-5 p-5 sm:max-w-md"
+        showCloseButton={false}
+        onEscapeKeyDown={(event) => event.preventDefault()}
+        onInteractOutside={(event) => event.preventDefault()}
+      >
         <DialogHeader className="gap-2">
           <DialogSubheader>Make Loopra yours</DialogSubheader>
           <DialogTitle>Where do you usually ride?</DialogTitle>
           <DialogDescription>
-            Set a favourite location to find rides and cyclists near you.
+            Until you pick your own, Loopra uses Kraków city centre to find rides and cyclists near
+            you.
           </DialogDescription>
         </DialogHeader>
 
