@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { eq } from 'drizzle-orm';
+import { DEFAULT_FAVORITE_LOCATION } from '@loopra/domain';
 import { useApp } from '../../helpers/app.js';
 import { useAuthenticatedUser } from '../../helpers/auth.js';
 import { users } from '../../../src/db/schema.js';
@@ -134,7 +135,7 @@ describe('GET /users/me', () => {
     expect(response.json().updatedUser.location_prompt_dismissed_at).toEqual(expect.any(String));
   });
 
-  it('returns null favourite location fields for a user who has not set one', async () => {
+  it('returns the seeded default favourite location for a freshly registered rider', async () => {
     const response = await appRef.app.inject({
       method: 'GET',
       url: '/users/me',
@@ -143,11 +144,11 @@ describe('GET /users/me', () => {
 
     expect(response.statusCode).toBe(200);
     expect(response.json().user).toMatchObject({
-      favorite_location: null,
-      favorite_city: null,
+      favorite_location: DEFAULT_FAVORITE_LOCATION.favorite_location,
+      favorite_city: 'Kraków',
+      favorite_country: 'Poland',
       favorite_municipality: null,
       favorite_region: null,
-      favorite_country: null,
       favorite_postal_code: null,
       location_prompt_dismissed_at: null,
     });
