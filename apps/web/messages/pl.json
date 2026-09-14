@@ -16,6 +16,7 @@
   "FavoriteLocation": {
     "title": "Gdzie zwykle jeździsz?",
     "save": "Zapisz lokalizację",
+    "cancel": "Anuluj",
     "saveError": "Nie udało się zapisać lokalizacji. Spróbuj ponownie.",
     "pill": {
       "eyebrow": "Ulubiona lokalizacja",

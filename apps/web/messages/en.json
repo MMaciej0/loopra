@@ -16,6 +16,7 @@
   "FavoriteLocation": {
     "title": "Where do you usually ride?",
     "save": "Save location",
+    "cancel": "Cancel",
     "saveError": "Could not save your location. Try again.",
     "pill": {
       "eyebrow": "Favourite location",
