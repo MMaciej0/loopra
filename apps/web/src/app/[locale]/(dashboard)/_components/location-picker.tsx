@@ -143,9 +143,9 @@ export function LocationPicker({
             >
               <span className="min-w-0">
                 <span className="block truncate">{location.label}</span>
-                {(location.city || location.country) && (
+                {location.region && location.region !== location.city && (
                   <span className="text-muted-foreground block truncate text-xs">
-                    {[location.city, location.country].filter(Boolean).join(', ')}
+                    {location.region}
                   </span>
                 )}
               </span>
@@ -164,11 +164,11 @@ export function SelectedLocationPreview({ location }: { location: LocationSugges
         <MapPin className="size-5" />
       </span>
       <p className="mt-3 text-sm font-medium">{location?.label ?? 'Choose a location'}</p>
-      <p className="text-muted-foreground mt-1 text-xs">
-        {location
-          ? `${location.city || location.municipality}, ${location.country}`
-          : 'Search for a place to use as your favourite location.'}
-      </p>
+      {!location && (
+        <p className="text-muted-foreground mt-1 text-xs">
+          Search for a place to use as your favourite location.
+        </p>
+      )}
     </div>
   );
 }

@@ -75,8 +75,12 @@ A named set of riders who ride together and can publish rides collectively. The 
 _Avoid_: Team
 
 **Favourite Location**:
-Where a rider usually rides from: coordinates plus the resolved place. Every rider has one from the moment their account exists — new accounts are seeded with Kraków city centre — and it is the origin point for Nearby. Distinct from Start Point, which belongs to a single ride.
+Where a rider usually rides from: coordinates plus the resolved place. Every rider has one from the moment their account exists — new accounts are seeded with Nowa Huta, Kraków — and it is the origin point for Nearby. Distinct from Start Point, which belongs to a single ride.
 _Avoid_: Home, base, hometown
+
+**District**:
+The named part of a city a rider rides out of, when the place they chose is smaller than the city that contains it. Optional — rural and whole-town locations have none. A Favourite Location is named `District, City, Country`, collapsing to `City, Country` without one.
+_Avoid_: Neighbourhood, quarter, suburb, borough — all provider designations for the same thing
 
 **Nearby**:
 Within a rider's chosen radius of a point, measured geographically rather than by administrative area.

@@ -57,10 +57,16 @@ export function FavoriteLocationPillDialog({ storedLocation }: Props) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
-        <Button variant="outline" size="sm" className="rounded-full max-sm:size-9 max-sm:p-0">
+        <Button
+          variant="outline"
+          size="sm"
+          className="rounded-full max-sm:size-9 max-sm:p-0"
+          aria-label={`${storedLocation.label} — change your favourite location`}
+        >
           <MapPin />
-          <span className="sr-only sm:not-sr-only">{storedLocation.label}</span>
-          <span className="sr-only">— change your favourite location</span>
+          <span aria-hidden className="hidden max-w-48 truncate sm:inline">
+            {storedLocation.label}
+          </span>
         </Button>
       </DialogTrigger>
 

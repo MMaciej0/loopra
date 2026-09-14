@@ -14,6 +14,7 @@ export const CurrentUserSchema = Type.Object(
       { additionalProperties: false },
     ),
     favorite_city: Type.String(),
+    favorite_district: Nullable(Type.String()),
     favorite_municipality: Nullable(Type.String()),
     favorite_region: Nullable(Type.String()),
     favorite_country: Type.String(),

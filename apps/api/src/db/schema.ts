@@ -40,6 +40,7 @@ export const users = pgTable('users', {
   email_verified_at: timestamp({ withTimezone: true }),
   favorite_location: geometry({ type: 'point', mode: 'xy', srid: 4326 }).notNull(),
   favorite_city: text().notNull(),
+  favorite_district: text(),
   favorite_municipality: text(),
   favorite_region: text(),
   favorite_country: text().notNull(),
