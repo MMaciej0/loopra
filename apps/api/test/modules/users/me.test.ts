@@ -201,7 +201,7 @@ describe('GET /users/me', () => {
       favorite_location: DEFAULT_FAVORITE_LOCATION.favorite_location,
       favorite_city: 'Kraków',
       favorite_country: 'Poland',
-      favorite_district: DEFAULT_FAVORITE_LOCATION.favorite_district,
+      favorite_district: 'Nowa Huta',
       favorite_municipality: null,
       favorite_region: null,
       favorite_postal_code: null,
