@@ -96,7 +96,7 @@ export function FavoriteLocationPillDialog({ storedLocation }: Props) {
           </div>
         </div>
 
-        <DialogFooter showCancel>
+        <DialogFooter showCancel cancelLabel={t('cancel')}>
           <Button
             variant="accent"
             disabled={!selectedLocation || selectedLocation.id === storedLocation.id}
