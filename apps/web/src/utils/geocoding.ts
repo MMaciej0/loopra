@@ -80,12 +80,7 @@ function featureToLocation(feature: GeocodingFeature): RideLocation {
       if (m) return m;
     }
     // fallback for features without a city/town/village designation
-    return (
-      byPrefix('locality') ??
-      byPrefix('municipal_district') ??
-      byPrefix('place') ??
-      byPrefix('municipality')
-    );
+    return byPrefix('locality') ?? byPrefix('municipal_district') ?? byPrefix('place');
   };
 
   const city = name(settlement());
@@ -97,7 +92,7 @@ function featureToLocation(feature: GeocodingFeature): RideLocation {
     region: name(byPrefix('region')),
     municipality: name(byPrefix('municipality')),
     city,
-    district: picked && picked !== city ? picked : '',
+    district: picked && city && picked !== city ? picked : '',
     postal_code: name(byPrefix('postal_code')),
   };
 }
@@ -146,7 +141,9 @@ export async function forwardGeocode(
 
     return {
       id: feature.id,
-      label: formatLocationLabel(location) || feature.place_name || feature.text || '',
+      label: location.city
+        ? formatLocationLabel(location)
+        : feature.place_name || feature.text || '',
       coords: { x: feature.center[0], y: feature.center[1] },
       ...location,
     };
