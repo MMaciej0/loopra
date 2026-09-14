@@ -1,17 +1,10 @@
-import { protectedRequest } from '@/utils/api';
-import type { GetCurrentUserResponse } from '@loopra/domain';
+import { getCurrentUser } from '@/utils/user';
 import { FirstRunLocationDialog } from './dialog';
 
 export async function FirstRunLocationPrompt() {
-  const response = await protectedRequest<GetCurrentUserResponse>('/users/me');
+  const user = await getCurrentUser();
 
-  if (!response.ok) {
-    return null;
-  }
-
-  const { user } = response.data;
-
-  if (user.favorite_location_chosen) {
+  if (!user || user.favorite_location_chosen) {
     return null;
   }
 
