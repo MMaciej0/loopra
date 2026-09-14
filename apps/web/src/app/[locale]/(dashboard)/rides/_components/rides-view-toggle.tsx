@@ -17,7 +17,7 @@ export async function RidesViewToggle({ view }: { view: RidesView }) {
     <div
       role="group"
       aria-label={t('viewToggleLabel')}
-      className="flex shrink-0 items-center gap-1.5"
+      className="border-border bg-secondary flex h-10 shrink-0 items-center gap-0.5 rounded-xl border p-1"
     >
       {RIDES_VIEWS.map((candidate) => {
         const { icon: Icon, labelKey } = VIEW_OPTIONS[candidate];
@@ -27,9 +27,10 @@ export async function RidesViewToggle({ view }: { view: RidesView }) {
           <Button
             key={candidate}
             asChild
-            variant="chip"
+            variant={isActive ? 'accent' : 'ghost'}
             className={cn(
-              isActive && 'bg-accent/10 text-foreground border-accent hover:border-accent',
+              'h-8 rounded-lg px-3 py-0',
+              !isActive && 'text-muted-foreground hover:text-foreground hover:bg-transparent',
             )}
           >
             <Link
@@ -37,7 +38,7 @@ export async function RidesViewToggle({ view }: { view: RidesView }) {
               replace
               aria-current={isActive ? 'page' : undefined}
             >
-              <Icon className="size-3.5" />
+              <Icon />
               {t(labelKey)}
             </Link>
           </Button>
