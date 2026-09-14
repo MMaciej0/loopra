@@ -31,7 +31,10 @@ export function FavoriteLocationPillDialog({ storedLocation }: Props) {
   const onOpenChange = (nextOpen: boolean) => {
     if (isSaving) return;
 
-    if (!nextOpen) {
+    // resync on open, not on close: a save leaves the selection holding a real
+    // geocoder result while storedLocation becomes the synthesized one, and
+    // comparing those two ids would leave Save enabled on an unchanged place
+    if (nextOpen) {
       setSelectedLocation(storedLocation);
       setHasSaveError(false);
     }
