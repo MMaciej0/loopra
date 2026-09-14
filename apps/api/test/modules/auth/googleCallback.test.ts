@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { DEFAULT_FAVORITE_LOCATION } from '@loopra/domain';
 import { useApp } from '../../helpers/app.js';
 import { oauth_accounts, users } from '../../../src/db/schema.js';
 import { eq } from 'drizzle-orm';
@@ -113,6 +114,24 @@ describe('GET /auth/google/callback', () => {
 
       expect(user).toBeDefined();
       expect(user.password_hash).toBeNull();
+    });
+
+    it('seeds the default favourite location with the choice not yet made', async () => {
+      await appRef.app.inject({
+        method: 'GET',
+        url: '/auth/google/callback',
+      });
+
+      const [user] = await appRef.app.db
+        .select()
+        .from(users)
+        .where(eq(users.email, EMAIL))
+        .limit(1);
+
+      expect(user.favorite_location).toEqual(DEFAULT_FAVORITE_LOCATION.favorite_location);
+      expect(user.favorite_city).toBe('Kraków');
+      expect(user.favorite_country).toBe('Poland');
+      expect(user.favorite_location_chosen).toBe(false);
     });
 
     it('creates oauth account linked to new user', async () => {

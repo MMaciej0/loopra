@@ -44,6 +44,7 @@ export const users = pgTable('users', {
   favorite_region: text(),
   favorite_country: text(),
   favorite_postal_code: text(),
+  favorite_location_chosen: boolean().notNull().default(false),
   location_prompt_dismissed_at: timestamp({ withTimezone: true }),
 });
 

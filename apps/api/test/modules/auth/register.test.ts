@@ -1,5 +1,8 @@
 import { describe, it, expect, beforeEach } from 'vitest';
+import { eq } from 'drizzle-orm';
+import { DEFAULT_FAVORITE_LOCATION } from '@loopra/domain';
 import { useApp } from '../../helpers/app.js';
+import { users } from '../../../src/db/schema.js';
 
 describe('POST /auth/register', () => {
   const appRef = useApp();
@@ -30,6 +33,25 @@ describe('POST /auth/register', () => {
     expect(refreshToken?.httpOnly).toBe(true);
     expect(refreshToken?.path).toBe('/');
     expect(refreshToken?.value).toMatch(/^[0-9a-f-]{36}\.[0-9a-f]{64}$/); // {familyUuid}.{rawToken}
+  });
+
+  it('seeds the default favourite location with the choice not yet made', async () => {
+    await appRef.app.inject({
+      method: 'POST',
+      url: '/auth/register',
+      body: { email: 'test@example.com', password: 'password123', username: 'test' },
+    });
+
+    const [user] = await appRef.app.db
+      .select()
+      .from(users)
+      .where(eq(users.email, 'test@example.com'))
+      .limit(1);
+
+    expect(user.favorite_location).toEqual(DEFAULT_FAVORITE_LOCATION.favorite_location);
+    expect(user.favorite_city).toBe('Kraków');
+    expect(user.favorite_country).toBe('Poland');
+    expect(user.favorite_location_chosen).toBe(false);
   });
 
   it('returns 409 when email already exists', async () => {

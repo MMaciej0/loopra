@@ -1,5 +1,6 @@
 import { and, eq } from 'drizzle-orm';
 import type { FastifyInstance } from 'fastify';
+import { DEFAULT_FAVORITE_LOCATION } from '@loopra/domain';
 import { oauth_accounts, users } from '../../../db/schema.js';
 import { createTokenFamily } from './tokenFamily.js';
 
@@ -68,7 +69,13 @@ export const findOrCreateOAuthUser = async ({
   // Case 3 — brand new user: Google already verified the email
   const [newUser] = await fastify.db
     .insert(users)
-    .values({ email, password_hash: null, email_verified: true, email_verified_at: new Date() })
+    .values({
+      email,
+      password_hash: null,
+      email_verified: true,
+      email_verified_at: new Date(),
+      ...DEFAULT_FAVORITE_LOCATION,
+    })
     .returning();
 
   await fastify.db.insert(oauth_accounts).values({
