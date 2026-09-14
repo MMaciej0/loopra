@@ -4,6 +4,40 @@
     "routes": "Routes",
     "createRide": "Create ride"
   },
+  "RidesPage": {
+    "searchLabel": "Search rides",
+    "searchPlaceholder": "Search rides, places, riders…",
+    "viewToggleLabel": "Rides view",
+    "viewMap": "Map",
+    "viewList": "List",
+    "mapPane": "Map view",
+    "listPane": "List view"
+  },
+  "FavoriteLocation": {
+    "title": "Where do you usually ride?",
+    "save": "Save location",
+    "saveError": "Could not save your location. Try again.",
+    "pill": {
+      "eyebrow": "Favourite location",
+      "description": "Loopra looks for rides and cyclists near this place.",
+      "triggerLabel": "{location} — change your favourite location"
+    },
+    "firstRun": {
+      "eyebrow": "Make Loopra yours",
+      "description": "Pick the area you ride in — roughly is fine, no address needed. Loopra centres your map there and finds rides and riders near you. Skip it and you'll start in Nowa Huta, Kraków, Poland — where Loopra was born.",
+      "useDefault": "Use default location",
+      "defaultError": "Could not use the default location. Try again."
+    },
+    "picker": {
+      "searchLabel": "Search for a city or area",
+      "searching": "Searching locations…",
+      "loadError": "Could not load locations. Try again.",
+      "noResults": "No locations found.",
+      "startTyping": "Start typing to search for a location.",
+      "emptyPreviewTitle": "Choose a location",
+      "emptyPreviewHint": "Search for a place to use as your favourite location."
+    }
+  },
   "CreateRide": {
     "previewLabel": "LIVE PREVIEW",
     "previewHint": "How riders see it",
