@@ -10,7 +10,7 @@
     "viewToggleLabel": "Widok jazd",
     "viewMap": "Mapa",
     "viewList": "Lista",
-    "mapPane": "Widok mapy",
+    "mapLabel": "Mapa jazd w pobliżu {location}",
     "listPane": "Widok listy"
   },
   "FavoriteLocation": {
