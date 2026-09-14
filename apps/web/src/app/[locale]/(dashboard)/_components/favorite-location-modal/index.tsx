@@ -11,7 +11,7 @@ export async function FavoriteLocationModal() {
 
   const { user } = response.data;
 
-  if (user.location_prompt_dismissed_at || user.favorite_location) {
+  if (user.favorite_location_chosen) {
     return null;
   }
 

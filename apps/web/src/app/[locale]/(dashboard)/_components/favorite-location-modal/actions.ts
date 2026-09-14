@@ -4,10 +4,10 @@ import { refresh } from 'next/cache';
 import { protectedRequest } from '@/utils/api';
 import type { LocationSuggestion } from '@/utils/geocoding';
 
-export async function dismissFavoriteLocationPrompt() {
+export async function acceptDefaultFavoriteLocation() {
   const response = await protectedRequest('/users/me', {
     method: 'PATCH',
-    body: JSON.stringify({ dismiss_location_prompt: true }),
+    body: JSON.stringify({ favorite_location_chosen: true }),
   });
 
   if (!response.ok) {
