@@ -9,10 +9,10 @@ export const UpdateUserBodySchema = z.object({
     })
     .optional(),
   favorite_city: z.string().trim().optional(),
-  favorite_municipality: z.string().trim().optional(),
-  favorite_region: z.string().trim().optional(),
+  favorite_municipality: z.string().trim().nullable().optional(),
+  favorite_region: z.string().trim().nullable().optional(),
   favorite_country: z.string().trim().optional(),
-  favorite_postal_code: z.string().trim().optional(),
+  favorite_postal_code: z.string().trim().nullable().optional(),
   favorite_location_chosen: z.literal(true).optional(),
 });
 

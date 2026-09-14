@@ -19,19 +19,14 @@ export async function acceptDefaultFavoriteLocation() {
 }
 
 export async function saveFavoriteLocation(location: LocationSuggestion) {
-  const payload: Record<string, unknown> = { favorite_location: location.coords };
-
-  const fields = {
-    favorite_city: location.city,
-    favorite_municipality: location.municipality,
-    favorite_region: location.region,
+  const payload = {
+    favorite_location: location.coords,
+    favorite_city: location.city || location.municipality,
     favorite_country: location.country,
-    favorite_postal_code: location.postal_code,
+    favorite_municipality: location.municipality || null,
+    favorite_region: location.region || null,
+    favorite_postal_code: location.postal_code || null,
   };
-
-  for (const [key, value] of Object.entries(fields)) {
-    if (value) payload[key] = value;
-  }
 
   const response = await protectedRequest('/users/me', {
     method: 'PATCH',
