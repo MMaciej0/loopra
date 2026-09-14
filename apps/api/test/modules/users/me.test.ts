@@ -138,6 +138,39 @@ describe('GET /users/me', () => {
     expect(response.json().updatedUser.favorite_location_chosen).toBe(true);
   });
 
+  it('clears the optional place names a new location does not carry', async () => {
+    await appRef.app.db
+      .update(users)
+      .set({
+        favorite_municipality: 'Kraków',
+        favorite_region: 'Lesser Poland Voivodeship',
+        favorite_postal_code: '31-234',
+      })
+      .where(eq(users.id, auth.userId));
+
+    const response = await appRef.app.inject({
+      method: 'PATCH',
+      url: '/users/me',
+      cookies: { accessToken: auth.accessToken },
+      payload: {
+        favorite_location: { x: 21.017532, y: 52.237049 },
+        favorite_city: 'Warsaw',
+        favorite_country: 'Poland',
+        favorite_municipality: null,
+        favorite_region: null,
+        favorite_postal_code: null,
+      },
+    });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.json().updatedUser).toMatchObject({
+      favorite_city: 'Warsaw',
+      favorite_municipality: null,
+      favorite_region: null,
+      favorite_postal_code: null,
+    });
+  });
+
   it('records the choice on its own, leaving the rider coordinates untouched', async () => {
     const response = await appRef.app.inject({
       method: 'PATCH',
