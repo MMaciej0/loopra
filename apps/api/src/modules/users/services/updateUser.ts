@@ -5,13 +5,11 @@ import { UpdateUserBody } from '../schema.js';
 import { UserNotFoundError } from '../errors.js';
 
 export const updateUser = async (db: Db, userId: string, body: UpdateUserBody) => {
-  const { dismiss_location_prompt, ...updates } = body;
   const [updatedUser] = await db
     .update(users)
     .set({
-      ...updates,
-      ...(updates.favorite_location ? { favorite_location_chosen: true } : {}),
-      ...(dismiss_location_prompt ? { location_prompt_dismissed_at: new Date() } : {}),
+      ...body,
+      ...(body.favorite_location ? { favorite_location_chosen: true } : {}),
     })
     .where(eq(users.id, userId))
     .returning();

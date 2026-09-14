@@ -14,7 +14,6 @@ export const UpdateUserBodySchema = z.object({
   favorite_country: z.string().trim().optional(),
   favorite_postal_code: z.string().trim().optional(),
   favorite_location_chosen: z.literal(true).optional(),
-  dismiss_location_prompt: z.literal(true).optional(),
 });
 
 export type UpdateUserBody = z.infer<typeof UpdateUserBodySchema>;
