@@ -4,6 +4,40 @@
     "routes": "Trasy",
     "createRide": "Utwórz jazdę"
   },
+  "RidesPage": {
+    "searchLabel": "Szukaj jazd",
+    "searchPlaceholder": "Szukaj jazd, miejsc, rowerzystów…",
+    "viewToggleLabel": "Widok jazd",
+    "viewMap": "Mapa",
+    "viewList": "Lista",
+    "mapPane": "Widok mapy",
+    "listPane": "Widok listy"
+  },
+  "FavoriteLocation": {
+    "title": "Gdzie zwykle jeździsz?",
+    "save": "Zapisz lokalizację",
+    "saveError": "Nie udało się zapisać lokalizacji. Spróbuj ponownie.",
+    "pill": {
+      "eyebrow": "Ulubiona lokalizacja",
+      "description": "Loopra szuka jazd i rowerzystów w pobliżu tego miejsca.",
+      "triggerLabel": "{location} — zmień ulubioną lokalizację"
+    },
+    "firstRun": {
+      "eyebrow": "Dostosuj Looprę do siebie",
+      "description": "Wybierz okolicę, w której jeździsz — wystarczy z grubsza, dokładny adres nie jest potrzebny. Loopra wyśrodkuje tam Twoją mapę i znajdzie jazdy oraz rowerzystów w pobliżu. Pomiń ten krok, a zaczniesz w Nowej Hucie w Krakowie — tam, gdzie narodziła się Loopra.",
+      "useDefault": "Użyj domyślnej lokalizacji",
+      "defaultError": "Nie udało się użyć domyślnej lokalizacji. Spróbuj ponownie."
+    },
+    "picker": {
+      "searchLabel": "Szukaj miasta lub okolicy",
+      "searching": "Szukam lokalizacji…",
+      "loadError": "Nie udało się wczytać lokalizacji. Spróbuj ponownie.",
+      "noResults": "Nie znaleziono lokalizacji.",
+      "startTyping": "Zacznij pisać, aby wyszukać lokalizację.",
+      "emptyPreviewTitle": "Wybierz lokalizację",
+      "emptyPreviewHint": "Wyszukaj miejsce, które chcesz ustawić jako ulubioną lokalizację."
+    }
+  },
   "CreateRide": {
     "previewLabel": "PODGLĄD NA ŻYWO",
     "previewHint": "Tak widzą to inni",

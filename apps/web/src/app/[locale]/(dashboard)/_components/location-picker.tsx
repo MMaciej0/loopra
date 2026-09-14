@@ -2,7 +2,7 @@
 
 import { Loader2, MapPin } from 'lucide-react';
 import { useEffect, useRef, useState, type RefObject } from 'react';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import {
   Combobox,
   ComboboxContent,
@@ -22,6 +22,7 @@ export function LocationPicker({
   onSelect: (location: LocationSuggestion | null) => void;
   portalContainer: RefObject<HTMLDivElement | null>;
 }) {
+  const t = useTranslations('FavoriteLocation');
   const locale = useLocale();
   const [inputValue, setInputValue] = useState(selectedLocation?.label ?? '');
   const [suggestions, setSuggestions] = useState<LocationSuggestion[]>([]);
@@ -111,8 +112,8 @@ export function LocationPicker({
     >
       <div ref={anchorRef}>
         <ComboboxInput
-          aria-label="Search for a city or area"
-          placeholder="Search for a city or area"
+          aria-label={t('picker.searchLabel')}
+          placeholder={t('picker.searchLabel')}
           showTrigger={false}
         />
       </div>
@@ -124,14 +125,14 @@ export function LocationPicker({
         <ComboboxEmpty>
           {isSearching ? (
             <span className="flex items-center gap-2">
-              <Loader2 className="size-3.5 animate-spin" /> Searching locations...
+              <Loader2 className="size-3.5 animate-spin" /> {t('picker.searching')}
             </span>
           ) : hasError ? (
-            'Could not load locations. Try again.'
+            t('picker.loadError')
           ) : inputValue.trim() ? (
-            'No locations found.'
+            t('picker.noResults')
           ) : (
-            'Start typing to search for a location.'
+            t('picker.startTyping')
           )}
         </ComboboxEmpty>
         <ComboboxList>
@@ -158,16 +159,16 @@ export function LocationPicker({
 }
 
 export function SelectedLocationPreview({ location }: { location: LocationSuggestion | null }) {
+  const t = useTranslations('FavoriteLocation');
+
   return (
     <div className="border-border bg-muted/40 flex min-h-40 flex-col items-center justify-center rounded-xl border border-dashed p-5 text-center">
       <span className="bg-secondary text-accent flex size-10 items-center justify-center rounded-full">
         <MapPin className="size-5" />
       </span>
-      <p className="mt-3 text-sm font-medium">{location?.label ?? 'Choose a location'}</p>
+      <p className="mt-3 text-sm font-medium">{location?.label ?? t('picker.emptyPreviewTitle')}</p>
       {!location && (
-        <p className="text-muted-foreground mt-1 text-xs">
-          Search for a place to use as your favourite location.
-        </p>
+        <p className="text-muted-foreground mt-1 text-xs">{t('picker.emptyPreviewHint')}</p>
       )}
     </div>
   );

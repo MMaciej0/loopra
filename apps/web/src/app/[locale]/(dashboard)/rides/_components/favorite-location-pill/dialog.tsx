@@ -2,6 +2,7 @@
 
 import { MapPin } from 'lucide-react';
 import { useRef, useState, useTransition } from 'react';
+import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -14,12 +15,13 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import type { LocationSuggestion } from '@/utils/geocoding';
-import { LocationPicker, SelectedLocationPreview } from '../location-picker';
-import { saveFavoriteLocation } from '../../_actions/favorite-location';
+import { LocationPicker, SelectedLocationPreview } from '../../../_components/location-picker';
+import { saveFavoriteLocation } from '../../../_actions/favorite-location';
 
 type Props = Readonly<{ storedLocation: LocationSuggestion }>;
 
 export function FavoriteLocationPillDialog({ storedLocation }: Props) {
+  const t = useTranslations('FavoriteLocation');
   const [open, setOpen] = useState(false);
   const [isSaving, startSaveTransition] = useTransition();
   const [hasSaveError, setHasSaveError] = useState(false);
@@ -60,11 +62,11 @@ export function FavoriteLocationPillDialog({ storedLocation }: Props) {
         <Button
           variant="outline"
           size="sm"
-          className="rounded-full max-sm:size-9 max-sm:p-0"
-          aria-label={`${storedLocation.label} — change your favourite location`}
+          className="rounded-full"
+          aria-label={t('pill.triggerLabel', { location: storedLocation.label })}
         >
           <MapPin />
-          <span aria-hidden className="hidden max-w-48 truncate sm:inline">
+          <span aria-hidden className="max-w-48 truncate">
             {storedLocation.label}
           </span>
         </Button>
@@ -72,11 +74,9 @@ export function FavoriteLocationPillDialog({ storedLocation }: Props) {
 
       <DialogContent className="gap-5 p-5 sm:max-w-md">
         <DialogHeader className="gap-2">
-          <DialogSubheader>Favourite location</DialogSubheader>
-          <DialogTitle>Where do you usually ride?</DialogTitle>
-          <DialogDescription>
-            Loopra looks for rides and cyclists near this place.
-          </DialogDescription>
+          <DialogSubheader>{t('pill.eyebrow')}</DialogSubheader>
+          <DialogTitle>{t('title')}</DialogTitle>
+          <DialogDescription>{t('pill.description')}</DialogDescription>
         </DialogHeader>
 
         <div ref={comboboxPortalRef}>
@@ -92,9 +92,7 @@ export function FavoriteLocationPillDialog({ storedLocation }: Props) {
 
             <SelectedLocationPreview location={selectedLocation} />
 
-            {hasSaveError && (
-              <p className="text-destructive text-xs">Could not save your location. Try again.</p>
-            )}
+            {hasSaveError && <p className="text-destructive text-xs">{t('saveError')}</p>}
           </div>
         </div>
 
@@ -105,7 +103,7 @@ export function FavoriteLocationPillDialog({ storedLocation }: Props) {
             loading={isSaving}
             onClick={save}
           >
-            Save location
+            {t('save')}
           </Button>
         </DialogFooter>
       </DialogContent>
