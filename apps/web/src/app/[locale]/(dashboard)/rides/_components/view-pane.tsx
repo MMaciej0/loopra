@@ -1,26 +1,19 @@
 import { getTranslations } from 'next-intl/server';
 import { Text } from '@/components/ui/text';
-import { cn } from '@/lib/utils';
+import { RidesMapPane } from './rides-map';
 import type { RidesView } from '../view';
 
-const PANE_OPTIONS = {
-  map: { overflow: 'overflow-hidden', labelKey: 'mapPane' },
-  list: { overflow: 'overflow-y-auto', labelKey: 'listPane' },
-} as const;
-
 export async function ViewPane({ view }: { view: RidesView }) {
+  if (view === 'map') {
+    return <RidesMapPane />;
+  }
+
   const t = await getTranslations('RidesPage');
-  const { overflow, labelKey } = PANE_OPTIONS[view];
 
   return (
-    <div
-      className={cn(
-        'border-border flex min-h-0 flex-1 items-center justify-center rounded-xl border border-dashed',
-        overflow,
-      )}
-    >
+    <div className="border-border flex min-h-0 flex-1 items-center justify-center overflow-y-auto rounded-xl border border-dashed">
       <Text variant="body-xs" className="text-muted-foreground p-6">
-        {t(labelKey)}
+        {t('listPane')}
       </Text>
     </div>
   );

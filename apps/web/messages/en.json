@@ -10,7 +10,7 @@
     "viewToggleLabel": "Rides view",
     "viewMap": "Map",
     "viewList": "List",
-    "mapPane": "Map view",
+    "mapLabel": "Map of rides near {location}",
     "listPane": "List view"
   },
   "FavoriteLocation": {
