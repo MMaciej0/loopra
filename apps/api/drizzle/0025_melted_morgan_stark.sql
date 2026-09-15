@@ -1,0 +1,2 @@
+ALTER TABLE "rides" ALTER COLUMN "start_time" SET DATA TYPE timestamp (3) with time zone;--> statement-breakpoint
+ALTER TABLE "rides" ALTER COLUMN "end_time" SET DATA TYPE timestamp (3) with time zone;
