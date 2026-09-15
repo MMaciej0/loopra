@@ -1,10 +1,11 @@
-import { useFormatter, useTranslations } from 'next-intl';
-import { Bike, Clock, MapPin } from 'lucide-react';
+import { useTranslations } from 'next-intl';
+import { Bike, MapPin } from 'lucide-react';
 import { Avatar, AvatarFallback, getAvatarColorIndex } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Text } from '@/components/ui/text';
 import { cn } from '@/lib/utils';
 import { RideBanner } from './banner';
+import { RideStartTime } from './start-time';
 import type { RideCardData } from './types';
 
 interface RideCardProps {
@@ -16,23 +17,12 @@ export function RideCard({ data, className }: RideCardProps) {
   const t = useTranslations('RideCard');
   const tBike = useTranslations('BikeTypes');
   const tExperience = useTranslations('ExperiencePolicies');
-  const format = useFormatter();
 
   const title = data.title || t('titlePlaceholder');
   const isTitlePlaceholder = !data.title;
 
   const location = data.start_location_name || t('locationPlaceholder');
   const isLocationPlaceholder = !data.start_location_name;
-
-  const timeZone = data.timezone;
-  const startTime = data.start_time
-    ? [
-        format.dateTime(data.start_time, { weekday: 'short', timeZone }),
-        format.dateTime(data.start_time, { month: 'short', day: 'numeric', timeZone }),
-        format.dateTime(data.start_time, { hour: '2-digit', minute: '2-digit', timeZone }),
-      ].join(' · ')
-    : t('datePlaceholder');
-  const isTimePlaceholder = !data.start_time;
 
   const creatorName = data.creator?.name || t('creatorPlaceholder');
   const participants = data.participant_count ?? 1;
@@ -74,13 +64,7 @@ export function RideCard({ data, className }: RideCardProps) {
         </Text>
 
         <div className="text-muted-foreground flex flex-wrap items-center gap-x-4 gap-y-1">
-          <Text
-            variant="body-s"
-            className={cn('flex items-center gap-1.5', isTimePlaceholder && 'opacity-60')}
-          >
-            <Clock aria-hidden className="size-3.5 shrink-0" />
-            {startTime}
-          </Text>
+          <RideStartTime startTime={data.start_time} />
           <Text
             variant="body-s"
             className={cn(
