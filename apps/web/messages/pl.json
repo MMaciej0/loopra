@@ -10,7 +10,11 @@
     "viewToggleLabel": "Widok jazd",
     "viewMap": "Mapa",
     "viewList": "Lista",
-    "mapLabel": "Mapa jazd w pobliżu {location}"
+    "mapLabel": "Mapa jazd w pobliżu {location}",
+    "listEmptyTitle": "Brak jazd w pobliżu",
+    "listEmptyHint": "Lista pokazuje nadchodzące jazdy startujące w pobliżu Twojej ulubionej lokalizacji. Zmień ją powyżej, aby poszukać gdzie indziej.",
+    "listLoadError": "Nie udało się wczytać jazd.",
+    "listRetry": "Spróbuj ponownie"
   },
   "FavoriteLocation": {
     "title": "Gdzie zwykle jeździsz?",
