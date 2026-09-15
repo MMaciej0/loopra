@@ -13,6 +13,8 @@
     "mapLabel": "Mapa jazd w pobliżu {location}",
     "mapMarkerLabel": "{name}: {count, plural, one {# jazda startuje} few {# jazdy startują} many {# jazd startuje} other {# jazdy startuje}} tutaj",
     "mapMarkerLabelUnnamed": "{count, plural, one {# jazda startuje} few {# jazdy startują} many {# jazd startuje} other {# jazdy startuje}} tutaj",
+    "mapLoading": "Wczytywanie jazd…",
+    "mapEmpty": "Brak jazd w promieniu {radius} km",
     "listEmptyTitle": "Brak jazd w pobliżu",
     "listEmptyHint": "Lista pokazuje nadchodzące jazdy startujące w pobliżu Twojej ulubionej lokalizacji. Zmień ją powyżej, aby poszukać gdzie indziej.",
     "listLoadError": "Nie udało się wczytać jazd.",
