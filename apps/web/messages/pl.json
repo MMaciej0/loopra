@@ -10,8 +10,7 @@
     "viewToggleLabel": "Widok jazd",
     "viewMap": "Mapa",
     "viewList": "Lista",
-    "mapLabel": "Mapa jazd w pobliżu {location}",
-    "listPane": "Widok listy"
+    "mapLabel": "Mapa jazd w pobliżu {location}"
   },
   "FavoriteLocation": {
     "title": "Gdzie zwykle jeździsz?",
