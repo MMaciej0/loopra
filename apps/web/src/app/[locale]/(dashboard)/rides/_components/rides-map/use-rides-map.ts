@@ -3,7 +3,7 @@ import { useTheme } from 'next-themes';
 import * as maptilersdk from '@maptiler/sdk';
 import '@maptiler/sdk/dist/maptiler-sdk.css';
 
-const CITY_ZOOM = 11;
+const CITY_ZOOM = 16;
 
 type UseRidesMapProps = Readonly<{ lng: number; lat: number; language: string }>;
 
