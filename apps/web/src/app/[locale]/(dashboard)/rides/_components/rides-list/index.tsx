@@ -48,13 +48,37 @@ export function RidesList({ query }: { query: RidesListQuery }) {
     requestFirstPage();
   }, []);
 
+  const sentinelRef = useRef<HTMLDivElement>(null);
+  const requestNextPage = useEffectEvent(() => {
+    setStatus('loading');
+    requestPage(nextCursor);
+  });
+
+  useEffect(() => {
+    const sentinel = sentinelRef.current;
+
+    if (status !== 'idle' || !sentinel) return;
+
+    const observer = new IntersectionObserver((entries) => {
+      if (entries.some((entry) => entry.isIntersecting)) {
+        requestNextPage();
+      }
+    });
+    observer.observe(sentinel);
+
+    return () => observer.disconnect();
+  }, [status]);
+
   return (
-    <div className="grid grid-cols-1 gap-4 pb-6 md:grid-cols-2 lg:grid-cols-3">
-      {rides.map((ride) => (
-        <RideCard key={ride.id} data={ride.data} />
-      ))}
-      {status === 'loading' &&
-        Array.from({ length: SKELETON_COUNT }, (_, index) => <RideCardSkeleton key={index} />)}
+    <div className="pb-6">
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {rides.map((ride) => (
+          <RideCard key={ride.id} data={ride.data} />
+        ))}
+        {status === 'loading' &&
+          Array.from({ length: SKELETON_COUNT }, (_, index) => <RideCardSkeleton key={index} />)}
+      </div>
+      {status === 'idle' && <div ref={sentinelRef} aria-hidden className="h-px" />}
     </div>
   );
 }
