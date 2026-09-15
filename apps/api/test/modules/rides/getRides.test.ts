@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { readFileSync } from 'node:fs';
+import { sql } from 'drizzle-orm';
 import { useApp } from '../../helpers/app.js';
 import { createMultipleRandomRides, newRide } from '../../helpers/rides.js';
 import { rides } from '../../../src/db/schema.js';
@@ -206,5 +207,29 @@ describe('GET /rides', () => {
 
     expect(unfiltered.data.map((ride: { id: string }) => ride.id)).toEqual([publicId]);
     expect(filtered.data.map((ride: { id: string }) => ride.id)).toEqual([publicId]);
+  });
+  it('never repeats a ride across pages when start times carry microseconds', async () => {
+    const inserted = await appRef.app.db
+      .insert(rides)
+      .values([
+        {
+          ...newRide({ user_id: auth.userId }),
+          start_time: sql`date_trunc('second', now()) + interval '6 hours 0.123456 seconds'`,
+        },
+        {
+          ...newRide({ user_id: auth.userId }),
+          start_time: sql`date_trunc('second', now()) + interval '7 hours 0.654321 seconds'`,
+        },
+      ])
+      .returning({ id: rides.id });
+
+    const firstPage = await listRides({ limit: '1' });
+    const secondPage = await listRides({ limit: '1', cursor: firstPage.nextCursor });
+    const listedIds = [...firstPage.data, ...secondPage.data].map(
+      (ride: { id: string }) => ride.id,
+    );
+
+    expect(listedIds).toHaveLength(2);
+    expect(new Set(listedIds)).toEqual(new Set(inserted.map((ride) => ride.id)));
   });
 });
