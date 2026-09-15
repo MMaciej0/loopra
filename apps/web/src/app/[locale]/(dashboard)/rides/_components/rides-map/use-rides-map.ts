@@ -2,15 +2,19 @@ import { useEffect, useRef } from 'react';
 import { useTheme } from 'next-themes';
 import * as maptilersdk from '@maptiler/sdk';
 import '@maptiler/sdk/dist/maptiler-sdk.css';
+import { nearbyCircle, nearbyConstraints } from './nearby-area';
 import type { StartPointGroup } from './start-points';
 
 const CITY_ZOOM = 16;
+const NEARBY_AREA_ID = 'nearby-area';
+const NEARBY_AREA_COLOR = '#6d8ff2';
 
 export type RidesMapMarker = StartPointGroup & Readonly<{ label: string }>;
 
 type UseRidesMapProps = Readonly<{
   lng: number;
   lat: number;
+  radiusKm: number;
   language: string;
   markers: readonly RidesMapMarker[];
 }>;
@@ -19,6 +23,34 @@ function toMapStyle(resolvedTheme: string) {
   return resolvedTheme === 'dark'
     ? maptilersdk.MapStyle.STREETS.DARK
     : maptilersdk.MapStyle.STREETS;
+}
+
+function addNearbyArea(map: maptilersdk.Map, center: [number, number], radiusKm: number) {
+  if (map.getSource(NEARBY_AREA_ID)) return;
+
+  map.addSource(NEARBY_AREA_ID, { type: 'geojson', data: nearbyCircle(center, radiusKm) });
+  map.addLayer({
+    id: `${NEARBY_AREA_ID}-fill`,
+    type: 'fill',
+    source: NEARBY_AREA_ID,
+    paint: { 'fill-color': NEARBY_AREA_COLOR, 'fill-opacity': 0.06 },
+  });
+  map.addLayer({
+    id: `${NEARBY_AREA_ID}-outline`,
+    type: 'line',
+    source: NEARBY_AREA_ID,
+    paint: { 'line-color': NEARBY_AREA_COLOR, 'line-opacity': 0.5, 'line-width': 1.5 },
+  });
+}
+
+function constrainToNearbyArea(map: maptilersdk.Map, center: [number, number], radiusKm: number) {
+  const { clientWidth: width, clientHeight: height } = map.getContainer();
+  if (width === 0 || height === 0) return;
+
+  const { minZoom, maxBounds } = nearbyConstraints(center, radiusKm, { width, height });
+  map.setMaxBounds(null);
+  map.setMinZoom(minZoom);
+  map.setMaxBounds(maxBounds);
 }
 
 function createMarkerElement({ rideCount, label }: RidesMapMarker) {
@@ -44,17 +76,19 @@ function createMarkerElement({ rideCount, label }: RidesMapMarker) {
   return button;
 }
 
-export function useRidesMap({ lng, lat, language, markers }: UseRidesMapProps) {
+export function useRidesMap({ lng, lat, radiusKm, language, markers }: UseRidesMapProps) {
   const { resolvedTheme } = useTheme();
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<maptilersdk.Map | null>(null);
   const centerRef = useRef<[number, number]>([lng, lat]);
+  const radiusRef = useRef(radiusKm);
   const languageRef = useRef(language);
   const themeRef = useRef(resolvedTheme);
   const isThemeResolved = resolvedTheme !== undefined;
 
   useEffect(() => {
     centerRef.current = [lng, lat];
+    radiusRef.current = radiusKm;
     languageRef.current = language;
     themeRef.current = resolvedTheme;
   });
@@ -87,9 +121,15 @@ export function useRidesMap({ lng, lat, language, markers }: UseRidesMapProps) {
     });
     mapRef.current = map;
 
+    const center = centerRef.current;
+    const radius = radiusRef.current;
+    constrainToNearbyArea(map, center, radius);
+    map.on('resize', () => constrainToNearbyArea(map, center, radius));
+
     let isStyleLoaded = false;
-    map.once('style.load', () => {
+    map.on('style.load', () => {
       isStyleLoaded = true;
+      addNearbyArea(map, center, radius);
     });
 
     map.addControl(new maptilersdk.NavigationControl({ showCompass: false }), 'top-right');

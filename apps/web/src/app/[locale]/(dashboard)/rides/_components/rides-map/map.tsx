@@ -43,6 +43,7 @@ export function RidesMap({ query, locationLabel }: Props) {
   const mapContainerRef = useRidesMap({
     lng: initialQuery.lng,
     lat: initialQuery.lat,
+    radiusKm: initialQuery.radius_km,
     language: locale,
     markers,
   });
