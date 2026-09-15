@@ -11,6 +11,8 @@
     "viewMap": "Map",
     "viewList": "List",
     "mapLabel": "Map of rides near {location}",
+    "mapMarkerLabel": "{name}: {count, plural, one {# ride starts} other {# rides start}} here",
+    "mapMarkerLabelUnnamed": "{count, plural, one {# ride starts} other {# rides start}} here",
     "listEmptyTitle": "No rides nearby yet",
     "listEmptyHint": "The list shows upcoming rides starting near your favourite location. Change it above to look somewhere else.",
     "listLoadError": "Could not load rides.",
