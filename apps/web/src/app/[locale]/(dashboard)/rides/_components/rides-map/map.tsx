@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { loadMapStartPoints } from '../../_actions/list-rides';
 import type { RidesListQuery } from '../../list-query';
 import { MapChip } from './map-chip';
+import { RidePanel } from './ride-panel';
 import type { StartPointGroup } from './start-points';
 import { useRidesMap } from './use-rides-map';
 
@@ -20,6 +21,7 @@ export function RidesMap({ query, locationLabel }: Props) {
   const [initialQuery] = useState(query);
   const [startPoints, setStartPoints] = useState<StartPointGroup[]>([]);
   const [status, setStatus] = useState<Status>('loading');
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const loadStartPoints = () => {
     loadMapStartPoints(initialQuery)
@@ -51,8 +53,8 @@ export function RidesMap({ query, locationLabel }: Props) {
       startPoints.map((group) => ({
         ...group,
         label: group.name
-          ? t('mapMarkerLabel', { count: group.rideCount, name: group.name })
-          : t('mapMarkerLabelUnnamed', { count: group.rideCount }),
+          ? t('mapMarkerLabel', { count: group.rides.length, name: group.name })
+          : t('mapMarkerLabelUnnamed', { count: group.rides.length }),
       })),
     [startPoints, t],
   );
@@ -63,7 +65,12 @@ export function RidesMap({ query, locationLabel }: Props) {
     radiusKm: initialQuery.radius_km,
     language: locale,
     markers,
+    selectedId,
+    onSelect: setSelectedId,
+    onDeselect: () => setSelectedId(null),
   });
+
+  const selectedRide = startPoints.find((group) => group.id === selectedId)?.rides[0];
 
   return (
     <div className="border-border relative min-h-0 flex-1 overflow-hidden rounded-xl border">
@@ -94,6 +101,7 @@ export function RidesMap({ query, locationLabel }: Props) {
           </MapChip>
         )}
       </div>
+      {selectedRide && <RidePanel ride={selectedRide} onClose={() => setSelectedId(null)} />}
     </div>
   );
 }
