@@ -14,7 +14,8 @@
     "listEmptyTitle": "Brak jazd w pobliżu",
     "listEmptyHint": "Lista pokazuje nadchodzące jazdy startujące w pobliżu Twojej ulubionej lokalizacji. Zmień ją powyżej, aby poszukać gdzie indziej.",
     "listLoadError": "Nie udało się wczytać jazd.",
-    "listRetry": "Spróbuj ponownie"
+    "listRetry": "Spróbuj ponownie",
+    "ridePagePlaceholder": "Strona jazdy"
   },
   "FavoriteLocation": {
     "title": "Gdzie zwykle jeździsz?",

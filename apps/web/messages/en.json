@@ -14,7 +14,8 @@
     "listEmptyTitle": "No rides nearby yet",
     "listEmptyHint": "The list shows upcoming rides starting near your favourite location. Change it above to look somewhere else.",
     "listLoadError": "Could not load rides.",
-    "listRetry": "Try again"
+    "listRetry": "Try again",
+    "ridePagePlaceholder": "Ride page"
   },
   "FavoriteLocation": {
     "title": "Where do you usually ride?",
