@@ -1,6 +1,7 @@
-import { getTranslations } from 'next-intl/server';
-import { Text } from '@/components/ui/text';
+import { getCurrentUser } from '@/utils/user';
+import { buildRidesListQuery } from '../list-query';
 import { RidesMapPane } from './rides-map';
+import { RidesList } from './rides-list';
 import type { RidesView } from '../view';
 
 export async function ViewPane({ view }: { view: RidesView }) {
@@ -8,13 +9,17 @@ export async function ViewPane({ view }: { view: RidesView }) {
     return <RidesMapPane />;
   }
 
-  const t = await getTranslations('RidesPage');
+  const user = await getCurrentUser();
+
+  if (!user) {
+    return null;
+  }
+
+  const query = buildRidesListQuery(user.favorite_location);
 
   return (
-    <div className="border-border flex min-h-0 flex-1 items-center justify-center overflow-y-auto rounded-xl border border-dashed">
-      <Text variant="body-xs" className="text-muted-foreground p-6">
-        {t('listPane')}
-      </Text>
+    <div className="min-h-0 flex-1 overflow-y-auto">
+      <RidesList key={JSON.stringify(query)} query={query} />
     </div>
   );
 }

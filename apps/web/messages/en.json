@@ -10,8 +10,7 @@
     "viewToggleLabel": "Rides view",
     "viewMap": "Map",
     "viewList": "List",
-    "mapLabel": "Map of rides near {location}",
-    "listPane": "List view"
+    "mapLabel": "Map of rides near {location}"
   },
   "FavoriteLocation": {
     "title": "Where do you usually ride?",
