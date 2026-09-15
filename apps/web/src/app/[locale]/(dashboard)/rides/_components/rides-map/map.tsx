@@ -70,7 +70,7 @@ export function RidesMap({ query, locationLabel }: Props) {
     onDeselect: () => setSelectedId(null),
   });
 
-  const selectedRide = startPoints.find((group) => group.id === selectedId)?.rides[0];
+  const selectedGroup = startPoints.find((group) => group.id === selectedId);
 
   return (
     <div className="border-border relative min-h-0 flex-1 overflow-hidden rounded-xl border">
@@ -101,7 +101,13 @@ export function RidesMap({ query, locationLabel }: Props) {
           </MapChip>
         )}
       </div>
-      {selectedRide && <RidePanel ride={selectedRide} onClose={() => setSelectedId(null)} />}
+      {selectedGroup && (
+        <RidePanel
+          key={selectedGroup.id}
+          rides={selectedGroup.rides}
+          onClose={() => setSelectedId(null)}
+        />
+      )}
     </div>
   );
 }
