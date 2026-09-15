@@ -22,6 +22,7 @@ export function RidesMap({ query, locationLabel }: Props) {
   const [startPoints, setStartPoints] = useState<StartPointGroup[]>([]);
   const [status, setStatus] = useState<Status>('loading');
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [hasMarkerInView, setHasMarkerInView] = useState<boolean | null>(null);
   const panelRef = useRef<HTMLElement>(null);
 
   const loadStartPoints = () => {
@@ -60,7 +61,7 @@ export function RidesMap({ query, locationLabel }: Props) {
     [startPoints, t],
   );
 
-  const mapContainerRef = useRidesMap({
+  const { mapContainerRef, showAllMarkers } = useRidesMap({
     lng: initialQuery.lng,
     lat: initialQuery.lat,
     radiusKm: initialQuery.radius_km,
@@ -70,8 +71,10 @@ export function RidesMap({ query, locationLabel }: Props) {
     panelRef,
     onSelect: setSelectedId,
     onDeselect: () => setSelectedId(null),
+    onMarkersInViewChange: setHasMarkerInView,
   });
 
+  const rideCount = startPoints.reduce((total, group) => total + group.rides.length, 0);
   const selectedGroup = startPoints.find((group) => group.id === selectedId);
 
   return (
@@ -92,6 +95,17 @@ export function RidesMap({ query, locationLabel }: Props) {
         {status === 'done' && startPoints.length === 0 && (
           <MapChip role="status" className="pr-3.5">
             {t('mapEmpty', { radius: initialQuery.radius_km })}
+          </MapChip>
+        )}
+        {status === 'done' && startPoints.length > 0 && hasMarkerInView === false && (
+          <MapChip role="status">
+            {t('mapNearbyCount', { count: rideCount })}
+            <span aria-hidden className="text-muted-foreground">
+              ·
+            </span>
+            <Button variant="secondary" size="xs" className="rounded-full" onClick={showAllMarkers}>
+              {t('mapShowAll')}
+            </Button>
           </MapChip>
         )}
         {status === 'error' && (
