@@ -10,7 +10,11 @@
     "viewToggleLabel": "Rides view",
     "viewMap": "Map",
     "viewList": "List",
-    "mapLabel": "Map of rides near {location}"
+    "mapLabel": "Map of rides near {location}",
+    "listEmptyTitle": "No rides nearby yet",
+    "listEmptyHint": "The list shows upcoming rides starting near your favourite location. Change it above to look somewhere else.",
+    "listLoadError": "Could not load rides.",
+    "listRetry": "Try again"
   },
   "FavoriteLocation": {
     "title": "Where do you usually ride?",

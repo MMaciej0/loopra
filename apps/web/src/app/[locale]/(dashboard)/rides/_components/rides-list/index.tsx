@@ -1,8 +1,11 @@
 'use client';
 
 import { useEffect, useEffectEvent, useRef, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { RideCard } from '@/components/ride-card';
 import type { RideCardData } from '@/components/ride-card/types';
+import { Button } from '@/components/ui/button';
+import { Text } from '@/components/ui/text';
 import { loadRidesPage } from '../../_actions/list-rides';
 import type { RidesListQuery } from '../../list-query';
 import { RideCardSkeleton } from './ride-card-skeleton';
@@ -14,6 +17,7 @@ type ListedRide = Readonly<{ id: string; data: RideCardData }>;
 type Status = 'loading' | 'idle' | 'error' | 'done';
 
 export function RidesList({ query }: { query: RidesListQuery }) {
+  const t = useTranslations('RidesPage');
   const [initialQuery] = useState(query);
   const [rides, setRides] = useState<ListedRide[]>([]);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
@@ -69,8 +73,26 @@ export function RidesList({ query }: { query: RidesListQuery }) {
     return () => observer.disconnect();
   }, [status]);
 
+  const retry = () => {
+    setStatus('loading');
+    requestPage(nextCursor);
+  };
+
+  if (status === 'done' && rides.length === 0) {
+    return (
+      <div className="border-border flex flex-col items-center justify-center gap-1.5 rounded-xl border border-dashed p-10 text-center">
+        <Text variant="body-l" as="h2" className="text-foreground font-semibold">
+          {t('listEmptyTitle')}
+        </Text>
+        <Text variant="body-s" className="text-muted-foreground max-w-sm">
+          {t('listEmptyHint')}
+        </Text>
+      </div>
+    );
+  }
+
   return (
-    <div className="pb-6">
+    <div className="flex flex-col gap-6 pb-6">
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
         {rides.map((ride) => (
           <RideCard key={ride.id} data={ride.data} />
@@ -79,6 +101,16 @@ export function RidesList({ query }: { query: RidesListQuery }) {
           Array.from({ length: SKELETON_COUNT }, (_, index) => <RideCardSkeleton key={index} />)}
       </div>
       {status === 'idle' && <div ref={sentinelRef} aria-hidden className="h-px" />}
+      {status === 'error' && (
+        <div role="alert" className="flex flex-col items-center gap-3 py-4 text-center">
+          <Text variant="body-s" className="text-muted-foreground">
+            {t('listLoadError')}
+          </Text>
+          <Button variant="secondary" size="sm" onClick={retry}>
+            {t('listRetry')}
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
