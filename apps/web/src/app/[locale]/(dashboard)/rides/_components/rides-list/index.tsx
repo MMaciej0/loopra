@@ -4,6 +4,7 @@ import { useEffect, useEffectEvent, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { RideCard } from '@/components/ride-card';
 import type { RideCardData } from '@/components/ride-card/types';
+import { Link } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
 import { loadRidesPage } from '../../_actions/list-rides';
@@ -95,7 +96,13 @@ export function RidesList({ query }: { query: RidesListQuery }) {
     <div className="flex flex-col gap-6 pb-6">
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
         {rides.map((ride) => (
-          <RideCard key={ride.id} data={ride.data} />
+          <Link
+            key={ride.id}
+            href={`/rides/${ride.id}`}
+            className="focus-visible:ring-ring/50 rounded-xl outline-none focus-visible:ring-3"
+          >
+            <RideCard data={ride.data} className="h-full transition-shadow hover:shadow-md" />
+          </Link>
         ))}
         {status === 'loading' &&
           Array.from({ length: SKELETON_COUNT }, (_, index) => <RideCardSkeleton key={index} />)}
