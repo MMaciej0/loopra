@@ -21,6 +21,8 @@
     "mapStepperPosition": "{position} z {total}",
     "mapStepperPrevious": "Poprzednia jazda",
     "mapStepperNext": "Następna jazda",
+    "mapNearbyCount": "{count, plural, one {# jazda w pobliżu} few {# jazdy w pobliżu} many {# jazd w pobliżu} other {# jazdy w pobliżu}}",
+    "mapShowAll": "Pokaż wszystkie",
     "listEmptyTitle": "Brak jazd w pobliżu",
     "listEmptyHint": "Lista pokazuje nadchodzące jazdy startujące w pobliżu Twojej ulubionej lokalizacji. Zmień ją powyżej, aby poszukać gdzie indziej.",
     "listLoadError": "Nie udało się wczytać jazd.",

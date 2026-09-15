@@ -9,6 +9,7 @@ const CITY_ZOOM = 16;
 const NEARBY_AREA_ID = 'nearby-area';
 const NEARBY_AREA_COLOR = '#6d8ff2';
 const MARKER_CLEARANCE_PX = 24;
+const SHOW_ALL_PADDING_PX = 64;
 
 export type RidesMapMarker = StartPointGroup & Readonly<{ label: string }>;
 
@@ -22,6 +23,7 @@ type UseRidesMapProps = Readonly<{
   panelRef: RefObject<HTMLElement | null>;
   onSelect: (id: string) => void;
   onDeselect: () => void;
+  onMarkersInViewChange: (hasMarkerInView: boolean) => void;
 }>;
 
 function toMapStyle(resolvedTheme: string) {
@@ -79,6 +81,11 @@ function revealMarker(map: maptilersdk.Map, marker: RidesMapMarker, panel: HTMLE
   map.easeTo({ center: [marker.lng, marker.lat], offset });
 }
 
+function hasMarkerInView(map: maptilersdk.Map, markers: readonly RidesMapMarker[]) {
+  const bounds = map.getBounds();
+  return markers.some(({ lng, lat }) => bounds.contains([lng, lat]));
+}
+
 function setMarkerSelected(element: HTMLElement, isSelected: boolean) {
   element.setAttribute('aria-pressed', String(isSelected));
   element.style.zIndex = isSelected ? '1' : '';
@@ -124,6 +131,7 @@ export function useRidesMap({
   panelRef,
   onSelect,
   onDeselect,
+  onMarkersInViewChange,
 }: UseRidesMapProps) {
   const { resolvedTheme } = useTheme();
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
@@ -144,6 +152,12 @@ export function useRidesMap({
 
   const selectMarker = useEffectEvent((id: string) => onSelect(id));
   const deselectMarker = useEffectEvent(() => onDeselect());
+  const reportMarkersInView = useEffectEvent(() => {
+    const map = mapRef.current;
+    if (!map || markers.length === 0) return;
+
+    onMarkersInViewChange(hasMarkerInView(map, markers));
+  });
   const revealSelectedMarker = useEffectEvent(() => {
     const map = mapRef.current;
     const panel = panelRef.current;
@@ -194,6 +208,8 @@ export function useRidesMap({
 
     map.addControl(new maptilersdk.NavigationControl({ showCompass: false }), 'top-right');
 
+    map.on('move', () => reportMarkersInView());
+
     map.on('click', (event) => {
       const target = event.originalEvent.target;
       if (target instanceof Element && target.closest('.maplibregl-marker')) return;
@@ -230,6 +246,7 @@ export function useRidesMap({
 
       return new maptilersdk.Marker({ element }).setLngLat([marker.lng, marker.lat]).addTo(map);
     });
+    reportMarkersInView();
 
     return () => {
       for (const mapMarker of mapMarkers) {
@@ -249,5 +266,16 @@ export function useRidesMap({
     revealSelectedMarker();
   }, [selectedId]);
 
-  return mapContainerRef;
+  const showAllMarkers = () => {
+    const map = mapRef.current;
+    if (!map || markers.length === 0) return;
+
+    const bounds = new maptilersdk.LngLatBounds();
+    for (const { lng, lat } of markers) {
+      bounds.extend([lng, lat]);
+    }
+    map.fitBounds(bounds, { padding: SHOW_ALL_PADDING_PX, maxZoom: CITY_ZOOM });
+  };
+
+  return { mapContainerRef, showAllMarkers };
 }

@@ -21,6 +21,8 @@
     "mapStepperPosition": "{position} of {total}",
     "mapStepperPrevious": "Previous ride",
     "mapStepperNext": "Next ride",
+    "mapNearbyCount": "{count, plural, one {# ride nearby} other {# rides nearby}}",
+    "mapShowAll": "Show all",
     "listEmptyTitle": "No rides nearby yet",
     "listEmptyHint": "The list shows upcoming rides starting near your favourite location. Change it above to look somewhere else.",
     "listLoadError": "Could not load rides.",
