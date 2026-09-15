@@ -10,7 +10,6 @@ export function toRideCard(values: CreateRideInput): RideCardData {
     experience_policy: values.experience_policy,
     title: values.title,
     start_time: values.start_time,
-    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     start_location_name: values.start_location_name,
     distance_km: values.distance_km,
     average_pace_kmh: values.average_pace_kmh,
