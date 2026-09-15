@@ -4,7 +4,7 @@ import type { ElevationPoint } from './geometry';
 export interface RideCardElevation {
   distance_km: number;
   ascent_m: number;
-  profile: ElevationPoint[][];
+  profile?: ElevationPoint[][];
 }
 
 export interface RideCardCreator {
