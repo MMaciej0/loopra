@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useEffectEvent, useMemo, useState } from 'react';
+import { useEffect, useEffectEvent, useMemo, useRef, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -22,6 +22,7 @@ export function RidesMap({ query, locationLabel }: Props) {
   const [startPoints, setStartPoints] = useState<StartPointGroup[]>([]);
   const [status, setStatus] = useState<Status>('loading');
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  const panelRef = useRef<HTMLElement>(null);
 
   const loadStartPoints = () => {
     loadMapStartPoints(initialQuery)
@@ -66,6 +67,7 @@ export function RidesMap({ query, locationLabel }: Props) {
     language: locale,
     markers,
     selectedId,
+    panelRef,
     onSelect: setSelectedId,
     onDeselect: () => setSelectedId(null),
   });
@@ -104,6 +106,7 @@ export function RidesMap({ query, locationLabel }: Props) {
       {selectedGroup && (
         <RidePanel
           key={selectedGroup.id}
+          ref={panelRef}
           rides={selectedGroup.rides}
           onClose={() => setSelectedId(null)}
         />
