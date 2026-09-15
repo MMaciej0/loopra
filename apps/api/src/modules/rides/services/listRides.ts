@@ -1,10 +1,10 @@
-import { and, eq, gte, lte, sql, SQL } from 'drizzle-orm';
+import { and, eq, getTableColumns, gte, lte, sql, SQL } from 'drizzle-orm';
 import { Db } from '../../../db/index.js';
-import { rides } from '../../../db/schema.js';
+import { ride_participants, rides, routes, users } from '../../../db/schema.js';
 import { ListRidesQuery } from '../schema.js';
 
 export const listRides = async (db: Db, searchParams: ListRidesQuery) => {
-  const conditions: SQL[] = [];
+  const conditions: SQL[] = [eq(rides.is_private, false)];
 
   if (searchParams.bike_type) conditions.push(eq(rides.bike_type, searchParams.bike_type));
   if (searchParams.ride_type) conditions.push(eq(rides.ride_type, searchParams.ride_type));
@@ -17,7 +17,7 @@ export const listRides = async (db: Db, searchParams: ListRidesQuery) => {
 
   if (searchParams.lat && searchParams.lng && searchParams.radius_km) {
     conditions.push(
-      sql`ST_DWithin(start_location::geography, ST_SetSRID(ST_MakePoint(${searchParams.lng}, ${searchParams.lat}), 4326)::geography, ${searchParams.radius_km} * 1000)`,
+      sql`ST_DWithin(${rides.start_location}::geography, ST_SetSRID(ST_MakePoint(${searchParams.lng}, ${searchParams.lat}), 4326)::geography, ${searchParams.radius_km} * 1000)`,
     );
   }
 
@@ -29,8 +29,18 @@ export const listRides = async (db: Db, searchParams: ListRidesQuery) => {
   }
 
   const selectedRides = await db
-    .select()
+    .select({
+      ...getTableColumns(rides),
+      creator: { id: users.id, username: users.username },
+      participant_count:
+        sql<number>`(select count(*) from ${ride_participants} where ${ride_participants.ride_id} = ${rides.id})`.mapWith(
+          Number,
+        ),
+      route: { distance_km: routes.distance_km, ascent_m: routes.ascent_m },
+    })
     .from(rides)
+    .innerJoin(users, eq(users.id, rides.creator_id))
+    .leftJoin(routes, eq(routes.id, rides.route_id))
     .where(and(...conditions))
     .orderBy(rides.start_time, rides.id)
     .limit(searchParams.limit + 1);

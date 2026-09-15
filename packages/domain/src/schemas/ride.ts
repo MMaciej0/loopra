@@ -82,9 +82,25 @@ export const RideDetailSchema = Type.Object(
   { additionalProperties: false },
 );
 
+export const RideListItemSchema = Type.Object(
+  {
+    ...rideProperties,
+    creator: RiderSchema,
+    participant_count: Type.Integer(),
+    route: Type.Union([
+      Type.Object(
+        { distance_km: Type.String(), ascent_m: Type.String() },
+        { additionalProperties: false },
+      ),
+      Type.Null(),
+    ]),
+  },
+  { additionalProperties: false },
+);
+
 export const ListRidesResponseSchema = Type.Object(
   {
-    data: Type.Array(RideSchema),
+    data: Type.Array(RideListItemSchema),
     nextCursor: Type.Union([Type.String(), Type.Null()]),
   },
   { additionalProperties: false },
