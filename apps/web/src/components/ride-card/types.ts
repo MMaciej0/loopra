@@ -21,7 +21,6 @@ export interface RideCardData {
 
   title?: string;
   start_time?: Date;
-  timezone?: string;
   start_location_name?: string;
   distance_km?: number;
   average_pace_kmh?: number;
