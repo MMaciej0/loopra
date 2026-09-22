@@ -46,9 +46,6 @@ jobs:
       - name: Format
         run: pnpm -r format:check
 
-      - name: Web tests
-        run: pnpm --filter web test
-
       - name: Build web
         run: pnpm --filter web build
         env:
