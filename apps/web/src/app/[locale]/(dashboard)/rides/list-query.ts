@@ -13,10 +13,10 @@ export type RidesListQuery = Readonly<{
   limit: number;
 }>;
 
-export function buildRidesListQuery(favoriteLocation: { x: number; y: number }): RidesListQuery {
+export function buildRidesListQuery(selectedLocation: { x: number; y: number }): RidesListQuery {
   return {
-    lat: favoriteLocation.y,
-    lng: favoriteLocation.x,
+    lat: selectedLocation.y,
+    lng: selectedLocation.x,
     radius_km: NEARBY_RADIUS_KM,
     date_from: new Date(Date.now() + MIN_LEAD_HOURS * HOUR_MS).toISOString(),
     status: 'open',

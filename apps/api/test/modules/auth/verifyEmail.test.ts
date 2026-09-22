@@ -1,5 +1,4 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { DEFAULT_FAVORITE_LOCATION } from '@loopra/domain';
 import { useApp } from '../../helpers/app.js';
 import { createEmailVerificationToken } from '../../../src/modules/auth/services/emailVerificationToken.js';
 import { users } from '../../../src/db/schema.js';
@@ -11,7 +10,7 @@ describe('POST /auth/verify-email', () => {
   const USER_EMAIL = 'verify@example.com';
 
   beforeEach(async () => {
-    await appRef.app.db.insert(users).values({ email: USER_EMAIL, ...DEFAULT_FAVORITE_LOCATION });
+    await appRef.app.db.insert(users).values({ email: USER_EMAIL });
   });
 
   it('returns 400 for missing token', async () => {

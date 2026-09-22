@@ -1,6 +1,7 @@
 export * from './enums.js';
 export * from './errors.js';
 export * from './dto/user.js';
+export * from './dto/location.js';
 export * from './dto/route.js';
 export * from './dto/ride.js';
 export * from './dto/auth.js';

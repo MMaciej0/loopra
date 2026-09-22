@@ -3,20 +3,18 @@ import type { Db } from '../../../db/index.js';
 import { users } from '../../../db/schema.js';
 import { UpdateUserBody } from '../schema.js';
 import { UserNotFoundError } from '../errors.js';
+import { getCurrentUser } from './getCurrentUser.js';
 
 export const updateUser = async (db: Db, userId: string, body: UpdateUserBody) => {
   const [updatedUser] = await db
     .update(users)
-    .set({
-      ...body,
-      ...(body.favorite_location ? { favorite_location_chosen: true } : {}),
-    })
+    .set(body)
     .where(eq(users.id, userId))
-    .returning();
+    .returning({ id: users.id });
 
   if (!updatedUser) {
     throw new UserNotFoundError();
   }
 
-  return updatedUser;
+  return getCurrentUser(db, userId);
 };

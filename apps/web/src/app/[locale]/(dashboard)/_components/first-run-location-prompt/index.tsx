@@ -4,7 +4,7 @@ import { FirstRunLocationDialog } from './dialog';
 export async function FirstRunLocationPrompt() {
   const user = await getCurrentUser();
 
-  if (!user || user.favorite_location_chosen) {
+  if (!user || user.selected_location) {
     return null;
   }
 

@@ -5,9 +5,12 @@ export const LAT_MAX = 90;
 
 export const LOCATION_NAME_MAX_LENGTH = 40;
 
-export const DEFAULT_FAVORITE_LOCATION = {
-  favorite_location: { x: 20.037364158779383, y: 50.07271576504815 },
-  favorite_city: 'Kraków',
-  favorite_district: 'Nowa Huta',
-  favorite_country: 'Poland',
+export const DEFAULT_SELECTED_LOCATION = {
+  location: { x: 20.037364158779383, y: 50.07271576504815 },
+  city: 'Kraków',
+  district: 'Nowa Huta',
+  municipality: null,
+  region: null,
+  country: 'Poland',
+  postal_code: null,
 } as const;

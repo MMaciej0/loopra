@@ -8,18 +8,19 @@ import type { RidesView } from '../view';
 export async function ViewPane({ view }: { view: RidesView }) {
   const user = await getCurrentUser();
 
-  if (!user) {
+  if (!user?.selected_location) {
     return null;
   }
 
-  const query = buildRidesListQuery(user.favorite_location);
+  const query = buildRidesListQuery(user.selected_location.location);
   const key = ridesListKey(query);
 
   if (view === 'map') {
+    const { district, city, country } = user.selected_location;
     const screenReaderLocationLabel = formatLocationLabel({
-      district: user.favorite_district ?? '',
-      city: user.favorite_city,
-      country: user.favorite_country,
+      district: district ?? '',
+      city,
+      country,
     });
 
     return (

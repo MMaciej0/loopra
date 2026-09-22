@@ -75,11 +75,15 @@ A named set of riders who ride together and can publish rides collectively. The 
 _Avoid_: Team
 
 **Favourite Location**:
-Where a rider usually rides from: coordinates plus the resolved place. Every rider has one from the moment their account exists — new accounts are seeded with Nowa Huta, Kraków — and it is the origin point for Nearby. Distinct from Start Point, which belongs to a single ride.
+A place a rider has saved so they can return to it quickly: coordinates plus the resolved place, named by its resolved label — riders cannot rename it. Optional: a rider has up to five, and a new rider has none. Saving a place the rider already has selects the existing one rather than adding a duplicate. Distinct from Start Point, which belongs to a single ride.
 _Avoid_: Home, base, hometown
 
+**Selected Location**:
+The point the rides list is currently centred on, and so the origin for Nearby. Either a place picked from the rider's Favourite Locations or one they searched for without saving. A rider has none until they pick one: new riders, and riders whose single favourite was retired by the move to this model, are asked to pick an area or accept the Nowa Huta, Kraków default before the rides list shows. Independent of Favourite Locations once picked: deleting the favourite it came from does not change it.
+_Avoid_: Search origin, current location — "current" suggests the device's GPS position
+
 **District**:
-The named part of a city a rider rides out of, when the place they chose is smaller than the city that contains it. Optional — rural and whole-town locations have none. A Favourite Location is named `District, City, Country`, collapsing to `City, Country` without one.
+The named part of a city a rider rides out of, when the place they chose is smaller than the city that contains it. Optional — rural and whole-town locations have none. Favourite and Selected Locations are named `District, City, Country`, collapsing to `City, Country` without one.
 _Avoid_: Neighbourhood, quarter, suburb, borough — all provider designations for the same thing
 
 **Nearby**:
