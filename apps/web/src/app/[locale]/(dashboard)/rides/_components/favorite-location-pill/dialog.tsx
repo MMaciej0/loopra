@@ -16,7 +16,7 @@ import {
 } from '@/components/ui/dialog';
 import type { LocationSuggestion } from '@/utils/geocoding';
 import { LocationPicker, SelectedLocationPreview } from '../../../_components/location-picker';
-import { saveFavoriteLocation } from '../../../_actions/favorite-location';
+import { saveSelectedLocation } from '../../../_actions/selected-location';
 
 type Props = Readonly<{ storedLocation: LocationSuggestion }>;
 
@@ -46,7 +46,7 @@ export function FavoriteLocationPillDialog({ storedLocation }: Props) {
 
     setHasSaveError(false);
     startSaveTransition(async () => {
-      const result = await saveFavoriteLocation(selectedLocation);
+      const result = await saveSelectedLocation(selectedLocation);
 
       if (result.ok) {
         setOpen(false);

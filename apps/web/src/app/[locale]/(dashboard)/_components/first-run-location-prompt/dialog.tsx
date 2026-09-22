@@ -15,9 +15,9 @@ import {
 import type { LocationSuggestion } from '@/utils/geocoding';
 import { LocationPicker, SelectedLocationPreview } from '../location-picker';
 import {
-  acceptDefaultFavoriteLocation,
-  saveFavoriteLocation,
-} from '../../_actions/favorite-location';
+  acceptDefaultSelectedLocation,
+  saveSelectedLocation,
+} from '../../_actions/selected-location';
 
 export function FirstRunLocationDialog() {
   const t = useTranslations('FavoriteLocation');
@@ -33,7 +33,7 @@ export function FirstRunLocationDialog() {
 
     setErrorKey(null);
     startAcceptDefaultTransition(async () => {
-      const result = await acceptDefaultFavoriteLocation();
+      const result = await acceptDefaultSelectedLocation();
 
       if (result.ok) {
         setOpen(false);
@@ -48,7 +48,7 @@ export function FirstRunLocationDialog() {
 
     setErrorKey(null);
     startSaveTransition(async () => {
-      const result = await saveFavoriteLocation(selectedLocation);
+      const result = await saveSelectedLocation(selectedLocation);
 
       if (result.ok) {
         setOpen(false);
