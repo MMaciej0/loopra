@@ -65,7 +65,7 @@ export function FavoriteLocationPillDialog({ storedLocation }: Props) {
           aria-label={t('pill.triggerLabel', { location: storedLocation.label })}
         >
           <MapPin />
-          <span aria-hidden className="max-w-48 truncate">
+          <span aria-hidden className="max-w-48 truncate md:max-w-none">
             {storedLocation.label}
           </span>
         </Button>
