@@ -17,7 +17,7 @@ export function revealOffset(point: Point, panel: Rect, container: Rect): [numbe
   const isBottomSheet = panel.width >= container.width - 1;
   return isBottomSheet
     ? [0, -(container.bottom - panel.top) / 2]
-    : [(panel.right - container.left) / 2, 0];
+    : [-(container.right - panel.left) / 2, 0];
 }
 
 export function boundsOf(points: readonly LngLat[]): Bounds {
