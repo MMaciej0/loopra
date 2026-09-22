@@ -34,40 +34,42 @@ export function RidePanel({ ref, rides, onClose }: Props) {
     <section
       ref={ref}
       aria-label={t('mapPanelLabel')}
-      className="bg-background border-border absolute inset-x-0 bottom-0 z-10 flex flex-col gap-3 rounded-t-2xl border-t p-3 shadow-lg sm:inset-x-auto sm:bottom-3 sm:left-3 sm:w-90 sm:rounded-xl sm:border"
+      className="bg-background border-border absolute inset-x-0 bottom-0 z-10 flex flex-col gap-3 rounded-t-2xl border-t p-3 shadow-lg md:inset-x-auto md:right-3 md:bottom-3 md:w-90 md:rounded-xl md:border"
     >
-      <div className="flex items-center justify-between">
-        {rides.length > 1 ? (
-          <div className="flex items-center gap-1">
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              aria-label={t('mapStepperPrevious')}
-              disabled={index === 0}
-              onClick={() => setIndex(index - 1)}
-            >
-              <ChevronLeft aria-hidden />
-            </Button>
-            <span aria-live="polite" className="text-muted-foreground text-[13px] tabular-nums">
-              {t('mapStepperPosition', { position: index + 1, total: rides.length })}
-            </span>
-            <Button
-              variant="ghost"
-              size="icon-sm"
-              aria-label={t('mapStepperNext')}
-              disabled={index === rides.length - 1}
-              onClick={() => setIndex(index + 1)}
-            >
-              <ChevronRight aria-hidden />
-            </Button>
-          </div>
-        ) : (
-          <span />
-        )}
-        <Button variant="ghost" size="icon-sm" aria-label={t('mapPanelClose')} onClick={onClose}>
-          <X aria-hidden />
-        </Button>
-      </div>
+      <Button
+        variant="outline"
+        size="icon-sm"
+        aria-label={t('mapPanelClose')}
+        onClick={onClose}
+        className="absolute top-5 right-5 z-10 shadow-sm"
+      >
+        <X aria-hidden />
+      </Button>
+      {rides.length > 1 && (
+        <div className="flex items-center gap-1">
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            aria-label={t('mapStepperPrevious')}
+            disabled={index === 0}
+            onClick={() => setIndex(index - 1)}
+          >
+            <ChevronLeft aria-hidden />
+          </Button>
+          <span aria-live="polite" className="text-muted-foreground text-[13px] tabular-nums">
+            {t('mapStepperPosition', { position: index + 1, total: rides.length })}
+          </span>
+          <Button
+            variant="ghost"
+            size="icon-sm"
+            aria-label={t('mapStepperNext')}
+            disabled={index === rides.length - 1}
+            onClick={() => setIndex(index + 1)}
+          >
+            <ChevronRight aria-hidden />
+          </Button>
+        </div>
+      )}
       <RideCard data={ride.data} className="shadow-none" />
       <Button asChild>
         <Link href={`/rides/${ride.id}`}>{t('mapViewRide')}</Link>
