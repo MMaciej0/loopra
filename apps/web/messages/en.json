@@ -36,7 +36,7 @@
     "saveError": "Could not save your location. Try again.",
     "pill": {
       "eyebrow": "Favourite location",
-      "description": "Loopra looks for rides and cyclists near this place.",
+      "description": "Loopra looks for rides starting near this place.",
       "triggerLabel": "{location} — change your favourite location"
     },
     "firstRun": {

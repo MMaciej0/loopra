@@ -36,7 +36,7 @@
     "saveError": "Nie udało się zapisać lokalizacji. Spróbuj ponownie.",
     "pill": {
       "eyebrow": "Ulubiona lokalizacja",
-      "description": "Loopra szuka jazd i rowerzystów w pobliżu tego miejsca.",
+      "description": "Loopra szuka jazd rozpoczynających się w pobliżu tego miejsca.",
       "triggerLabel": "{location} — zmień ulubioną lokalizację"
     },
     "firstRun": {
