@@ -1,9 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { eq } from 'drizzle-orm';
-import { DEFAULT_FAVORITE_LOCATION } from '@loopra/domain';
 import { useApp } from '../../helpers/app.js';
 import { useAuthenticatedUser } from '../../helpers/auth.js';
-import { users } from '../../../src/db/schema.js';
+import { selected_locations } from '../../../src/db/schema.js';
 
 describe('GET /users/me', () => {
   const appRef = useApp();
@@ -57,23 +55,28 @@ describe('GET /users/me', () => {
     const { user } = response.json();
 
     expect(Object.keys(user).sort()).toEqual(
-      [
-        'created_at',
-        'email',
-        'email_verified',
-        'favorite_city',
-        'favorite_country',
-        'favorite_district',
-        'favorite_location',
-        'favorite_municipality',
-        'favorite_postal_code',
-        'favorite_region',
-        'favorite_location_chosen',
-        'id',
-        'username',
-      ].sort(),
+      ['created_at', 'email', 'email_verified', 'id', 'selected_location', 'username'].sort(),
     );
     expect(user.created_at).toBe(new Date(user.created_at).toISOString());
+  });
+
+  it('serializes a stored Selected Location as the wire DTO', async () => {
+    await appRef.app.db.insert(selected_locations).values({
+      user_id: auth.userId,
+      location: { x: 20.03, y: 50.07 },
+      city: 'Kraków',
+      country: 'Poland',
+    });
+
+    const response = await appRef.app.inject({
+      method: 'GET',
+      url: '/users/me',
+      cookies: { accessToken: auth.accessToken },
+    });
+
+    expect(Object.keys(response.json().user.selected_location).sort()).toEqual(
+      ['city', 'country', 'district', 'location', 'municipality', 'postal_code', 'region'].sort(),
+    );
   });
 
   it.each(['password_hash', 'email_verified_at', 'updated_at'])(
@@ -105,25 +108,29 @@ describe('GET /users/me', () => {
       method: 'PATCH',
       url: '/users/me',
       cookies: { accessToken: auth.accessToken },
-      payload: {
-        username: 'KrakowRider',
-        favorite_location: { x: 19.931061973572554, y: 50.06231629701497 },
-        favorite_city: 'Kraków',
-        favorite_country: 'Poland',
-      },
+      payload: { username: 'KrakowRider' },
     });
 
     expect(response.statusCode).toBe(200);
     expect(response.json().updatedUser).toMatchObject({
       id: auth.userId,
       username: 'KrakowRider',
-      favorite_location: { x: 19.931061973572554, y: 50.06231629701497 },
-      favorite_city: 'Kraków',
-      favorite_country: 'Poland',
+      selected_location: null,
     });
   });
 
-  it('records the choice when a favourite location is patched, without the client sending it', async () => {
+  it('rejects an empty update', async () => {
+    const response = await appRef.app.inject({
+      method: 'PATCH',
+      url: '/users/me',
+      cookies: { accessToken: auth.accessToken },
+      payload: {},
+    });
+
+    expect(response.statusCode).toBe(400);
+  });
+
+  it('rejects an update carrying only the retired favourite fields', async () => {
     const response = await appRef.app.inject({
       method: 'PATCH',
       url: '/users/me',
@@ -132,64 +139,14 @@ describe('GET /users/me', () => {
         favorite_location: { x: 21.017532, y: 52.237049 },
         favorite_city: 'Warsaw',
         favorite_country: 'Poland',
+        favorite_location_chosen: true,
       },
     });
 
-    expect(response.statusCode).toBe(200);
-    expect(response.json().updatedUser.favorite_location_chosen).toBe(true);
+    expect(response.statusCode).toBe(400);
   });
 
-  it('clears the optional place names a new location does not carry', async () => {
-    await appRef.app.db
-      .update(users)
-      .set({
-        favorite_municipality: 'Kraków',
-        favorite_region: 'Lesser Poland Voivodeship',
-        favorite_postal_code: '31-234',
-      })
-      .where(eq(users.id, auth.userId));
-
-    const response = await appRef.app.inject({
-      method: 'PATCH',
-      url: '/users/me',
-      cookies: { accessToken: auth.accessToken },
-      payload: {
-        favorite_location: { x: 21.017532, y: 52.237049 },
-        favorite_city: 'Warsaw',
-        favorite_country: 'Poland',
-        favorite_municipality: null,
-        favorite_region: null,
-        favorite_postal_code: null,
-      },
-    });
-
-    expect(response.statusCode).toBe(200);
-    expect(response.json().updatedUser).toMatchObject({
-      favorite_city: 'Warsaw',
-      favorite_municipality: null,
-      favorite_region: null,
-      favorite_postal_code: null,
-    });
-  });
-
-  it('records the choice on its own, leaving the rider coordinates untouched', async () => {
-    const response = await appRef.app.inject({
-      method: 'PATCH',
-      url: '/users/me',
-      cookies: { accessToken: auth.accessToken },
-      payload: { favorite_location_chosen: true },
-    });
-
-    expect(response.statusCode).toBe(200);
-    expect(response.json().updatedUser).toMatchObject({
-      favorite_location_chosen: true,
-      favorite_location: DEFAULT_FAVORITE_LOCATION.favorite_location,
-      favorite_city: 'Kraków',
-      favorite_country: 'Poland',
-    });
-  });
-
-  it('returns the seeded default favourite location for a freshly registered rider', async () => {
+  it('returns no Selected Location for a rider who has not picked one', async () => {
     const response = await appRef.app.inject({
       method: 'GET',
       url: '/users/me',
@@ -197,23 +154,20 @@ describe('GET /users/me', () => {
     });
 
     expect(response.statusCode).toBe(200);
-    expect(response.json().user).toMatchObject({
-      favorite_location: DEFAULT_FAVORITE_LOCATION.favorite_location,
-      favorite_city: 'Kraków',
-      favorite_country: 'Poland',
-      favorite_district: 'Nowa Huta',
-      favorite_municipality: null,
-      favorite_region: null,
-      favorite_postal_code: null,
-      favorite_location_chosen: false,
-    });
+    expect(response.json().user.selected_location).toBeNull();
   });
 
-  it('returns a null district for a rider whose location has none', async () => {
-    await appRef.app.db
-      .update(users)
-      .set({ favorite_district: null })
-      .where(eq(users.id, auth.userId));
+  it('returns the stored Selected Location', async () => {
+    const stored = {
+      location: { x: 19.931061973572554, y: 50.06231629701497 },
+      city: 'Kraków',
+      district: 'Stare Miasto',
+      municipality: 'Kraków',
+      region: 'Lesser Poland Voivodeship',
+      country: 'Poland',
+      postal_code: '31-234',
+    };
+    await appRef.app.db.insert(selected_locations).values({ user_id: auth.userId, ...stored });
 
     const response = await appRef.app.inject({
       method: 'GET',
@@ -222,98 +176,6 @@ describe('GET /users/me', () => {
     });
 
     expect(response.statusCode).toBe(200);
-    expect(response.json().user.favorite_district).toBeNull();
-  });
-
-  it('stores the district a rider picks', async () => {
-    const response = await appRef.app.inject({
-      method: 'PATCH',
-      url: '/users/me',
-      cookies: { accessToken: auth.accessToken },
-      payload: {
-        favorite_location: { x: 13.40252, y: 52.49883 },
-        favorite_city: 'Berlin',
-        favorite_country: 'Germany',
-        favorite_district: 'Kreuzberg',
-      },
-    });
-
-    expect(response.statusCode).toBe(200);
-    expect(response.json().updatedUser).toMatchObject({
-      favorite_city: 'Berlin',
-      favorite_district: 'Kreuzberg',
-    });
-  });
-
-  it('clears the district when a new location has none', async () => {
-    await appRef.app.db
-      .update(users)
-      .set({ favorite_district: 'Nowa Huta' })
-      .where(eq(users.id, auth.userId));
-
-    const response = await appRef.app.inject({
-      method: 'PATCH',
-      url: '/users/me',
-      cookies: { accessToken: auth.accessToken },
-      payload: {
-        favorite_location: { x: 10.13843, y: 46.53829 },
-        favorite_city: 'Livigno',
-        favorite_country: 'Italy',
-        favorite_district: null,
-      },
-    });
-
-    expect(response.statusCode).toBe(200);
-    expect(response.json().updatedUser).toMatchObject({
-      favorite_city: 'Livigno',
-      favorite_district: null,
-    });
-  });
-
-  it('leaves the district untouched when an update does not mention it', async () => {
-    await appRef.app.db
-      .update(users)
-      .set({ favorite_district: 'Nowa Huta' })
-      .where(eq(users.id, auth.userId));
-
-    const response = await appRef.app.inject({
-      method: 'PATCH',
-      url: '/users/me',
-      cookies: { accessToken: auth.accessToken },
-      payload: { username: 'KrakowRider' },
-    });
-
-    expect(response.statusCode).toBe(200);
-    expect(response.json().updatedUser.favorite_district).toBe('Nowa Huta');
-  });
-
-  it('returns the stored favourite location once set', async () => {
-    await appRef.app.db
-      .update(users)
-      .set({
-        favorite_location: { x: 19.931061973572554, y: 50.06231629701497 },
-        favorite_city: 'Kraków',
-        favorite_municipality: 'Kraków',
-        favorite_region: 'Lesser Poland Voivodeship',
-        favorite_country: 'Poland',
-        favorite_postal_code: '31-234',
-      })
-      .where(eq(users.id, auth.userId));
-
-    const response = await appRef.app.inject({
-      method: 'GET',
-      url: '/users/me',
-      cookies: { accessToken: auth.accessToken },
-    });
-
-    expect(response.statusCode).toBe(200);
-    expect(response.json().user).toMatchObject({
-      favorite_location: { x: 19.931061973572554, y: 50.06231629701497 },
-      favorite_city: 'Kraków',
-      favorite_municipality: 'Kraków',
-      favorite_region: 'Lesser Poland Voivodeship',
-      favorite_country: 'Poland',
-      favorite_postal_code: '31-234',
-    });
+    expect(response.json().user.selected_location).toEqual(stored);
   });
 });

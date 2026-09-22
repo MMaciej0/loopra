@@ -1,8 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { eq } from 'drizzle-orm';
-import { DEFAULT_FAVORITE_LOCATION } from '@loopra/domain';
 import { useApp } from '../../helpers/app.js';
-import { users } from '../../../src/db/schema.js';
+import { selected_locations, users } from '../../../src/db/schema.js';
 
 describe('POST /auth/register', () => {
   const appRef = useApp();
@@ -35,7 +34,7 @@ describe('POST /auth/register', () => {
     expect(refreshToken?.value).toMatch(/^[0-9a-f-]{36}\.[0-9a-f]{64}$/); // {familyUuid}.{rawToken}
   });
 
-  it('seeds the default favourite location with the choice not yet made', async () => {
+  it('leaves the new rider without a Selected Location', async () => {
     await appRef.app.inject({
       method: 'POST',
       url: '/auth/register',
@@ -47,12 +46,12 @@ describe('POST /auth/register', () => {
       .from(users)
       .where(eq(users.email, 'test@example.com'))
       .limit(1);
+    const selectedLocations = await appRef.app.db
+      .select()
+      .from(selected_locations)
+      .where(eq(selected_locations.user_id, user.id));
 
-    expect(user.favorite_location).toEqual(DEFAULT_FAVORITE_LOCATION.favorite_location);
-    expect(user.favorite_city).toBe('Kraków');
-    expect(user.favorite_district).toBe('Nowa Huta');
-    expect(user.favorite_country).toBe('Poland');
-    expect(user.favorite_location_chosen).toBe(false);
+    expect(selectedLocations).toEqual([]);
   });
 
   it('returns 409 when email already exists', async () => {

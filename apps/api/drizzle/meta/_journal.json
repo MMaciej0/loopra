@@ -183,6 +183,13 @@
       "when": 1789463304850,
       "tag": "0025_melted_morgan_stark",
       "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "7",
+      "when": 1790080875798,
+      "tag": "0026_selected_locations",
+      "breakpoints": true
     }
   ]
 }

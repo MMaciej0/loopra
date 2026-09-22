@@ -1,7 +1,6 @@
 import { eq } from 'drizzle-orm';
 import bcrypt from 'bcrypt';
 import type { FastifyInstance } from 'fastify';
-import { DEFAULT_FAVORITE_LOCATION } from '@loopra/domain';
 import { users } from '../../../db/schema.js';
 import { createTokenFamily } from './tokenFamily.js';
 import { sendEmailVerification } from './sendEmailVerification.js';
@@ -32,7 +31,7 @@ export const registerUser = async ({ fastify, registerCredentials }: RegisterUse
 
   const [user] = await fastify.db
     .insert(users)
-    .values({ email, password_hash: passwordHash, username, ...DEFAULT_FAVORITE_LOCATION })
+    .values({ email, password_hash: passwordHash, username })
     .returning();
 
   const { familyUuid, rawRefreshToken } = await createTokenFamily(fastify.redis, user.id);

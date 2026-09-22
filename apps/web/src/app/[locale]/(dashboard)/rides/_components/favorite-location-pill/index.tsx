@@ -1,25 +1,25 @@
-import type { CurrentUser } from '@loopra/domain';
+import type { SelectedLocation } from '@loopra/domain';
 import { formatLocationLabel, type LocationSuggestion } from '@/utils/geocoding';
 import { getCurrentUser } from '@/utils/user';
 import { FavoriteLocationPillDialog } from './dialog';
 
-const STORED_LOCATION_ID = 'loopra:stored-favorite-location';
+const STORED_LOCATION_ID = 'loopra:stored-selected-location';
 
-function toStoredLocation(user: CurrentUser): LocationSuggestion {
+function toStoredLocation(selectedLocation: SelectedLocation): LocationSuggestion {
   const parts = {
-    city: user.favorite_city,
-    district: user.favorite_district ?? '',
-    country: user.favorite_country,
+    city: selectedLocation.city,
+    district: selectedLocation.district ?? '',
+    country: selectedLocation.country,
   };
 
   return {
     id: STORED_LOCATION_ID,
     label: formatLocationLabel(parts),
-    coords: user.favorite_location,
+    coords: selectedLocation.location,
     ...parts,
-    region: user.favorite_region ?? '',
-    municipality: user.favorite_municipality ?? '',
-    postal_code: user.favorite_postal_code ?? '',
+    region: selectedLocation.region ?? '',
+    municipality: selectedLocation.municipality ?? '',
+    postal_code: selectedLocation.postal_code ?? '',
     full_address: '',
   };
 }
@@ -27,9 +27,9 @@ function toStoredLocation(user: CurrentUser): LocationSuggestion {
 export async function FavoriteLocationPill() {
   const user = await getCurrentUser();
 
-  if (!user) {
+  if (!user?.selected_location) {
     return null;
   }
 
-  return <FavoriteLocationPillDialog storedLocation={toStoredLocation(user)} />;
+  return <FavoriteLocationPillDialog storedLocation={toStoredLocation(user.selected_location)} />;
 }

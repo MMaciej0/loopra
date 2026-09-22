@@ -38,14 +38,19 @@ export const users = pgTable('users', {
     .$onUpdate(() => new Date()),
   email_verified: boolean().notNull().default(false),
   email_verified_at: timestamp({ withTimezone: true }),
-  favorite_location: geometry({ type: 'point', mode: 'xy', srid: 4326 }).notNull(),
-  favorite_city: text().notNull(),
-  favorite_district: text(),
-  favorite_municipality: text(),
-  favorite_region: text(),
-  favorite_country: text().notNull(),
-  favorite_postal_code: text(),
-  favorite_location_chosen: boolean().notNull().default(false),
+});
+
+export const selected_locations = pgTable('selected_locations', {
+  user_id: uuid()
+    .primaryKey()
+    .references(() => users.id, { onDelete: 'cascade' }),
+  location: geometry({ type: 'point', mode: 'xy', srid: 4326 }).notNull(),
+  city: text().notNull(),
+  district: text(),
+  municipality: text(),
+  region: text(),
+  country: text().notNull(),
+  postal_code: text(),
 });
 
 export const oauth_accounts = pgTable(

@@ -1,5 +1,4 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { DEFAULT_FAVORITE_LOCATION } from '@loopra/domain';
 import { useApp } from '../../helpers/app.js';
 import { users } from '../../../src/db/schema.js';
 import { eq } from 'drizzle-orm';
@@ -36,7 +35,7 @@ describe('POST /auth/resend-verification-email', () => {
     const USER_EMAIL = 'resend@example.com';
 
     beforeEach(async () => {
-      await appRef.app.db.insert(users).values({ email: USER_EMAIL, ...DEFAULT_FAVORITE_LOCATION });
+      await appRef.app.db.insert(users).values({ email: USER_EMAIL });
     });
 
     it('returns 200', async () => {
@@ -82,7 +81,6 @@ describe('POST /auth/resend-verification-email', () => {
         email: USER_EMAIL,
         email_verified: true,
         email_verified_at: new Date(),
-        ...DEFAULT_FAVORITE_LOCATION,
       });
     });
 

@@ -1,16 +1,20 @@
-import { eq } from 'drizzle-orm';
+import { eq, getTableColumns } from 'drizzle-orm';
 import type { Db } from '../../../db/index.js';
-import { users } from '../../../db/schema.js';
+import { selected_locations, users } from '../../../db/schema.js';
 import { UserNotFoundError } from '../errors.js';
 
-export const getCurrentUser = async (db: Db, userId: string) => {
-  const user = await db.query.users.findFirst({
-    where: eq(users.id, userId),
-  });
+const { user_id: _userId, ...selectedLocationColumns } = getTableColumns(selected_locations);
 
-  if (!user) {
+export const getCurrentUser = async (db: Db, userId: string) => {
+  const [row] = await db
+    .select({ user: users, selected_location: selectedLocationColumns })
+    .from(users)
+    .leftJoin(selected_locations, eq(selected_locations.user_id, users.id))
+    .where(eq(users.id, userId));
+
+  if (!row) {
     throw new UserNotFoundError();
   }
 
-  return user;
+  return { ...row.user, selected_location: row.selected_location };
 };
