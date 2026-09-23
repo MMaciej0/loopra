@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useState, useTransition } from 'react';
+import { useState, useTransition } from 'react';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import {
@@ -12,8 +12,8 @@ import {
   DialogSubheader,
   DialogTitle,
 } from '@/components/ui/dialog';
+import { LocationModalBody } from '@/components/location-modal';
 import type { LocationSuggestion } from '@/utils/geocoding';
-import { LocationPicker, SelectedLocationPreview } from '../location-picker';
 import {
   acceptDefaultSelectedLocation,
   saveSelectedLocation,
@@ -23,13 +23,12 @@ export function FirstRunLocationDialog() {
   const t = useTranslations('FavoriteLocation');
   const [open, setOpen] = useState(true);
   const [isAcceptingDefault, startAcceptDefaultTransition] = useTransition();
-  const [isSaving, startSaveTransition] = useTransition();
+  const [isApplying, startApplyTransition] = useTransition();
   const [errorKey, setErrorKey] = useState<'defaultError' | 'saveError' | null>(null);
-  const [selectedLocation, setSelectedLocation] = useState<LocationSuggestion | null>(null);
-  const comboboxPortalRef = useRef<HTMLDivElement>(null);
+  const [pendingLocation, setPendingLocation] = useState<LocationSuggestion | null>(null);
 
   const acceptDefault = () => {
-    if (isAcceptingDefault || isSaving) return;
+    if (isAcceptingDefault || isApplying) return;
 
     setErrorKey(null);
     startAcceptDefaultTransition(async () => {
@@ -43,12 +42,12 @@ export function FirstRunLocationDialog() {
     });
   };
 
-  const save = () => {
-    if (!selectedLocation || isSaving) return;
+  const showRides = () => {
+    if (!pendingLocation || isApplying) return;
 
     setErrorKey(null);
-    startSaveTransition(async () => {
-      const result = await saveSelectedLocation(selectedLocation);
+    startApplyTransition(async () => {
+      const result = await saveSelectedLocation(pendingLocation);
 
       if (result.ok) {
         setOpen(false);
@@ -72,29 +71,26 @@ export function FirstRunLocationDialog() {
           <DialogDescription>{t('firstRun.description')}</DialogDescription>
         </DialogHeader>
 
-        <div ref={comboboxPortalRef}>
-          <div className="flex flex-col gap-3">
-            <LocationPicker
-              value={selectedLocation}
-              onSelect={(location) => {
-                setErrorKey(null);
-                setSelectedLocation(location);
-              }}
-              portalContainer={comboboxPortalRef}
-            />
-
-            <SelectedLocationPreview location={selectedLocation} />
-
-            {errorKey && <p className="text-destructive text-xs">{t(errorKey)}</p>}
-          </div>
-        </div>
+        <LocationModalBody
+          pendingLocation={pendingLocation}
+          onPick={(location) => {
+            setErrorKey(null);
+            setPendingLocation(location);
+          }}
+          errorMessage={errorKey ? t(errorKey) : undefined}
+        />
 
         <DialogFooter>
           <Button variant="ghost" loading={isAcceptingDefault} onClick={acceptDefault}>
             {t('firstRun.useDefault')}
           </Button>
-          <Button variant="accent" disabled={!selectedLocation} loading={isSaving} onClick={save}>
-            {t('save')}
+          <Button
+            variant="accent"
+            disabled={!pendingLocation}
+            loading={isApplying}
+            onClick={showRides}
+          >
+            {t('showRides')}
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -1,6 +1,6 @@
 'use client';
 
-import { Loader2, MapPin } from 'lucide-react';
+import { Loader2 } from 'lucide-react';
 import { useEffect, useRef, useState, type RefObject } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import {
@@ -155,21 +155,5 @@ export function LocationPicker({
         </ComboboxList>
       </ComboboxContent>
     </Combobox>
-  );
-}
-
-export function SelectedLocationPreview({ location }: { location: LocationSuggestion | null }) {
-  const t = useTranslations('FavoriteLocation');
-
-  return (
-    <div className="border-border bg-muted/40 flex min-h-40 flex-col items-center justify-center rounded-xl border border-dashed p-5 text-center">
-      <span className="bg-secondary text-accent flex size-10 items-center justify-center rounded-full">
-        <MapPin className="size-5" />
-      </span>
-      <p className="mt-3 text-sm font-medium">{location?.label ?? t('picker.emptyPreviewTitle')}</p>
-      {!location && (
-        <p className="text-muted-foreground mt-1 text-xs">{t('picker.emptyPreviewHint')}</p>
-      )}
-    </div>
   );
 }
