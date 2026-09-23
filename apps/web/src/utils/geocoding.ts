@@ -1,5 +1,6 @@
 import * as maptilersdk from '@maptiler/sdk';
 import { formatLocationLabel } from '@loopra/domain';
+import type { SelectedLocation } from '@loopra/domain';
 import type { GeocodingFeature } from '@maptiler/sdk';
 import type { Coords } from '@/app/[locale]/(dashboard)/rides/new/schema';
 
@@ -143,4 +144,23 @@ export async function forwardGeocode(
       ...location,
     };
   });
+}
+
+export function toLocationSuggestion(location: SelectedLocation, id: string): LocationSuggestion {
+  const parts = {
+    city: location.city,
+    district: location.district ?? '',
+    country: location.country,
+  };
+
+  return {
+    id,
+    label: formatLocationLabel(parts),
+    coords: location.location,
+    ...parts,
+    region: location.region ?? '',
+    municipality: location.municipality ?? '',
+    postal_code: location.postal_code ?? '',
+    full_address: '',
+  };
 }
