@@ -1,14 +1,10 @@
 import { eq } from 'drizzle-orm';
 import type { Db } from '../../../db/index.js';
 import { selected_locations, users } from '../../../db/schema.js';
-import { ReplaceSelectedLocationBody } from '../schema.js';
+import { LocationBody } from '../schema.js';
 import { UserNotFoundError } from '../errors.js';
 
-export const replaceSelectedLocation = async (
-  db: Db,
-  userId: string,
-  body: ReplaceSelectedLocationBody,
-) => {
+export const replaceSelectedLocation = async (db: Db, userId: string, body: LocationBody) => {
   const [user] = await db.select({ id: users.id }).from(users).where(eq(users.id, userId));
 
   if (!user) {

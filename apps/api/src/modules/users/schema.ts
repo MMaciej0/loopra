@@ -8,7 +8,7 @@ export const UpdateUserBodySchema = z
 
 export type UpdateUserBody = z.infer<typeof UpdateUserBodySchema>;
 
-export const ReplaceSelectedLocationBodySchema = z.object({
+export const LocationBodySchema = z.object({
   location: z.object({
     x: z.coerce.number().min(-180).max(180),
     y: z.coerce.number().min(-90).max(90),
@@ -21,4 +21,4 @@ export const ReplaceSelectedLocationBodySchema = z.object({
   postal_code: z.string().trim().nullable().default(null),
 });
 
-export type ReplaceSelectedLocationBody = z.infer<typeof ReplaceSelectedLocationBodySchema>;
+export type LocationBody = z.infer<typeof LocationBodySchema>;

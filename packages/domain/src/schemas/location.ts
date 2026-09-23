@@ -20,3 +20,22 @@ export const UpdateSelectedLocationResponseSchema = Type.Object(
   { selected_location: SelectedLocationSchema },
   { additionalProperties: false },
 );
+
+export const FavoriteLocationSchema = Type.Object(
+  {
+    id: Type.String({ format: 'uuid' }),
+    ...LocationProperties,
+    created_at: Type.String({ format: 'date-time' }),
+  },
+  { additionalProperties: false },
+);
+
+export const ListFavoriteLocationsResponseSchema = Type.Object(
+  { favorite_locations: Type.Array(FavoriteLocationSchema) },
+  { additionalProperties: false },
+);
+
+export const CreateFavoriteLocationResponseSchema = Type.Object(
+  { favorite_location: FavoriteLocationSchema },
+  { additionalProperties: false },
+);
