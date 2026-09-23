@@ -1,0 +1,1 @@
+CREATE INDEX "favorite_locations_user_id_idx" ON "favorite_locations" USING btree ("user_id");
