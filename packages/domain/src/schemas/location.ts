@@ -35,7 +35,7 @@ export const ListFavoriteLocationsResponseSchema = Type.Object(
   { additionalProperties: false },
 );
 
-export const CreateFavoriteLocationResponseSchema = Type.Object(
+export const FavoriteLocationResponseSchema = Type.Object(
   { favorite_location: FavoriteLocationSchema },
   { additionalProperties: false },
 );

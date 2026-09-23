@@ -3,6 +3,7 @@
 import { useState, useTransition } from 'react';
 import { MAX_FAVORITE_LOCATIONS } from '@loopra/domain';
 import {
+  deleteFavoriteLocation,
   saveFavoriteLocation,
   saveSelectedLocation,
 } from '@/app/[locale]/(dashboard)/_actions/selected-location';
@@ -13,7 +14,11 @@ type PendingPick = Readonly<{
   source: 'search' | 'favorite';
 }>;
 
-type ErrorKey = 'saveError' | 'favorites.saveError' | 'firstRun.defaultError';
+type ErrorKey =
+  | 'saveError'
+  | 'favorites.saveError'
+  | 'favorites.deleteError'
+  | 'firstRun.defaultError';
 
 type Options = Readonly<{
   favorites: readonly LocationSuggestion[];
@@ -29,6 +34,8 @@ export function useLocationModal({ favorites, selected, onApplied }: Options) {
   const [errorKey, setErrorKey] = useState<ErrorKey | null>(null);
   const [isApplying, startApplyTransition] = useTransition();
   const [isSavingFavorite, startSaveFavoriteTransition] = useTransition();
+  const [deletingFavoriteId, setDeletingFavoriteId] = useState<string | null>(null);
+  const [, startDeleteFavoriteTransition] = useTransition();
 
   const selectedLabel = selected?.label ?? null;
   const isFull = favorites.length >= MAX_FAVORITE_LOCATIONS;
@@ -87,6 +94,24 @@ export function useLocationModal({ favorites, selected, onApplied }: Options) {
     });
   };
 
+  const deleteFavorite = (favorite: LocationSuggestion) => {
+    if (deletingFavoriteId) return;
+
+    setErrorKey(null);
+    setDeletingFavoriteId(favorite.id);
+    startDeleteFavoriteTransition(async () => {
+      const result = await deleteFavoriteLocation(favorite.id);
+
+      if (result.ok) {
+        setPending((current) => (current?.location.label === favorite.label ? null : current));
+      } else {
+        setErrorKey('favorites.deleteError');
+      }
+
+      setDeletingFavoriteId(null);
+    });
+  };
+
   const showRides = () => {
     if (!pending || pending.location.label === selectedLabel || isApplying) return;
 
@@ -117,9 +142,11 @@ export function useLocationModal({ favorites, selected, onApplied }: Options) {
     setErrorKey,
     isApplying,
     isSavingFavorite,
+    deletingFavoriteId,
     pickFromSearch,
     pickFavorite,
     saveShownAsFavorite,
+    deleteFavorite,
     showRides,
     reset,
   };

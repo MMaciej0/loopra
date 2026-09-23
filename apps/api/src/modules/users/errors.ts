@@ -22,3 +22,9 @@ export class DuplicateFavoriteLocationError extends AppError {
     super(409, ERROR_TYPES.DUPLICATE_FAVORITE_LOCATION, 'This place is already saved');
   }
 }
+
+export class FavoriteLocationNotFoundError extends AppError {
+  constructor() {
+    super(404, ERROR_TYPES.FAVORITE_LOCATION_NOT_FOUND, 'Favourite location not found');
+  }
+}
