@@ -1,5 +1,6 @@
 export * from './enums.js';
 export * from './errors.js';
+export * from './location.js';
 export * from './dto/user.js';
 export * from './dto/location.js';
 export * from './dto/route.js';

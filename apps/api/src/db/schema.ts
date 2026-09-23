@@ -53,6 +53,21 @@ export const selected_locations = pgTable('selected_locations', {
   postal_code: text(),
 });
 
+export const favorite_locations = pgTable('favorite_locations', {
+  id: uuid().primaryKey().defaultRandom(),
+  user_id: uuid()
+    .notNull()
+    .references(() => users.id, { onDelete: 'cascade' }),
+  location: geometry({ type: 'point', mode: 'xy', srid: 4326 }).notNull(),
+  city: text().notNull(),
+  district: text(),
+  municipality: text(),
+  region: text(),
+  country: text().notNull(),
+  postal_code: text(),
+  created_at: timestamp({ withTimezone: true }).notNull().defaultNow(),
+});
+
 export const oauth_accounts = pgTable(
   'oauth_accounts',
   {

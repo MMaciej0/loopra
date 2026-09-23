@@ -1,4 +1,5 @@
 import * as maptilersdk from '@maptiler/sdk';
+import { formatLocationLabel } from '@loopra/domain';
 import type { GeocodingFeature } from '@maptiler/sdk';
 import type { Coords } from '@/app/[locale]/(dashboard)/rides/new/schema';
 
@@ -97,13 +98,7 @@ function featureToLocation(feature: GeocodingFeature): RideLocation {
   };
 }
 
-export function formatLocationLabel({
-  district,
-  city,
-  country,
-}: Pick<RideLocation, 'district' | 'city' | 'country'>): string {
-  return [district, city === district ? '' : city, country].filter(Boolean).join(', ');
-}
+export { formatLocationLabel };
 
 // Reverse geocode picked coords → the location fields our ride form needs,
 // localized to `language` (ISO 639-1, e.g. "pl" / "en"). Passing the language

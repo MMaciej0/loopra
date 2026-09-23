@@ -5,6 +5,8 @@ export const LAT_MAX = 90;
 
 export const LOCATION_NAME_MAX_LENGTH = 40;
 
+export const MAX_FAVORITE_LOCATIONS = 5;
+
 export const DEFAULT_SELECTED_LOCATION = {
   location: { x: 20.037364158779383, y: 50.07271576504815 },
   city: 'Kraków',
