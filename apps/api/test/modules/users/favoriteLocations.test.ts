@@ -147,6 +147,25 @@ describe('/users/me/favorite-locations', () => {
     expect(response.json()).toMatchObject({ type: 'DUPLICATE_FAVORITE_LOCATION' });
   });
 
+  it('saves one row when the same place arrives twice at once', async () => {
+    const responses = await Promise.all([create(KREUZBERG), create(KREUZBERG)]);
+
+    expect(responses.map((response) => response.statusCode).sort((a, b) => a - b)).toEqual([
+      200, 409,
+    ]);
+    expect((await list()).json().favorite_locations).toHaveLength(1);
+  });
+
+  it(`holds the cap at ${MAX_FAVORITE_LOCATIONS} when saves arrive at once`, async () => {
+    const places = Array.from({ length: MAX_FAVORITE_LOCATIONS + 2 }, (_, i) =>
+      place(`District ${i}`),
+    );
+
+    await Promise.all(places.map((payload) => create(payload)));
+
+    expect((await list()).json().favorite_locations).toHaveLength(MAX_FAVORITE_LOCATIONS);
+  });
+
   it('keeps one rider’s favourites out of another’s list', async () => {
     await create(KREUZBERG);
     const other = await registerUser(appRef.app, 'other@example.com');

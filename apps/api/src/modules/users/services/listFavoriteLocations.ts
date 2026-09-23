@@ -1,8 +1,8 @@
 import { asc, eq } from 'drizzle-orm';
-import type { Db } from '../../../db/index.js';
+import type { Db, Tx } from '../../../db/index.js';
 import { favorite_locations } from '../../../db/schema.js';
 
-export const listFavoriteLocations = async (db: Db, userId: string) =>
+export const listFavoriteLocations = async (db: Db | Tx, userId: string) =>
   db
     .select()
     .from(favorite_locations)
