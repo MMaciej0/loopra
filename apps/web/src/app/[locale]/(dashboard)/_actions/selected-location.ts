@@ -59,3 +59,16 @@ export async function saveSelectedLocation(location: LocationSuggestion) {
   refresh();
   return { ok: true as const };
 }
+
+export async function deleteFavoriteLocation(id: string) {
+  const response = await protectedRequest(`/users/me/favorite-locations/${id}`, {
+    method: 'DELETE',
+  });
+
+  if (!response.ok) {
+    return { ok: false as const, errorType: response.errorType };
+  }
+
+  refresh();
+  return { ok: true as const };
+}

@@ -39,9 +39,12 @@
       "counter": "{count}/{max}",
       "empty": "Zapisz okolice, z których jeździsz, i przełączaj się między nimi jednym kliknięciem.",
       "saveToFavorites": "Zapisz tę okolicę",
+      "remove": "Usuń z zapisanych okolic",
+      "removeLabel": "Usuń {location} z zapisanych okolic",
       "full": "Masz już pięć zapisanych okolic — zwolnij miejsce, a ta do nich dołączy.",
       "selectedHint": "Tutaj pokazujemy jazdy",
-      "saveError": "Nie udało się zapisać tego miejsca. Spróbuj ponownie."
+      "saveError": "Nie udało się zapisać tego miejsca. Spróbuj ponownie.",
+      "deleteError": "Nie udało się usunąć tego miejsca. Spróbuj ponownie."
     },
     "pill": {
       "eyebrow": "Ulubiona lokalizacja",

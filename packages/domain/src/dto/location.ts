@@ -1,6 +1,6 @@
 import type { Static } from 'typebox';
 import type {
-  CreateFavoriteLocationResponseSchema,
+  FavoriteLocationResponseSchema,
   FavoriteLocationSchema,
   ListFavoriteLocationsResponseSchema,
   SelectedLocationSchema,
@@ -11,4 +11,4 @@ export type SelectedLocation = Static<typeof SelectedLocationSchema>;
 export type UpdateSelectedLocationResponse = Static<typeof UpdateSelectedLocationResponseSchema>;
 export type FavoriteLocation = Static<typeof FavoriteLocationSchema>;
 export type ListFavoriteLocationsResponse = Static<typeof ListFavoriteLocationsResponseSchema>;
-export type CreateFavoriteLocationResponse = Static<typeof CreateFavoriteLocationResponseSchema>;
+export type FavoriteLocationResponse = Static<typeof FavoriteLocationResponseSchema>;
