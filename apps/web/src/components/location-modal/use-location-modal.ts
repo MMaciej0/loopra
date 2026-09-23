@@ -31,6 +31,7 @@ export type LocationModal = ReturnType<typeof useLocationModal>;
 export function useLocationModal({ favorites, selected, onApplied }: Options) {
   const [pending, setPending] = useState<PendingPick | null>(null);
   const [searchKey, setSearchKey] = useState(0);
+  const [justSavedLabel, setJustSavedLabel] = useState<string | null>(null);
   const [errorKey, setErrorKey] = useState<ErrorKey | null>(null);
   const [isApplying, startApplyTransition] = useTransition();
   const [isSavingFavorite, startSaveFavoriteTransition] = useTransition();
@@ -46,6 +47,7 @@ export function useLocationModal({ favorites, selected, onApplied }: Options) {
 
   const reset = () => {
     setPending(null);
+    setJustSavedLabel(null);
     setErrorKey(null);
     clearSearch();
   };
@@ -89,7 +91,8 @@ export function useLocationModal({ favorites, selected, onApplied }: Options) {
         return;
       }
 
-      setPending({ location, source: 'favorite' });
+      setJustSavedLabel(location.label);
+      setPending((current) => (current ? { location, source: 'favorite' } : null));
       clearSearch();
     });
   };
@@ -135,7 +138,7 @@ export function useLocationModal({ favorites, selected, onApplied }: Options) {
     shown,
     isShownPending: pending !== null,
     canSaveShown,
-    pendingLabel: pending?.location.label ?? null,
+    pendingLabel: pending?.location.label ?? justSavedLabel,
     canApply: pending !== null && pending.location.label !== selectedLabel,
     isFull,
     errorKey,
