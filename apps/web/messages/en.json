@@ -39,9 +39,12 @@
       "counter": "{count}/{max}",
       "empty": "Save the areas you ride from and switch between them in one tap.",
       "saveToFavorites": "Save to my places",
+      "remove": "Remove from my places",
+      "removeLabel": "Remove {location} from my places",
       "full": "That's all five saved — free up a spot and this one can join them.",
       "selectedHint": "Rides are showing here",
-      "saveError": "Could not save this place. Try again."
+      "saveError": "Could not save this place. Try again.",
+      "deleteError": "Could not remove this place. Try again."
     },
     "pill": {
       "eyebrow": "Favourite location",

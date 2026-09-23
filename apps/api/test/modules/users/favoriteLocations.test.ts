@@ -34,9 +34,20 @@ describe('/users/me/favorite-locations', () => {
       payload: payload as object,
     });
 
+  const remove = (id: string, accessToken: string | null = auth.accessToken) =>
+    appRef.app.inject({
+      method: 'DELETE',
+      url: `/users/me/favorite-locations/${id}`,
+      cookies: accessToken ? { accessToken } : {},
+    });
+
+  const districts = async () =>
+    (await list()).json().favorite_locations.map((f: { district: string }) => f.district);
+
   it('returns 401 when not authenticated', async () => {
     expect((await list(null)).statusCode).toBe(401);
     expect((await create(KREUZBERG, null)).statusCode).toBe(401);
+    expect((await remove(crypto.randomUUID(), null)).statusCode).toBe(401);
   });
 
   it('returns an empty list for a rider who has saved none', async () => {
@@ -165,5 +176,74 @@ describe('/users/me/favorite-locations', () => {
     });
 
     expect(me.json().user.selected_location).toBeNull();
+  });
+
+  it('deletes a favourite, and a later list no longer carries it', async () => {
+    for (const district of ['Kreuzberg', 'Mitte', 'Neukölln']) {
+      await create(place(district));
+    }
+    const [, mitte] = (await list()).json().favorite_locations;
+
+    const response = await remove(mitte.id);
+
+    expect(response.statusCode).toBe(200);
+    expect(response.json().favorite_location).toMatchObject({ id: mitte.id, district: 'Mitte' });
+    expect(await districts()).toEqual(['Kreuzberg', 'Neukölln']);
+  });
+
+  it('deletes the last remaining favourite', async () => {
+    const { favorite_location } = (await create(KREUZBERG)).json();
+
+    expect((await remove(favorite_location.id)).statusCode).toBe(200);
+    expect((await list()).json().favorite_locations).toEqual([]);
+  });
+
+  it('frees a spot at the cap so the next save is accepted', async () => {
+    for (let i = 0; i < MAX_FAVORITE_LOCATIONS; i++) {
+      await create(place(`District ${i}`));
+    }
+    const [oldest] = (await list()).json().favorite_locations;
+
+    await remove(oldest.id);
+
+    expect((await create(place('One more'))).statusCode).toBe(200);
+  });
+
+  it.each([
+    ['an unknown id', crypto.randomUUID()],
+    ['an id that is not a uuid', 'not-a-uuid'],
+  ])('returns 404 for %s', async (_case, id) => {
+    const response = await remove(id);
+
+    expect(response.statusCode).toBe(404);
+    expect(response.json()).toMatchObject({ type: 'FAVORITE_LOCATION_NOT_FOUND' });
+  });
+
+  it('returns 404 for another rider’s favourite, leaving that row standing', async () => {
+    const { favorite_location } = (await create(KREUZBERG)).json();
+    const other = await registerUser(appRef.app, 'other@example.com');
+
+    expect((await remove(favorite_location.id, other.accessToken)).statusCode).toBe(404);
+    expect((await list()).json().favorite_locations).toHaveLength(1);
+  });
+
+  it('leaves the Selected Location untouched when deleting its favourite', async () => {
+    const { favorite_location } = (await create(KREUZBERG)).json();
+    await appRef.app.inject({
+      method: 'PUT',
+      url: '/users/me/selected-location',
+      cookies: { accessToken: auth.accessToken },
+      payload: KREUZBERG,
+    });
+
+    await remove(favorite_location.id);
+
+    const me = await appRef.app.inject({
+      method: 'GET',
+      url: '/users/me',
+      cookies: { accessToken: auth.accessToken },
+    });
+
+    expect(me.json().user.selected_location).toMatchObject({ district: 'Kreuzberg' });
   });
 });

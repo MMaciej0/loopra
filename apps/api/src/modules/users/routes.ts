@@ -1,6 +1,6 @@
 import { FastifyInstance } from 'fastify';
 import {
-  CreateFavoriteLocationResponseSchema,
+  FavoriteLocationResponseSchema,
   GetCurrentUserResponseSchema,
   ListFavoriteLocationsResponseSchema,
   UpdateCurrentUserResponseSchema,
@@ -13,6 +13,7 @@ import { updateUser } from './services/updateUser.js';
 import { replaceSelectedLocation } from './services/replaceSelectedLocation.js';
 import { listFavoriteLocations } from './services/listFavoriteLocations.js';
 import { createFavoriteLocation } from './services/createFavoriteLocation.js';
+import { deleteFavoriteLocation } from './services/deleteFavoriteLocation.js';
 
 export const usersRoutes = (fastify: FastifyInstance, _options: unknown) => {
   fastify.get(
@@ -59,10 +60,21 @@ export const usersRoutes = (fastify: FastifyInstance, _options: unknown) => {
 
   fastify.post(
     '/me/favorite-locations',
-    { schema: { response: { 200: CreateFavoriteLocationResponseSchema } } },
+    { schema: { response: { 200: FavoriteLocationResponseSchema } } },
     async (request, reply) => {
       const body = parseBody(request.body, LocationBodySchema);
       const favorite_location = await createFavoriteLocation(fastify.db, request.user.sub, body);
+
+      return reply.send({ favorite_location });
+    },
+  );
+
+  fastify.delete(
+    '/me/favorite-locations/:id',
+    { schema: { response: { 200: FavoriteLocationResponseSchema } } },
+    async (request, reply) => {
+      const { id } = request.params as { id: string };
+      const favorite_location = await deleteFavoriteLocation(fastify.db, request.user.sub, id);
 
       return reply.send({ favorite_location });
     },

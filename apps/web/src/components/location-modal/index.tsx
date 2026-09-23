@@ -1,6 +1,6 @@
 'use client';
 
-import { Check, Loader2, MapPin, Star } from 'lucide-react';
+import { Check, Loader2, MapPin, Star, Trash2 } from 'lucide-react';
 import { useRef } from 'react';
 import { useTranslations } from 'next-intl';
 import { MAX_FAVORITE_LOCATIONS } from '@loopra/domain';
@@ -40,6 +40,8 @@ export function LocationModalBody({ modal }: Readonly<{ modal: LocationModal }>)
           selectedLabel={modal.selectedLabel}
           pendingLabel={modal.pendingLabel}
           onPick={modal.pickFavorite}
+          onDelete={modal.deleteFavorite}
+          deletingId={modal.deletingFavoriteId}
           note={modal.canSaveShown && modal.isFull ? t('favorites.full') : null}
         />
 
@@ -104,12 +106,16 @@ function FavoritesList({
   selectedLabel,
   pendingLabel,
   onPick,
+  onDelete,
+  deletingId,
   note,
 }: Readonly<{
   favorites: readonly LocationSuggestion[];
   selectedLabel: string | null;
   pendingLabel: string | null;
   onPick: (favorite: LocationSuggestion) => void;
+  onDelete: (favorite: LocationSuggestion) => void;
+  deletingId: string | null;
   note: string | null;
 }>) {
   const t = useTranslations('FavoriteLocation');
@@ -130,17 +136,21 @@ function FavoritesList({
           {favorites.map((favorite) => {
             const isPending = favorite.label === pendingLabel;
             const isSelected = favorite.label === selectedLabel;
+            const isDeleting = favorite.id === deletingId;
 
             return (
-              <li key={favorite.id}>
+              <li
+                key={favorite.id}
+                className={cn(
+                  'border-border hover:border-border-strong flex items-center rounded-[10px] border bg-clip-padding pr-1.5 transition-all',
+                  isPending && 'border-accent bg-accent/10 hover:border-accent',
+                )}
+              >
                 <button
                   type="button"
                   aria-pressed={isPending}
                   onClick={() => onPick(favorite)}
-                  className={cn(
-                    'border-border hover:border-border-strong focus-visible:border-ring focus-visible:ring-ring/50 flex w-full items-center gap-2.5 rounded-[10px] border bg-clip-padding px-3 py-2.5 text-left transition-all focus-visible:ring-3 focus-visible:outline-none',
-                    isPending && 'border-accent bg-accent/10 hover:border-accent',
-                  )}
+                  className="focus-visible:ring-ring/50 flex min-w-0 flex-1 items-center gap-2.5 rounded-l-[9px] px-3 py-2.5 text-left focus-visible:ring-3 focus-visible:outline-none"
                 >
                   <span className="min-w-0 flex-1 truncate text-[12.5px] font-medium">
                     {favorite.label}
@@ -150,6 +160,24 @@ function FavoritesList({
                       <Check aria-hidden className="text-accent size-4 shrink-0" />
                       <span className="sr-only">{t('favorites.selectedHint')}</span>
                     </>
+                  )}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => onDelete(favorite)}
+                  disabled={isDeleting}
+                  title={t('favorites.remove')}
+                  aria-label={t('favorites.removeLabel', { location: favorite.label })}
+                  className={cn(
+                    'text-muted-foreground focus-visible:ring-ring/50 flex size-7 shrink-0 items-center justify-center rounded-md transition-colors focus-visible:ring-3 focus-visible:outline-none',
+                    isDeleting ? 'cursor-not-allowed opacity-60' : 'hover:text-destructive',
+                  )}
+                >
+                  {isDeleting ? (
+                    <Loader2 aria-hidden className="size-3.5 animate-spin" />
+                  ) : (
+                    <Trash2 aria-hidden className="size-3.5" />
                   )}
                 </button>
               </li>
