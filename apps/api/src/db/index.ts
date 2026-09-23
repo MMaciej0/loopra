@@ -7,3 +7,4 @@ export const pool = new Pool({ connectionString: DATABASE_URL });
 export const db = drizzle(pool, { schema });
 
 export type Db = typeof db;
+export type Tx = Parameters<Parameters<Db['transaction']>[0]>[0];
