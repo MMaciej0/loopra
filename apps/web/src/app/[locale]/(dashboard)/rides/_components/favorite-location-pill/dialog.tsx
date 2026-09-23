@@ -1,7 +1,7 @@
 'use client';
 
 import { MapPin } from 'lucide-react';
-import { useRef, useState, useTransition } from 'react';
+import { useState, useTransition } from 'react';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import {
@@ -14,8 +14,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
+import { LocationModalBody } from '@/components/location-modal';
 import type { LocationSuggestion } from '@/utils/geocoding';
-import { LocationPicker, SelectedLocationPreview } from '../../../_components/location-picker';
 import { saveSelectedLocation } from '../../../_actions/selected-location';
 
 type Props = Readonly<{ storedLocation: LocationSuggestion }>;
@@ -23,35 +23,31 @@ type Props = Readonly<{ storedLocation: LocationSuggestion }>;
 export function FavoriteLocationPillDialog({ storedLocation }: Props) {
   const t = useTranslations('FavoriteLocation');
   const [open, setOpen] = useState(false);
-  const [isSaving, startSaveTransition] = useTransition();
-  const [hasSaveError, setHasSaveError] = useState(false);
-  const [selectedLocation, setSelectedLocation] = useState<LocationSuggestion | null>(
-    storedLocation,
-  );
-  const comboboxPortalRef = useRef<HTMLDivElement>(null);
+  const [isApplying, startApplyTransition] = useTransition();
+  const [hasApplyError, setHasApplyError] = useState(false);
+  const [pendingLocation, setPendingLocation] = useState<LocationSuggestion | null>(null);
+
+  const canApply = Boolean(pendingLocation) && pendingLocation?.label !== storedLocation.label;
 
   const onOpenChange = (nextOpen: boolean) => {
-    if (isSaving) return;
+    if (isApplying) return;
 
-    if (nextOpen) {
-      setSelectedLocation(storedLocation);
-      setHasSaveError(false);
-    }
-
+    setPendingLocation(null);
+    setHasApplyError(false);
     setOpen(nextOpen);
   };
 
-  const save = () => {
-    if (!selectedLocation || selectedLocation.id === storedLocation.id || isSaving) return;
+  const showRides = () => {
+    if (!pendingLocation || !canApply || isApplying) return;
 
-    setHasSaveError(false);
-    startSaveTransition(async () => {
-      const result = await saveSelectedLocation(selectedLocation);
+    setHasApplyError(false);
+    startApplyTransition(async () => {
+      const result = await saveSelectedLocation(pendingLocation);
 
       if (result.ok) {
         setOpen(false);
       } else {
-        setHasSaveError(true);
+        setHasApplyError(true);
       }
     });
   };
@@ -78,31 +74,18 @@ export function FavoriteLocationPillDialog({ storedLocation }: Props) {
           <DialogDescription>{t('pill.description')}</DialogDescription>
         </DialogHeader>
 
-        <div ref={comboboxPortalRef}>
-          <div className="flex flex-col gap-3">
-            <LocationPicker
-              value={selectedLocation}
-              onSelect={(location) => {
-                setHasSaveError(false);
-                setSelectedLocation(location);
-              }}
-              portalContainer={comboboxPortalRef}
-            />
-
-            <SelectedLocationPreview location={selectedLocation} />
-
-            {hasSaveError && <p className="text-destructive text-xs">{t('saveError')}</p>}
-          </div>
-        </div>
+        <LocationModalBody
+          pendingLocation={pendingLocation}
+          onPick={(location) => {
+            setHasApplyError(false);
+            setPendingLocation(location);
+          }}
+          errorMessage={hasApplyError ? t('saveError') : undefined}
+        />
 
         <DialogFooter showCancel cancelLabel={t('cancel')}>
-          <Button
-            variant="accent"
-            disabled={!selectedLocation || selectedLocation.id === storedLocation.id}
-            loading={isSaving}
-            onClick={save}
-          >
-            {t('save')}
+          <Button variant="accent" disabled={!canApply} loading={isApplying} onClick={showRides}>
+            {t('showRides')}
           </Button>
         </DialogFooter>
       </DialogContent>

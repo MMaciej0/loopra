@@ -31,7 +31,7 @@
   },
   "FavoriteLocation": {
     "title": "Where do you usually ride?",
-    "save": "Save location",
+    "showRides": "Show rides",
     "cancel": "Cancel",
     "saveError": "Could not save your location. Try again.",
     "pill": {
@@ -51,8 +51,7 @@
       "loadError": "Could not load locations. Try again.",
       "noResults": "No locations found.",
       "startTyping": "Start typing to search for a location.",
-      "emptyPreviewTitle": "Choose a location",
-      "emptyPreviewHint": "Search for a place to use as your favourite location."
+      "pickedLabel": "Picked location"
     }
   },
   "CreateRide": {

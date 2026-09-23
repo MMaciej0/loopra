@@ -31,7 +31,7 @@
   },
   "FavoriteLocation": {
     "title": "Gdzie zwykle jeździsz?",
-    "save": "Zapisz lokalizację",
+    "showRides": "Pokaż jazdy",
     "cancel": "Anuluj",
     "saveError": "Nie udało się zapisać lokalizacji. Spróbuj ponownie.",
     "pill": {
@@ -51,8 +51,7 @@
       "loadError": "Nie udało się wczytać lokalizacji. Spróbuj ponownie.",
       "noResults": "Nie znaleziono lokalizacji.",
       "startTyping": "Zacznij pisać, aby wyszukać lokalizację.",
-      "emptyPreviewTitle": "Wybierz lokalizację",
-      "emptyPreviewHint": "Wyszukaj miejsce, które chcesz ustawić jako ulubioną lokalizację."
+      "pickedLabel": "Wybrane miejsce"
     }
   },
   "CreateRide": {
