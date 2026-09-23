@@ -1,7 +1,7 @@
 'use client';
 
 import { MapPin } from 'lucide-react';
-import { useState, useTransition } from 'react';
+import { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import {
@@ -14,42 +14,28 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { LocationModalBody } from '@/components/location-modal';
+import { LocationModalBody, useLocationModal } from '@/components/location-modal';
 import type { LocationSuggestion } from '@/utils/geocoding';
-import { saveSelectedLocation } from '../../../_actions/selected-location';
 
-type Props = Readonly<{ storedLocation: LocationSuggestion }>;
+type Props = Readonly<{
+  storedLocation: LocationSuggestion;
+  favorites: LocationSuggestion[];
+}>;
 
-export function FavoriteLocationPillDialog({ storedLocation }: Props) {
+export function FavoriteLocationPillDialog({ storedLocation, favorites }: Props) {
   const t = useTranslations('FavoriteLocation');
   const [open, setOpen] = useState(false);
-  const [isApplying, startApplyTransition] = useTransition();
-  const [hasApplyError, setHasApplyError] = useState(false);
-  const [pendingLocation, setPendingLocation] = useState<LocationSuggestion | null>(null);
-
-  const canApply = Boolean(pendingLocation) && pendingLocation?.label !== storedLocation.label;
+  const modal = useLocationModal({
+    favorites,
+    selected: storedLocation,
+    onApplied: () => setOpen(false),
+  });
 
   const onOpenChange = (nextOpen: boolean) => {
-    if (isApplying) return;
+    if (modal.isApplying) return;
 
-    setPendingLocation(null);
-    setHasApplyError(false);
+    modal.reset();
     setOpen(nextOpen);
-  };
-
-  const showRides = () => {
-    if (!pendingLocation || !canApply || isApplying) return;
-
-    setHasApplyError(false);
-    startApplyTransition(async () => {
-      const result = await saveSelectedLocation(pendingLocation);
-
-      if (result.ok) {
-        setOpen(false);
-      } else {
-        setHasApplyError(true);
-      }
-    });
   };
 
   return (
@@ -74,17 +60,15 @@ export function FavoriteLocationPillDialog({ storedLocation }: Props) {
           <DialogDescription>{t('pill.description')}</DialogDescription>
         </DialogHeader>
 
-        <LocationModalBody
-          pendingLocation={pendingLocation}
-          onPick={(location) => {
-            setHasApplyError(false);
-            setPendingLocation(location);
-          }}
-          errorMessage={hasApplyError ? t('saveError') : undefined}
-        />
+        <LocationModalBody modal={modal} />
 
         <DialogFooter showCancel cancelLabel={t('cancel')}>
-          <Button variant="accent" disabled={!canApply} loading={isApplying} onClick={showRides}>
+          <Button
+            variant="accent"
+            disabled={!modal.canApply}
+            loading={modal.isApplying}
+            onClick={modal.showRides}
+          >
             {t('showRides')}
           </Button>
         </DialogFooter>

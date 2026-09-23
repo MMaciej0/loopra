@@ -34,6 +34,15 @@
     "showRides": "Pokaż jazdy",
     "cancel": "Anuluj",
     "saveError": "Nie udało się zapisać lokalizacji. Spróbuj ponownie.",
+    "favorites": {
+      "heading": "Zapisane okolice",
+      "counter": "{count}/{max}",
+      "empty": "Zapisz okolice, z których jeździsz, i przełączaj się między nimi jednym kliknięciem.",
+      "saveToFavorites": "Zapisz tę okolicę",
+      "full": "Masz już pięć zapisanych okolic — zwolnij miejsce, a ta do nich dołączy.",
+      "selectedHint": "Tutaj pokazujemy jazdy",
+      "saveError": "Nie udało się zapisać tego miejsca. Spróbuj ponownie."
+    },
     "pill": {
       "eyebrow": "Ulubiona lokalizacja",
       "description": "Loopra szuka jazd rozpoczynających się w pobliżu tego miejsca.",

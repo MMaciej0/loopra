@@ -34,6 +34,15 @@
     "showRides": "Show rides",
     "cancel": "Cancel",
     "saveError": "Could not save your location. Try again.",
+    "favorites": {
+      "heading": "Saved places",
+      "counter": "{count}/{max}",
+      "empty": "Save the areas you ride from and switch between them in one tap.",
+      "saveToFavorites": "Save to my places",
+      "full": "That's all five saved — free up a spot and this one can join them.",
+      "selectedHint": "Rides are showing here",
+      "saveError": "Could not save this place. Try again."
+    },
     "pill": {
       "eyebrow": "Favourite location",
       "description": "Loopra looks for rides starting near this place.",
