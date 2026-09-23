@@ -75,7 +75,7 @@ A named set of riders who ride together and can publish rides collectively. The 
 _Avoid_: Team
 
 **Favourite Location**:
-A place a rider has saved so they can return to it quickly: coordinates plus the resolved place, named by its resolved label — riders cannot rename it. Optional: a rider has up to five, and a new rider has none. Saving a place the rider already has selects the existing one rather than adding a duplicate. Distinct from Start Point, which belongs to a single ride.
+A place a rider has saved so they can return to it quickly: coordinates plus the resolved place, named by its resolved label — riders cannot rename it. Optional: a rider has up to five, and a new rider has none. A rider cannot save the same place twice: the modal highlights the one they already have, and the API refuses a duplicate. Distinct from Start Point, which belongs to a single ride.
 _Avoid_: Home, base, hometown
 
 **Selected Location**:
