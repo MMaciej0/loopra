@@ -12,47 +12,33 @@ import {
   DialogSubheader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { LocationModalBody } from '@/components/location-modal';
+import { LocationModalBody, useLocationModal } from '@/components/location-modal';
 import type { LocationSuggestion } from '@/utils/geocoding';
-import {
-  acceptDefaultSelectedLocation,
-  saveSelectedLocation,
-} from '../../_actions/selected-location';
+import { acceptDefaultSelectedLocation } from '../../_actions/selected-location';
 
-export function FirstRunLocationDialog() {
+type Props = Readonly<{ favorites: LocationSuggestion[] }>;
+
+export function FirstRunLocationDialog({ favorites }: Props) {
   const t = useTranslations('FavoriteLocation');
   const [open, setOpen] = useState(true);
   const [isAcceptingDefault, startAcceptDefaultTransition] = useTransition();
-  const [isApplying, startApplyTransition] = useTransition();
-  const [errorKey, setErrorKey] = useState<'defaultError' | 'saveError' | null>(null);
-  const [pendingLocation, setPendingLocation] = useState<LocationSuggestion | null>(null);
+  const modal = useLocationModal({
+    favorites,
+    selected: null,
+    onApplied: () => setOpen(false),
+  });
 
   const acceptDefault = () => {
-    if (isAcceptingDefault || isApplying) return;
+    if (isAcceptingDefault || modal.isApplying) return;
 
-    setErrorKey(null);
+    modal.setErrorKey(null);
     startAcceptDefaultTransition(async () => {
       const result = await acceptDefaultSelectedLocation();
 
       if (result.ok) {
         setOpen(false);
       } else {
-        setErrorKey('defaultError');
-      }
-    });
-  };
-
-  const showRides = () => {
-    if (!pendingLocation || isApplying) return;
-
-    setErrorKey(null);
-    startApplyTransition(async () => {
-      const result = await saveSelectedLocation(pendingLocation);
-
-      if (result.ok) {
-        setOpen(false);
-      } else {
-        setErrorKey('saveError');
+        modal.setErrorKey('firstRun.defaultError');
       }
     });
   };
@@ -71,14 +57,7 @@ export function FirstRunLocationDialog() {
           <DialogDescription>{t('firstRun.description')}</DialogDescription>
         </DialogHeader>
 
-        <LocationModalBody
-          pendingLocation={pendingLocation}
-          onPick={(location) => {
-            setErrorKey(null);
-            setPendingLocation(location);
-          }}
-          errorMessage={errorKey ? t(errorKey) : undefined}
-        />
+        <LocationModalBody modal={modal} />
 
         <DialogFooter>
           <Button variant="ghost" loading={isAcceptingDefault} onClick={acceptDefault}>
@@ -86,9 +65,9 @@ export function FirstRunLocationDialog() {
           </Button>
           <Button
             variant="accent"
-            disabled={!pendingLocation}
-            loading={isApplying}
-            onClick={showRides}
+            disabled={!modal.canApply}
+            loading={modal.isApplying}
+            onClick={modal.showRides}
           >
             {t('showRides')}
           </Button>
