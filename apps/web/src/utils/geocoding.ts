@@ -179,6 +179,7 @@ export function toLocationSuggestion(location: SelectedLocation, id: string): Lo
     city: location.city,
     district: location.district ?? '',
     country: location.country,
+    postal_code: location.postal_code ?? '',
   };
 
   return {
@@ -190,7 +191,6 @@ export function toLocationSuggestion(location: SelectedLocation, id: string): Lo
     ...parts,
     region: location.region ?? '',
     municipality: location.municipality ?? '',
-    postal_code: location.postal_code ?? '',
     full_address: '',
   };
 }
