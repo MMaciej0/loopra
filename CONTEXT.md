@@ -83,7 +83,7 @@ The point the rides list is currently centred on, and so the origin for Nearby. 
 _Avoid_: Search origin, current location — "current" suggests the device's GPS position
 
 **District**:
-The named part of a city a rider rides out of, when the place they chose is smaller than the city that contains it — including the street itself, since a rider can search for and pick a street. Optional — rural and whole-town locations have none. Favourite and Selected Locations are named `District, City, Country`, collapsing to `City, Country` without one. Two streets in one city can share a name, so this field does not identify a place: see ADR-0001.
+The named part of a city a rider rides out of, when the place they chose is smaller than the city that contains it — including the street itself, since a rider can search for and pick a street. Optional — rural and whole-town locations have none. Favourite and Selected Locations are named `District, Postal Code City, Country` — `Kwiatowa, 02-581 Warsaw, Poland` — collapsing to `City, Country` without a district and dropping the postal code where the place has none, which in practice is everything but a street. The map's screen-reader label is the exception and keeps the `District, City, Country` form. Two streets in one city can share a name, so this field does not identify a place: see ADR-0001.
 _Avoid_: Neighbourhood, quarter, suburb, borough — all provider designations for the same thing
 
 **Nearby**:
