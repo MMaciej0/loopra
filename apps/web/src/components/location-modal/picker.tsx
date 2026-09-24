@@ -13,6 +13,12 @@ import {
 } from '@/components/ui/combobox';
 import { forwardGeocode, type LocationSuggestion } from '@/utils/geocoding';
 
+function sublineFor(location: LocationSuggestion) {
+  if (location.is_street && location.containing_district) return location.containing_district;
+
+  return location.region !== location.city ? location.region : '';
+}
+
 export function LocationPicker({
   value: selectedLocation,
   onSelect,
@@ -136,22 +142,24 @@ export function LocationPicker({
           )}
         </ComboboxEmpty>
         <ComboboxList>
-          {(location: LocationSuggestion) => (
-            <ComboboxItem
-              key={location.id}
-              value={location}
-              onClick={() => selectLocation(location)}
-            >
-              <span className="min-w-0">
-                <span className="block truncate">{location.label}</span>
-                {location.region && location.region !== location.city && (
-                  <span className="text-muted-foreground block truncate text-xs">
-                    {location.region}
-                  </span>
-                )}
-              </span>
-            </ComboboxItem>
-          )}
+          {(location: LocationSuggestion) => {
+            const subline = sublineFor(location);
+
+            return (
+              <ComboboxItem
+                key={location.id}
+                value={location}
+                onClick={() => selectLocation(location)}
+              >
+                <span className="min-w-0">
+                  <span className="block truncate">{location.label}</span>
+                  {subline && (
+                    <span className="text-muted-foreground block truncate text-xs">{subline}</span>
+                  )}
+                </span>
+              </ComboboxItem>
+            );
+          }}
         </ComboboxList>
       </ComboboxContent>
     </Combobox>
