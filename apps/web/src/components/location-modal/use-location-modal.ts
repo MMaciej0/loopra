@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useTransition } from 'react';
-import { MAX_FAVORITE_LOCATIONS } from '@loopra/domain';
+import { isSamePlace, MAX_FAVORITE_LOCATIONS } from '@loopra/domain';
 import {
   deleteFavoriteLocation,
   saveFavoriteLocation,
@@ -31,23 +31,30 @@ export type LocationModal = ReturnType<typeof useLocationModal>;
 export function useLocationModal({ favorites, selected, onApplied }: Options) {
   const [pending, setPending] = useState<PendingPick | null>(null);
   const [searchKey, setSearchKey] = useState(0);
-  const [justSavedLabel, setJustSavedLabel] = useState<string | null>(null);
+  const [justSaved, setJustSaved] = useState<LocationSuggestion | null>(null);
   const [errorKey, setErrorKey] = useState<ErrorKey | null>(null);
   const [isApplying, startApplyTransition] = useTransition();
   const [isSavingFavorite, startSaveFavoriteTransition] = useTransition();
   const [deletingFavoriteId, setDeletingFavoriteId] = useState<string | null>(null);
   const [, startDeleteFavoriteTransition] = useTransition();
 
-  const selectedLabel = selected?.label ?? null;
+  const isSelected = (location: LocationSuggestion) =>
+    selected !== null && isSamePlace(location.coords, selected.coords);
+  const isPending = (location: LocationSuggestion) => {
+    const marked = pending?.location ?? justSaved;
+
+    return marked !== null && isSamePlace(location.coords, marked.coords);
+  };
   const isFull = favorites.length >= MAX_FAVORITE_LOCATIONS;
   const shown = pending?.location ?? selected;
-  const canSaveShown = shown !== null && !favorites.some((f) => f.label === shown.label);
+  const canSaveShown =
+    shown !== null && !favorites.some((f) => isSamePlace(f.coords, shown.coords));
 
   const clearSearch = () => setSearchKey((key) => key + 1);
 
   const reset = () => {
     setPending(null);
-    setJustSavedLabel(null);
+    setJustSaved(null);
     setErrorKey(null);
     clearSearch();
   };
@@ -60,7 +67,7 @@ export function useLocationModal({ favorites, selected, onApplied }: Options) {
       return;
     }
 
-    const saved = favorites.find((favorite) => favorite.label === location.label);
+    const saved = favorites.find((favorite) => isSamePlace(favorite.coords, location.coords));
 
     if (saved) {
       setPending({ location: saved, source: 'favorite' });
@@ -91,7 +98,7 @@ export function useLocationModal({ favorites, selected, onApplied }: Options) {
         return;
       }
 
-      setJustSavedLabel(location.label);
+      setJustSaved(location);
       setPending((current) => (current ? { location, source: 'favorite' } : null));
       clearSearch();
     });
@@ -106,7 +113,9 @@ export function useLocationModal({ favorites, selected, onApplied }: Options) {
       const result = await deleteFavoriteLocation(favorite.id);
 
       if (result.ok) {
-        setPending((current) => (current?.location.label === favorite.label ? null : current));
+        setPending((current) =>
+          current && isSamePlace(current.location.coords, favorite.coords) ? null : current,
+        );
       } else {
         setErrorKey('favorites.deleteError');
       }
@@ -116,7 +125,7 @@ export function useLocationModal({ favorites, selected, onApplied }: Options) {
   };
 
   const showRides = () => {
-    if (!pending || pending.location.label === selectedLabel || isApplying) return;
+    if (!pending || isSelected(pending.location) || isApplying) return;
 
     setErrorKey(null);
     startApplyTransition(async () => {
@@ -132,14 +141,14 @@ export function useLocationModal({ favorites, selected, onApplied }: Options) {
 
   return {
     favorites,
-    selectedLabel,
+    isSelected,
+    isPending,
     searchKey,
     searchPick: pending?.source === 'search' ? pending.location : null,
     shown,
     isShownPending: pending !== null,
     canSaveShown,
-    pendingLabel: pending?.location.label ?? justSavedLabel,
-    canApply: pending !== null && pending.location.label !== selectedLabel,
+    canApply: pending !== null && !isSelected(pending.location),
     isFull,
     errorKey,
     setErrorKey,

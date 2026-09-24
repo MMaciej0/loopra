@@ -37,8 +37,8 @@ export function LocationModalBody({ modal }: Readonly<{ modal: LocationModal }>)
 
         <FavoritesList
           favorites={modal.favorites}
-          selectedLabel={modal.selectedLabel}
-          pendingLabel={modal.pendingLabel}
+          isSelected={modal.isSelected}
+          isPending={modal.isPending}
           onPick={modal.pickFavorite}
           onDelete={modal.deleteFavorite}
           deletingId={modal.deletingFavoriteId}
@@ -103,16 +103,16 @@ function ShownLocationRow({
 
 function FavoritesList({
   favorites,
-  selectedLabel,
-  pendingLabel,
+  isSelected,
+  isPending,
   onPick,
   onDelete,
   deletingId,
   note,
 }: Readonly<{
   favorites: readonly LocationSuggestion[];
-  selectedLabel: string | null;
-  pendingLabel: string | null;
+  isSelected: (favorite: LocationSuggestion) => boolean;
+  isPending: (favorite: LocationSuggestion) => boolean;
   onPick: (favorite: LocationSuggestion) => void;
   onDelete: (favorite: LocationSuggestion) => void;
   deletingId: string | null;
@@ -134,8 +134,6 @@ function FavoritesList({
       ) : (
         <ul className="flex flex-col gap-1.5">
           {favorites.map((favorite) => {
-            const isPending = favorite.label === pendingLabel;
-            const isSelected = favorite.label === selectedLabel;
             const isDeleting = favorite.id === deletingId;
 
             return (
@@ -143,19 +141,19 @@ function FavoritesList({
                 key={favorite.id}
                 className={cn(
                   'border-border hover:border-border-strong flex items-center rounded-[10px] border bg-clip-padding pr-1.5 transition-all',
-                  isPending && 'border-accent bg-accent/10 hover:border-accent',
+                  isPending(favorite) && 'border-accent bg-accent/10 hover:border-accent',
                 )}
               >
                 <button
                   type="button"
-                  aria-pressed={isPending}
+                  aria-pressed={isPending(favorite)}
                   onClick={() => onPick(favorite)}
                   className="focus-visible:ring-ring/50 flex min-w-0 flex-1 items-center gap-2.5 rounded-l-[9px] px-3 py-2.5 text-left focus-visible:ring-3 focus-visible:outline-none"
                 >
                   <span className="min-w-0 flex-1 truncate text-[12.5px] font-medium">
                     {favorite.label}
                   </span>
-                  {isSelected && (
+                  {isSelected(favorite) && (
                     <>
                       <Check aria-hidden className="text-accent size-4 shrink-0" />
                       <span className="sr-only">{t('favorites.selectedHint')}</span>
