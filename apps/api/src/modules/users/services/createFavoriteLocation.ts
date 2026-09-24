@@ -1,5 +1,5 @@
 import { eq } from 'drizzle-orm';
-import { formatLocationLabel, MAX_FAVORITE_LOCATIONS } from '@loopra/domain';
+import { isSamePlace, MAX_FAVORITE_LOCATIONS } from '@loopra/domain';
 import type { Db } from '../../../db/index.js';
 import { favorite_locations, users } from '../../../db/schema.js';
 import { LocationBody } from '../schema.js';
@@ -7,14 +7,12 @@ import { DuplicateFavoriteLocationError, MaxFavoriteLocationsError } from '../er
 import { listFavoriteLocations } from './listFavoriteLocations.js';
 
 export const createFavoriteLocation = async (db: Db, userId: string, body: LocationBody) => {
-  const label = formatLocationLabel(body);
-
   return await db.transaction(async (tx) => {
     await tx.select({ id: users.id }).from(users).where(eq(users.id, userId)).for('update');
 
     const existing = await listFavoriteLocations(tx, userId);
 
-    if (existing.some((favorite) => formatLocationLabel(favorite) === label)) {
+    if (existing.some((favorite) => isSamePlace(favorite.location, body.location))) {
       throw new DuplicateFavoriteLocationError();
     }
 

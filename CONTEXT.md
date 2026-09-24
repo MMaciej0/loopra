@@ -75,7 +75,7 @@ A named set of riders who ride together and can publish rides collectively. The 
 _Avoid_: Team
 
 **Favourite Location**:
-A place a rider has saved so they can return to it quickly: coordinates plus the resolved place, named by its resolved label — riders cannot rename it. Optional: a rider has up to five, and a new rider has none. A rider cannot save the same place twice: the modal highlights the one they already have, and the API refuses a duplicate. Distinct from Start Point, which belongs to a single ride.
+A place a rider has saved so they can return to it quickly: coordinates plus the resolved place, named by its resolved label — riders cannot rename it. Optional: a rider has up to five, and a new rider has none. A rider cannot save the same place twice — the same place being the same coordinates, so two streets sharing a label are two places: the modal highlights the one they already have, and the API refuses a duplicate. Distinct from Start Point, which belongs to a single ride.
 _Avoid_: Home, base, hometown
 
 **Selected Location**:
@@ -83,7 +83,7 @@ The point the rides list is currently centred on, and so the origin for Nearby. 
 _Avoid_: Search origin, current location — "current" suggests the device's GPS position
 
 **District**:
-The named part of a city a rider rides out of, when the place they chose is smaller than the city that contains it. Optional — rural and whole-town locations have none. Favourite and Selected Locations are named `District, City, Country`, collapsing to `City, Country` without one.
+The named part of a city a rider rides out of, when the place they chose is smaller than the city that contains it — including the street itself, since a rider can search for and pick a street. Optional — rural and whole-town locations have none. Favourite and Selected Locations are named `District, City, Country`, collapsing to `City, Country` without one. Two streets in one city can share a name, so this field does not identify a place: see ADR-0001.
 _Avoid_: Neighbourhood, quarter, suburb, borough — all provider designations for the same thing
 
 **Nearby**:

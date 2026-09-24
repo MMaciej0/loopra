@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { MAX_FAVORITE_LOCATIONS } from '@loopra/domain';
+import { formatLocationLabel, MAX_FAVORITE_LOCATIONS } from '@loopra/domain';
 import { useApp } from '../../helpers/app.js';
 import { registerUser, useAuthenticatedUser } from '../../helpers/auth.js';
 
@@ -13,7 +13,11 @@ const KREUZBERG = {
   postal_code: '10997',
 };
 
-const place = (district: string) => ({ ...KREUZBERG, district });
+const place = (district: string, offset = 0) => ({
+  ...KREUZBERG,
+  district,
+  location: { x: KREUZBERG.location.x + offset * 0.001, y: KREUZBERG.location.y },
+});
 
 describe('/users/me/favorite-locations', () => {
   const appRef = useApp();
@@ -103,8 +107,8 @@ describe('/users/me/favorite-locations', () => {
   });
 
   it('lists several favourites oldest first', async () => {
-    for (const district of ['Kreuzberg', 'Mitte', 'Neukölln']) {
-      await create(place(district));
+    for (const [step, district] of ['Kreuzberg', 'Mitte', 'Neukölln'].entries()) {
+      await create(place(district, step));
     }
 
     const response = await list();
@@ -116,17 +120,17 @@ describe('/users/me/favorite-locations', () => {
 
   it(`returns 409 past ${MAX_FAVORITE_LOCATIONS} favourites, saving nothing`, async () => {
     for (let i = 0; i < MAX_FAVORITE_LOCATIONS; i++) {
-      expect((await create(place(`District ${i}`))).statusCode).toBe(200);
+      expect((await create(place(`District ${i}`, i))).statusCode).toBe(200);
     }
 
-    const response = await create(place('One too many'));
+    const response = await create(place('One too many', MAX_FAVORITE_LOCATIONS));
 
     expect(response.statusCode).toBe(409);
     expect(response.json()).toMatchObject({ type: 'MAX_FAVORITE_LOCATIONS' });
     expect((await list()).json().favorite_locations).toHaveLength(MAX_FAVORITE_LOCATIONS);
   });
 
-  it('returns 409 when the label is already saved, saving nothing', async () => {
+  it('returns 409 when the same coordinates are already saved, saving nothing', async () => {
     await create(KREUZBERG);
 
     const response = await create({ ...KREUZBERG, postal_code: '10999' });
@@ -136,10 +140,27 @@ describe('/users/me/favorite-locations', () => {
     expect((await list()).json().favorite_locations).toHaveLength(1);
   });
 
+  it('saves two places that share a label at different coordinates', async () => {
+    const kwiatowa = {
+      ...KREUZBERG,
+      city: 'Warsaw',
+      district: 'Kwiatowa',
+      region: 'Masovian Voivodeship',
+      country: 'Poland',
+    };
+    const mokotow = { ...kwiatowa, location: { x: 21.01197313517332, y: 52.203626158095084 } };
+    const praga = { ...kwiatowa, location: { x: 21.069464273750782, y: 52.24034480342886 } };
+
+    expect(formatLocationLabel(praga)).toBe(formatLocationLabel(mokotow));
+    expect((await create(mokotow)).statusCode).toBe(200);
+    expect((await create(praga)).statusCode).toBe(200);
+    expect((await list()).json().favorite_locations).toHaveLength(2);
+  });
+
   it('reports a duplicate at the cap as a duplicate, not as a full list', async () => {
     await create(place('Kreuzberg'));
     for (let i = 1; i < MAX_FAVORITE_LOCATIONS; i++) {
-      await create(place(`District ${i}`));
+      await create(place(`District ${i}`, i));
     }
 
     const response = await create(place('Kreuzberg'));
@@ -158,7 +179,7 @@ describe('/users/me/favorite-locations', () => {
 
   it(`holds the cap at ${MAX_FAVORITE_LOCATIONS} when saves arrive at once`, async () => {
     const places = Array.from({ length: MAX_FAVORITE_LOCATIONS + 2 }, (_, i) =>
-      place(`District ${i}`),
+      place(`District ${i}`, i),
     );
 
     await Promise.all(places.map((payload) => create(payload)));
@@ -198,8 +219,8 @@ describe('/users/me/favorite-locations', () => {
   });
 
   it('deletes a favourite, and a later list no longer carries it', async () => {
-    for (const district of ['Kreuzberg', 'Mitte', 'Neukölln']) {
-      await create(place(district));
+    for (const [step, district] of ['Kreuzberg', 'Mitte', 'Neukölln'].entries()) {
+      await create(place(district, step));
     }
     const [, mitte] = (await list()).json().favorite_locations;
 
@@ -219,13 +240,13 @@ describe('/users/me/favorite-locations', () => {
 
   it('frees a spot at the cap so the next save is accepted', async () => {
     for (let i = 0; i < MAX_FAVORITE_LOCATIONS; i++) {
-      await create(place(`District ${i}`));
+      await create(place(`District ${i}`, i));
     }
     const [oldest] = (await list()).json().favorite_locations;
 
     await remove(oldest.id);
 
-    expect((await create(place('One more'))).statusCode).toBe(200);
+    expect((await create(place('One more', MAX_FAVORITE_LOCATIONS))).statusCode).toBe(200);
   });
 
   it.each([

@@ -127,7 +127,15 @@ export async function forwardGeocode(
   configureMaptiler();
 
   const res = await maptilersdk.geocoding.forward(trimmed, {
-    types: ['postal_code', 'municipality', 'municipal_district', 'place', 'locality', 'region'],
+    types: [
+      'address',
+      'postal_code',
+      'municipality',
+      'municipal_district',
+      'place',
+      'locality',
+      'region',
+    ],
     language,
     limit: 5,
   });
