@@ -18,6 +18,8 @@ export interface LocationSuggestion extends RideLocation {
   id: string;
   label: string;
   coords: Coords;
+  is_street: boolean;
+  containing_district: string;
 }
 
 // The SDK's geocoding types are missing `place_designation`, so we read the
@@ -99,6 +101,22 @@ function featureToLocation(feature: GeocodingFeature): RideLocation {
   };
 }
 
+// Streets are the `address` feature type, but that type also covers rooftop
+// address points; `kind` is what says the feature is the street itself.
+function isStreet(feature: GeocodingFeature): boolean {
+  return (feature.properties as { kind?: string })?.kind === 'street';
+}
+
+// Same-named streets in one city share a label down to the region, so the
+// district containing them is the only thing that tells the rows apart. The
+// locality fallback is load-bearing: not every street carries a neighbourhood.
+function containingDistrict(feature: GeocodingFeature): string {
+  const context = (feature.context ?? []) as unknown as Ctx[];
+  const at = (prefix: string) => context.find((h) => h.id?.startsWith(`${prefix}.`))?.text || '';
+
+  return at('neighbourhood') || at('locality');
+}
+
 export { formatLocationLabel };
 
 // Reverse geocode picked coords → the location fields our ride form needs,
@@ -149,6 +167,8 @@ export async function forwardGeocode(
         ? formatLocationLabel(location)
         : feature.place_name || feature.text || '',
       coords: { x: feature.center[0], y: feature.center[1] },
+      is_street: isStreet(feature),
+      containing_district: containingDistrict(feature),
       ...location,
     };
   });
@@ -165,6 +185,8 @@ export function toLocationSuggestion(location: SelectedLocation, id: string): Lo
     id,
     label: formatLocationLabel(parts),
     coords: location.location,
+    is_street: false,
+    containing_district: '',
     ...parts,
     region: location.region ?? '',
     municipality: location.municipality ?? '',
