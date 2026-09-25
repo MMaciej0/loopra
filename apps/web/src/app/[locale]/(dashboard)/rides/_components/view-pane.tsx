@@ -31,7 +31,6 @@ export async function ViewPane({ view }: { view: RidesView }) {
         key={key}
         query={query}
         center={center}
-        searchArea={searchArea}
         screenReaderLocationLabel={screenReaderLocationLabel}
       />
     );

@@ -1,4 +1,5 @@
-import { useEffect, useEffectEvent, useState } from 'react';
+import { useEffect, useEffectEvent, useRef, useState } from 'react';
+import { formatBBox, type BBox } from '@loopra/domain';
 import { loadMapStartPoints } from '../../_actions/list-rides';
 import type { RidesListQuery } from '../../list-query';
 import type { StartPointGroup } from './start-points';
@@ -7,15 +8,20 @@ export type StartPointsStatus = 'loading' | 'error' | 'done';
 
 const NO_START_POINTS: readonly StartPointGroup[] = [];
 
-export function useStartPoints(query: RidesListQuery) {
-  const [initialQuery] = useState(query);
+export function useStartPoints(initialQuery: RidesListQuery) {
+  const queryRef = useRef(initialQuery);
+  const latestRequestRef = useRef(0);
   const [startPoints, setStartPoints] = useState(NO_START_POINTS);
   const [status, setStatus] = useState<StartPointsStatus>('loading');
 
   const load = () => {
-    loadMapStartPoints(initialQuery)
+    const request = ++latestRequestRef.current;
+
+    loadMapStartPoints(queryRef.current)
       .catch(() => null)
       .then((result) => {
+        if (request !== latestRequestRef.current) return;
+
         if (!result?.ok) {
           setStatus('error');
           return;
@@ -32,10 +38,15 @@ export function useStartPoints(query: RidesListQuery) {
     loadInitial();
   }, []);
 
-  const retry = () => {
+  const reload = () => {
     setStatus('loading');
     load();
   };
 
-  return { status, startPoints, retry };
+  const loadArea = (searchArea: BBox) => {
+    queryRef.current = { ...queryRef.current, bbox: formatBBox(searchArea) };
+    reload();
+  };
+
+  return { status, startPoints, retry: reload, loadArea };
 }
