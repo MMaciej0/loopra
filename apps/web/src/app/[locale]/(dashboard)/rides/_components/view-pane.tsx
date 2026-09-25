@@ -1,3 +1,4 @@
+import { bboxAround, SEARCH_AREA_MAX_KM } from '@loopra/domain';
 import { formatLocationLabel } from '@/utils/geocoding';
 import { getCurrentUser } from '@/utils/user';
 import { buildRidesListQuery, ridesListKey } from '../list-query';
@@ -12,7 +13,9 @@ export async function ViewPane({ view }: { view: RidesView }) {
     return null;
   }
 
-  const query = buildRidesListQuery(user.selected_location.location);
+  const center = user.selected_location.location;
+  const searchArea = bboxAround(center, SEARCH_AREA_MAX_KM);
+  const query = buildRidesListQuery(searchArea);
   const key = ridesListKey(query);
 
   if (view === 'map') {
@@ -24,7 +27,13 @@ export async function ViewPane({ view }: { view: RidesView }) {
     });
 
     return (
-      <RidesMap key={key} query={query} screenReaderLocationLabel={screenReaderLocationLabel} />
+      <RidesMap
+        key={key}
+        query={query}
+        center={center}
+        searchArea={searchArea}
+        screenReaderLocationLabel={screenReaderLocationLabel}
+      />
     );
   }
 

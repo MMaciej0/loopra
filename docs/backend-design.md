@@ -240,16 +240,16 @@ No base URL prefix — routes are mounted directly (e.g. `/auth`, `/users`).
 
 ### Rides — `/rides`
 
-| Method | Path                      | Auth         | Description                                           |
-| ------ | ------------------------- | ------------ | ----------------------------------------------------- |
-| GET    | `/rides`                  | ✓            | List (filter: type, lat/lng/radius, date, difficulty) |
-| POST   | `/rides`                  | ✓ + verified | Create ride                                           |
-| GET    | `/rides/:id`              | ✓            | Ride details                                          |
-| PATCH  | `/rides/:id`              | ✓            | Update (creator only)                                 |
-| DELETE | `/rides/:id`              | ✓            | Cancel (creator only)                                 |
-| POST   | `/rides/:id/join`         | ✓ + verified | Join ride                                             |
-| DELETE | `/rides/:id/leave`        | ✓            | Leave ride                                            |
-| GET    | `/rides/:id/participants` | ✓            | Participant list                                      |
+| Method | Path                      | Auth         | Description                                 |
+| ------ | ------------------------- | ------------ | ------------------------------------------- |
+| GET    | `/rides`                  | ✓            | List (filter: type, bbox, date, difficulty) |
+| POST   | `/rides`                  | ✓ + verified | Create ride                                 |
+| GET    | `/rides/:id`              | ✓            | Ride details                                |
+| PATCH  | `/rides/:id`              | ✓            | Update (creator only)                       |
+| DELETE | `/rides/:id`              | ✓            | Cancel (creator only)                       |
+| POST   | `/rides/:id/join`         | ✓ + verified | Join ride                                   |
+| DELETE | `/rides/:id/leave`        | ✓            | Leave ride                                  |
+| GET    | `/rides/:id/participants` | ✓            | Participant list                            |
 
 ### Groups — `/groups`
 
@@ -524,18 +524,13 @@ React Native (Expo) does not have an automatic cookie jar — httpOnly cookies f
 
 ## Geospatial Queries
 
-All location-based queries use PostGIS `ST_DWithin` with geography type for accurate distance in meters.
-
-Example — nearby rides within 50km:
+Rides are filtered by a box, `bbox=west,south,east,north`, at most `SEARCH_AREA_MAX_KM` (100 km) on its longest side. The `&&` operator against an envelope lets the GiST index on `start_location` serve the filter:
 
 ```sql
-WHERE ST_DWithin(
-  rides.start_location::geography,
-  ST_SetSRID(ST_MakePoint($lng, $lat), 4326)::geography,
-  50000  -- meters
-)
-ORDER BY rides.start_location <-> ST_SetSRID(ST_MakePoint($lng, $lat), 4326)
+WHERE rides.start_location && ST_MakeEnvelope($west, $south, $east, $north, 4326)
 ```
+
+Distance queries around a point use `ST_DWithin` with the geography type for accurate distance in meters.
 
 ---
 

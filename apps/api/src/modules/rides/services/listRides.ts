@@ -15,9 +15,10 @@ export const listRides = async (db: Db, searchParams: ListRidesQuery) => {
   if (searchParams.date_to) conditions.push(lte(rides.start_time, searchParams.date_to));
   if (searchParams.status) conditions.push(eq(rides.status, searchParams.status));
 
-  if (searchParams.lat && searchParams.lng && searchParams.radius_km) {
+  if (searchParams.bbox) {
+    const { west, south, east, north } = searchParams.bbox;
     conditions.push(
-      sql`ST_DWithin(${rides.start_location}::geography, ST_SetSRID(ST_MakePoint(${searchParams.lng}, ${searchParams.lat}), 4326)::geography, ${searchParams.radius_km} * 1000)`,
+      sql`${rides.start_location} && ST_MakeEnvelope(${west}, ${south}, ${east}, ${north}, 4326)`,
     );
   }
 

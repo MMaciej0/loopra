@@ -6,22 +6,24 @@ import {
   useState,
   useSyncExternalStore,
 } from 'react';
+import type { BBox, Point } from '@loopra/domain';
 import { useLocale, useTranslations } from 'next-intl';
 import { useTheme } from 'next-themes';
 import * as maptilersdk from '@maptiler/sdk';
 import '@maptiler/sdk/dist/maptiler-sdk.css';
 import { anyInView, boundsOf, revealOffset } from './map-geometry';
 import { createMarkerElement, setMarkerSelected } from './marker-element';
-import { nearbyCircle, nearbyConstraints } from './nearby-area';
+import { searchAreaConstraints, searchAreaPolygon } from './search-area';
 import type { StartPointGroup } from './start-points';
 
 const CITY_ZOOM = 16;
-const NEARBY_AREA_ID = 'nearby-area';
-const NEARBY_AREA_COLOR = '#6d8ff2';
+const SEARCH_AREA_ID = 'search-area';
+const SEARCH_AREA_COLOR = '#6d8ff2';
 const SHOW_ALL_PADDING_PX = 64;
 
 type UseRidesMapProps = Readonly<{
-  area: Readonly<{ lng: number; lat: number; radius_km: number }>;
+  center: Point;
+  searchArea: BBox;
   startPoints: readonly StartPointGroup[];
 }>;
 
@@ -31,35 +33,35 @@ function toMapStyle(resolvedTheme: string) {
     : maptilersdk.MapStyle.STREETS;
 }
 
-function addNearbyArea(map: maptilersdk.Map, center: [number, number], radiusKm: number) {
-  if (map.getSource(NEARBY_AREA_ID)) return;
+function addSearchArea(map: maptilersdk.Map, searchArea: BBox) {
+  if (map.getSource(SEARCH_AREA_ID)) return;
 
-  map.addSource(NEARBY_AREA_ID, { type: 'geojson', data: nearbyCircle(center, radiusKm) });
+  map.addSource(SEARCH_AREA_ID, { type: 'geojson', data: searchAreaPolygon(searchArea) });
   map.addLayer({
-    id: `${NEARBY_AREA_ID}-fill`,
+    id: `${SEARCH_AREA_ID}-fill`,
     type: 'fill',
-    source: NEARBY_AREA_ID,
-    paint: { 'fill-color': NEARBY_AREA_COLOR, 'fill-opacity': 0.06 },
+    source: SEARCH_AREA_ID,
+    paint: { 'fill-color': SEARCH_AREA_COLOR, 'fill-opacity': 0.06 },
   });
   map.addLayer({
-    id: `${NEARBY_AREA_ID}-outline`,
+    id: `${SEARCH_AREA_ID}-outline`,
     type: 'line',
-    source: NEARBY_AREA_ID,
-    paint: { 'line-color': NEARBY_AREA_COLOR, 'line-opacity': 0.5, 'line-width': 1.5 },
+    source: SEARCH_AREA_ID,
+    paint: { 'line-color': SEARCH_AREA_COLOR, 'line-opacity': 0.5, 'line-width': 1.5 },
   });
 }
 
-function constrainToNearbyArea(map: maptilersdk.Map, center: [number, number], radiusKm: number) {
+function constrainToSearchArea(map: maptilersdk.Map, searchArea: BBox) {
   const { clientWidth: width, clientHeight: height } = map.getContainer();
   if (width === 0 || height === 0) return;
 
-  const { minZoom, maxBounds } = nearbyConstraints(center, radiusKm, { width, height });
+  const { minZoom, maxBounds } = searchAreaConstraints(searchArea, { width, height });
   map.setMaxBounds(null);
   map.setMinZoom(minZoom);
   map.setMaxBounds(maxBounds);
 }
 
-export function useRidesMap({ area, startPoints }: UseRidesMapProps) {
+export function useRidesMap({ center, searchArea, startPoints }: UseRidesMapProps) {
   const t = useTranslations('RidesPage');
   const locale = useLocale();
   const { resolvedTheme } = useTheme();
@@ -87,8 +89,8 @@ export function useRidesMap({ area, startPoints }: UseRidesMapProps) {
   );
 
   const readCreationOptions = useEffectEvent(() => ({
-    center: [area.lng, area.lat] as [number, number],
-    radiusKm: area.radius_km,
+    center: [center.x, center.y] as [number, number],
+    searchArea,
     language: locale,
     theme: resolvedTheme,
   }));
@@ -116,7 +118,7 @@ export function useRidesMap({ area, startPoints }: UseRidesMapProps) {
 
   useEffect(() => {
     const container = containerRef.current;
-    const { center, radiusKm, language, theme } = readCreationOptions();
+    const { center, searchArea, language, theme } = readCreationOptions();
     if (!container || theme === undefined) return;
 
     maptilersdk.config.apiKey = process.env.NEXT_PUBLIC_MAPTILER_KEY!;
@@ -137,13 +139,13 @@ export function useRidesMap({ area, startPoints }: UseRidesMapProps) {
       attributionControl: { compact: true },
     });
 
-    constrainToNearbyArea(newMap, center, radiusKm);
-    newMap.on('resize', () => constrainToNearbyArea(newMap, center, radiusKm));
+    constrainToSearchArea(newMap, searchArea);
+    newMap.on('resize', () => constrainToSearchArea(newMap, searchArea));
 
     let isStyleLoaded = false;
     newMap.on('style.load', () => {
       isStyleLoaded = true;
-      addNearbyArea(newMap, center, radiusKm);
+      addSearchArea(newMap, searchArea);
     });
 
     newMap.addControl(new maptilersdk.NavigationControl({ showCompass: false }), 'top-right');
