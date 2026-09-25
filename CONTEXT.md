@@ -79,12 +79,13 @@ A place a rider has saved so they can return to it quickly: coordinates plus the
 _Avoid_: Home, base, hometown
 
 **Selected Location**:
-The point the rides list is currently centred on, and so the origin for Nearby. Either a place picked from the rider's Favourite Locations or one they searched for without saving. A rider has none until they pick one: new riders, and riders whose single favourite was retired by the move to this model, are asked to pick an area or accept the Nowa Huta, Kraków default before the rides list shows. Independent of Favourite Locations once picked: deleting the favourite it came from does not change it.
+The point the rides views start from. The rides list always shows the rides around it, out to the Search Area's maximum size and ordered by start time. The rides map opens on it, but the rider can move the map anywhere from there. Either a place picked from the rider's Favourite Locations or one they searched for without saving. A rider has none until they pick one: new riders, and riders whose single favourite was retired by the move to this model, are asked to pick an area or accept the Nowa Huta, Kraków default before the rides list shows. Independent of Favourite Locations once picked: deleting the favourite it came from does not change it.
 _Avoid_: Search origin, current location — "current" suggests the device's GPS position
 
 **District**:
 The named part of a city a rider rides out of, when the place they chose is smaller than the city that contains it — including the street itself, since a rider can search for and pick a street. Optional — rural and whole-town locations have none. Favourite and Selected Locations are named `District, Postal Code City, Country` — `Kwiatowa, 02-581 Warsaw, Poland` — collapsing to `City, Country` without a district and dropping the postal code where the place has none, which in practice is everything but a street. The map's screen-reader label is the exception and keeps the `District, City, Country` form. Two streets in one city can share a name, so this field does not identify a place: see ADR-0001.
 _Avoid_: Neighbourhood, quarter, suburb, borough — all provider designations for the same thing
 
-**Nearby**:
-Within a rider's chosen radius of a point, measured geographically rather than by administrative area.
+**Search Area**:
+The part of the world the rides map shows rides for: whatever the map is showing once it stops moving. It starts at the Selected Location and follows the rider as they move and zoom. It is not kept between visits: every visit starts again at the Selected Location. It has a maximum size, so the map cannot zoom out past a region. Belongs to the map only — the rides list does not follow it.
+_Avoid_: Nearby, radius — the rides shown are no longer a circle around a point
