@@ -9,3 +9,4 @@ export * from './dto/auth.js';
 export * from './bounds/ride.js';
 export * from './bounds/geo.js';
 export * from './bounds/upload.js';
+export * from './bounds/search-area.js';

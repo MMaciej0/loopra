@@ -186,7 +186,7 @@ Services throw them; controllers let them fall through to `plugins/globalErrorHa
 
 ### Key Architectural Decisions
 
-- **PostGIS** for all geospatial queries (nearby riders/rides/groups use `ST_DWithin`)
+- **PostGIS** for all geospatial queries. Rides filter by a `bbox` with `&&` against `ST_MakeEnvelope`, so the GiST index serves it; the box's maximum size is `SEARCH_AREA_MAX_KM` in `packages/domain`
 - **Drizzle ORM** — schema-as-code in `db/schema.ts`, migrations via `drizzle-kit` into `apps/api/drizzle/`
 - A **Ride** is the core domain object; `ride_type` (`casual`, `coffee_ride`, `sightseeing`, `training`) says what kind. See `CONTEXT.md` for the glossary
 - Enum declaration order is UI display order, and the default value comes first. `drizzle-kit generate` reporting **"No schema changes"** is the check that `db/schema.ts` and `packages/domain/src/enums.ts` still agree

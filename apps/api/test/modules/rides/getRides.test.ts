@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { sql } from 'drizzle-orm';
+import { bboxAround, formatBBox, SEARCH_AREA_MAX_KM } from '@loopra/domain';
 import { useApp } from '../../helpers/app.js';
 import { createMultipleRandomRides, newRide } from '../../helpers/rides.js';
 import { rides } from '../../../src/db/schema.js';
@@ -82,35 +83,76 @@ describe('GET /rides', () => {
     expect(nextResponse.json().nextCursor).toBe(null);
   });
 
-  it('returns rides near Warsaw when Warsaw lat/long is provided', async () => {
-    const warsawRide1 = newRide({
-      user_id: auth.userId,
-      start_location: { x: 21.01178, y: 52.22977 },
-    });
-    const warsawRide2 = newRide({
-      user_id: auth.userId,
-      start_location: { x: 21.01178, y: 52.22977 },
-    });
-    const tokyoRide = newRide({
-      user_id: auth.userId,
-      start_location: { x: 139.69171, y: 35.6895 },
+  describe('bbox', () => {
+    const KRAKOW = { x: 19.94498, y: 50.06465 };
+    const NOWA_HUTA = { x: 20.03736, y: 50.07272 };
+    const BRONOWICE = { x: 19.88157, y: 50.08194 };
+    const WARSAW = { x: 21.01178, y: 52.22977 };
+
+    const listRidesRaw = (query: Record<string, string>) =>
+      appRef.app.inject({
+        method: 'GET',
+        url: '/rides',
+        query,
+        cookies: { accessToken: auth.accessToken },
+      });
+
+    it('returns rides inside the box and leaves out rides outside it', async () => {
+      const nowaHutaId = await createRide({ start_location: NOWA_HUTA });
+      const bronowiceId = await createRide({ start_location: BRONOWICE });
+      await createRide({ start_location: WARSAW });
+
+      const { data } = await listRides({
+        bbox: formatBBox(bboxAround(KRAKOW, SEARCH_AREA_MAX_KM)),
+      });
+
+      expect(new Set(data.map((ride: { id: string }) => ride.id))).toEqual(
+        new Set([nowaHutaId, bronowiceId]),
+      );
     });
 
-    await appRef.app.db.insert(rides).values([warsawRide1, warsawRide2, tokyoRide]).returning();
+    it('accepts a box of exactly the maximum size at any latitude', async () => {
+      for (const y of [0, 50.06465, 70]) {
+        const response = await listRidesRaw({
+          bbox: formatBBox(bboxAround({ x: 19.94498, y }, SEARCH_AREA_MAX_KM)),
+        });
 
-    const response = await appRef.app.inject({
-      method: 'GET',
-      url: '/rides',
-      cookies: { accessToken: auth.accessToken },
-      query: {
-        lat: '52.22977',
-        lng: '21.01178',
-        radius_km: '1',
+        expect(response.statusCode).toBe(200);
+      }
+    });
+
+    it('rejects a box larger than the maximum size', async () => {
+      const response = await listRidesRaw({
+        bbox: formatBBox(bboxAround(KRAKOW, SEARCH_AREA_MAX_KM + 1)),
+      });
+
+      expect(response.statusCode).toBe(400);
+      expect(response.json().field).toBe('bbox');
+    });
+
+    it('rejects a box that crosses the antimeridian', async () => {
+      const response = await listRidesRaw({ bbox: '179.8,-17,-179.8,-16.5' });
+
+      expect(response.statusCode).toBe(400);
+      expect(response.json().field).toBe('bbox');
+    });
+
+    it('rejects a box whose south is above its north', async () => {
+      const response = await listRidesRaw({ bbox: '19.9,50.1,20,50' });
+
+      expect(response.statusCode).toBe(400);
+      expect(response.json().field).toBe('bbox');
+    });
+
+    it.each(['19.9,50,20', '19.9,50,20,50.1,1', 'a,b,c,d', '', '19.9,,20,50.1', '19.9,50,20,91'])(
+      'rejects a malformed box %j',
+      async (bbox) => {
+        const response = await listRidesRaw({ bbox });
+
+        expect(response.statusCode).toBe(400);
+        expect(response.json().field).toBe('bbox');
       },
-    });
-
-    expect(response.statusCode).toBe(200);
-    expect(response.json().data.length).toBe(2);
+    );
   });
 
   it('returns list items with exactly the whitelisted keys', async () => {
@@ -199,9 +241,7 @@ describe('GET /rides', () => {
 
     const unfiltered = await listRides();
     const filtered = await listRides({
-      lat: '52.22977',
-      lng: '21.01178',
-      radius_km: '1',
+      bbox: formatBBox(bboxAround({ x: 21.01178, y: 52.22977 }, 1)),
       status: 'open',
     });
 

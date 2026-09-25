@@ -1,29 +1,24 @@
-import { MIN_LEAD_HOURS, type RideStatus } from '@loopra/domain';
+import { formatBBox, MIN_LEAD_HOURS, type BBox, type RideStatus } from '@loopra/domain';
 
-const NEARBY_RADIUS_KM = 5;
 const PAGE_SIZE = 24;
 const HOUR_MS = 60 * 60 * 1000;
 
 export type RidesListQuery = Readonly<{
-  lat: number;
-  lng: number;
-  radius_km: number;
+  bbox: string;
   date_from: string;
   status: RideStatus;
   limit: number;
 }>;
 
-export function buildRidesListQuery(selectedLocation: { x: number; y: number }): RidesListQuery {
+export function buildRidesListQuery(searchArea: BBox): RidesListQuery {
   return {
-    lat: selectedLocation.y,
-    lng: selectedLocation.x,
-    radius_km: NEARBY_RADIUS_KM,
+    bbox: formatBBox(searchArea),
     date_from: new Date(Date.now() + MIN_LEAD_HOURS * HOUR_MS).toISOString(),
     status: 'open',
     limit: PAGE_SIZE,
   };
 }
 
-export function ridesListKey({ lat, lng, radius_km, status, limit }: RidesListQuery): string {
-  return JSON.stringify([lat, lng, radius_km, status, limit]);
+export function ridesListKey({ bbox, status, limit }: RidesListQuery): string {
+  return JSON.stringify([bbox, status, limit]);
 }

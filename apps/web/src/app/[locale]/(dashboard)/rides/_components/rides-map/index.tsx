@@ -1,5 +1,6 @@
 'use client';
 
+import type { BBox, Point } from '@loopra/domain';
 import { useTranslations } from 'next-intl';
 import { Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -10,13 +11,18 @@ import { RidePanel } from './ride-panel';
 import { useRidesMap } from './use-rides-map';
 import { useStartPoints } from './use-start-points';
 
-type Props = Readonly<{ query: RidesListQuery; screenReaderLocationLabel: string }>;
+type Props = Readonly<{
+  query: RidesListQuery;
+  center: Point;
+  searchArea: BBox;
+  screenReaderLocationLabel: string;
+}>;
 
-export function RidesMap({ query, screenReaderLocationLabel }: Props) {
+export function RidesMap({ query, center, searchArea, screenReaderLocationLabel }: Props) {
   const t = useTranslations('RidesPage');
   const { status, startPoints, retry } = useStartPoints(query);
   const { containerRef, panelRef, selected, clearSelection, hasStartPointInView, showAll } =
-    useRidesMap({ area: query, startPoints });
+    useRidesMap({ center, searchArea, startPoints });
 
   const notice = mapNotice({
     status,
@@ -42,7 +48,7 @@ export function RidesMap({ query, screenReaderLocationLabel }: Props) {
         )}
         {notice === 'empty' && (
           <MapChip role="status" className="pr-3.5">
-            {t('mapEmpty', { radius: query.radius_km })}
+            {t('mapEmpty')}
           </MapChip>
         )}
         {notice === 'out-of-view' && (

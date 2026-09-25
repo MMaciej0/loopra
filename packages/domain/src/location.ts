@@ -18,7 +18,7 @@ export const formatLocationLabel = ({
   return [district, settlementLine, country].filter(Boolean).join(', ');
 };
 
-type Point = {
+export type Point = {
   x: number;
   y: number;
 };

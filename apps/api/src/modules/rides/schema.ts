@@ -1,6 +1,7 @@
 import z from 'zod';
 import {
   BIKE_TYPES,
+  fitsSearchArea,
   DISTANCE_MAX_KM,
   DISTANCE_MIN_KM,
   DROP_POLICIES,
@@ -19,34 +20,42 @@ import {
   PARTICIPANTS_MIN,
   RIDE_STATUSES,
   RIDE_TYPES,
+  SEARCH_AREA_MAX_KM,
   TITLE_MAX_LENGTH,
   TITLE_MIN_LENGTH,
 } from '@loopra/domain';
 
-export const ListRidesQuerySchema = z
-  .object({
-    cursor: z.string().optional(),
-    limit: z.coerce.number().int().min(1).max(100).default(20),
-    bike_type: z.enum(BIKE_TYPES).optional(),
-    ride_type: z.enum(RIDE_TYPES).optional(),
-    city: z.string().optional(),
-    region: z.string().optional(),
-    country: z.string().optional(),
-    date_from: z.coerce.date().optional(),
-    date_to: z.coerce.date().optional(),
-    lat: z.coerce.number().min(LAT_MIN).max(LAT_MAX).optional(),
-    lng: z.coerce.number().min(LNG_MIN).max(LNG_MAX).optional(),
-    radius_km: z.coerce.number().min(1).max(500).optional(),
-    status: z.enum(RIDE_STATUSES).optional(),
-  })
-  .refine(
-    (d) => {
-      const geoFields = [d.lat, d.lng, d.radius_km];
-      const provided = geoFields.filter((v) => v !== undefined).length;
-      return provided === 0 || provided === 3; // all or none
-    },
-    { message: 'lat, lng, and radius_km must all be provided together' },
-  );
+const BBoxSchema = z
+  .string()
+  .transform((value) => value.split(',').map((part) => (part.trim() === '' ? NaN : Number(part))))
+  .pipe(
+    z.tuple([
+      z.number().min(LNG_MIN).max(LNG_MAX),
+      z.number().min(LAT_MIN).max(LAT_MAX),
+      z.number().min(LNG_MIN).max(LNG_MAX),
+      z.number().min(LAT_MIN).max(LAT_MAX),
+    ]),
+  )
+  .transform(([west, south, east, north]) => ({ west, south, east, north }))
+  .refine((b) => b.west <= b.east, { message: 'bbox must not cross the antimeridian' })
+  .refine((b) => b.south <= b.north, { message: 'bbox south must not be above north' })
+  .refine(fitsSearchArea, {
+    message: `bbox must be at most ${SEARCH_AREA_MAX_KM} km on its longest side`,
+  });
+
+export const ListRidesQuerySchema = z.object({
+  cursor: z.string().optional(),
+  limit: z.coerce.number().int().min(1).max(100).default(20),
+  bike_type: z.enum(BIKE_TYPES).optional(),
+  ride_type: z.enum(RIDE_TYPES).optional(),
+  city: z.string().optional(),
+  region: z.string().optional(),
+  country: z.string().optional(),
+  date_from: z.coerce.date().optional(),
+  date_to: z.coerce.date().optional(),
+  bbox: BBoxSchema.optional(),
+  status: z.enum(RIDE_STATUSES).optional(),
+});
 
 export const CreateRideBodySchema = z
   .object({
