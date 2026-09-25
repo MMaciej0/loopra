@@ -170,9 +170,7 @@ export function useRidesMap({ center, startPoints, onSearchAreaChange }: UseRide
 
     const markerElements = markerElementsRef.current;
     const mapMarkers = startPoints.map((group) => {
-      const label = group.name
-        ? t('mapMarkerLabel', { count: group.rides.length, name: group.name })
-        : t('mapMarkerLabelUnnamed', { count: group.rides.length });
+      const label = t('mapMarkerLabel', { count: group.rideIds.length });
       const element = createMarkerElement(group, label);
       element.addEventListener('click', () => setSelectedId(group.id));
       markerElements.set(group.id, element);

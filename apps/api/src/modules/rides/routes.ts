@@ -1,13 +1,20 @@
 import { FastifyInstance } from 'fastify';
 import {
+  ListRideMarkersResponseSchema,
   ListRidesResponseSchema,
   RideDetailResponseSchema,
   RideParticipantResponseSchema,
   RideResponseSchema,
 } from '@loopra/domain/schemas';
 import { parseBody, parseSearchParams } from '../../utils/validation.js';
-import { CreateRideBodySchema, ListRidesQuerySchema, UpdateRideBodySchema } from './schema.js';
+import {
+  CreateRideBodySchema,
+  ListRideMarkersQuerySchema,
+  ListRidesQuerySchema,
+  UpdateRideBodySchema,
+} from './schema.js';
 import { listRides } from './services/listRides.js';
+import { listRideMarkers } from './services/listRideMarkers.js';
 import { createRide } from './services/createRide.js';
 import { updateRide } from './services/updateRide.js';
 import { deleteRide } from './services/deleteRide.js';
@@ -24,6 +31,17 @@ export const ridesRoutes = async (fastify: FastifyInstance) => {
       const { data, nextCursor } = await listRides(fastify.db, searchParams);
 
       return reply.send({ data, nextCursor });
+    },
+  );
+
+  fastify.get(
+    '/markers',
+    { schema: { response: { 200: ListRideMarkersResponseSchema } } },
+    async (request, reply) => {
+      const searchParams = parseSearchParams(request.query, ListRideMarkersQuerySchema);
+      const markers = await listRideMarkers(fastify.db, searchParams);
+
+      return reply.send(markers);
     },
   );
 

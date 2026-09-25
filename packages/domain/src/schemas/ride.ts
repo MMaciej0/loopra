@@ -106,6 +106,23 @@ export const ListRidesResponseSchema = Type.Object(
   { additionalProperties: false },
 );
 
+export const RideMarkerSchema = Type.Object(
+  {
+    id: Type.String({ format: 'uuid' }),
+    lng: Type.Number(),
+    lat: Type.Number(),
+  },
+  { additionalProperties: false },
+);
+
+export const ListRideMarkersResponseSchema = Type.Object(
+  {
+    data: Type.Array(RideMarkerSchema),
+    truncated: Type.Boolean(),
+  },
+  { additionalProperties: false },
+);
+
 export const RideResponseSchema = Type.Object(
   { data: RideSchema },
   { additionalProperties: false },

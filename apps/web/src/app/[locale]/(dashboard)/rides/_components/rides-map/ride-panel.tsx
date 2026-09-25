@@ -4,20 +4,50 @@ import { useEffect, useEffectEvent, useState, type Ref } from 'react';
 import { useTranslations } from 'next-intl';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { RideCard } from '@/components/ride-card';
+import type { RideCardData } from '@/components/ride-card/types';
 import { Button } from '@/components/ui/button';
+import { Text } from '@/components/ui/text';
 import { Link } from '@/i18n/navigation';
-import type { StartPointRide } from './start-points';
+import { loadRideCards } from '../../_actions/list-rides';
+import { RideCardSkeleton } from '../rides-list/ride-card-skeleton';
+
+type PanelRide = Readonly<{ id: string; data: RideCardData }>;
 
 type Props = Readonly<{
   ref?: Ref<HTMLElement>;
-  rides: readonly StartPointRide[];
+  rideIds: readonly string[];
   onClose: () => void;
 }>;
 
-export function RidePanel({ ref, rides, onClose }: Props) {
+export function RidePanel({ ref, rideIds, onClose }: Props) {
   const t = useTranslations('RidesPage');
   const [index, setIndex] = useState(0);
-  const ride = rides[index];
+  const [rides, setRides] = useState<readonly PanelRide[] | null>(null);
+  const [hasError, setHasError] = useState(false);
+  const ride = rides?.[index];
+
+  const load = () => {
+    loadRideCards(rideIds)
+      .catch(() => null)
+      .then((result) => {
+        if (!result?.ok) {
+          setHasError(true);
+          return;
+        }
+        setRides(result.cards);
+      });
+  };
+
+  const loadInitial = useEffectEvent(load);
+
+  const retry = () => {
+    setHasError(false);
+    load();
+  };
+
+  useEffect(() => {
+    loadInitial();
+  }, []);
 
   const closeOnEscape = useEffectEvent((event: KeyboardEvent) => {
     if (event.key === 'Escape') {
@@ -45,7 +75,7 @@ export function RidePanel({ ref, rides, onClose }: Props) {
       >
         <X aria-hidden />
       </Button>
-      {rides.length > 1 && (
+      {rides && rides.length > 1 && (
         <div className="flex items-center gap-1">
           <Button
             variant="ghost"
@@ -70,10 +100,29 @@ export function RidePanel({ ref, rides, onClose }: Props) {
           </Button>
         </div>
       )}
-      <RideCard data={ride.data} className="shadow-none" />
-      <Button asChild>
-        <Link href={`/rides/${ride.id}`}>{t('mapViewRide')}</Link>
-      </Button>
+      {hasError ? (
+        <div role="alert" className="flex flex-col items-center gap-3 py-6 text-center">
+          <Text variant="body-s" className="text-muted-foreground">
+            {t('listLoadError')}
+          </Text>
+          <Button variant="secondary" size="sm" onClick={retry}>
+            {t('listRetry')}
+          </Button>
+        </div>
+      ) : ride ? (
+        <>
+          <RideCard data={ride.data} className="shadow-none" />
+          <Button asChild>
+            <Link href={`/rides/${ride.id}`}>{t('mapViewRide')}</Link>
+          </Button>
+        </>
+      ) : rides ? (
+        <Text variant="body-s" className="text-muted-foreground py-6 text-center">
+          {t('mapEmpty')}
+        </Text>
+      ) : (
+        <RideCardSkeleton />
+      )}
     </section>
   );
 }
