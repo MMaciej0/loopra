@@ -1,6 +1,6 @@
 'use client';
 
-import type { BBox, Point } from '@loopra/domain';
+import type { Point } from '@loopra/domain';
 import { useTranslations } from 'next-intl';
 import { Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -14,15 +14,14 @@ import { useStartPoints } from './use-start-points';
 type Props = Readonly<{
   query: RidesListQuery;
   center: Point;
-  searchArea: BBox;
   screenReaderLocationLabel: string;
 }>;
 
-export function RidesMap({ query, center, searchArea, screenReaderLocationLabel }: Props) {
+export function RidesMap({ query, center, screenReaderLocationLabel }: Props) {
   const t = useTranslations('RidesPage');
-  const { status, startPoints, retry } = useStartPoints(query);
+  const { status, startPoints, retry, loadArea } = useStartPoints(query);
   const { containerRef, panelRef, selected, clearSelection, hasStartPointInView, showAll } =
-    useRidesMap({ center, searchArea, startPoints });
+    useRidesMap({ center, startPoints, onSearchAreaChange: loadArea });
 
   const notice = mapNotice({
     status,

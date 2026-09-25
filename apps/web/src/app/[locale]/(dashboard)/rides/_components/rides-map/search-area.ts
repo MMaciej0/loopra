@@ -1,64 +1,43 @@
-import type { BBox } from '@loopra/domain';
+import {
+  bboxAround,
+  fitsSearchArea,
+  SEARCH_AREA_MAX_KM,
+  type BBox,
+  type Point,
+} from '@loopra/domain';
 import * as maptilersdk from '@maptiler/sdk';
 
 const TILE_SIZE = 512;
 
-type Bounds = [[number, number], [number, number]];
-
-export function searchAreaPolygon({
-  west,
-  south,
-  east,
-  north,
-}: BBox): GeoJSON.Feature<GeoJSON.Polygon> {
-  return {
-    type: 'Feature',
-    properties: {},
-    geometry: {
-      type: 'Polygon',
-      coordinates: [
-        [
-          [west, south],
-          [east, south],
-          [east, north],
-          [west, north],
-          [west, south],
-        ],
-      ],
-    },
-  };
+function centerOf(map: maptilersdk.Map): Point {
+  const { lng, lat } = map.getCenter();
+  return { x: lng, y: lat };
 }
 
-export function searchAreaConstraints(
-  { west, south, east, north }: BBox,
-  viewport: Readonly<{ width: number; height: number }>,
-) {
+export function searchAreaMinZoom(map: maptilersdk.Map): number | null {
+  const { clientWidth: width, clientHeight: height } = map.getContainer();
+  if (width === 0 || height === 0) return null;
+
+  const { west, south, east, north } = bboxAround(centerOf(map), SEARCH_AREA_MAX_KM);
   const northWest = maptilersdk.MercatorCoordinate.fromLngLat([west, north]);
   const southEast = maptilersdk.MercatorCoordinate.fromLngLat([east, south]);
 
-  const pixelsPerUnit = Math.min(
-    viewport.width / (southEast.x - northWest.x),
-    viewport.height / (southEast.y - northWest.y),
+  const pixelsPerUnit = Math.max(
+    width / (southEast.x - northWest.x),
+    height / (southEast.y - northWest.y),
   );
-  const halfWidth = viewport.width / pixelsPerUnit / 2;
-  const halfHeight = viewport.height / pixelsPerUnit / 2;
-  const midX = (northWest.x + southEast.x) / 2;
-  const midY = (northWest.y + southEast.y) / 2;
 
-  const topLeft = new maptilersdk.MercatorCoordinate(
-    midX - halfWidth,
-    midY - halfHeight,
-  ).toLngLat();
-  const bottomRight = new maptilersdk.MercatorCoordinate(
-    midX + halfWidth,
-    midY + halfHeight,
-  ).toLngLat();
+  return Math.log2(pixelsPerUnit / TILE_SIZE);
+}
 
-  return {
-    minZoom: Math.log2(pixelsPerUnit / TILE_SIZE),
-    maxBounds: [
-      [topLeft.lng, bottomRight.lat],
-      [bottomRight.lng, topLeft.lat],
-    ] satisfies Bounds,
+export function viewSearchArea(map: maptilersdk.Map): BBox {
+  const bounds = map.getBounds();
+  const view = {
+    west: bounds.getWest(),
+    south: bounds.getSouth(),
+    east: bounds.getEast(),
+    north: bounds.getNorth(),
   };
+
+  return fitsSearchArea(view) ? view : bboxAround(centerOf(map), SEARCH_AREA_MAX_KM);
 }

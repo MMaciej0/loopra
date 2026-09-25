@@ -13,18 +13,17 @@ import * as maptilersdk from '@maptiler/sdk';
 import '@maptiler/sdk/dist/maptiler-sdk.css';
 import { anyInView, boundsOf, revealOffset } from './map-geometry';
 import { createMarkerElement, setMarkerSelected } from './marker-element';
-import { searchAreaConstraints, searchAreaPolygon } from './search-area';
+import { searchAreaMinZoom, viewSearchArea } from './search-area';
 import type { StartPointGroup } from './start-points';
 
 const CITY_ZOOM = 16;
-const SEARCH_AREA_ID = 'search-area';
-const SEARCH_AREA_COLOR = '#6d8ff2';
 const SHOW_ALL_PADDING_PX = 64;
+const RELOAD_DELAY_MS = 300;
 
 type UseRidesMapProps = Readonly<{
   center: Point;
-  searchArea: BBox;
   startPoints: readonly StartPointGroup[];
+  onSearchAreaChange: (searchArea: BBox) => void;
 }>;
 
 function toMapStyle(resolvedTheme: string) {
@@ -33,35 +32,14 @@ function toMapStyle(resolvedTheme: string) {
     : maptilersdk.MapStyle.STREETS;
 }
 
-function addSearchArea(map: maptilersdk.Map, searchArea: BBox) {
-  if (map.getSource(SEARCH_AREA_ID)) return;
-
-  map.addSource(SEARCH_AREA_ID, { type: 'geojson', data: searchAreaPolygon(searchArea) });
-  map.addLayer({
-    id: `${SEARCH_AREA_ID}-fill`,
-    type: 'fill',
-    source: SEARCH_AREA_ID,
-    paint: { 'fill-color': SEARCH_AREA_COLOR, 'fill-opacity': 0.06 },
-  });
-  map.addLayer({
-    id: `${SEARCH_AREA_ID}-outline`,
-    type: 'line',
-    source: SEARCH_AREA_ID,
-    paint: { 'line-color': SEARCH_AREA_COLOR, 'line-opacity': 0.5, 'line-width': 1.5 },
-  });
+function applySearchAreaMinZoom(map: maptilersdk.Map) {
+  const minZoom = searchAreaMinZoom(map);
+  if (minZoom !== null) {
+    map.setMinZoom(minZoom);
+  }
 }
 
-function constrainToSearchArea(map: maptilersdk.Map, searchArea: BBox) {
-  const { clientWidth: width, clientHeight: height } = map.getContainer();
-  if (width === 0 || height === 0) return;
-
-  const { minZoom, maxBounds } = searchAreaConstraints(searchArea, { width, height });
-  map.setMaxBounds(null);
-  map.setMinZoom(minZoom);
-  map.setMaxBounds(maxBounds);
-}
-
-export function useRidesMap({ center, searchArea, startPoints }: UseRidesMapProps) {
+export function useRidesMap({ center, startPoints, onSearchAreaChange }: UseRidesMapProps) {
   const t = useTranslations('RidesPage');
   const locale = useLocale();
   const { resolvedTheme } = useTheme();
@@ -72,6 +50,10 @@ export function useRidesMap({ center, searchArea, startPoints }: UseRidesMapProp
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const isThemeResolved = resolvedTheme !== undefined;
   const selected = startPoints.find(({ id }) => id === selectedId) ?? null;
+
+  if (selectedId !== null && selected === null) {
+    setSelectedId(null);
+  }
 
   const subscribeToMove = useCallback(
     (onMove: () => void) => {
@@ -90,10 +72,10 @@ export function useRidesMap({ center, searchArea, startPoints }: UseRidesMapProp
 
   const readCreationOptions = useEffectEvent(() => ({
     center: [center.x, center.y] as [number, number],
-    searchArea,
     language: locale,
     theme: resolvedTheme,
   }));
+  const reportSearchArea = useEffectEvent((searchArea: BBox) => onSearchAreaChange(searchArea));
   const applyTheme = useEffectEvent(() => {
     if (resolvedTheme === undefined) return;
     map?.setStyle(toMapStyle(resolvedTheme));
@@ -118,7 +100,7 @@ export function useRidesMap({ center, searchArea, startPoints }: UseRidesMapProp
 
   useEffect(() => {
     const container = containerRef.current;
-    const { center, searchArea, language, theme } = readCreationOptions();
+    const { center, language, theme } = readCreationOptions();
     if (!container || theme === undefined) return;
 
     maptilersdk.config.apiKey = process.env.NEXT_PUBLIC_MAPTILER_KEY!;
@@ -139,13 +121,19 @@ export function useRidesMap({ center, searchArea, startPoints }: UseRidesMapProp
       attributionControl: { compact: true },
     });
 
-    constrainToSearchArea(newMap, searchArea);
-    newMap.on('resize', () => constrainToSearchArea(newMap, searchArea));
+    applySearchAreaMinZoom(newMap);
+    newMap.on('resize', () => applySearchAreaMinZoom(newMap));
+
+    let reloadTimeout: ReturnType<typeof setTimeout> | undefined;
+    newMap.on('moveend', () => {
+      applySearchAreaMinZoom(newMap);
+      clearTimeout(reloadTimeout);
+      reloadTimeout = setTimeout(() => reportSearchArea(viewSearchArea(newMap)), RELOAD_DELAY_MS);
+    });
 
     let isStyleLoaded = false;
     newMap.on('style.load', () => {
       isStyleLoaded = true;
-      addSearchArea(newMap, searchArea);
     });
 
     newMap.addControl(new maptilersdk.NavigationControl({ showCompass: false }), 'top-right');
@@ -165,6 +153,7 @@ export function useRidesMap({ center, searchArea, startPoints }: UseRidesMapProp
     setMap(newMap);
 
     return () => {
+      clearTimeout(reloadTimeout);
       setMap(null);
       mapElement.remove();
 
