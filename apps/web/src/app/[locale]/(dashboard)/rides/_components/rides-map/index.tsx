@@ -19,7 +19,7 @@ type Props = Readonly<{
 
 export function RidesMap({ query, center, screenReaderLocationLabel }: Props) {
   const t = useTranslations('RidesPage');
-  const { status, startPoints, retry, loadArea } = useStartPoints(query);
+  const { status, startPoints, truncated, retry, loadArea } = useStartPoints(query);
   const { containerRef, panelRef, selected, clearSelection, hasStartPointInView, showAll } =
     useRidesMap({ center, startPoints, onSearchAreaChange: loadArea });
 
@@ -27,8 +27,9 @@ export function RidesMap({ query, center, screenReaderLocationLabel }: Props) {
     status,
     startPointCount: startPoints.length,
     hasStartPointInView,
+    truncated,
   });
-  const rideCount = startPoints.reduce((total, group) => total + group.rides.length, 0);
+  const rideCount = startPoints.reduce((total, group) => total + group.rideIds.length, 0);
 
   return (
     <div className="border-border relative min-h-0 flex-1 overflow-hidden rounded-xl border">
@@ -61,6 +62,11 @@ export function RidesMap({ query, center, screenReaderLocationLabel }: Props) {
             </Button>
           </MapChip>
         )}
+        {notice === 'truncated' && (
+          <MapChip role="status" className="pr-3.5">
+            {t('mapTruncated')}
+          </MapChip>
+        )}
         {notice === 'error' && (
           <MapChip role="alert">
             {t('listLoadError')}
@@ -72,9 +78,9 @@ export function RidesMap({ query, center, screenReaderLocationLabel }: Props) {
       </div>
       {selected && (
         <RidePanel
-          key={selected.id}
+          key={selected.rideIds.join()}
           ref={panelRef}
-          rides={selected.rides}
+          rideIds={selected.rideIds}
           onClose={clearSelection}
         />
       )}

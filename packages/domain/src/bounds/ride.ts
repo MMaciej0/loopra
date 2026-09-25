@@ -11,3 +11,6 @@ export const DISTANCE_MAX_KM = 9999;
 
 export const PACE_MIN_KMH = 5;
 export const PACE_MAX_KMH = 60;
+
+export const RIDE_IDS_MAX = 24;
+export const RIDE_MARKERS_MAX = 1000;

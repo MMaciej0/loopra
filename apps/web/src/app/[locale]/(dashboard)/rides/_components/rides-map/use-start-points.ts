@@ -12,6 +12,7 @@ export function useStartPoints(initialQuery: RidesListQuery) {
   const queryRef = useRef(initialQuery);
   const latestRequestRef = useRef(0);
   const [startPoints, setStartPoints] = useState(NO_START_POINTS);
+  const [truncated, setTruncated] = useState(false);
   const [status, setStatus] = useState<StartPointsStatus>('loading');
 
   const load = () => {
@@ -28,6 +29,7 @@ export function useStartPoints(initialQuery: RidesListQuery) {
         }
 
         setStartPoints(result.startPoints);
+        setTruncated(result.truncated);
         setStatus('done');
       });
   };
@@ -48,5 +50,5 @@ export function useStartPoints(initialQuery: RidesListQuery) {
     reload();
   };
 
-  return { status, startPoints, retry: reload, loadArea };
+  return { status, startPoints, truncated, retry: reload, loadArea };
 }

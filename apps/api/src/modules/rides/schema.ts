@@ -18,6 +18,7 @@ import {
   PACE_POLICIES,
   PARTICIPANTS_MAX,
   PARTICIPANTS_MIN,
+  RIDE_IDS_MAX,
   RIDE_STATUSES,
   RIDE_TYPES,
   SEARCH_AREA_MAX_KM,
@@ -43,9 +44,12 @@ const BBoxSchema = z
     message: `bbox must be at most ${SEARCH_AREA_MAX_KM} km on its longest side`,
   });
 
-export const ListRidesQuerySchema = z.object({
-  cursor: z.string().optional(),
-  limit: z.coerce.number().int().min(1).max(100).default(20),
+const RideIdsSchema = z
+  .string()
+  .transform((value) => value.split(','))
+  .pipe(z.array(z.uuid()).min(1).max(RIDE_IDS_MAX));
+
+const rideFilterProperties = {
   bike_type: z.enum(BIKE_TYPES).optional(),
   ride_type: z.enum(RIDE_TYPES).optional(),
   city: z.string().optional(),
@@ -53,8 +57,20 @@ export const ListRidesQuerySchema = z.object({
   country: z.string().optional(),
   date_from: z.coerce.date().optional(),
   date_to: z.coerce.date().optional(),
-  bbox: BBoxSchema.optional(),
   status: z.enum(RIDE_STATUSES).optional(),
+};
+
+export const ListRidesQuerySchema = z.object({
+  cursor: z.string().optional(),
+  limit: z.coerce.number().int().min(1).max(100).default(20),
+  ...rideFilterProperties,
+  bbox: BBoxSchema.optional(),
+  ids: RideIdsSchema.optional(),
+});
+
+export const ListRideMarkersQuerySchema = z.object({
+  ...rideFilterProperties,
+  bbox: BBoxSchema,
 });
 
 export const CreateRideBodySchema = z
@@ -179,3 +195,4 @@ export const UpdateRideBodySchema = z
 export type UpdateRideBody = z.infer<typeof UpdateRideBodySchema>;
 export type CreateRideBody = z.infer<typeof CreateRideBodySchema>;
 export type ListRidesQuery = z.infer<typeof ListRidesQuerySchema>;
+export type ListRideMarkersQuery = z.infer<typeof ListRideMarkersQuerySchema>;

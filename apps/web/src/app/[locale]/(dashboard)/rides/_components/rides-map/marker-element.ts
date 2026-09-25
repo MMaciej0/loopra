@@ -5,8 +5,8 @@ export function setMarkerSelected(element: HTMLElement, isSelected: boolean) {
   element.style.zIndex = isSelected ? '1' : '';
 }
 
-export function createMarkerElement({ rides }: StartPointGroup, label: string) {
-  const rideCount = rides.length;
+export function createMarkerElement({ rideIds }: StartPointGroup, label: string) {
+  const rideCount = rideIds.length;
   const button = document.createElement('button');
   button.type = 'button';
   button.setAttribute('aria-label', label);

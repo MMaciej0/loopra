@@ -1,7 +1,8 @@
 import { describe, expect, it, vi } from 'vitest';
 import { readFileSync } from 'node:fs';
+import { randomUUID } from 'node:crypto';
 import { sql } from 'drizzle-orm';
-import { bboxAround, formatBBox, SEARCH_AREA_MAX_KM } from '@loopra/domain';
+import { bboxAround, formatBBox, RIDE_IDS_MAX, SEARCH_AREA_MAX_KM } from '@loopra/domain';
 import { useApp } from '../../helpers/app.js';
 import { createMultipleRandomRides, newRide } from '../../helpers/rides.js';
 import { rides } from '../../../src/db/schema.js';
@@ -153,6 +154,65 @@ describe('GET /rides', () => {
         expect(response.json().field).toBe('bbox');
       },
     );
+  });
+
+  describe('ids', () => {
+    const listRidesRaw = (query: Record<string, string>) =>
+      appRef.app.inject({
+        method: 'GET',
+        url: '/rides',
+        query,
+        cookies: { accessToken: auth.accessToken },
+      });
+
+    it('returns only the rides with the given ids', async () => {
+      const firstId = await createRide();
+      const secondId = await createRide();
+      await createRide();
+
+      const { data } = await listRides({ ids: `${firstId},${secondId}` });
+
+      expect(new Set(data.map((ride: { id: string }) => ride.id))).toEqual(
+        new Set([firstId, secondId]),
+      );
+    });
+
+    it(`returns all ${RIDE_IDS_MAX} rides on one page without a limit`, async () => {
+      const inserted = await createMultipleRandomRides(appRef.app.db, RIDE_IDS_MAX, auth.userId);
+
+      const { data, nextCursor } = await listRides({
+        ids: inserted.map((ride) => ride.id).join(','),
+      });
+
+      expect(data).toHaveLength(RIDE_IDS_MAX);
+      expect(nextCursor).toBeNull();
+    });
+
+    it('never returns a private ride by id', async () => {
+      const privateId = await createRide({ is_private: true });
+
+      const { data } = await listRides({ ids: privateId });
+
+      expect(data).toEqual([]);
+    });
+
+    it(`accepts ${RIDE_IDS_MAX} ids and rejects more`, async () => {
+      const ids = Array.from({ length: RIDE_IDS_MAX + 1 }, () => randomUUID());
+
+      const atCap = await listRidesRaw({ ids: ids.slice(0, RIDE_IDS_MAX).join(',') });
+      const overCap = await listRidesRaw({ ids: ids.join(',') });
+
+      expect(atCap.statusCode).toBe(200);
+      expect(overCap.statusCode).toBe(400);
+      expect(overCap.json().field).toBe('ids');
+    });
+
+    it.each(['', 'not-a-uuid', `${randomUUID()},`])('rejects malformed ids %j', async (ids) => {
+      const response = await listRidesRaw({ ids });
+
+      expect(response.statusCode).toBe(400);
+      expect(response.json().field).toBe('ids');
+    });
   });
 
   it('returns list items with exactly the whitelisted keys', async () => {

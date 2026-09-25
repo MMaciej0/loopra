@@ -1,34 +1,20 @@
-import type { RideListItem } from '@loopra/domain';
-import type { RideCardData } from '@/components/ride-card/types';
-import { toRideCard } from '../rides-list/to-ride-card';
-
-export type StartPointRide = Readonly<{ id: string; data: RideCardData }>;
+import type { RideMarker } from '@loopra/domain';
 
 export type StartPointGroup = Readonly<{
   id: string;
   lng: number;
   lat: number;
-  name: string | null;
-  rides: readonly StartPointRide[];
+  rideIds: readonly string[];
 }>;
 
-export function groupByStartPoint(rides: readonly RideListItem[]): StartPointGroup[] {
-  const groups = new Map<
-    string,
-    { lng: number; lat: number; name: string | null; rides: StartPointRide[] }
-  >();
+export function groupByStartPoint(markers: readonly RideMarker[]): StartPointGroup[] {
+  const groups = new Map<string, { lng: number; lat: number; rideIds: string[] }>();
 
-  const byStartTime = rides.toSorted((a, b) => Date.parse(a.start_time) - Date.parse(b.start_time));
-
-  for (const ride of byStartTime) {
-    if (!ride.start_location) continue;
-
-    const { x: lng, y: lat } = ride.start_location;
+  for (const { id: rideId, lng, lat } of markers) {
     const id = `${lng},${lat}`;
-    const group = groups.get(id) ?? { lng, lat, name: null, rides: [] };
+    const group = groups.get(id) ?? { lng, lat, rideIds: [] };
 
-    group.name ??= ride.start_location_name;
-    group.rides.push({ id: ride.id, data: toRideCard(ride) });
+    group.rideIds.push(rideId);
     groups.set(id, group);
   }
 
