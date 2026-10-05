@@ -1,9 +1,13 @@
 import { Sidebar, SidebarContent, SidebarFooter } from '@/components/ui/sidebar';
+import { getCurrentUser } from '@/lib/user';
 import { AppSidebarHeader } from './header';
 import { AppSidebarNav } from './nav';
 import { CreateRideButton } from './create-ride-button';
+import { UserMenu } from './user-menu';
 
-export function AppSidebar() {
+export async function AppSidebar() {
+  const user = await getCurrentUser();
+
   return (
     <Sidebar collapsible="icon">
       <AppSidebarHeader />
@@ -11,7 +15,7 @@ export function AppSidebar() {
         <CreateRideButton />
         <AppSidebarNav />
       </SidebarContent>
-      <SidebarFooter />
+      <SidebarFooter>{user && <UserMenu user={user} />}</SidebarFooter>
     </Sidebar>
   );
 }
