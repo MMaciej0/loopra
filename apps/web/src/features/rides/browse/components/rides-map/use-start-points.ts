@@ -1,7 +1,7 @@
 import { useEffect, useEffectEvent, useRef, useState } from 'react';
 import { formatBBox, type BBox } from '@loopra/domain';
-import { loadMapStartPoints } from '@/features/rides/list/actions/load-map-start-points';
-import type { RidesListQuery } from '@/features/rides/list/list-query';
+import { loadMapStartPoints } from '@/features/rides/browse/actions/load-map-start-points';
+import type { RidesListQuery } from '@/features/rides/browse/list-query';
 import type { StartPointGroup } from './start-points';
 
 export type StartPointsStatus = 'loading' | 'error' | 'done';

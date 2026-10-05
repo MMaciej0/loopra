@@ -4,7 +4,7 @@ import type { Point } from '@loopra/domain';
 import { useTranslations } from 'next-intl';
 import { Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import type { RidesListQuery } from '@/features/rides/list/list-query';
+import type { RidesListQuery } from '@/features/rides/browse/list-query';
 import { MapChip } from './map-chip';
 import { mapNotice } from './map-notice';
 import { RidePanel } from './ride-panel';
