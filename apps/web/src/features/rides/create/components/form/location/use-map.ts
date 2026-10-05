@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import * as maptilersdk from '@maptiler/sdk';
 import '@maptiler/sdk/dist/maptiler-sdk.css';
-import { Coords } from '@/features/rides/create/schema';
+import type { Point } from '@loopra/domain';
 import { GeocodingControl } from '@maptiler/geocoding-control/maptilersdk';
 import { reverseGeocode, type RideLocation } from '@/features/locations/geocoding';
 
@@ -9,11 +9,11 @@ const DEFAULT_CENTER: [number, number] = [19.9275, 50.0616]; // [lng, lat] — K
 const DEFAULT_ZOOM = 14;
 
 export interface PickedLocation extends RideLocation {
-  coords: Coords;
+  coords: Point;
 }
 
 interface UseMapProps {
-  initialCoords?: Coords;
+  initialCoords?: Point;
   onPick: (loc: PickedLocation) => void;
   language?: string; // ISO 639-1, localizes reverse-geocoded place names
   searchPlaceholder?: string;
@@ -82,7 +82,7 @@ export function useMap({ onPick, initialCoords, language = 'en', searchPlacehold
     });
 
     map.on('click', async (e) => {
-      const coords: Coords = { x: e.lngLat.lng, y: e.lngLat.lat };
+      const coords: Point = { x: e.lngLat.lng, y: e.lngLat.lat };
       pointer.setLngLat(e.lngLat).addTo(map); // instant marker, no wait
       map.easeTo({ center: e.lngLat }); // recenter on the picked point
       const location = await reverseGeocode(coords, languageRef.current);
