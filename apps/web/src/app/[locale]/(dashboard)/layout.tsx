@@ -1,7 +1,7 @@
-import { AppSidebar } from './_components/app-sidebar';
+import { AppSidebar } from '@/features/shell/components/app-sidebar';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { TooltipProvider } from '@/components/ui/tooltip';
-import TopNav from './_components/top-nav';
+import TopNav from '@/features/shell/components/top-nav';
 import { FirstRunLocationPrompt } from '@/features/locations/components/first-run-location-prompt';
 
 type Props = Readonly<{
