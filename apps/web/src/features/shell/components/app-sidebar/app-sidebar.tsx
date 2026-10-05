@@ -1,8 +1,8 @@
 import { Sidebar, SidebarContent, SidebarFooter } from '@/components/ui/sidebar';
-import { UserMenu } from '@/features/shell/components/user-menu';
 import { AppSidebarHeader } from './header';
 import { AppSidebarNav } from './nav';
 import { CreateRideButton } from './create-ride-button';
+import { UserMenu } from './user-menu';
 
 export function AppSidebar() {
   return (
