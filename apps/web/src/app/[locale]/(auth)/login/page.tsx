@@ -1,9 +1,9 @@
 import { getTranslations } from 'next-intl/server';
-import { AuthHeader } from '../_components/auth-header';
-import { AuthDivider } from '../_components/auth-divider';
-import { AuthSwitchLink } from '../_components/auth-switch-link';
-import { GoogleAuthButton } from '../_components/google-auth-button';
-import { LoginForm } from './_components/login-form';
+import { AuthHeader } from '@/features/auth/components/auth-header';
+import { AuthDivider } from '@/features/auth/components/auth-divider';
+import { AuthSwitchLink } from '@/features/auth/components/auth-switch-link';
+import { GoogleAuthButton } from '@/features/auth/components/google-auth-button';
+import { LoginForm } from '@/features/auth/components/login-form';
 
 export default async function Login({
   searchParams,

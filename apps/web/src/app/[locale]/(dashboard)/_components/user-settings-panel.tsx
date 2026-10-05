@@ -1,5 +1,5 @@
 import { ThemeButton } from '@/components/ui/theme-button';
-import { LogoutButton } from './logout-button';
+import { LogoutButton } from '@/features/auth/components/logout-button';
 
 export function UserSettingsPanel() {
   return (
