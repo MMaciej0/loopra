@@ -25,6 +25,7 @@ export default async function NewRidePage() {
   return (
     <RideFormWrapper>
       <CreateRideTopNav />
+      <h1 className="sr-only">{t('title')}</h1>
       <PageBody>
         <div className="h-full lg:overflow-y-auto">
           <div className="mx-auto grid max-w-[1180px] grid-cols-1 items-start gap-6 px-1 pt-6 pb-12 md:px-3 lg:grid-cols-[minmax(0,1fr)_340px]">
