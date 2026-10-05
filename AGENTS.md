@@ -63,6 +63,8 @@ pnpm --filter api test
 
 `pnpm --filter api test -- <path>` does **not** filter — the argument never reaches vitest and the whole suite runs. Call `vitest` directly for one file.
 
+`packages/gpx` has its own Vitest suite with no database or Docker: `pnpm --filter @loopra/gpx test`, on the host or in the container.
+
 Vitest clones a template database per worker, so tests never touch the dev database. All external services are mocked or unreachable — the suite passes with entirely dummy `RESEND_API_KEY`, `GOOGLE_*` and `S3_*` values.
 
 Those dummies live in `apps/api/.env.test`, committed through a `.gitignore` negation and loaded by `vitest.config.ts`. It is the one env file in this repo that is **tracked**, so never paste a real credential into it, even briefly — `git add -A` would commit it. To experiment locally, `git update-index --skip-worktree apps/api/.env.test` first. The load **does not override** variables already set, which is what keeps the container flow working: compose injects the real connection strings there, and they win over the file's host-facing `localhost:5434`.
@@ -75,12 +77,12 @@ Web has no automated tests, by choice. Verify web changes live in the browser an
 
 `.github/workflows/ci.yml` runs on every pull request and every push to `master`, cancelling superseded runs for the same ref. Two jobs in parallel:
 
-| job        | runs                                                                                    |
-| ---------- | --------------------------------------------------------------------------------------- |
-| `checks`   | `pnpm -r typecheck`, `pnpm -r lint`, `pnpm -r format:check`, `pnpm --filter web build`  |
-| `api-test` | `docker compose -f docker-compose-test.yml up -d --wait`, then `pnpm --filter api test` |
+| job        | runs                                                                                                                     |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `checks`   | `pnpm -r typecheck`, `pnpm -r lint`, `pnpm -r format:check`, `pnpm --filter @loopra/gpx test`, `pnpm --filter web build` |
+| `api-test` | `docker compose -f docker-compose-test.yml up -d --wait`, then `pnpm --filter api test`                                  |
 
-**The workflow holds no logic of its own** — every step invokes a workspace script you can run yourself. So "will CI pass" is answerable locally by running those five commands; there is no CI-only path to reason about. Keep it that way: put new logic in a script, not in the YAML.
+**The workflow holds no logic of its own** — every step invokes a workspace script you can run yourself. So "will CI pass" is answerable locally by running those six commands; there is no CI-only path to reason about. Keep it that way: put new logic in a script, not in the YAML.
 
 `checks` runs `next typegen` before typechecking. `apps/web/next-env.d.ts` and `.next/types/` are gitignored build output, and `tsc` needs them to resolve `.svg` imports and route types — so `pnpm -r typecheck` passes on a machine that has built the app and fails on a fresh clone until something generates them. `next typegen` does that without a full build.
 
@@ -106,7 +108,7 @@ apps/
   web/          # Next.js website
 packages/
   domain/       # Shared vocabulary: enums, bounds, error codes, DTOs, TypeBox schemas
-  gpx/          # GPX parsing, elevation profiles
+  gpx/          # GPX parsing, elevation profiles, simplified map paths
 docs/           # Architecture and design documents
 pnpm-workspace.yaml
 ```

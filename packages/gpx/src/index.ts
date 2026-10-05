@@ -3,6 +3,7 @@ import { gpx } from '@tmcw/togeojson';
 import { toSegments } from './segments.js';
 import { measureElevation } from './elevation.js';
 import { createElevationProfile } from './elevation-profile.js';
+import { createPath } from './path.js';
 import { countPoints } from './utils.js';
 
 export interface GpxMetadata {
@@ -12,6 +13,7 @@ export interface GpxMetadata {
   descentM: number;
   pointCount: number;
   elevationProfile: [number, number][][];
+  path: [number, number][][];
 }
 
 export const parseGPX = (gpxString: string): GpxMetadata => {
@@ -40,5 +42,6 @@ export const parseGPX = (gpxString: string): GpxMetadata => {
     descentM,
     pointCount: countPoints(segments),
     elevationProfile,
+    path: createPath(segments),
   };
 };
