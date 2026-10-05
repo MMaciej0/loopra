@@ -1,17 +1,9 @@
 import type { Position } from 'geojson';
+import { readPointCoordinates } from './utils.js';
 
 export const calculateDistanceKm = (pointA: Position, pointB: Position): number => {
-  const [longitudeA, latitudeA] = pointA;
-  const [longitudeB, latitudeB] = pointB;
-
-  if (
-    longitudeA === undefined ||
-    latitudeA === undefined ||
-    longitudeB === undefined ||
-    latitudeB === undefined
-  ) {
-    throw new Error('Track point is missing coordinates');
-  }
+  const [longitudeA, latitudeA] = readPointCoordinates(pointA);
+  const [longitudeB, latitudeB] = readPointCoordinates(pointB);
 
   const toRadians = (degrees: number) => degrees * (Math.PI / 180);
   const earthRadiusKm = 6371.0088;

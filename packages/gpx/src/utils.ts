@@ -11,3 +11,13 @@ export const readPointElevation = (point: Position | undefined): number | null =
 
   return elevation === undefined || elevation === null ? null : elevation;
 };
+
+export const readPointCoordinates = (point: Position): [number, number] => {
+  const [longitude, latitude] = point;
+
+  if (longitude === undefined || latitude === undefined) {
+    throw new Error('Track point is missing coordinates');
+  }
+
+  return [longitude, latitude];
+};
