@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Field } from '@/components/ui/field';
 import { ControlledForm } from '@/components/ui/controlled-form';
 import { Text } from '@/components/ui/text';
-import { register } from '../_actions/register';
+import { register } from '@/features/auth/actions/register';
 
 export function RegisterForm() {
   const [state, action, isLoading] = useActionState(register, null);

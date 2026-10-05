@@ -1,7 +1,7 @@
 import { getTranslations } from 'next-intl/server';
-import { AuthHeader } from '../_components/auth-header';
-import { AuthSwitchLink } from '../_components/auth-switch-link';
-import { ForgotPasswordForm } from './_components/forgot-password-form';
+import { AuthHeader } from '@/features/auth/components/auth-header';
+import { AuthSwitchLink } from '@/features/auth/components/auth-switch-link';
+import { ForgotPasswordForm } from '@/features/auth/components/forgot-password-form';
 
 export default async function ForgotPassword() {
   const t = await getTranslations('ForgotPasswordPage');
