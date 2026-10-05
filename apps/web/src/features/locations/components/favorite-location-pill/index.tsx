@@ -1,5 +1,6 @@
 import { toLocationSuggestion } from '@/features/locations/geocoding';
-import { getCurrentUser, getFavoriteLocations } from '@/lib/user';
+import { getCurrentUser } from '@/lib/user';
+import { getFavoriteLocations } from '@/features/locations/favorites';
 import { FavoriteLocationPillDialog } from './dialog';
 
 const STORED_LOCATION_ID = 'loopra:stored-selected-location';
