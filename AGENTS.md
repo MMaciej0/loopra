@@ -211,6 +211,8 @@ A page reads params, fetches, and composes components from `features/`. **No `_c
 
 **Import rule:** `app` → `features` → `components` / `lib` / `hooks`. A feature may import another feature (the shell uses auth's logout). `components`, `lib` and `hooks` never import from `features`. Nothing enforces this, so check it with `grep -rn '@/features' apps/web/src/{components,lib,hooks}`. Imports across folders use the `@/` alias.
 
+**File naming rule:** a file is named after its main export, in kebab-case (`RidesMap` → `rides-map.tsx`). **No `index.tsx` files** — they hide the component's name from Ctrl+P and editor tabs. A component with private subcomponents, hooks or helpers gets a folder, and its main file repeats the folder name: `ride-card/ride-card.tsx`, imported as `@/features/rides/ride-card/ride-card`. Do not shorten that with an `index.ts` re-export. A folder holding a single file is flattened to that file. A folder may also be a plain group with no main file (`create/components/form/`, `location-modal/`). Check it with `find apps/web/src -name 'index.ts*'`, which should print nothing.
+
 ## Agent skills
 
 ### Issue tracker

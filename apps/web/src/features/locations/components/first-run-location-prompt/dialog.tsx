@@ -12,10 +12,8 @@ import {
   DialogSubheader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import {
-  LocationModalBody,
-  useLocationModal,
-} from '@/features/locations/components/location-modal';
+import { LocationModalBody } from '@/features/locations/components/location-modal/location-modal-body';
+import { useLocationModal } from '@/features/locations/components/location-modal/use-location-modal';
 import type { LocationSuggestion } from '@/features/locations/geocoding';
 import { acceptDefaultSelectedLocation } from '@/features/locations/actions/selected-location';
 

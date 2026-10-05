@@ -2,7 +2,7 @@
 
 import { useEffect, useEffectEvent, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { RideCard } from '@/features/rides/ride-card';
+import { RideCard } from '@/features/rides/ride-card/ride-card';
 import type { RideCardData } from '@/features/rides/ride-card/types';
 import { Link } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';

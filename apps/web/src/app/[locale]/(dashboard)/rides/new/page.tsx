@@ -2,7 +2,7 @@ import { getTranslations } from 'next-intl/server';
 import { RideFormWrapper } from '@/features/rides/create/components/ride-form-wrapper';
 import { PageBar } from '@/features/rides/create/components/page-bar';
 import { FormCard } from '@/features/rides/create/components/form-card';
-import { RidePreview } from '@/features/rides/create/components/aside';
+import { RidePreview } from '@/features/rides/create/components/ride-preview/ride-preview';
 import { TitleInput } from '@/features/rides/create/components/form/title-input';
 import { DateTimeInput } from '@/features/rides/create/components/form/date-time-input';
 import { MaxParticipantsInput } from '@/features/rides/create/components/form/max-participants-input';
