@@ -6,7 +6,7 @@ import {
   type ListRidesResponse,
   type RideListItem,
 } from '@loopra/domain';
-import { protectedRequest } from '@/utils/api';
+import { protectedRequest } from '@/lib/api';
 import { toRideCard } from '../_components/rides-list/to-ride-card';
 import { groupByStartPoint } from '../_components/rides-map/start-points';
 import type { RidesListQuery } from '../list-query';

@@ -1,6 +1,11 @@
 import { redirect } from 'next/navigation';
-import { APP_ERROR_TYPES, AppErrorType, isAppErrorType } from './errors';
-import { clearAuthCookies, extractCookieValue, getAuthCookies, setAuthCookies } from './cookies';
+import { APP_ERROR_TYPES, AppErrorType, isAppErrorType } from '@/lib/errors';
+import {
+  clearAuthCookies,
+  extractCookieValue,
+  getAuthCookies,
+  setAuthCookies,
+} from '@/lib/cookies';
 import { cache } from 'react';
 
 interface ErrorResponse {

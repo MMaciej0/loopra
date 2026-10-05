@@ -1,9 +1,9 @@
 'use server';
 
 import { z } from 'zod';
-import { publicRequest } from '@/utils/api';
-import { APP_ERROR_TYPES, AppErrorType, getZodValidationErrorTypes } from '@/utils/errors';
-import { setAuthCookies } from '@/utils/cookies';
+import { publicRequest } from '@/lib/api';
+import { APP_ERROR_TYPES, AppErrorType, getZodValidationErrorTypes } from '@/lib/errors';
+import { setAuthCookies } from '@/lib/cookies';
 import { redirect } from 'next/navigation';
 
 type LoginFieldErrors = {

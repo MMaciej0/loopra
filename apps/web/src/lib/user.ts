@@ -1,7 +1,7 @@
 import { cache } from 'react';
 import type { GetCurrentUserResponse, ListFavoriteLocationsResponse } from '@loopra/domain';
-import { protectedRequest } from './api';
-import { toLocationSuggestion, type LocationSuggestion } from './geocoding';
+import { protectedRequest } from '@/lib/api';
+import { toLocationSuggestion, type LocationSuggestion } from '@/lib/geocoding';
 
 export const getCurrentUser = cache(async () => {
   const response = await protectedRequest<GetCurrentUserResponse>('/users/me');

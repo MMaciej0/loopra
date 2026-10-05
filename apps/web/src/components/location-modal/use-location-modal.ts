@@ -7,7 +7,7 @@ import {
   saveFavoriteLocation,
   saveSelectedLocation,
 } from '@/app/[locale]/(dashboard)/_actions/selected-location';
-import type { LocationSuggestion } from '@/utils/geocoding';
+import type { LocationSuggestion } from '@/lib/geocoding';
 
 type PendingPick = Readonly<{
   location: LocationSuggestion;

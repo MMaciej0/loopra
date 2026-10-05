@@ -207,7 +207,7 @@ Real response, `GET /geocoding/floria%C5%84ska.json?key=$MAPTILER_KEY&language=e
 }
 ```
 
-Points that matter for `featureToLocation` in `apps/web/src/utils/geocoding.ts`:
+Points that matter for `featureToLocation` in `apps/web/src/lib/geocoding.ts`:
 
 - The `id` prefix is `address.`, which matches none of our `byPrefix` lookups. Nothing breaks; the self entry simply contributes only its `text`.
 - `properties` carries **no** `place_designation` on a street, only `kind: "street"`. Our `self` Ctx therefore has `place_designation: undefined` and is skipped by the settlement scan — which is the behaviour we want.

@@ -1,12 +1,8 @@
 import { NextResponse } from 'next/server';
 import createMiddleware from 'next-intl/middleware';
 import { routing } from './i18n/routing';
-import { stripLocale } from './utils/locale';
-import {
-  captureRequestAuthCookies,
-  copySetCookieHeaders,
-  extractCookieValue,
-} from './utils/cookies';
+import { stripLocale } from '@/lib/locale';
+import { captureRequestAuthCookies, copySetCookieHeaders, extractCookieValue } from '@/lib/cookies';
 import type { NextRequest } from 'next/server';
 
 const PUBLIC_PATHS = ['/showcase', '/login', '/register', '/forgot-password'];
