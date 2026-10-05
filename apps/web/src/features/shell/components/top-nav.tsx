@@ -7,8 +7,8 @@ type Props = Readonly<{
 
 export default function TopNav({ children }: Props) {
   return (
-    <header className="flex h-14 shrink-0 items-center gap-2 border-b px-2 md:px-4 lg:px-8">
-      <SidebarTrigger size="icon" />
+    <header className="bg-background sticky top-0 z-20 flex h-14 shrink-0 items-center gap-2 border-b px-2 md:px-4 lg:px-8">
+      <SidebarTrigger type="button" size="icon" />
       {children && (
         <>
           <Separator

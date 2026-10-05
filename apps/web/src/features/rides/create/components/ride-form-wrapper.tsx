@@ -47,7 +47,7 @@ export function RideFormWrapper({ children }: { children: React.ReactNode }) {
 
   return (
     <FormProvider {...form}>
-      <form onSubmit={onSubmit} className="flex h-full min-h-0 flex-col">
+      <form onSubmit={onSubmit} className="flex min-h-0 flex-1 flex-col">
         {children}
       </form>
     </FormProvider>
