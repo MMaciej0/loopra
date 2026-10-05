@@ -1,8 +1,7 @@
 import * as maptilersdk from '@maptiler/sdk';
 import { formatLocationLabel } from '@loopra/domain';
-import type { SelectedLocation } from '@loopra/domain';
+import type { Point, SelectedLocation } from '@loopra/domain';
 import type { GeocodingFeature } from '@maptiler/sdk';
-import type { Coords } from '@/features/rides/create/schema';
 
 export interface RideLocation {
   city: string;
@@ -17,7 +16,7 @@ export interface RideLocation {
 export interface LocationSuggestion extends RideLocation {
   id: string;
   label: string;
-  coords: Coords;
+  coords: Point;
   is_street: boolean;
   containing_district: string;
 }
@@ -123,7 +122,7 @@ export { formatLocationLabel };
 // localized to `language` (ISO 639-1, e.g. "pl" / "en"). Passing the language
 // to the API makes `text`/`place_name` come back already translated, so we just
 // read those fields directly.
-export async function reverseGeocode(coords: Coords, language = 'en'): Promise<RideLocation> {
+export async function reverseGeocode(coords: Point, language = 'en'): Promise<RideLocation> {
   configureMaptiler();
 
   try {

@@ -92,5 +92,4 @@ export const createRideSchema = z
     error: APP_ERROR_TYPES.PACE_REQUIRED,
   });
 
-export type Coords = z.infer<typeof coordsSchema>;
 export type CreateRideInput = z.infer<typeof createRideSchema>;
