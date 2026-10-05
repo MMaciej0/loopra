@@ -2,11 +2,9 @@
 
 import { useState, useTransition } from 'react';
 import { isSamePlace, MAX_FAVORITE_LOCATIONS } from '@loopra/domain';
-import {
-  deleteFavoriteLocation,
-  saveFavoriteLocation,
-  saveSelectedLocation,
-} from '@/features/locations/actions/selected-location';
+import { deleteFavoriteLocation } from '@/features/locations/actions/delete-favorite-location';
+import { saveFavoriteLocation } from '@/features/locations/actions/save-favorite-location';
+import { saveSelectedLocation } from '@/features/locations/actions/save-selected-location';
 import type { LocationSuggestion } from '@/features/locations/geocoding';
 
 type PendingPick = Readonly<{

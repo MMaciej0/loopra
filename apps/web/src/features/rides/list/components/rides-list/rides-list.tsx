@@ -7,7 +7,7 @@ import type { RideCardData } from '@/features/rides/ride-card/types';
 import { Link } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
-import { loadRidesPage } from '@/features/rides/list/actions/list-rides';
+import { loadRidesPage } from '@/features/rides/list/actions/load-rides-page';
 import type { RidesListQuery } from '@/features/rides/list/list-query';
 import { RideCardSkeleton } from './ride-card-skeleton';
 
