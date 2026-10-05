@@ -13,6 +13,11 @@ export const getRide = async (db: Db, id: string) => {
           username: true,
         },
       },
+      route: {
+        columns: {
+          path: true,
+        },
+      },
       participants: {
         with: {
           user: {

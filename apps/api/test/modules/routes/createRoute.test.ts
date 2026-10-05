@@ -141,6 +141,27 @@ describe('POST /routes', () => {
     expect(stored.rows[0]).toEqual({ segments: 2, first_segment: 4, second_segment: 3 });
   });
 
+  it('stores the path without returning it', async () => {
+    const response = await upload(multisegmentFixture, 'two-segments.gpx');
+
+    expect(Object.keys(response.json().data).sort()).toEqual([
+      'ascent_m',
+      'descent_m',
+      'distance_km',
+      'elevation_profile',
+      'id',
+      'name',
+      'point_count',
+      'user_id',
+    ]);
+
+    const stored = await appRef.app.db.execute(
+      sql`select jsonb_array_length(path) as segments from routes where id = ${response.json().data.id}`,
+    );
+
+    expect(stored.rows[0]).toEqual({ segments: 2 });
+  });
+
   it('uploads the file under a namespaced key before inserting', async () => {
     const response = await upload(namedFixture);
 
