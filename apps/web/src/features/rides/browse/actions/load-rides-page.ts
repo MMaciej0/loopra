@@ -2,9 +2,9 @@
 
 import type { ListRidesResponse } from '@loopra/domain';
 import { protectedRequest } from '@/lib/api';
-import { toRideCard } from '@/features/rides/list/components/rides-list/to-ride-card';
-import { toSearchParams } from '@/features/rides/list/to-search-params';
-import type { RidesListQuery } from '@/features/rides/list/list-query';
+import { toRideCard } from '@/features/rides/browse/components/rides-list/to-ride-card';
+import { toSearchParams } from '@/features/rides/browse/to-search-params';
+import type { RidesListQuery } from '@/features/rides/browse/list-query';
 
 export async function loadRidesPage(query: RidesListQuery, cursor: string | null) {
   const params = toSearchParams(query);

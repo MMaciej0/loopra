@@ -1,10 +1,10 @@
 import { bboxAround, SEARCH_AREA_MAX_KM } from '@loopra/domain';
 import { formatLocationLabel } from '@/features/locations/geocoding';
 import { getCurrentUser } from '@/lib/user';
-import { buildRidesListQuery, ridesListKey } from '@/features/rides/list/list-query';
-import { RidesMap } from '@/features/rides/map/rides-map';
+import { buildRidesListQuery, ridesListKey } from '@/features/rides/browse/list-query';
+import { RidesMap } from '@/features/rides/browse/components/rides-map/rides-map';
 import { RidesList } from './rides-list/rides-list';
-import type { RidesView } from '@/features/rides/list/view';
+import type { RidesView } from '@/features/rides/browse/view';
 
 export async function ViewPane({ view }: { view: RidesView }) {
   const user = await getCurrentUser();

@@ -2,7 +2,7 @@
 
 import { useFormContext } from 'react-hook-form';
 import { useTranslations } from 'next-intl';
-import { RideCard } from '@/features/rides/ride-card/ride-card';
+import { RideCard } from '@/features/rides/components/ride-card/ride-card';
 import { Text } from '@/components/ui/text';
 import { RideContract } from './ride-contract';
 import { SafetyNotice } from './safety-notice';

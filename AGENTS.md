@@ -200,7 +200,7 @@ Code is grouped by feature, not by the URL that renders it:
 ```
 apps/web/src/
   app/          # Routing files only: pages, layouts, error/not-found, @topnav slot, route handlers
-  features/     # All feature code: auth, locations, shell, rides/{list,map,create,ride-card}
+  features/     # All feature code: auth, locations, shell, rides/{browse,create,components}
   components/   # Feature-free only: ui/ (shadcn), icons/, providers/
   hooks/        # Hooks used by more than one feature
   lib/          # Shared helpers: api, cookies, errors, locale, user, cn
@@ -211,7 +211,9 @@ A page reads params, fetches, and composes components from `features/`. **No `_c
 
 **Import rule:** `app` → `features` → `components` / `lib` / `hooks`. A feature may import another feature (the shell uses auth's logout). `components`, `lib` and `hooks` never import from `features`. Nothing enforces this, so check it with `grep -rn '@/features' apps/web/src/{components,lib,hooks}`. Imports across folders use the `@/` alias.
 
-**File naming rule:** a file is named after its main export, in kebab-case (`RidesMap` → `rides-map.tsx`). **No `index.tsx` files** — they hide the component's name from Ctrl+P and editor tabs. A component with private subcomponents, hooks or helpers gets a folder, and its main file repeats the folder name: `ride-card/ride-card.tsx`, imported as `@/features/rides/ride-card/ride-card`. Do not shorten that with an `index.ts` re-export. A folder holding a single file is flattened to that file. A folder may also be a plain group with no main file (`create/components/form/`, `location-modal/`). Check it with `find apps/web/src -name 'index.ts*'`, which should print nothing.
+**Feature parts:** a big feature may be split into parts, each with the usual shape (`actions/`, `components/`, helper files): `rides/browse` is the `/rides` page with its list and map views, `rides/create` is the create-ride page. Parts share code through `<feature>/components/` (`rides/components/ride-card/`), and never import each other in both directions — if two parts do, they are one part.
+
+**File naming rule:** a file is named after its main export, in kebab-case (`RidesMap` → `rides-map.tsx`). **No `index.tsx` files** — they hide the component's name from Ctrl+P and editor tabs. A component with private subcomponents, hooks or helpers gets a folder, and its main file repeats the folder name: `ride-card/ride-card.tsx`, imported as `@/features/rides/components/ride-card/ride-card`. Do not shorten that with an `index.ts` re-export. A folder holding a single file is flattened to that file. A folder may also be a plain group with no main file (`create/components/form/`, `location-modal/`). Check it with `find apps/web/src -name 'index.ts*'`, which should print nothing.
 
 ## Agent skills
 

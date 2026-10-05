@@ -2,13 +2,13 @@
 
 import { useEffect, useEffectEvent, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { RideCard } from '@/features/rides/ride-card/ride-card';
-import type { RideCardData } from '@/features/rides/ride-card/types';
+import { RideCard } from '@/features/rides/components/ride-card/ride-card';
+import type { RideCardData } from '@/features/rides/components/ride-card/types';
 import { Link } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
-import { loadRidesPage } from '@/features/rides/list/actions/load-rides-page';
-import type { RidesListQuery } from '@/features/rides/list/list-query';
+import { loadRidesPage } from '@/features/rides/browse/actions/load-rides-page';
+import type { RidesListQuery } from '@/features/rides/browse/list-query';
 import { RideCardSkeleton } from './ride-card-skeleton';
 
 const SKELETON_COUNT = 3;
