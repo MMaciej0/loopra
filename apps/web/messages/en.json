@@ -2,7 +2,11 @@
   "Sidebar": {
     "rides": "Rides",
     "routes": "Routes",
-    "createRide": "Create ride"
+    "createRide": "Create ride",
+    "userMenu": "Account menu for {name}",
+    "darkMode": "Dark mode",
+    "lightMode": "Light mode",
+    "logOut": "Log out"
   },
   "RidesPage": {
     "searchLabel": "Search rides",

@@ -2,7 +2,11 @@
   "Sidebar": {
     "rides": "Jazdy",
     "routes": "Trasy",
-    "createRide": "Utwórz jazdę"
+    "createRide": "Utwórz jazdę",
+    "userMenu": "Menu konta {name}",
+    "darkMode": "Tryb ciemny",
+    "lightMode": "Tryb jasny",
+    "logOut": "Wyloguj się"
   },
   "RidesPage": {
     "searchLabel": "Szukaj jazd",
