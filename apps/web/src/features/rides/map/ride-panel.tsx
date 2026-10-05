@@ -8,7 +8,7 @@ import type { RideCardData } from '@/features/rides/ride-card/types';
 import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
 import { Link } from '@/i18n/navigation';
-import { loadRideCards } from '@/features/rides/list/actions/list-rides';
+import { loadRideCards } from '@/features/rides/list/actions/load-ride-cards';
 import { RideCardSkeleton } from '@/features/rides/list/components/rides-list/ride-card-skeleton';
 
 type PanelRide = Readonly<{ id: string; data: RideCardData }>;

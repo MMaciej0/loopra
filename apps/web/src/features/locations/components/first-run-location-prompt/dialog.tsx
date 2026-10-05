@@ -15,7 +15,7 @@ import {
 import { LocationModalBody } from '@/features/locations/components/location-modal/location-modal-body';
 import { useLocationModal } from '@/features/locations/components/location-modal/use-location-modal';
 import type { LocationSuggestion } from '@/features/locations/geocoding';
-import { acceptDefaultSelectedLocation } from '@/features/locations/actions/selected-location';
+import { acceptDefaultSelectedLocation } from '@/features/locations/actions/accept-default-selected-location';
 
 type Props = Readonly<{ favorites: LocationSuggestion[] }>;
 

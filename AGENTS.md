@@ -207,7 +207,7 @@ apps/web/src/
   i18n/         # next-intl routing and request config (messages live in apps/web/messages/)
 ```
 
-A page reads params, fetches, and composes components from `features/`. **No `_components` or `_actions` folders inside `app/`** — Server Actions live in `features/<name>/actions/`. A hook or helper with one user lives next to that user (`use-map.ts` sits in the create-ride location picker), and moves to `hooks/` or `lib/` only when a second feature needs it.
+A page reads params, fetches, and composes components from `features/`. **No `_components` or `_actions` folders inside `app/`** — Server Actions live in `features/<name>/actions/`, one action per file, named after the action (`login` → `login.ts`). A helper shared by several actions goes in a plain module outside `actions/` (`locations/to-location-body.ts`), because a `'use server'` file may only export async functions. A hook or helper with one user lives next to that user (`use-map.ts` sits in the create-ride location picker), and moves to `hooks/` or `lib/` only when a second feature needs it.
 
 **Import rule:** `app` → `features` → `components` / `lib` / `hooks`. A feature may import another feature (the shell uses auth's logout). `components`, `lib` and `hooks` never import from `features`. Nothing enforces this, so check it with `grep -rn '@/features' apps/web/src/{components,lib,hooks}`. Imports across folders use the `@/` alias.
 
