@@ -47,10 +47,10 @@ export function CreateRideTopNav() {
         </Breadcrumb>
 
         <div className="flex shrink-0 items-center gap-2">
-          <Button asChild variant="ghost" className="hidden sm:inline-flex">
+          <Button asChild variant="ghost" size="sm" className="hidden h-9 sm:inline-flex">
             <Link href="/rides">{t('cancel')}</Link>
           </Button>
-          <Button type="submit" variant="accent" loading={isSubmitting} className="px-3 md:px-4">
+          <Button type="submit" variant="accent" size="sm" loading={isSubmitting} className="h-9">
             {t('submit')}
             <ArrowRight className="hidden md:block" />
           </Button>
