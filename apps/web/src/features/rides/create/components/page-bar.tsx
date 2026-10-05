@@ -10,10 +10,9 @@ import type { CreateRideInput } from '@/features/rides/create/schema';
 
 export function PageBar() {
   const t = useTranslations('CreateRide');
-  const tErrors = useTranslations('Errors');
   const router = useRouter();
   const {
-    formState: { errors, isSubmitting },
+    formState: { isSubmitting },
   } = useFormContext<CreateRideInput>();
 
   const onCancel = () => router.push('/rides');
@@ -41,12 +40,6 @@ export function PageBar() {
       </div>
 
       <div className="flex shrink-0 items-center gap-2 md:gap-3.5">
-        {errors.root && (
-          <Text role="alert" variant="body-xs" className="text-destructive hidden sm:block">
-            {tErrors(errors.root.message ?? 'UNKNOWN')}
-          </Text>
-        )}
-
         <Button type="button" variant="ghost" onClick={onCancel} className="hidden sm:inline-flex">
           {t('cancel')}
         </Button>

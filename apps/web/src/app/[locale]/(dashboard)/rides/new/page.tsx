@@ -3,6 +3,7 @@ import TopNav from '@/features/shell/components/top-nav';
 import { PageBody } from '@/features/shell/components/page-body';
 import { RideFormWrapper } from '@/features/rides/create/components/ride-form-wrapper';
 import { PageBar } from '@/features/rides/create/components/page-bar';
+import { SubmitError } from '@/features/rides/create/components/submit-error';
 import { FormCard } from '@/features/rides/create/components/form-card';
 import { RidePreview } from '@/features/rides/create/components/ride-preview/ride-preview';
 import { TitleInput } from '@/features/rides/create/components/form/title-input';
@@ -32,6 +33,8 @@ export default async function NewRidePage() {
           <div className="min-h-0 flex-1 lg:overflow-y-auto">
             <div className="mx-auto grid max-w-[1180px] grid-cols-1 items-start gap-6 px-1 pt-6 pb-12 md:px-3 lg:grid-cols-[minmax(0,1fr)_340px]">
               <div className="flex min-w-0 flex-col gap-[18px]">
+                <SubmitError />
+
                 <FormCard title={t('basicsSection')}>
                   <TitleInput />
                   <DateTimeInput />
