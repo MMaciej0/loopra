@@ -14,8 +14,11 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { LocationModalBody, useLocationModal } from '@/components/location-modal';
-import type { LocationSuggestion } from '@/lib/geocoding';
+import {
+  LocationModalBody,
+  useLocationModal,
+} from '@/features/locations/components/location-modal';
+import type { LocationSuggestion } from '@/features/locations/geocoding';
 
 type Props = Readonly<{
   storedLocation: LocationSuggestion;

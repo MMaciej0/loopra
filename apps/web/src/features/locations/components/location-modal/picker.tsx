@@ -11,7 +11,7 @@ import {
   ComboboxItem,
   ComboboxList,
 } from '@/components/ui/combobox';
-import { forwardGeocode, type LocationSuggestion } from '@/lib/geocoding';
+import { forwardGeocode, type LocationSuggestion } from '@/features/locations/geocoding';
 
 function sublineFor(location: LocationSuggestion) {
   if (location.is_street && location.containing_district) return location.containing_district;

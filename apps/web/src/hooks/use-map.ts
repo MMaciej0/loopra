@@ -3,7 +3,7 @@ import * as maptilersdk from '@maptiler/sdk';
 import '@maptiler/sdk/dist/maptiler-sdk.css';
 import { Coords } from '@/app/[locale]/(dashboard)/rides/new/schema';
 import { GeocodingControl } from '@maptiler/geocoding-control/maptilersdk';
-import { reverseGeocode, type RideLocation } from '@/lib/geocoding';
+import { reverseGeocode, type RideLocation } from '@/features/locations/geocoding';
 
 const DEFAULT_CENTER: [number, number] = [19.9275, 50.0616]; // [lng, lat] — Kraków
 const DEFAULT_ZOOM = 14;

@@ -12,9 +12,12 @@ import {
   DialogSubheader,
   DialogTitle,
 } from '@/components/ui/dialog';
-import { LocationModalBody, useLocationModal } from '@/components/location-modal';
-import type { LocationSuggestion } from '@/lib/geocoding';
-import { acceptDefaultSelectedLocation } from '../../_actions/selected-location';
+import {
+  LocationModalBody,
+  useLocationModal,
+} from '@/features/locations/components/location-modal';
+import type { LocationSuggestion } from '@/features/locations/geocoding';
+import { acceptDefaultSelectedLocation } from '@/features/locations/actions/selected-location';
 
 type Props = Readonly<{ favorites: LocationSuggestion[] }>;
 
