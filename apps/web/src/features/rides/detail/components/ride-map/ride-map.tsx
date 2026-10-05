@@ -16,7 +16,7 @@ export function RideMap({ title, center, start, path }: Props) {
   const { containerRef } = useRideMap({ center, start, path });
 
   return (
-    <div className="border-border relative h-[60svh] min-h-80 w-full overflow-hidden rounded-xl border">
+    <div className="border-border relative h-[35svh] min-h-52 w-full overflow-hidden rounded-xl border">
       <div
         ref={containerRef}
         role="region"
