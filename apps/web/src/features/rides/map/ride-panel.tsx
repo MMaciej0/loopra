@@ -3,7 +3,7 @@
 import { useEffect, useEffectEvent, useState, type Ref } from 'react';
 import { useTranslations } from 'next-intl';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
-import { RideCard } from '@/features/rides/ride-card';
+import { RideCard } from '@/features/rides/ride-card/ride-card';
 import type { RideCardData } from '@/features/rides/ride-card/types';
 import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';

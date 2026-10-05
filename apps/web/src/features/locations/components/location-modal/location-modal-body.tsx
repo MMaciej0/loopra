@@ -9,8 +9,6 @@ import type { LocationSuggestion } from '@/features/locations/geocoding';
 import { LocationPicker } from './picker';
 import type { LocationModal } from './use-location-modal';
 
-export { useLocationModal, type LocationModal } from './use-location-modal';
-
 export function LocationModalBody({ modal }: Readonly<{ modal: LocationModal }>) {
   const t = useTranslations('FavoriteLocation');
   const comboboxPortalRef = useRef<HTMLDivElement>(null);
