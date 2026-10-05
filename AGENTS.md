@@ -193,6 +193,24 @@ Services throw them; controllers let them fall through to `plugins/globalErrorHa
 - All routes are registered as Fastify plugins for clean encapsulation
 - `packages/domain` is the contract between API, web, and mobile
 
+## Web Architecture (`apps/web`)
+
+Code is grouped by feature, not by the URL that renders it:
+
+```
+apps/web/src/
+  app/          # Routing files only: pages, layouts, error/not-found, @topnav slot, route handlers
+  features/     # All feature code: auth, locations, shell, rides/{list,map,create,ride-card}
+  components/   # Feature-free only: ui/ (shadcn), icons/, providers/
+  hooks/        # Hooks used by more than one feature
+  lib/          # Shared helpers: api, cookies, errors, locale, user, cn
+  i18n/         # next-intl routing and request config (messages live in apps/web/messages/)
+```
+
+A page reads params, fetches, and composes components from `features/`. **No `_components` or `_actions` folders inside `app/`** — Server Actions live in `features/<name>/actions/`. A hook or helper with one user lives next to that user (`use-map.ts` sits in the create-ride location picker), and moves to `hooks/` or `lib/` only when a second feature needs it.
+
+**Import rule:** `app` → `features` → `components` / `lib` / `hooks`. A feature may import another feature (the shell uses auth's logout). `components`, `lib` and `hooks` never import from `features`. Nothing enforces this, so check it with `grep -rn '@/features' apps/web/src/{components,lib,hooks}`. Imports across folders use the `@/` alias.
+
 ## Agent skills
 
 ### Issue tracker
