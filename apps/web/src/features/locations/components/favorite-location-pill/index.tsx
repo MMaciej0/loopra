@@ -1,4 +1,4 @@
-import { toLocationSuggestion } from '@/lib/geocoding';
+import { toLocationSuggestion } from '@/features/locations/geocoding';
 import { getCurrentUser, getFavoriteLocations } from '@/lib/user';
 import { FavoriteLocationPillDialog } from './dialog';
 

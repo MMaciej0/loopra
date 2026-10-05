@@ -5,7 +5,7 @@ import { useRef } from 'react';
 import { useTranslations } from 'next-intl';
 import { MAX_FAVORITE_LOCATIONS } from '@loopra/domain';
 import { cn } from '@/lib/utils';
-import type { LocationSuggestion } from '@/lib/geocoding';
+import type { LocationSuggestion } from '@/features/locations/geocoding';
 import { LocationPicker } from './picker';
 import type { LocationModal } from './use-location-modal';
 
