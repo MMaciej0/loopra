@@ -1,8 +1,8 @@
 import { getLocale } from 'next-intl/server';
 import { redirect } from '@/i18n/navigation';
-import { RidesBar } from './_components/rides-bar';
-import { ViewPane } from './_components/view-pane';
-import { resolveRidesView, type RidesViewParams } from './view';
+import { RidesBar } from '@/features/rides/list/components/rides-bar';
+import { ViewPane } from '@/features/rides/list/components/view-pane';
+import { resolveRidesView, type RidesViewParams } from '@/features/rides/list/view';
 
 type Props = Readonly<{ searchParams: Promise<RidesViewParams> }>;
 

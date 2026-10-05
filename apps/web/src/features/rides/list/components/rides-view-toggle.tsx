@@ -3,7 +3,7 @@ import { getTranslations } from 'next-intl/server';
 import { Button } from '@/components/ui/button';
 import { Link } from '@/i18n/navigation';
 import { cn } from '@/lib/utils';
-import { RIDES_VIEWS, type RidesView } from '../view';
+import { RIDES_VIEWS, type RidesView } from '@/features/rides/list/view';
 
 const VIEW_OPTIONS = {
   map: { icon: Map, labelKey: 'viewMap' },

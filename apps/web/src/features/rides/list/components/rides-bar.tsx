@@ -1,7 +1,7 @@
 import { FavoriteLocationPill } from '@/features/locations/components/favorite-location-pill';
 import { RidesSearchField } from './rides-search-field';
 import { RidesViewToggle } from './rides-view-toggle';
-import type { RidesView } from '../view';
+import type { RidesView } from '@/features/rides/list/view';
 
 export function RidesBar({ view }: { view: RidesView }) {
   return (

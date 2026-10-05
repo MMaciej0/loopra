@@ -1,4 +1,4 @@
-import type { RideCardData } from '@/components/ride-card/types';
+import type { RideCardData } from '@/features/rides/ride-card/types';
 import type { CreateRideInput } from '../../schema';
 
 export function toRideCard(values: CreateRideInput): RideCardData {
