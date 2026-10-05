@@ -1,5 +1,5 @@
 import { SidebarTrigger } from '@/components/ui/sidebar';
-import { UserSettingsPanel } from './user-settings-panel';
+import { UserSettingsPanel } from '@/features/shell/components/user-settings-panel';
 
 type Props = Readonly<{
   children?: React.ReactNode;
