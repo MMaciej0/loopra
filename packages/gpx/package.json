@@ -10,6 +10,7 @@
     "build": "tsc",
     "prepare": "tsc",
     "typecheck": "tsc --noEmit",
+    "test": "vitest run",
     "format": "prettier . --write",
     "format:check": "prettier . --check"
   },
@@ -21,10 +22,12 @@
     "@types/geojson": "^7946.0.16",
     "prettier": "^3.8.1",
     "tsx": "^4.21.0",
-    "typescript": "5.9.3"
+    "typescript": "5.9.3",
+    "vitest": "^4.0.18"
   },
   "dependencies": {
     "@tmcw/togeojson": "^7.1.2",
-    "@xmldom/xmldom": "^0.9.10"
+    "@xmldom/xmldom": "^0.9.10",
+    "simplify-js": "^1.2.4"
   }
 }

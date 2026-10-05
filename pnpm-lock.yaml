@@ -218,6 +218,9 @@ importers:
       '@xmldom/xmldom':
         specifier: ^0.9.10
         version: 0.9.10
+      simplify-js:
+        specifier: ^1.2.4
+        version: 1.2.4
     devDependencies:
       '@types/geojson':
         specifier: ^7946.0.16
@@ -231,6 +234,9 @@ importers:
       typescript:
         specifier: 5.9.3
         version: 5.9.3
+      vitest:
+        specifier: ^4.0.18
+        version: 4.0.18(@types/node@25.3.0)(jiti@2.7.0)(lightningcss@1.32.0)(msw@2.14.6(@types/node@25.3.0)(typescript@5.9.3))(tsx@4.21.0)
 
 packages:
 
@@ -5324,6 +5330,9 @@ packages:
 
   simple-oauth2@5.1.0:
     resolution: {integrity: sha512-gWDa38Ccm4MwlG5U7AlcJxPv3lvr80dU7ARJWrGdgvOKyzSj1gr3GBPN1rABTedAYvC/LsGYoFuFxwDBPtGEbw==}
+
+  simplify-js@1.2.4:
+    resolution: {integrity: sha512-vITfSlwt7h/oyrU42R83mtzFpwYk3+mkH9bOHqq/Qw6n8rtR7aE3NZQ5fbcyCUVVmuMJR6ynsAhOfK2qoah8Jg==}
 
   sisteransi@1.0.5:
     resolution: {integrity: sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg==}
@@ -11112,6 +11121,8 @@ snapshots:
       joi: 17.13.3
     transitivePeerDependencies:
       - supports-color
+
+  simplify-js@1.2.4: {}
 
   sisteransi@1.0.5: {}
 

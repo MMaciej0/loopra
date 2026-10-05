@@ -46,6 +46,9 @@ jobs:
       - name: Format
         run: pnpm -r format:check
 
+      - name: Test gpx
+        run: pnpm --filter @loopra/gpx test
+
       - name: Build web
         run: pnpm --filter web build
         env:
