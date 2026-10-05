@@ -1,6 +1,7 @@
 import type { Position } from 'geojson';
 import simplify from 'simplify-js';
 import { PATH_COORDINATE_DECIMALS, PATH_TOLERANCE_M } from './config.js';
+import { readPointCoordinates } from './utils.js';
 
 const METRES_PER_DEGREE = 111_320;
 const TOLERANCE_DEGREES = PATH_TOLERANCE_M / METRES_PER_DEGREE;
@@ -17,12 +18,10 @@ export const createPath = (segments: Position[][]): [number, number][][] => {
       continue;
     }
 
-    const points = segment.map(([lon, lat]) => {
-      if (lon === undefined || lat === undefined) {
-        throw new Error('Track point is missing coordinates');
-      }
+    const points = segment.map((point) => {
+      const [x, y] = readPointCoordinates(point);
 
-      return { x: lon, y: lat };
+      return { x, y };
     });
 
     path.push(
