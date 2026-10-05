@@ -6,7 +6,7 @@ import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { useRouter } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
-import type { CreateRideInput } from '../schema';
+import type { CreateRideInput } from '@/features/rides/create/schema';
 
 export function PageBar() {
   const t = useTranslations('CreateRide');

@@ -7,7 +7,7 @@ import { Text } from '@/components/ui/text';
 import { RideContract } from './ride-contract';
 import { SafetyNotice } from './safety-notice';
 import { toRideCard } from './to-ride-card';
-import type { CreateRideInput } from '../../schema';
+import type { CreateRideInput } from '@/features/rides/create/schema';
 
 export function RidePreview() {
   const t = useTranslations('CreateRide');

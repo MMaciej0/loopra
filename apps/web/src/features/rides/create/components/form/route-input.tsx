@@ -12,7 +12,7 @@ import { Text } from '@/components/ui/text';
 import { MAX_GPX_FILE_SIZE_BYTES, MAX_GPX_FILE_SIZE_MB } from '@loopra/domain';
 import { APP_ERROR_TYPES, isAppErrorType, type AppErrorType } from '@/lib/errors';
 import { cn } from '@/lib/utils';
-import type { CreateRideInput } from '../../schema';
+import type { CreateRideInput } from '@/features/rides/create/schema';
 
 export function RouteInput() {
   const t = useTranslations('CreateRide');

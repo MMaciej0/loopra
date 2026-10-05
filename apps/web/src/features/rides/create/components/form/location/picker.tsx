@@ -3,8 +3,8 @@
 import { useFormContext, useWatch } from 'react-hook-form';
 import { useLocale, useTranslations } from 'next-intl';
 
-import type { CreateRideInput } from '../../../schema';
-import { useMap, type PickedLocation } from '@/hooks/use-map';
+import type { CreateRideInput } from '@/features/rides/create/schema';
+import { useMap, type PickedLocation } from './use-map';
 import { useCallback } from 'react';
 
 export function LocationPicker() {

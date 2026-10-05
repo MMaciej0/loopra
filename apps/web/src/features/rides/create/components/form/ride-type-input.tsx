@@ -3,7 +3,7 @@
 import { RIDE_TYPES } from '@loopra/domain';
 import { useTranslations } from 'next-intl';
 import { RadioCardGroup } from '@/components/ui/radio-card-group';
-import { CreateRideInput } from '../../schema';
+import { CreateRideInput } from '@/features/rides/create/schema';
 
 export function RideTypeInput() {
   const t = useTranslations('CreateRide');

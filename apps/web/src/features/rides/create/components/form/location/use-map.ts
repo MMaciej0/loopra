@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import * as maptilersdk from '@maptiler/sdk';
 import '@maptiler/sdk/dist/maptiler-sdk.css';
-import { Coords } from '@/app/[locale]/(dashboard)/rides/new/schema';
+import { Coords } from '@/features/rides/create/schema';
 import { GeocodingControl } from '@maptiler/geocoding-control/maptilersdk';
 import { reverseGeocode, type RideLocation } from '@/features/locations/geocoding';
 
