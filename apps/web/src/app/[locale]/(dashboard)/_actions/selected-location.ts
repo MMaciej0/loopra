@@ -2,8 +2,8 @@
 
 import { refresh } from 'next/cache';
 import { DEFAULT_SELECTED_LOCATION } from '@loopra/domain';
-import { protectedRequest } from '@/utils/api';
-import type { LocationSuggestion } from '@/utils/geocoding';
+import { protectedRequest } from '@/lib/api';
+import type { LocationSuggestion } from '@/lib/geocoding';
 
 function toLocationBody(location: LocationSuggestion) {
   return {

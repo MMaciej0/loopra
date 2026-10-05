@@ -1,5 +1,5 @@
 import { z } from 'zod';
-import { APP_ERROR_TYPES } from '@/utils/errors';
+import { APP_ERROR_TYPES } from '@/lib/errors';
 import type { Route } from '@loopra/domain';
 import {
   BIKE_TYPES,

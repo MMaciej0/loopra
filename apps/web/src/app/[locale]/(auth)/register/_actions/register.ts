@@ -1,10 +1,10 @@
 'use server';
 
 import z from 'zod';
-import { APP_ERROR_TYPES, AppErrorType, getZodValidationErrorTypes } from '@/utils/errors';
+import { APP_ERROR_TYPES, AppErrorType, getZodValidationErrorTypes } from '@/lib/errors';
 import { redirect } from 'next/navigation';
-import { publicRequest } from '@/utils/api';
-import { setAuthCookies } from '@/utils/cookies';
+import { publicRequest } from '@/lib/api';
+import { setAuthCookies } from '@/lib/cookies';
 
 const schema = z.object({
   email: z

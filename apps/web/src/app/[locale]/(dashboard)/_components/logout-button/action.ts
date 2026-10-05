@@ -1,7 +1,7 @@
 'use server';
 
-import { apiRequestWithCookie } from '@/utils/api';
-import { clearAuthCookies, getAuthCookies } from '@/utils/cookies';
+import { apiRequestWithCookie } from '@/lib/api';
+import { clearAuthCookies, getAuthCookies } from '@/lib/cookies';
 import { redirect } from 'next/navigation';
 
 export async function logout() {

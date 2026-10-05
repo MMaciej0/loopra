@@ -1,4 +1,4 @@
-import { getCurrentUser, getFavoriteLocations } from '@/utils/user';
+import { getCurrentUser, getFavoriteLocations } from '@/lib/user';
 import { FirstRunLocationDialog } from './dialog';
 
 export async function FirstRunLocationPrompt() {

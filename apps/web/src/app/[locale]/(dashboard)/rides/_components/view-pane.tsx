@@ -1,6 +1,6 @@
 import { bboxAround, SEARCH_AREA_MAX_KM } from '@loopra/domain';
-import { formatLocationLabel } from '@/utils/geocoding';
-import { getCurrentUser } from '@/utils/user';
+import { formatLocationLabel } from '@/lib/geocoding';
+import { getCurrentUser } from '@/lib/user';
 import { buildRidesListQuery, ridesListKey } from '../list-query';
 import { RidesMap } from './rides-map';
 import { RidesList } from './rides-list';

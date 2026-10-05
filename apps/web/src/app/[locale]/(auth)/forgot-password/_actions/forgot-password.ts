@@ -1,8 +1,8 @@
 'use server';
 
 import z from 'zod';
-import { APP_ERROR_TYPES, AppErrorType, getZodValidationErrorTypes } from '@/utils/errors';
-import { publicRequest } from '@/utils/api';
+import { APP_ERROR_TYPES, AppErrorType, getZodValidationErrorTypes } from '@/lib/errors';
+import { publicRequest } from '@/lib/api';
 import { redirect } from 'next/navigation';
 
 interface ForgotPasswordFieldErrors {
