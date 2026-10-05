@@ -1,5 +1,6 @@
 import { Separator } from '@/components/ui/separator';
 import { SidebarTrigger } from '@/components/ui/sidebar';
+import { UserMenu } from '@/features/shell/components/user-menu';
 
 type Props = Readonly<{
   children?: React.ReactNode;
@@ -18,6 +19,9 @@ export default function TopNav({ children }: Props) {
           <div className="min-w-0 flex-1">{children}</div>
         </>
       )}
+      <div className="ml-auto shrink-0 md:hidden">
+        <UserMenu placement="top-nav" />
+      </div>
     </header>
   );
 }
