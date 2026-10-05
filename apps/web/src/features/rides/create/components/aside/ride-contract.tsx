@@ -3,7 +3,7 @@
 import { useTranslations } from 'next-intl';
 import { Check } from 'lucide-react';
 import { Text } from '@/components/ui/text';
-import type { CreateRideInput } from '../../schema';
+import type { CreateRideInput } from '@/features/rides/create/schema';
 
 interface RideContractProps {
   values: CreateRideInput;

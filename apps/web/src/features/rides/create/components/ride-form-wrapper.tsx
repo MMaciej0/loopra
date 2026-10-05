@@ -3,8 +3,8 @@
 import { FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from '@/i18n/navigation';
-import { createRide } from '../_actions/action';
-import { createRideSchema, type CreateRideInput } from '../schema';
+import { createRide } from '@/features/rides/create/actions/create-ride';
+import { createRideSchema, type CreateRideInput } from '@/features/rides/create/schema';
 
 export function RideFormWrapper({ children }: { children: React.ReactNode }) {
   const router = useRouter();

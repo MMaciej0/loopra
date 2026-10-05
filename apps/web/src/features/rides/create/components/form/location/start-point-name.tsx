@@ -4,7 +4,7 @@ import { useFormContext } from 'react-hook-form';
 import { useTranslations } from 'next-intl';
 import { Field } from '@/components/ui/field';
 import { LOCATION_NAME_MAX_LENGTH } from '@loopra/domain';
-import type { CreateRideInput } from '../../../schema';
+import type { CreateRideInput } from '@/features/rides/create/schema';
 
 export function StartPointName() {
   const t = useTranslations('CreateRide');

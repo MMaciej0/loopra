@@ -4,7 +4,7 @@ import { useFormContext, useWatch } from 'react-hook-form';
 import { useTranslations } from 'next-intl';
 import { Field } from '@/components/ui/field';
 import { DISTANCE_MAX_KM, DISTANCE_MIN_KM } from '@loopra/domain';
-import type { CreateRideInput } from '../../schema';
+import type { CreateRideInput } from '@/features/rides/create/schema';
 
 export function DistanceInput() {
   const t = useTranslations('CreateRide');

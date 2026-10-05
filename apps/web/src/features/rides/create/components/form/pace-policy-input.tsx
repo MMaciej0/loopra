@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl';
 import { PACE_MAX_KMH, PACE_MIN_KMH, PACE_POLICIES } from '@loopra/domain';
 import { RadioCardGroup } from '@/components/ui/radio-card-group';
 import { Field } from '@/components/ui/field';
-import { CreateRideInput } from '../../schema';
+import { CreateRideInput } from '@/features/rides/create/schema';
 
 export function PacePolicyInput() {
   const t = useTranslations('CreateRide');

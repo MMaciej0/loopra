@@ -19,7 +19,7 @@ import { Text } from '@/components/ui/text';
 import { cn } from '@/lib/utils';
 import { LocationPicker } from './location/picker';
 import { StartPointName } from './location/start-point-name';
-import type { CreateRideInput } from '../../schema';
+import type { CreateRideInput } from '@/features/rides/create/schema';
 
 const LOCATION_FIELDS = [
   'start_location',

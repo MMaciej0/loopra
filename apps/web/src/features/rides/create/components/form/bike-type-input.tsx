@@ -4,7 +4,7 @@ import { BIKE_TYPES } from '@loopra/domain';
 import { buttonVariants } from '@/components/ui/button';
 import { useFormContext } from 'react-hook-form';
 import { useTranslations } from 'next-intl';
-import { CreateRideInput } from '../../schema';
+import { CreateRideInput } from '@/features/rides/create/schema';
 import { cn } from '@/lib/utils';
 
 export function BikeTypeInput() {

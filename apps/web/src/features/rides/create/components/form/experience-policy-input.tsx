@@ -3,7 +3,7 @@
 import { EXPERIENCE_POLICIES } from '@loopra/domain';
 import { useTranslations } from 'next-intl';
 import { RadioCardGroup } from '@/components/ui/radio-card-group';
-import { CreateRideInput } from '../../schema';
+import { CreateRideInput } from '@/features/rides/create/schema';
 
 export function ExperiencePolicyInput() {
   const t = useTranslations('CreateRide');

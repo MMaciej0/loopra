@@ -3,7 +3,7 @@
 import { useFormContext } from 'react-hook-form';
 import { useTranslations } from 'next-intl';
 import { Textarea } from '@/components/ui/textarea';
-import type { CreateRideInput } from '../../schema';
+import type { CreateRideInput } from '@/features/rides/create/schema';
 
 export function DescriptionInput() {
   const t = useTranslations('CreateRide');
