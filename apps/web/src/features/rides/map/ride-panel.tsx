@@ -3,13 +3,13 @@
 import { useEffect, useEffectEvent, useState, type Ref } from 'react';
 import { useTranslations } from 'next-intl';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
-import { RideCard } from '@/components/ride-card';
-import type { RideCardData } from '@/components/ride-card/types';
+import { RideCard } from '@/features/rides/ride-card';
+import type { RideCardData } from '@/features/rides/ride-card/types';
 import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
 import { Link } from '@/i18n/navigation';
-import { loadRideCards } from '../../_actions/list-rides';
-import { RideCardSkeleton } from '../rides-list/ride-card-skeleton';
+import { loadRideCards } from '@/features/rides/list/actions/list-rides';
+import { RideCardSkeleton } from '@/features/rides/list/components/rides-list/ride-card-skeleton';
 
 type PanelRide = Readonly<{ id: string; data: RideCardData }>;
 

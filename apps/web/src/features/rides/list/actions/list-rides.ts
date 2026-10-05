@@ -7,9 +7,9 @@ import {
   type RideListItem,
 } from '@loopra/domain';
 import { protectedRequest } from '@/lib/api';
-import { toRideCard } from '../_components/rides-list/to-ride-card';
-import { groupByStartPoint } from '../_components/rides-map/start-points';
-import type { RidesListQuery } from '../list-query';
+import { toRideCard } from '@/features/rides/list/components/rides-list/to-ride-card';
+import { groupByStartPoint } from '@/features/rides/map/start-points';
+import type { RidesListQuery } from '@/features/rides/list/list-query';
 
 function toSearchParams(query: Readonly<Record<string, string | number>>) {
   return new URLSearchParams(Object.entries(query).map(([key, value]) => [key, String(value)]));

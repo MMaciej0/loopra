@@ -1,5 +1,5 @@
 import type { RideListItem } from '@loopra/domain';
-import type { RideCardData } from '@/components/ride-card/types';
+import type { RideCardData } from '@/features/rides/ride-card/types';
 
 export function toRideCard(ride: RideListItem): RideCardData {
   return {
