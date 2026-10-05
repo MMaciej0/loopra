@@ -9,6 +9,7 @@ import type {
   RideParticipantResponseSchema,
   RideParticipantSchema,
   RideResponseSchema,
+  RideRouteSchema,
   RideSchema,
   RiderSchema,
 } from '../schemas/ride.js';
@@ -16,6 +17,7 @@ import type {
 export type Rider = Static<typeof RiderSchema>;
 export type RideParticipant = Static<typeof RideParticipantSchema>;
 export type Ride = Static<typeof RideSchema>;
+export type RideRoute = Static<typeof RideRouteSchema>;
 export type RideDetail = Static<typeof RideDetailSchema>;
 export type RideListItem = Static<typeof RideListItemSchema>;
 export type RideMarker = Static<typeof RideMarkerSchema>;

@@ -4,6 +4,8 @@ export const ElevationProfileSchema = Type.Array(
   Type.Array(Type.Tuple([Type.Number(), Type.Number()])),
 );
 
+export const RoutePathSchema = Type.Array(Type.Array(Type.Tuple([Type.Number(), Type.Number()])));
+
 export const RouteSchema = Type.Object(
   {
     id: Type.String({ format: 'uuid' }),
