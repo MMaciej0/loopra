@@ -12,8 +12,8 @@ export function AppSidebar() {
         <CreateRideButton />
         <AppSidebarNav />
       </SidebarContent>
-      <SidebarFooter className="hidden md:flex">
-        <UserMenu placement="sidebar" />
+      <SidebarFooter>
+        <UserMenu />
       </SidebarFooter>
     </Sidebar>
   );
