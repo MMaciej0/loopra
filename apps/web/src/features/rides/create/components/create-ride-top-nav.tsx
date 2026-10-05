@@ -24,29 +24,9 @@ export function CreateRideTopNav() {
   } = useFormContext<CreateRideInput>();
 
   return (
-    <TopNav>
-      <div className="flex items-center gap-2">
-        <Button asChild variant="ghost" size="icon">
-          <Link href="/rides" aria-label={t('back')}>
-            <ArrowLeft />
-          </Link>
-        </Button>
-
-        <Breadcrumb className="min-w-0 flex-1">
-          <BreadcrumbList className="flex-nowrap">
-            <BreadcrumbItem className="hidden sm:inline-flex">
-              <BreadcrumbLink asChild>
-                <Link href="/rides">{tSidebar('rides')}</Link>
-              </BreadcrumbLink>
-            </BreadcrumbItem>
-            <BreadcrumbSeparator className="hidden sm:block" />
-            <BreadcrumbItem className="min-w-0">
-              <BreadcrumbPage className="truncate">{t('title')}</BreadcrumbPage>
-            </BreadcrumbItem>
-          </BreadcrumbList>
-        </Breadcrumb>
-
-        <div className="flex shrink-0 items-center gap-2">
+    <TopNav
+      actions={
+        <>
           <Button asChild variant="ghost" size="sm" className="hidden h-9 sm:inline-flex">
             <Link href="/rides">{t('cancel')}</Link>
           </Button>
@@ -54,8 +34,28 @@ export function CreateRideTopNav() {
             {t('submit')}
             <ArrowRight className="hidden md:block" />
           </Button>
-        </div>
-      </div>
+        </>
+      }
+    >
+      <Button asChild variant="ghost" size="icon">
+        <Link href="/rides" aria-label={t('back')}>
+          <ArrowLeft />
+        </Link>
+      </Button>
+
+      <Breadcrumb className="min-w-0 flex-1">
+        <BreadcrumbList className="flex-nowrap">
+          <BreadcrumbItem className="hidden sm:inline-flex">
+            <BreadcrumbLink asChild>
+              <Link href="/rides">{tSidebar('rides')}</Link>
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbSeparator className="hidden sm:block" />
+          <BreadcrumbItem className="min-w-0">
+            <BreadcrumbPage className="truncate">{t('title')}</BreadcrumbPage>
+          </BreadcrumbItem>
+        </BreadcrumbList>
+      </Breadcrumb>
     </TopNav>
   );
 }
