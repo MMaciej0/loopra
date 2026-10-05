@@ -201,7 +201,7 @@ Code is grouped by feature, not by the URL that renders it:
 
 ```
 apps/web/src/
-  app/          # Routing files only: pages, layouts, error/not-found, @topnav slot, route handlers
+  app/          # Routing files only: pages, layouts, error/not-found, route handlers
   features/     # All feature code: auth, locations, shell, rides/{browse,create,components}
   components/   # Feature-free only: ui/ (shadcn), icons/, providers/
   hooks/        # Hooks used by more than one feature
