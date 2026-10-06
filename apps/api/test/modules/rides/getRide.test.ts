@@ -132,9 +132,28 @@ describe('GET /rides/:id', () => {
 
     const { route } = response.json().data;
 
-    expect(Object.keys(route).sort()).toEqual(['ascent_m', 'distance_km', 'path']);
+    expect(Object.keys(route).sort()).toEqual([
+      'ascent_m',
+      'distance_km',
+      'elevation_profile',
+      'path',
+    ]);
     expect(Number(route.distance_km)).toBe(0.56);
     expect(Number(route.ascent_m)).toBe(22);
+  });
+
+  it('returns the elevation profile as one [distance_km, elevation_m] array per segment', async () => {
+    const response = await createAndGetRide(await uploadRoute());
+
+    expect(response.statusCode).toBe(200);
+
+    const { elevation_profile: profile } = response.json().data.route;
+
+    expect(profile).toHaveLength(2);
+    expect(profile[0].map((point: number[]) => point[1])).toEqual([100, 105, 103, 110]);
+    expect(profile[1].map((point: number[]) => point[1])).toEqual([200, 210, 205]);
+    expect(profile[0][0][0]).toBe(0);
+    expect(profile[1].at(-1)[0]).toBe(0.56);
   });
 
   it('returns a null route when the ride has none', async () => {
@@ -163,6 +182,7 @@ describe('GET /rides/:id', () => {
     const { route } = response.json().data;
 
     expect(route.path).toBeNull();
+    expect(route.elevation_profile).toBeNull();
     expect(Number(route.distance_km)).toBe(12.5);
     expect(Number(route.ascent_m)).toBe(140);
   });
@@ -180,6 +200,11 @@ describe('GET /rides/:id', () => {
     const response = await createAndGetRide(stored.id);
 
     expect(response.statusCode).toBe(200);
-    expect(response.json().data.route).toEqual({ path: null, distance_km: null, ascent_m: null });
+    expect(response.json().data.route).toEqual({
+      path: null,
+      elevation_profile: null,
+      distance_km: null,
+      ascent_m: null,
+    });
   });
 });

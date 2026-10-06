@@ -9,7 +9,7 @@ import {
   RIDE_STATUSES,
   RIDE_TYPES,
 } from '../enums.js';
-import { RoutePathSchema } from './route.js';
+import { ElevationProfileSchema, RoutePathSchema } from './route.js';
 
 const StringEnum = <T extends readonly string[]>(values: T) =>
   Type.Unsafe<T[number]>({ type: 'string', enum: [...values] });
@@ -77,7 +77,11 @@ const routeStatsProperties = {
 } as const;
 
 export const RideRouteSchema = Type.Object(
-  { path: Type.Union([RoutePathSchema, Type.Null()]), ...routeStatsProperties },
+  {
+    path: Type.Union([RoutePathSchema, Type.Null()]),
+    elevation_profile: Type.Union([ElevationProfileSchema, Type.Null()]),
+    ...routeStatsProperties,
+  },
   { additionalProperties: false },
 );
 
