@@ -55,6 +55,7 @@
     "joinRideFull": "Ride is full",
     "joinVerifyEmail": "Verify your email to join",
     "joinJoined": "You're in",
+    "joinLeave": "Leave ride",
     "joinError": "Something went wrong. Try again."
   },
   "FavoriteLocation": {
