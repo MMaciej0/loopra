@@ -72,8 +72,13 @@ const rideProperties = {
 
 export const RideSchema = Type.Object(rideProperties, { additionalProperties: false });
 
+const routeStatsProperties = {
+  distance_km: Type.String(),
+  ascent_m: Type.String(),
+} as const;
+
 export const RideRouteSchema = Type.Object(
-  { path: Type.Union([RoutePathSchema, Type.Null()]) },
+  { path: Type.Union([RoutePathSchema, Type.Null()]), ...routeStatsProperties },
   { additionalProperties: false },
 );
 
@@ -95,10 +100,7 @@ export const RideListItemSchema = Type.Object(
     creator: RiderSchema,
     participant_count: Type.Integer(),
     route: Type.Union([
-      Type.Object(
-        { distance_km: Type.String(), ascent_m: Type.String() },
-        { additionalProperties: false },
-      ),
+      Type.Object(routeStatsProperties, { additionalProperties: false }),
       Type.Null(),
     ]),
   },

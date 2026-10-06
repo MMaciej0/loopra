@@ -127,10 +127,14 @@ describe('GET /rides/:id', () => {
     expect(path[1].at(-1)).toEqual([21.01, 52.252]);
   });
 
-  it('exposes only the path on the route', async () => {
+  it('exposes the path and the stored distance and ascent on the route', async () => {
     const response = await createAndGetRide(await uploadRoute());
 
-    expect(Object.keys(response.json().data.route)).toEqual(['path']);
+    const { route } = response.json().data;
+
+    expect(Object.keys(route).sort()).toEqual(['ascent_m', 'distance_km', 'path']);
+    expect(Number(route.distance_km)).toBe(0.56);
+    expect(Number(route.ascent_m)).toBe(22);
   });
 
   it('returns a null route when the ride has none', async () => {
@@ -141,18 +145,25 @@ describe('GET /rides/:id', () => {
   });
 
   it('returns a null path for a route stored without one', async () => {
-    const [route] = await appRef.app.db
+    const [stored] = await appRef.app.db
       .insert(routes)
       .values({
         user_id: auth.userId,
         name: 'Old Route',
         s3_key: `routes/${crypto.randomUUID()}.gpx`,
+        distance_km: '12.50',
+        ascent_m: '140.00',
       })
       .returning({ id: routes.id });
 
-    const response = await createAndGetRide(route.id);
+    const response = await createAndGetRide(stored.id);
 
     expect(response.statusCode).toBe(200);
-    expect(response.json().data.route).toEqual({ path: null });
+
+    const { route } = response.json().data;
+
+    expect(route.path).toBeNull();
+    expect(Number(route.distance_km)).toBe(12.5);
+    expect(Number(route.ascent_m)).toBe(140);
   });
 });
