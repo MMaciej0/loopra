@@ -7,6 +7,7 @@ export * from './dto/route.js';
 export * from './dto/ride.js';
 export * from './dto/auth.js';
 export * from './bounds/ride.js';
+export * from './bounds/user.js';
 export * from './bounds/geo.js';
 export * from './bounds/upload.js';
 export * from './bounds/search-area.js';

@@ -1,6 +1,7 @@
 'use server';
 
 import z from 'zod';
+import { USERNAME_MAX_LENGTH, USERNAME_MIN_LENGTH } from '@loopra/domain';
 import { APP_ERROR_TYPES, AppErrorType, getZodValidationErrorTypes } from '@/lib/errors';
 import { redirect } from 'next/navigation';
 import { publicRequest } from '@/lib/api';
@@ -11,7 +12,12 @@ const schema = z.object({
     .string()
     .min(1, APP_ERROR_TYPES.REQUIRED)
     .pipe(z.email({ error: APP_ERROR_TYPES.INVALID_EMAIL })),
-  username: z.string().min(1, APP_ERROR_TYPES.REQUIRED).min(3, APP_ERROR_TYPES.USERNAME_TOO_SHORT),
+  username: z
+    .string()
+    .trim()
+    .min(1, APP_ERROR_TYPES.REQUIRED)
+    .min(USERNAME_MIN_LENGTH, APP_ERROR_TYPES.USERNAME_TOO_SHORT)
+    .max(USERNAME_MAX_LENGTH, APP_ERROR_TYPES.USERNAME_TOO_LONG),
   password: z
     .string()
     .min(1, APP_ERROR_TYPES.REQUIRED)

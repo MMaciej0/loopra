@@ -1,9 +1,10 @@
 import z from 'zod';
+import { USERNAME_MAX_LENGTH, USERNAME_MIN_LENGTH } from '@loopra/domain';
 
 export const RegisterBodySchema = z.object({
   email: z.email(),
   password: z.string().min(8),
-  username: z.string().max(30),
+  username: z.string().trim().min(USERNAME_MIN_LENGTH).max(USERNAME_MAX_LENGTH),
 });
 
 export const LoginBodySchema = z.object({

@@ -119,6 +119,29 @@ describe('GET /users/me', () => {
     });
   });
 
+  it('rejects a 2-character username', async () => {
+    const response = await appRef.app.inject({
+      method: 'PATCH',
+      url: '/users/me',
+      cookies: { accessToken: auth.accessToken },
+      payload: { username: 'ab' },
+    });
+
+    expect(response.statusCode).toBe(400);
+  });
+
+  it('accepts a 3-character username', async () => {
+    const response = await appRef.app.inject({
+      method: 'PATCH',
+      url: '/users/me',
+      cookies: { accessToken: auth.accessToken },
+      payload: { username: 'abc' },
+    });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.json().updatedUser.username).toBe('abc');
+  });
+
   it('rejects an empty update', async () => {
     const response = await appRef.app.inject({
       method: 'PATCH',
