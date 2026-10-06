@@ -46,6 +46,7 @@
     "organiserHeading": "OD ORGANIZATORA",
     "organiserQuote": "„{text}”",
     "organiserRole": "Organizator",
+    "organiserUnknown": "Nieznany",
     "joinRiders": "{count} z {capacity} uczestników",
     "joinSeatsLeft": "{count, plural, one {Zostało # miejsce} few {Zostały # miejsca} many {Zostało # miejsc} other {Zostało # miejsca}}",
     "joinFull": "Komplet",
