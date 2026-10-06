@@ -1,5 +1,5 @@
 import type { BikeType, DropPolicy, ExperiencePolicy, PacePolicy, RideType } from '@loopra/domain';
-import type { ElevationPoint } from './geometry';
+import type { ElevationPoint } from '@/features/rides/project-elevation-profile';
 
 export interface RideCardElevation {
   distance_km?: number;
