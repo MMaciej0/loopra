@@ -1,6 +1,7 @@
 import { getLocale } from 'next-intl/server';
 import { Logo } from '@/components/ui/logo';
 import { LocationStep } from '@/features/onboarding/components/location-step';
+import { UsernameStep } from '@/features/onboarding/components/username-step';
 import { getOnboardingSteps } from '@/features/onboarding/steps';
 import { getFavoriteLocations } from '@/features/locations/favorites';
 import { redirect } from '@/i18n/navigation';
@@ -14,13 +15,14 @@ export default async function WelcomePage() {
     return redirect({ href: '/rides', locale: await getLocale() });
   }
 
-  const favorites = await getFavoriteLocations();
+  const favorites = step === 'location' ? await getFavoriteLocations() : [];
 
   return (
     <div className="flex min-h-dvh w-full flex-col px-[22px] pt-7 pb-9 md:px-8 md:pt-8 md:pb-10">
       <Logo height={26} />
       <main className="flex flex-1 flex-col items-center py-8 md:py-10">
         <div className="my-auto w-full max-w-md">
+          {step === 'username' && <UsernameStep />}
           {step === 'location' && <LocationStep favorites={favorites} />}
         </div>
       </main>

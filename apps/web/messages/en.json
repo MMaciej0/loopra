@@ -346,6 +346,16 @@
     "haveAccount": "Already have an account?",
     "logIn": "Log in"
   },
+  "WelcomePage": {
+    "username": {
+      "eyebrow": "Welcome to Loopra",
+      "title": "Choose a username",
+      "description": "This is the name other riders see on your rides. It does not have to be unique, so your first name is fine.",
+      "label": "Username",
+      "placeholder": "yourname",
+      "submit": "Continue"
+    }
+  },
   "HomePage": {
     "title": "Hello world!"
   },
