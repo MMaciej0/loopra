@@ -6,6 +6,7 @@ import { mapCenter } from '@/features/rides/detail/map-center';
 import { RideMap } from '@/features/rides/detail/components/ride-map/ride-map';
 import { RideHeader } from '@/features/rides/detail/components/ride-header/ride-header';
 import { RideContractCards } from '@/features/rides/detail/components/ride-contract-cards';
+import { OrganiserCard } from '@/features/rides/detail/components/organiser-card';
 
 type Props = Readonly<{ params: Promise<{ id: string }> }>;
 
@@ -38,6 +39,7 @@ export default async function RidePage({ params }: Props) {
             <div className="border-border flex min-w-0 flex-col px-1 pt-6 pb-12 md:px-3 lg:border-r lg:px-8 lg:pt-[26px]">
               <RideHeader ride={ride} />
               <RideContractCards ride={ride} />
+              <OrganiserCard description={ride.description} creator={ride.creator} />
             </div>
             <aside className="flex flex-col gap-4 lg:sticky lg:top-0 lg:px-7 lg:pt-[26px] lg:pb-12" />
           </div>

@@ -34,7 +34,10 @@
     "rideMapLabel": "Mapa jazdy {title}"
   },
   "RidePage": {
-    "from": "start: {location}"
+    "from": "start: {location}",
+    "organiserHeading": "OD ORGANIZATORA",
+    "organiserRole": "Organizator",
+    "organiserFallbackName": "Rowerzysta"
   },
   "FavoriteLocation": {
     "title": "Gdzie zwykle jeździsz?",
