@@ -45,8 +45,7 @@
     "unitHoursEstimate": "godz. (szac.)",
     "organiserHeading": "OD ORGANIZATORA",
     "organiserQuote": "„{text}”",
-    "organiserRole": "Organizator",
-    "organiserFallbackName": "Rowerzysta"
+    "organiserRole": "Organizator"
   },
   "FavoriteLocation": {
     "title": "Gdzie zwykle jeździsz?",
