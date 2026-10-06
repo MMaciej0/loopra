@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useActionState } from 'react';
 import { useTranslations } from 'next-intl';
+import { USERNAME_MAX_LENGTH, USERNAME_MIN_LENGTH } from '@loopra/domain';
 import { Button } from '@/components/ui/button';
 import { Field } from '@/components/ui/field';
 import { ControlledForm } from '@/components/ui/controlled-form';
@@ -45,7 +46,11 @@ export function RegisterForm() {
             defaultValue={state?.values?.username}
             error={
               showErrors
-                ? state?.fieldErrors?.username?.[0] && tErrors(state.fieldErrors.username[0])
+                ? state?.fieldErrors?.username?.[0] &&
+                  tErrors(state.fieldErrors.username[0], {
+                    min: USERNAME_MIN_LENGTH,
+                    max: USERNAME_MAX_LENGTH,
+                  })
                 : undefined
             }
           />
