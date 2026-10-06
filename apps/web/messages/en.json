@@ -45,7 +45,11 @@
     "unitHoursEstimate": "{count, plural, one {hr est.} other {hrs est.}}",
     "organiserHeading": "FROM THE ORGANISER",
     "organiserQuote": "“{text}”",
-    "organiserRole": "Organiser"
+    "organiserRole": "Organiser",
+    "joinRiders": "{count} of {capacity} riders",
+    "joinSeatsLeft": "{count, plural, one {# seat left} other {# seats left}}",
+    "joinFull": "Full",
+    "joinOrganising": "You are organising this ride"
   },
   "FavoriteLocation": {
     "title": "Where do you usually ride?",

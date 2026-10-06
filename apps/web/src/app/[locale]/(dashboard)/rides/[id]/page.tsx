@@ -8,6 +8,7 @@ import { RideHeader } from '@/features/rides/detail/components/ride-header/ride-
 import { RideStats } from '@/features/rides/detail/components/ride-stats';
 import { RideContractCards } from '@/features/rides/detail/components/ride-contract-cards';
 import { OrganiserCard } from '@/features/rides/detail/components/organiser-card';
+import { JoinCard } from '@/features/rides/detail/components/join-card';
 
 type Props = Readonly<{ params: Promise<{ id: string }> }>;
 
@@ -36,14 +37,16 @@ export default async function RidePage({ params }: Props) {
               />
             </div>
           )}
-          <div className="grid grid-cols-1 items-start lg:grid-cols-[minmax(0,1fr)_minmax(300px,380px)]">
-            <div className="border-border flex min-w-0 flex-col px-1 pt-6 pb-12 md:px-3 lg:border-r lg:px-8 lg:pt-[26px]">
+          <div className="grid grid-cols-1 items-start px-1 pt-6 pb-12 md:px-3 lg:grid-cols-[minmax(0,1fr)_minmax(300px,380px)] lg:p-0">
+            <div className="border-border contents min-w-0 lg:flex lg:flex-col lg:border-r lg:px-8 lg:pt-[26px] lg:pb-12">
               <RideHeader ride={ride} />
               <RideStats ride={ride} />
               <RideContractCards ride={ride} />
               <OrganiserCard ride={ride} />
             </div>
-            <aside className="flex flex-col gap-4 lg:sticky lg:top-0 lg:px-7 lg:pt-[26px] lg:pb-12" />
+            <aside className="contents lg:sticky lg:top-0 lg:flex lg:flex-col lg:gap-4 lg:px-7 lg:pt-[26px] lg:pb-12">
+              <JoinCard ride={ride} />
+            </aside>
           </div>
         </div>
       </PageBody>
