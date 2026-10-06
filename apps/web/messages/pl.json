@@ -346,6 +346,16 @@
     "haveAccount": "Masz już konto?",
     "logIn": "Zaloguj się"
   },
+  "WelcomePage": {
+    "username": {
+      "eyebrow": "Witaj w Loopra",
+      "title": "Wybierz nazwę użytkownika",
+      "description": "Tę nazwę widzą inni rowerzyści przy Twoich jazdach. Nie musi być unikalna, więc wystarczy samo imię.",
+      "label": "Nazwa użytkownika",
+      "placeholder": "twojanazwa",
+      "submit": "Dalej"
+    }
+  },
   "HomePage": {
     "title": "Witaj świecie!"
   },
