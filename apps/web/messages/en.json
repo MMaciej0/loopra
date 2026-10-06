@@ -74,8 +74,6 @@
   "CreateRide": {
     "previewLabel": "LIVE PREVIEW",
     "previewHint": "How riders see it",
-    "contractHeading": "RIDE CONTRACT",
-    "contractPace": "Around {value} km/h.",
     "safetyHeading": "SAFETY",
     "safetyResponsibility": "Every rider takes responsibility for themselves and for the group they ride with.",
     "safetyRoadRules": "Know and follow the rules of the road — this is a group ride in live traffic, not a closed course.",
@@ -179,6 +177,10 @@
       "label": "Training",
       "description": "Structured effort — intervals, pace work, zones."
     }
+  },
+  "RideContract": {
+    "heading": "RIDE CONTRACT",
+    "pace": "Around {value} km/h."
   },
   "DropPolicies": {
     "no_drop": {
