@@ -2,8 +2,8 @@ import type { BikeType, DropPolicy, ExperiencePolicy, PacePolicy, RideType } fro
 import type { ElevationPoint } from './geometry';
 
 export interface RideCardElevation {
-  distance_km: number;
-  ascent_m: number;
+  distance_km?: number;
+  ascent_m?: number;
   profile?: ElevationPoint[][];
 }
 
