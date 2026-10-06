@@ -26,7 +26,7 @@ export function RideContractCards({ ride }: Props) {
             <span className="bg-accent mt-px flex size-[18px] shrink-0 items-center justify-center rounded-full">
               <Check aria-hidden className="text-accent-foreground size-[11px]" strokeWidth={3} />
             </span>
-            <p className="font-ui text-muted-foreground text-[13.5px] leading-[1.4]">{line}</p>
+            <p className="font-ui text-foreground text-[13.5px] leading-[1.4]">{line}</p>
           </li>
         ))}
       </ul>
