@@ -1,6 +1,6 @@
 import type { RideDetail } from '@loopra/domain';
 import { useFormatter, useTranslations } from 'next-intl';
-import { Card, CardLabel } from '@/components/ui/card';
+import { Text } from '@/components/ui/text';
 import {
   projectElevationProfile,
   type ElevationFrame,
@@ -20,23 +20,13 @@ type Stat = {
 };
 
 const CHART_FRAME: ElevationFrame = {
-  width: 720,
+  width: 600,
   height: 160,
-  bandTop: 8,
-  bandBottom: 152,
+  bandTop: 6,
+  bandBottom: 153,
 };
 
-const GRID_LINE_COUNT = 4;
-
-const GRID_LINES = Array.from(
-  { length: GRID_LINE_COUNT },
-  (_, index) =>
-    CHART_FRAME.bandTop +
-    (index * (CHART_FRAME.bandBottom - CHART_FRAME.bandTop)) / (GRID_LINE_COUNT - 1),
-);
-
-const BAND_TOP_OFFSET = `${(CHART_FRAME.bandTop / CHART_FRAME.height) * 100}%`;
-const BAND_BOTTOM_OFFSET = `${(1 - CHART_FRAME.bandBottom / CHART_FRAME.height) * 100}%`;
+const GRID_LINES = [0, 53, 106, 159];
 
 function toNumber(value: string | null) {
   if (value === null || value === '') {
@@ -89,98 +79,110 @@ export function ElevationProfileCard({ ride }: Props) {
   ).filter((stat): stat is Stat & { value: number } => stat.value !== null);
 
   const heightLabels = [
-    { key: 'highest', value: route.max_elevation_m, style: { top: BAND_TOP_OFFSET } },
-    { key: 'lowest', value: route.min_elevation_m, style: { bottom: BAND_BOTTOM_OFFSET } },
+    { key: 'highest', value: route.max_elevation_m },
+    { key: 'lowest', value: route.min_elevation_m },
   ].filter((label): label is typeof label & { value: number } => label.value !== null);
 
   const ticks = distanceTicks(distanceKm);
 
   return (
-    <Card className="mb-7 min-w-0">
-      <CardLabel className="mb-3.5">{t('elevationHeading')}</CardLabel>
+    <section className="mb-7 min-w-0">
+      <Text variant="label" as="h2" className="text-muted-foreground mb-2.5">
+        {t('elevationHeading')}
+      </Text>
 
-      {stats.length > 0 && (
-        <dl className="mb-4 flex flex-wrap gap-x-8 gap-y-3">
-          {stats.map((stat) => (
-            <div key={stat.key} className="flex flex-col gap-1.5">
-              <dt className="font-data text-muted-foreground text-[9.5px] leading-none font-medium tracking-[0.12em] uppercase">
-                {stat.label}
-              </dt>
-              <dd className="font-ui text-foreground text-[20px] leading-none font-semibold tracking-[-0.02em]">
-                {format.number(stat.value, { maximumFractionDigits: 0 })}
-                <span className="text-muted-foreground ml-1 text-xs font-normal tracking-normal">
-                  {stat.unit}
-                </span>
-              </dd>
-            </div>
-          ))}
-        </dl>
-      )}
+      <div className="bg-card border-border overflow-hidden rounded-[14px] border">
+        {stats.length > 0 && (
+          <dl className="border-border grid grid-cols-[repeat(auto-fit,minmax(96px,1fr))] border-b">
+            {stats.map((stat, index) => (
+              <div
+                key={stat.key}
+                className={cn('border-border px-4 py-3', index > 0 && 'border-l')}
+              >
+                <dt className="font-data text-muted-foreground mb-1 text-[9.5px] font-medium tracking-[0.12em] uppercase">
+                  {stat.label}
+                </dt>
+                <dd className="font-ui text-foreground text-base font-semibold tracking-[-0.01em]">
+                  {format.number(stat.value, { maximumFractionDigits: 0 })}
+                  <span className="text-muted-foreground ml-[3px] text-[11px] font-normal tracking-normal">
+                    {stat.unit}
+                  </span>
+                </dd>
+              </div>
+            ))}
+          </dl>
+        )}
 
-      <div className="relative h-40 w-full">
-        <svg
-          viewBox={`0 0 ${CHART_FRAME.width} ${CHART_FRAME.height}`}
-          preserveAspectRatio="none"
-          aria-hidden="true"
-          className="block h-full w-full"
-        >
-          {GRID_LINES.map((y) => (
-            <line
-              key={y}
-              x1="0"
-              x2={CHART_FRAME.width}
-              y1={y}
-              y2={y}
-              stroke="var(--border)"
-              strokeWidth="1"
-              vectorEffect="non-scaling-stroke"
-            />
-          ))}
-
-          {paths.map((path, index) => (
-            <g key={index}>
-              <path d={path.fill} fill="var(--accent)" fillOpacity="0.12" />
-              <path
-                d={path.stroke}
-                fill="none"
-                stroke="var(--accent)"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
+        <div className="relative px-4 pt-4 pb-2.5">
+          <svg
+            viewBox={`0 0 ${CHART_FRAME.width} ${CHART_FRAME.height}`}
+            preserveAspectRatio="none"
+            aria-hidden="true"
+            className="block h-40 w-full overflow-visible"
+          >
+            {GRID_LINES.map((y) => (
+              <line
+                key={y}
+                x1="0"
+                x2={CHART_FRAME.width}
+                y1={y}
+                y2={y}
+                stroke="var(--border)"
+                strokeWidth="1"
                 vectorEffect="non-scaling-stroke"
               />
-            </g>
-          ))}
-        </svg>
+            ))}
 
-        {heightLabels.map((label) => (
-          <span
-            key={label.key}
+            {paths.map((path, index) => (
+              <g key={index}>
+                <path d={path.fill} fill="var(--accent)" fillOpacity="0.14" />
+                <path
+                  d={path.stroke}
+                  fill="none"
+                  stroke="var(--accent)"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  vectorEffect="non-scaling-stroke"
+                />
+              </g>
+            ))}
+          </svg>
+
+          {heightLabels.length > 0 && (
+            <div
+              aria-hidden="true"
+              className="pointer-events-none absolute top-4 left-4 flex h-40 flex-col items-start justify-between"
+            >
+              {heightLabels.map((label) => (
+                <span
+                  key={label.key}
+                  className="font-data text-muted-foreground bg-card pr-1 text-[9.5px] leading-normal whitespace-nowrap"
+                >
+                  {t('elevationHeightLabel', {
+                    value: format.number(label.value, { maximumFractionDigits: 0 }),
+                  })}
+                </span>
+              ))}
+            </div>
+          )}
+
+          <div
             aria-hidden="true"
-            style={label.style}
-            className="font-data text-muted-foreground absolute left-0 m-1 text-[10px] leading-none whitespace-nowrap"
+            className="font-data text-muted-foreground relative mt-1.5 h-3 text-[10px] leading-none"
           >
-            {t('elevationHeightLabel', {
-              value: format.number(label.value, { maximumFractionDigits: 0 }),
-            })}
-          </span>
-        ))}
+            {ticks.map((tick) => (
+              <span
+                key={tick}
+                style={{ left: `${(tick / distanceKm) * 100}%` }}
+                className={cn('absolute top-0 whitespace-nowrap', tick > 0 && '-translate-x-1/2')}
+              >
+                {t('elevationDistanceTick', { value: format.number(tick) })}
+              </span>
+            ))}
+          </div>
+        </div>
       </div>
-
-      <div
-        aria-hidden="true"
-        className="font-data text-muted-foreground relative mt-2 h-3 text-[10px] leading-none"
-      >
-        {ticks.map((tick) => (
-          <span
-            key={tick}
-            style={{ left: `${(tick / distanceKm) * 100}%` }}
-            className={cn('absolute top-0 whitespace-nowrap', tick > 0 && '-translate-x-1/2')}
-          >
-            {t('elevationDistanceTick', { value: format.number(tick) })}
-          </span>
-        ))}
-      </div>
-    </Card>
+    </section>
   );
 }
