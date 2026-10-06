@@ -14,7 +14,7 @@ export function RideHeader({ ride }: Props) {
   const tExperience = useTranslations('ExperiencePolicies');
 
   return (
-    <div>
+    <div className="-order-2 lg:order-none">
       <div className="mb-3.5 flex flex-wrap gap-2">
         <Badge variant="accentDeep" size="sm" className="py-1 tracking-[0.02em]">
           <BadgeDot />
