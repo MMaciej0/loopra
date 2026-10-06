@@ -10,6 +10,17 @@ describe('DELETE /rides/:id/leave', () => {
   const creatorAuth = useAuthenticatedUser(appRef);
   const participantAuth = useAuthenticatedUser(appRef, 'participant@example.com');
 
+  it("returns 404 RIDE_NOT_FOUND when the ride doesn't exist", async () => {
+    const response = await appRef.app.inject({
+      method: 'DELETE',
+      url: `/rides/00000000-0000-0000-0000-000000000000/leave`,
+      cookies: { accessToken: participantAuth.accessToken },
+    });
+
+    expect(response.statusCode).toBe(404);
+    expect(response.json()).toMatchObject({ type: 'RIDE_NOT_FOUND' });
+  });
+
   it('returns 404 when not a participant', async () => {
     const rideResponse = await appRef.app.inject({
       method: 'POST',
