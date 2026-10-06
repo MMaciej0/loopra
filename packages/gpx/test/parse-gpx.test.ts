@@ -174,3 +174,45 @@ describe('parseGPX elevation profile', () => {
     expect(elevationProfile.map((profile) => profile.length)).toEqual([449]);
   });
 });
+
+describe('parseGPX elevation extremes', () => {
+  it('returns the highest and lowest point in whole metres', () => {
+    const { maxElevationM, minElevationM } = parseGPX(
+      buildGpx([
+        [
+          { lat: 52.23, lon: 21, ele: 120.4 },
+          { lat: 52.231, lon: 21, ele: 98.6 },
+          { lat: 52.232, lon: 21, ele: 341.5 },
+          { lat: 52.233, lon: 21, ele: 200 },
+        ],
+      ]),
+    );
+
+    expect({ maxElevationM, minElevationM }).toEqual({ maxElevationM: 342, minElevationM: 99 });
+  });
+
+  it('takes the extremes across all segments of a multisegment GPX', () => {
+    const { maxElevationM, minElevationM } = parseGPX(readAsset('route-multisegment.gpx'));
+
+    expect({ maxElevationM, minElevationM }).toEqual({ maxElevationM: 210, minElevationM: 100 });
+  });
+
+  it('reads the extremes of a real route from its raw points', () => {
+    const { maxElevationM, minElevationM } = parseGPX(readAsset('route-real.gpx'));
+
+    expect({ maxElevationM, minElevationM }).toEqual({ maxElevationM: 412, minElevationM: 194 });
+  });
+
+  it('returns null for both when the GPX has no elevation', () => {
+    const { maxElevationM, minElevationM } = parseGPX(
+      buildGpx([
+        [
+          { lat: 52.23, lon: 21 },
+          { lat: 52.24, lon: 21.01 },
+        ],
+      ]),
+    );
+
+    expect({ maxElevationM, minElevationM }).toEqual({ maxElevationM: null, minElevationM: null });
+  });
+});

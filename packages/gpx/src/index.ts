@@ -13,6 +13,8 @@ export interface GpxMetadata {
   descentM: number;
   pointCount: number;
   elevationProfile: [number, number][][];
+  maxElevationM: number | null;
+  minElevationM: number | null;
   path: [number, number][][];
 }
 
@@ -33,7 +35,8 @@ export const parseGPX = (gpxString: string): GpxMetadata => {
   }
 
   const { ascentM, descentM } = measureElevation(segments);
-  const { distanceKm, elevationProfile } = createElevationProfile(segments);
+  const { distanceKm, elevationProfile, maxElevationM, minElevationM } =
+    createElevationProfile(segments);
 
   return {
     name: feature.properties?.name || null,
@@ -42,6 +45,8 @@ export const parseGPX = (gpxString: string): GpxMetadata => {
     descentM,
     pointCount: countPoints(segments),
     elevationProfile,
+    maxElevationM,
+    minElevationM,
     path: createPath(segments),
   };
 };
