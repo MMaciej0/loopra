@@ -5,18 +5,23 @@ import {
   CreatorCannotLeaveError,
   ParticipantNotFoundError,
   RideAlreadyStartedError,
+  RideNotFoundError,
 } from '../errors.js';
 
 export const leaveRide = async (db: Db, userId: string, rideId: string) => {
   const [existingRide] = await db.select().from(rides).where(eq(rides.id, rideId)).limit(1);
 
-  if (existingRide && existingRide.start_time <= new Date()) {
+  if (!existingRide) {
+    throw new RideNotFoundError();
+  }
+
+  if (existingRide.start_time <= new Date()) {
     throw new RideAlreadyStartedError();
   }
 
   // the creator now holds a participant row, so without this they could delete
   // themselves out of their own ride
-  if (existingRide && existingRide.creator_id === userId) {
+  if (existingRide.creator_id === userId) {
     throw new CreatorCannotLeaveError();
   }
 
