@@ -81,6 +81,19 @@ function AvatarFallback({
   );
 }
 
+function UserAvatar({
+  name,
+  ...props
+}: Omit<React.ComponentProps<typeof Avatar>, 'children'> & { name: string }) {
+  return (
+    <Avatar {...props}>
+      <AvatarFallback color={getAvatarColorIndex(name)}>
+        {name.charAt(0).toUpperCase()}
+      </AvatarFallback>
+    </Avatar>
+  );
+}
+
 function AvatarBadge({ className, ...props }: React.ComponentProps<'span'>) {
   return (
     <span
@@ -133,4 +146,12 @@ function AvatarGroupCount({ className, ...props }: React.ComponentProps<'div'>) 
   );
 }
 
-export { Avatar, AvatarImage, AvatarFallback, AvatarBadge, AvatarGroup, AvatarGroupCount };
+export {
+  Avatar,
+  AvatarImage,
+  AvatarFallback,
+  UserAvatar,
+  AvatarBadge,
+  AvatarGroup,
+  AvatarGroupCount,
+};

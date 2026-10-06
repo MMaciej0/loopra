@@ -5,7 +5,7 @@ import { Loader2, LogOut, Moon, Sun } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useTheme } from 'next-themes';
 
-import { Avatar, AvatarFallback, getAvatarColorIndex } from '@/components/ui/avatar';
+import { UserAvatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -43,11 +43,7 @@ export function UserMenu() {
             'group-data-[collapsible=icon]:w-full group-data-[collapsible=icon]:justify-center group-data-[collapsible=icon]:px-0',
           )}
         >
-          <Avatar size="sm">
-            <AvatarFallback color={getAvatarColorIndex(displayName)}>
-              {displayName.charAt(0).toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
+          <UserAvatar size="sm" name={displayName} />
           <span className="truncate group-data-[collapsible=icon]:hidden">{displayName}</span>
         </Button>
       </DropdownMenuTrigger>
