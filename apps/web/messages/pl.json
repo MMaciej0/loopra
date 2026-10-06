@@ -31,8 +31,10 @@
     "listEmptyHint": "Lista pokazuje nadchodzące jazdy startujące w okolicy wybranego miejsca. Zmień je powyżej, aby poszukać gdzie indziej.",
     "listLoadError": "Nie udało się wczytać jazd.",
     "listRetry": "Spróbuj ponownie",
-    "ridePagePlaceholder": "Strona jazdy",
     "rideMapLabel": "Mapa jazdy {title}"
+  },
+  "RidePage": {
+    "from": "start: {location}"
   },
   "FavoriteLocation": {
     "title": "Gdzie zwykle jeździsz?",

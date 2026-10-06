@@ -31,8 +31,10 @@
     "listEmptyHint": "The list shows upcoming rides starting around your selected place. Change it above to look somewhere else.",
     "listLoadError": "Could not load rides.",
     "listRetry": "Try again",
-    "ridePagePlaceholder": "Ride page",
     "rideMapLabel": "Map of the ride {title}"
+  },
+  "RidePage": {
+    "from": "from {location}"
   },
   "FavoriteLocation": {
     "title": "Where do you usually ride?",
