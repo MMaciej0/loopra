@@ -1,10 +1,18 @@
 import { and, eq } from 'drizzle-orm';
 import { Db } from '../../../db/index.js';
 import { ride_participants, rides } from '../../../db/schema.js';
-import { CreatorCannotLeaveError, ParticipantNotFoundError } from '../errors.js';
+import {
+  CreatorCannotLeaveError,
+  ParticipantNotFoundError,
+  RideAlreadyStartedError,
+} from '../errors.js';
 
 export const leaveRide = async (db: Db, userId: string, rideId: string) => {
   const [existingRide] = await db.select().from(rides).where(eq(rides.id, rideId)).limit(1);
+
+  if (existingRide && existingRide.start_time <= new Date()) {
+    throw new RideAlreadyStartedError();
+  }
 
   // the creator now holds a participant row, so without this they could delete
   // themselves out of their own ride
