@@ -297,6 +297,7 @@
     "INVALID_TOKEN": "This link is no longer valid. Request a new one.",
     "EMAIL_NOT_VERIFIED": "Verify your email address first.",
     "RIDE_NOT_FOUND": "That ride is no longer available.",
+    "RIDE_ALREADY_STARTED": "This ride has already started.",
     "RIDE_UPDATE_BAD_BODY": "Some details are not valid. Check the form and try again.",
     "RIDE_HAS_PARTICIPANTS": "Other riders have already joined. Cancel the ride instead of deleting it.",
     "PARTICIPANT_EXISTS": "You have already joined this ride.",

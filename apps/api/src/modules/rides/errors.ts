@@ -7,6 +7,12 @@ export class RideNotFoundError extends AppError {
   }
 }
 
+export class RideAlreadyStartedError extends AppError {
+  constructor() {
+    super(400, ERROR_TYPES.RIDE_ALREADY_STARTED, 'Ride has already started');
+  }
+}
+
 export class RouteNotFoundError extends AppError {
   constructor() {
     super(404, ERROR_TYPES.ROUTE_NOT_FOUND, 'Route not found');

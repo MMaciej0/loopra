@@ -297,6 +297,7 @@
     "INVALID_TOKEN": "Ten link nie jest już ważny. Poproś o nowy.",
     "EMAIL_NOT_VERIFIED": "Najpierw potwierdź swój adres e-mail.",
     "RIDE_NOT_FOUND": "Ta przejażdżka nie jest już dostępna.",
+    "RIDE_ALREADY_STARTED": "Ta przejażdżka już się rozpoczęła.",
     "RIDE_UPDATE_BAD_BODY": "Niektóre dane są nieprawidłowe. Sprawdź formularz i spróbuj ponownie.",
     "RIDE_HAS_PARTICIPANTS": "Inni rowerzyści już dołączyli. Zamiast usuwać, odwołaj przejażdżkę.",
     "PARTICIPANT_EXISTS": "Już dołączyłeś do tej przejażdżki.",

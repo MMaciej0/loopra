@@ -4,7 +4,7 @@ import { ERROR_TYPES } from '@loopra/domain';
 import { useApp } from '../../helpers/app.js';
 import { useAuthenticatedUser } from '../../helpers/auth.js';
 import { newRide } from '../../helpers/rides.js';
-import { ride_participants } from '../../../src/db/schema.js';
+import { ride_participants, rides } from '../../../src/db/schema.js';
 
 describe('POST /rides/:rideId/join', () => {
   const appRef = useApp();
@@ -151,5 +151,62 @@ describe('POST /rides/:rideId/join', () => {
       .where(eq(ride_participants.ride_id, rideId));
 
     expect(participants).toHaveLength(2);
+  });
+
+  it('refuses to join a ride that has already started', async () => {
+    const rideResponse = await appRef.app.inject({
+      method: 'POST',
+      url: '/rides',
+      body: newRide({ user_id: creatorAuth.userId, city: 'Warsaw', country: 'Poland' }),
+      cookies: { accessToken: creatorAuth.accessToken },
+    });
+
+    const rideId = rideResponse.json().data.id as string;
+
+    await appRef.app.db
+      .update(rides)
+      .set({ start_time: new Date(Date.now() - 60 * 1000) })
+      .where(eq(rides.id, rideId));
+
+    const response = await appRef.app.inject({
+      method: 'POST',
+      url: `/rides/${rideId}/join`,
+      cookies: { accessToken: participantAuth.accessToken },
+    });
+
+    expect(response.statusCode).toBe(400);
+    expect(response.json().type).toBe('RIDE_ALREADY_STARTED');
+
+    const participants = await appRef.app.db
+      .select()
+      .from(ride_participants)
+      .where(eq(ride_participants.ride_id, rideId));
+
+    expect(participants.map((participant) => participant.user_id)).toEqual([creatorAuth.userId]);
+  });
+
+  it('lets a rider join inside the Lead Time, before the ride starts', async () => {
+    const rideResponse = await appRef.app.inject({
+      method: 'POST',
+      url: '/rides',
+      body: newRide({ user_id: creatorAuth.userId, city: 'Warsaw', country: 'Poland' }),
+      cookies: { accessToken: creatorAuth.accessToken },
+    });
+
+    const rideId = rideResponse.json().data.id as string;
+
+    await appRef.app.db
+      .update(rides)
+      .set({ start_time: new Date(Date.now() + 10 * 60 * 1000) })
+      .where(eq(rides.id, rideId));
+
+    const response = await appRef.app.inject({
+      method: 'POST',
+      url: `/rides/${rideId}/join`,
+      cookies: { accessToken: participantAuth.accessToken },
+    });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.json().data.user_id).toBe(participantAuth.userId);
   });
 });
