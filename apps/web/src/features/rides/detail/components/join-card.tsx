@@ -5,6 +5,7 @@ import { ERROR_TYPES, type RideDetail } from '@loopra/domain';
 import { Check } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
+import { Card } from '@/components/ui/card';
 import { Text } from '@/components/ui/text';
 import { useRouter } from '@/i18n/navigation';
 import { joinRide } from '@/features/rides/detail/actions/join-ride';
@@ -57,7 +58,7 @@ export function JoinCard({ ride }: Props) {
   }
 
   return (
-    <section className="bg-card border-border -order-1 mb-[26px] rounded-[14px] border px-[22px] py-5 lg:order-none lg:mb-0">
+    <Card className="-order-1 mb-[26px] lg:order-none lg:mb-0">
       <div className="flex items-baseline justify-between gap-3">
         <span className="font-ui text-foreground text-[13.5px] font-medium">
           {t('joinRiders', { count: participantCount, capacity })}
@@ -130,6 +131,6 @@ export function JoinCard({ ride }: Props) {
           {t('joinError')}
         </p>
       )}
-    </section>
+    </Card>
   );
 }

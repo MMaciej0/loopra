@@ -1,6 +1,7 @@
 import type { RideDetail } from '@loopra/domain';
 import { useTranslations } from 'next-intl';
 import { UserAvatar } from '@/components/ui/avatar';
+import { Card, CardLabel } from '@/components/ui/card';
 import { Text } from '@/components/ui/text';
 
 type Props = Readonly<{
@@ -18,10 +19,8 @@ export function OrganiserCard({ ride }: Props) {
   const name = ride.creator.username || t('organiserUnknown');
 
   return (
-    <section className="bg-card border-border mb-7 rounded-[14px] border px-[22px] py-5">
-      <Text variant="label" as="h2" className="text-muted-foreground mb-2.5">
-        {t('organiserHeading')}
-      </Text>
+    <Card className="mb-7">
+      <CardLabel>{t('organiserHeading')}</CardLabel>
       <p className="font-editorial text-foreground text-[20px] leading-[1.4] font-normal text-pretty whitespace-pre-line">
         {t('organiserQuote', { text })}
       </p>
@@ -34,6 +33,6 @@ export function OrganiserCard({ ride }: Props) {
           </Text>
         </div>
       </footer>
-    </section>
+    </Card>
   );
 }
