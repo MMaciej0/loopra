@@ -45,6 +45,7 @@ export function JoinCard({ ride }: Props) {
           router.refresh();
           return;
         case ERROR_TYPES.RIDE_NOT_FOUND:
+        case ERROR_TYPES.RIDE_ALREADY_STARTED:
           router.replace('/rides');
           return;
         default:

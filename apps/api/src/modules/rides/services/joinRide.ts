@@ -1,7 +1,12 @@
 import { eq } from 'drizzle-orm';
 import { Db } from '../../../db/index.js';
 import { ride_participants, rides } from '../../../db/schema.js';
-import { RideNotFoundError, MaxParticipantsError, ParticipantExistsError } from '../errors.js';
+import {
+  RideNotFoundError,
+  RideAlreadyStartedError,
+  MaxParticipantsError,
+  ParticipantExistsError,
+} from '../errors.js';
 
 export const joinRide = async (db: Db, userId: string, rideId: string) => {
   return await db.transaction(async (tx) => {
@@ -16,6 +21,10 @@ export const joinRide = async (db: Db, userId: string, rideId: string) => {
 
     if (!existingRide) {
       throw new RideNotFoundError();
+    }
+
+    if (existingRide.start_time <= new Date()) {
+      throw new RideAlreadyStartedError();
     }
 
     // the creator has a participant row of their own, so this covers them too
