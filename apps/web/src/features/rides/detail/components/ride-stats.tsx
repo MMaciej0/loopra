@@ -86,9 +86,12 @@ export function RideStats({ ride }: Props) {
   }
 
   return (
-    <dl className="bg-border border-border mb-[26px] grid grid-cols-[repeat(auto-fit,minmax(130px,1fr))] gap-px overflow-hidden rounded-[14px] border">
+    <dl className="bg-border border-border mb-[26px] flex w-fit max-w-full flex-wrap gap-px overflow-hidden rounded-[14px] border">
       {stats.map((stat) => (
-        <div key={stat.key} className="bg-card flex flex-col gap-1.5 px-[18px] py-4">
+        <div
+          key={stat.key}
+          className="bg-card flex min-w-[130px] flex-1 flex-col gap-1.5 px-[18px] py-4"
+        >
           <dt className="font-data text-muted-foreground text-[9.5px] leading-none font-medium tracking-[0.12em] uppercase">
             {stat.label}
           </dt>
