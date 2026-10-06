@@ -2,7 +2,8 @@
 
 import { useId } from 'react';
 import { cn } from '@/lib/utils';
-import { CHART_HEIGHT, CHART_WIDTH, type ElevationPath } from './geometry';
+import type { ElevationPath } from '@/features/rides/project-elevation-profile';
+import { CHART_HEIGHT, CHART_WIDTH } from './geometry';
 
 interface ElevationBannerProps {
   paths: ElevationPath[];
