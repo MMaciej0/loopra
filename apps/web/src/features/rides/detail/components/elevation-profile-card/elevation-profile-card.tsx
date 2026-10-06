@@ -35,6 +35,9 @@ const GRID_LINES = Array.from(
     (index * (CHART_FRAME.bandBottom - CHART_FRAME.bandTop)) / (GRID_LINE_COUNT - 1),
 );
 
+const BAND_TOP_OFFSET = `${(CHART_FRAME.bandTop / CHART_FRAME.height) * 100}%`;
+const BAND_BOTTOM_OFFSET = `${(1 - CHART_FRAME.bandBottom / CHART_FRAME.height) * 100}%`;
+
 function toNumber(value: string | null) {
   if (value === null || value === '') {
     return null;
@@ -70,8 +73,25 @@ export function ElevationProfileCard({ ride }: Props) {
         value: toNumber(route.ascent_m),
         unit: t('unitM'),
       },
+      {
+        key: 'highestPoint',
+        label: t('elevationHighestPoint'),
+        value: route.max_elevation_m,
+        unit: t('unitM'),
+      },
+      {
+        key: 'lowestPoint',
+        label: t('elevationLowestPoint'),
+        value: route.min_elevation_m,
+        unit: t('unitM'),
+      },
     ] satisfies Stat[]
   ).filter((stat): stat is Stat & { value: number } => stat.value !== null);
+
+  const heightLabels = [
+    { key: 'highest', value: route.max_elevation_m, style: { top: BAND_TOP_OFFSET } },
+    { key: 'lowest', value: route.min_elevation_m, style: { bottom: BAND_BOTTOM_OFFSET } },
+  ].filter((label): label is typeof label & { value: number } => label.value !== null);
 
   const ticks = distanceTicks(distanceKm);
 
@@ -132,6 +152,19 @@ export function ElevationProfileCard({ ride }: Props) {
             </g>
           ))}
         </svg>
+
+        {heightLabels.map((label) => (
+          <span
+            key={label.key}
+            aria-hidden="true"
+            style={label.style}
+            className="font-data text-muted-foreground absolute left-0 m-1 text-[10px] leading-none whitespace-nowrap"
+          >
+            {t('elevationHeightLabel', {
+              value: format.number(label.value, { maximumFractionDigits: 0 }),
+            })}
+          </span>
+        ))}
       </div>
 
       <div
