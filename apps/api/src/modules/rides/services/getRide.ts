@@ -16,6 +16,7 @@ export const getRide = async (db: Db, id: string) => {
       route: {
         columns: {
           path: true,
+          elevation_profile: true,
           distance_km: true,
           ascent_m: true,
         },
