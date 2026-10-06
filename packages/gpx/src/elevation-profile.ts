@@ -4,16 +4,19 @@ import { calculateDistanceKm } from './distance.js';
 import { readPointElevation, round2 } from './utils.js';
 
 export const createElevationProfile = (segments: Position[][]) => {
-  const { distanceKm, elevationProfile } = createElevationProfileFromSegments(segments);
+  const { distanceKm, elevationProfile, maxElevationM, minElevationM } =
+    createElevationProfileFromSegments(segments);
 
   const totalPoints = elevationProfile.reduce((acc, profile) => acc + profile.length, 0);
 
   if (totalPoints <= MAX_ELEVATION_POINTS) {
-    return { distanceKm, elevationProfile };
+    return { distanceKm, elevationProfile, maxElevationM, minElevationM };
   }
 
   return {
     distanceKm,
+    maxElevationM,
+    minElevationM,
     elevationProfile: elevationProfile.map((profile) =>
       downsampleProfile(
         profile,
@@ -25,6 +28,8 @@ export const createElevationProfile = (segments: Position[][]) => {
 
 const createElevationProfileFromSegments = (segments: Position[][]) => {
   let distanceKm = 0;
+  let maxElevationM: number | null = null;
+  let minElevationM: number | null = null;
   const elevationProfile: [number, number][][] = [];
 
   for (const segment of segments) {
@@ -44,7 +49,17 @@ const createElevationProfileFromSegments = (segments: Position[][]) => {
         continue;
       }
 
-      profile.push([round2(distanceKm), Math.round(elevation)]);
+      const elevationM = Math.round(elevation);
+
+      if (maxElevationM === null || elevationM > maxElevationM) {
+        maxElevationM = elevationM;
+      }
+
+      if (minElevationM === null || elevationM < minElevationM) {
+        minElevationM = elevationM;
+      }
+
+      profile.push([round2(distanceKm), elevationM]);
     }
 
     if (profile.length > 0) {
@@ -55,6 +70,8 @@ const createElevationProfileFromSegments = (segments: Position[][]) => {
   return {
     distanceKm: round2(distanceKm),
     elevationProfile,
+    maxElevationM,
+    minElevationM,
   };
 };
 
