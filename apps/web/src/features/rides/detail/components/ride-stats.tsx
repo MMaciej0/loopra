@@ -1,5 +1,6 @@
 import type { RideDetail } from '@loopra/domain';
 import { useFormatter, useTranslations } from 'next-intl';
+import { cn } from '@/lib/utils';
 
 type Props = Readonly<{
   ride: RideDetail;
@@ -86,7 +87,12 @@ export function RideStats({ ride }: Props) {
   }
 
   return (
-    <dl className="bg-border border-border mb-[26px] flex w-fit max-w-full flex-wrap gap-px overflow-hidden rounded-[14px] border">
+    <dl
+      className={cn(
+        'bg-border border-border mb-[26px] flex max-w-full flex-wrap gap-px overflow-hidden rounded-[14px] border',
+        stats.length === 1 && 'w-fit',
+      )}
+    >
       {stats.map((stat) => (
         <div
           key={stat.key}
