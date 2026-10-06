@@ -24,11 +24,6 @@ const riderProperties = {
 
 export const RiderSchema = Type.Object(riderProperties, { additionalProperties: false });
 
-export const RideCreatorSchema = Type.Object(
-  { ...riderProperties, email: Type.String() },
-  { additionalProperties: false },
-);
-
 const participantProperties = {
   ride_id: Type.String({ format: 'uuid' }),
   user_id: Type.String({ format: 'uuid' }),
@@ -89,7 +84,7 @@ export const RideRouteSchema = Type.Object(
 export const RideDetailSchema = Type.Object(
   {
     ...rideProperties,
-    creator: RideCreatorSchema,
+    creator: RiderSchema,
     route: Type.Union([RideRouteSchema, Type.Null()]),
     participants: Type.Array(
       Type.Object({ ...participantProperties, user: RiderSchema }, { additionalProperties: false }),

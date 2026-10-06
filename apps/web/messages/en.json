@@ -46,6 +46,7 @@
     "organiserHeading": "FROM THE ORGANISER",
     "organiserQuote": "“{text}”",
     "organiserRole": "Organiser",
+    "organiserUnknown": "Unknown",
     "joinRiders": "{count} of {capacity} riders",
     "joinSeatsLeft": "{count, plural, one {# seat left} other {# seats left}}",
     "joinFull": "Full",
