@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
 import { useRouter } from '@/i18n/navigation';
 import { joinRide } from '@/features/rides/detail/actions/join-ride';
+import { leaveRide } from '@/features/rides/detail/actions/leave-ride';
 import { useCurrentUser } from '@/features/shell/components/current-user-provider';
 
 type Props = Readonly<{
@@ -30,16 +31,17 @@ export function JoinCard({ ride }: Props) {
   const isFull = seatsLeft === 0;
   const isVerified = user?.email_verified === true;
 
-  function handleJoin() {
+  function run(action: typeof joinRide) {
     setHasError(false);
     startTransition(async () => {
-      const result = await joinRide(ride.id);
+      const result = await action(ride.id);
 
       if (result.ok) return;
 
       switch (result.errorType) {
         case ERROR_TYPES.MAX_PARTICIPANTS:
         case ERROR_TYPES.PARTICIPANT_EXISTS:
+        case ERROR_TYPES.PARTICIPANT_NOT_FOUND:
           router.refresh();
           return;
         case ERROR_TYPES.RIDE_NOT_FOUND:
@@ -81,6 +83,9 @@ export function JoinCard({ ride }: Props) {
             <Check aria-hidden className="text-accent size-4" strokeWidth={3} />
             {t('joinJoined')}
           </span>
+          <Button variant="ghost" size="xs" loading={isPending} onClick={() => run(leaveRide)}>
+            {t('joinLeave')}
+          </Button>
         </div>
       ) : isFull ? (
         <Button variant="accent" disabled className="mt-4 w-full">
@@ -97,7 +102,12 @@ export function JoinCard({ ride }: Props) {
         </>
       ) : (
         <>
-          <Button variant="accent" loading={isPending} onClick={handleJoin} className="mt-4 w-full">
+          <Button
+            variant="accent"
+            loading={isPending}
+            onClick={() => run(joinRide)}
+            className="mt-4 w-full"
+          >
             {t('joinAction')}
           </Button>
           <Text variant="body-xs" className="text-muted-foreground mt-2 text-center">

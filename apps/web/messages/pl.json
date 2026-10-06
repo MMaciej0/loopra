@@ -55,6 +55,7 @@
     "joinRideFull": "Brak wolnych miejsc",
     "joinVerifyEmail": "Potwierdź adres e-mail, aby dołączyć",
     "joinJoined": "Jedziesz z nami",
+    "joinLeave": "Zrezygnuj",
     "joinError": "Coś poszło nie tak. Spróbuj ponownie."
   },
   "FavoriteLocation": {
