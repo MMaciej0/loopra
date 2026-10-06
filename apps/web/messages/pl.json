@@ -42,7 +42,10 @@
     "unitKm": "km",
     "unitElevation": "m w górę",
     "unitKmh": "km/h",
-    "unitHoursEstimate": "godz. (szac.)"
+    "unitHoursEstimate": "godz. (szac.)",
+    "organiserHeading": "OD ORGANIZATORA",
+    "organiserRole": "Organizator",
+    "organiserFallbackName": "Rowerzysta"
   },
   "FavoriteLocation": {
     "title": "Gdzie zwykle jeździsz?",

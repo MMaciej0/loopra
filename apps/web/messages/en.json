@@ -42,7 +42,10 @@
     "unitKm": "km",
     "unitElevation": "m gain",
     "unitKmh": "km/h",
-    "unitHoursEstimate": "{count, plural, one {hr est.} other {hrs est.}}"
+    "unitHoursEstimate": "{count, plural, one {hr est.} other {hrs est.}}",
+    "organiserHeading": "FROM THE ORGANISER",
+    "organiserRole": "Organiser",
+    "organiserFallbackName": "Rider"
   },
   "FavoriteLocation": {
     "title": "Where do you usually ride?",
