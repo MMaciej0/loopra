@@ -8,6 +8,7 @@ import { mapCenter } from '@/features/rides/detail/map-center';
 import { RideMap } from '@/features/rides/detail/components/ride-map/ride-map';
 import { RideHeader } from '@/features/rides/detail/components/ride-header/ride-header';
 import { RideStats } from '@/features/rides/detail/components/ride-stats';
+import { ElevationProfileCard } from '@/features/rides/detail/components/elevation-profile-card/elevation-profile-card';
 import { RideContractCards } from '@/features/rides/detail/components/ride-contract-cards';
 import { OrganiserCard } from '@/features/rides/detail/components/organiser-card';
 import { JoinCard } from '@/features/rides/detail/components/join-card';
@@ -48,6 +49,7 @@ export default async function RidePage({ params }: Props) {
             <div className="border-border contents min-w-0 lg:flex lg:flex-col lg:border-r lg:px-8 lg:pt-[26px] lg:pb-12">
               <RideHeader ride={ride} />
               <RideStats ride={ride} />
+              <ElevationProfileCard ride={ride} />
               <RideContractCards ride={ride} />
               <OrganiserCard ride={ride} />
             </div>
