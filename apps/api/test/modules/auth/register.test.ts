@@ -83,6 +83,62 @@ describe('POST /auth/register', () => {
     expect(response.statusCode).toBe(400);
   });
 
+  it.each([
+    ['empty', ''],
+    ['only spaces', '     '],
+    ['2 characters', 'ab'],
+    ['2 characters after trimming', '  ab  '],
+    ['31 characters', 'a'.repeat(31)],
+  ])('returns 400 for a username that is %s', async (_case, username) => {
+    const response = await appRef.app.inject({
+      method: 'POST',
+      url: '/auth/register',
+      body: { email: 'test@example.com', password: 'password123', username },
+    });
+
+    expect(response.statusCode).toBe(400);
+  });
+
+  it('accepts a 3-character username', async () => {
+    const response = await appRef.app.inject({
+      method: 'POST',
+      url: '/auth/register',
+      body: { email: 'test@example.com', password: 'password123', username: 'abc' },
+    });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.json().user.username).toBe('abc');
+  });
+
+  it('accepts a 30-character username', async () => {
+    const response = await appRef.app.inject({
+      method: 'POST',
+      url: '/auth/register',
+      body: { email: 'test@example.com', password: 'password123', username: 'a'.repeat(30) },
+    });
+
+    expect(response.statusCode).toBe(200);
+  });
+
+  it('stores the username without surrounding spaces', async () => {
+    const response = await appRef.app.inject({
+      method: 'POST',
+      url: '/auth/register',
+      body: { email: 'test@example.com', password: 'password123', username: '  abc  ' },
+    });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.json().user.username).toBe('abc');
+
+    const me = await appRef.app.inject({
+      method: 'GET',
+      url: '/users/me',
+      cookies: { accessToken: response.cookies.find((c) => c.name === 'accessToken')!.value },
+    });
+
+    expect(me.json().user.username).toBe('abc');
+  });
+
   describe('when ip rate limit is reached', () => {
     beforeEach(async () => {
       const ipKeys = await appRef.app.redis.keys('rate-limit:ip:*');
