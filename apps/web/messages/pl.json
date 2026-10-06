@@ -44,6 +44,7 @@
     "unitKmh": "km/h",
     "unitHoursEstimate": "godz. (szac.)",
     "organiserHeading": "OD ORGANIZATORA",
+    "organiserQuote": "„{text}”",
     "organiserRole": "Organizator",
     "organiserFallbackName": "Rowerzysta"
   },

@@ -4,27 +4,26 @@ import { Avatar, AvatarFallback, getAvatarColorIndex } from '@/components/ui/ava
 import { Text } from '@/components/ui/text';
 
 type Props = Readonly<{
-  description: RideDetail['description'];
-  creator: RideDetail['creator'];
+  ride: RideDetail;
 }>;
 
-export function OrganiserCard({ description, creator }: Props) {
+export function OrganiserCard({ ride }: Props) {
   const t = useTranslations('RidePage');
-  const text = description?.trim();
+  const text = ride.description?.trim();
 
   if (!text) {
     return null;
   }
 
-  const name = creator.username || t('organiserFallbackName');
+  const name = ride.creator.username || t('organiserFallbackName');
 
   return (
     <section className="bg-card border-border mb-7 rounded-[14px] border px-[22px] py-5">
-      <Text variant="label" className="text-muted-foreground mb-2.5 block">
+      <Text variant="label" as="h2" className="text-muted-foreground mb-2.5">
         {t('organiserHeading')}
       </Text>
       <p className="font-editorial text-foreground text-[20px] leading-[1.4] font-normal text-pretty whitespace-pre-line">
-        “{text}”
+        {t('organiserQuote', { text })}
       </p>
       <footer className="border-border mt-4 flex items-center gap-2.5 border-t pt-4">
         <Avatar className="size-[34px]">
