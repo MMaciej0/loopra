@@ -76,8 +76,6 @@
   "CreateRide": {
     "previewLabel": "PODGLĄD NA ŻYWO",
     "previewHint": "Tak widzą to inni",
-    "contractHeading": "ZASADY PRZEJAZDU",
-    "contractPace": "Około {value} km/h.",
     "safetyHeading": "BEZPIECZEŃSTWO",
     "safetyResponsibility": "Każdy uczestnik odpowiada za siebie i za grupę, z którą jedzie.",
     "safetyRoadRules": "Znaj i stosuj przepisy ruchu drogowego — jedziemy w normalnym ruchu, nie po zamkniętej trasie.",
@@ -181,6 +179,10 @@
       "label": "Trening",
       "description": "Ustrukturyzowany wysiłek — interwały, tempo, strefy."
     }
+  },
+  "RideContract": {
+    "heading": "ZASADY PRZEJAZDU",
+    "pace": "Około {value} km/h."
   },
   "DropPolicies": {
     "no_drop": {
