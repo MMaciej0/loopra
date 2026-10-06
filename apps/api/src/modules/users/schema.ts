@@ -1,8 +1,9 @@
 import z from 'zod';
+import { USERNAME_MAX_LENGTH, USERNAME_MIN_LENGTH } from '@loopra/domain';
 
 export const UpdateUserBodySchema = z
   .object({
-    username: z.string().trim().min(1).max(30).optional(),
+    username: z.string().trim().min(USERNAME_MIN_LENGTH).max(USERNAME_MAX_LENGTH).optional(),
   })
   .refine((body) => Object.keys(body).length > 0, { message: 'Nothing to update' });
 
