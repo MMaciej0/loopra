@@ -1,6 +1,6 @@
 import type { RideDetail } from '@loopra/domain';
 import { useTranslations } from 'next-intl';
-import { Avatar, AvatarFallback, getAvatarColorIndex } from '@/components/ui/avatar';
+import { UserAvatar } from '@/components/ui/avatar';
 import { Text } from '@/components/ui/text';
 
 type Props = Readonly<{
@@ -26,11 +26,7 @@ export function OrganiserCard({ ride }: Props) {
         {t('organiserQuote', { text })}
       </p>
       <footer className="border-border mt-4 flex items-center gap-2.5 border-t pt-4">
-        <Avatar className="size-[34px]">
-          <AvatarFallback color={getAvatarColorIndex(name)} className="text-[14px]">
-            {name.slice(0, 1).toUpperCase()}
-          </AvatarFallback>
-        </Avatar>
+        <UserAvatar name={name} />
         <div className="flex min-w-0 flex-col">
           <span className="font-ui text-foreground truncate text-[13.5px] font-medium">{name}</span>
           <Text variant="caption" className="text-muted-foreground">

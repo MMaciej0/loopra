@@ -1,6 +1,6 @@
 import { useTranslations } from 'next-intl';
 import { Bike, MapPin } from 'lucide-react';
-import { Avatar, AvatarFallback, getAvatarColorIndex } from '@/components/ui/avatar';
+import { UserAvatar } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Text } from '@/components/ui/text';
 import { cn } from '@/lib/utils';
@@ -80,22 +80,14 @@ export function RideCard({ data, className }: RideCardProps) {
 
       <footer className="border-border flex items-center justify-between border-t px-4 py-3">
         <div className="flex items-center gap-2">
-          <Avatar size="sm">
-            <AvatarFallback color={getAvatarColorIndex(creatorName)}>
-              {creatorName.slice(0, 1).toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
+          <UserAvatar size="sm" name={creatorName} />
           <Text variant="body-s" className="text-foreground/80">
             {creatorName}
           </Text>
         </div>
 
         <div className="flex items-center gap-2">
-          <Avatar size="sm">
-            <AvatarFallback color={getAvatarColorIndex(creatorName)}>
-              {creatorName.slice(0, 1).toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
+          <UserAvatar size="sm" name={creatorName} />
           <Text variant="meta" className="text-muted-foreground">
             {data.max_participants === undefined
               ? t('participantsOpen', { count: participants })
