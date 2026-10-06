@@ -34,7 +34,15 @@
     "rideMapLabel": "Mapa jazdy {title}"
   },
   "RidePage": {
-    "from": "start: {location}"
+    "from": "start: {location}",
+    "distance": "Dystans",
+    "elevation": "Przewyższenie",
+    "pace": "Tempo",
+    "duration": "Czas",
+    "unitKm": "km",
+    "unitElevation": "m w górę",
+    "unitKmh": "km/h",
+    "unitHoursEstimate": "godz. (szac.)"
   },
   "FavoriteLocation": {
     "title": "Gdzie zwykle jeździsz?",

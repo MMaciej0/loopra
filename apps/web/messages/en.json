@@ -34,7 +34,15 @@
     "rideMapLabel": "Map of the ride {title}"
   },
   "RidePage": {
-    "from": "from {location}"
+    "from": "from {location}",
+    "distance": "Distance",
+    "elevation": "Elevation",
+    "pace": "Pace",
+    "duration": "Duration",
+    "unitKm": "km",
+    "unitElevation": "m gain",
+    "unitKmh": "km/h",
+    "unitHoursEstimate": "{count, plural, one {hr est.} other {hrs est.}}"
   },
   "FavoriteLocation": {
     "title": "Where do you usually ride?",
