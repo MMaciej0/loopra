@@ -49,9 +49,9 @@ export default async function RidePage({ params }: Props) {
             <div className="border-border contents min-w-0 lg:flex lg:flex-col lg:border-r lg:px-8 lg:pt-[26px] lg:pb-12">
               <RideHeader ride={ride} />
               <RideStats ride={ride} />
-              <ElevationProfileCard ride={ride} />
               <RideContractCards ride={ride} />
               <OrganiserCard ride={ride} />
+              <ElevationProfileCard ride={ride} />
             </div>
             <aside className="contents lg:sticky lg:top-0 lg:flex lg:flex-col lg:gap-4 lg:px-7 lg:pt-[26px] lg:pb-12 xl:max-h-[calc(100svh-4rem)] xl:pb-[26px]">
               <JoinCard ride={ride} />
