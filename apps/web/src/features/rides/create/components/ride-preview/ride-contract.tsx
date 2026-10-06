@@ -3,6 +3,7 @@
 import { useTranslations } from 'next-intl';
 import { Check } from 'lucide-react';
 import { Text } from '@/components/ui/text';
+import { useContractLines } from '@/features/rides/components/use-contract-lines';
 import type { CreateRideInput } from '@/features/rides/create/schema';
 
 interface RideContractProps {
@@ -10,27 +11,13 @@ interface RideContractProps {
 }
 
 export function RideContract({ values }: RideContractProps) {
-  const t = useTranslations('CreateRide');
-  const tDrop = useTranslations('DropPolicies');
-  const tPace = useTranslations('PacePolicies');
-  const tFormation = useTranslations('FormationPolicies');
-  const tExperience = useTranslations('ExperiencePolicies');
-
-  const paceDescription = tPace(`${values.pace_policy}.description`);
-
-  const items = [
-    tDrop(`${values.drop_policy}.description`),
-    values.average_pace_kmh !== undefined
-      ? `${paceDescription} ${t('contractPace', { value: values.average_pace_kmh })}`
-      : paceDescription,
-    tFormation(`${values.formation_policy}.description`),
-    tExperience(`${values.experience_policy}.description`),
-  ];
+  const t = useTranslations('RideContract');
+  const items = useContractLines(values);
 
   return (
     <section className="bg-card border-border flex flex-col gap-3 rounded-xl border p-4">
       <Text variant="label" className="text-muted-foreground">
-        {t('contractHeading')}
+        {t('heading')}
       </Text>
 
       <ul className="flex flex-col gap-2.5">
