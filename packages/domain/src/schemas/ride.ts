@@ -80,6 +80,8 @@ export const RideRouteSchema = Type.Object(
   {
     path: Type.Union([RoutePathSchema, Type.Null()]),
     elevation_profile: Type.Union([ElevationProfileSchema, Type.Null()]),
+    max_elevation_m: Type.Union([Type.Integer(), Type.Null()]),
+    min_elevation_m: Type.Union([Type.Integer(), Type.Null()]),
     ...routeStatsProperties,
   },
   { additionalProperties: false },

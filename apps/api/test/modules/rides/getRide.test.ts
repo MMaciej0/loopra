@@ -136,10 +136,14 @@ describe('GET /rides/:id', () => {
       'ascent_m',
       'distance_km',
       'elevation_profile',
+      'max_elevation_m',
+      'min_elevation_m',
       'path',
     ]);
     expect(Number(route.distance_km)).toBe(0.56);
     expect(Number(route.ascent_m)).toBe(22);
+    expect(route.max_elevation_m).toBe(210);
+    expect(route.min_elevation_m).toBe(100);
   });
 
   it('returns the elevation profile as one [distance_km, elevation_m] array per segment', async () => {
@@ -183,6 +187,8 @@ describe('GET /rides/:id', () => {
 
     expect(route.path).toBeNull();
     expect(route.elevation_profile).toBeNull();
+    expect(route.max_elevation_m).toBeNull();
+    expect(route.min_elevation_m).toBeNull();
     expect(Number(route.distance_km)).toBe(12.5);
     expect(Number(route.ascent_m)).toBe(140);
   });
@@ -203,6 +209,8 @@ describe('GET /rides/:id', () => {
     expect(response.json().data.route).toEqual({
       path: null,
       elevation_profile: null,
+      max_elevation_m: null,
+      min_elevation_m: null,
       distance_km: null,
       ascent_m: null,
     });

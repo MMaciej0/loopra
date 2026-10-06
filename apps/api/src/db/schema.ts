@@ -105,6 +105,8 @@ export const routes = pgTable('routes', {
   ascent_m: numeric({ precision: 6, scale: 2 }),
   point_count: integer(),
   elevation_profile: jsonb().$type<GpxMetadata['elevationProfile']>(),
+  max_elevation_m: integer(),
+  min_elevation_m: integer(),
   path: jsonb().$type<GpxMetadata['path']>(),
   created_at: timestamp({ withTimezone: true }).notNull().defaultNow(),
   updated_at: timestamp({ withTimezone: true })
