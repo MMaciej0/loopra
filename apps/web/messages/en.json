@@ -34,7 +34,10 @@
     "rideMapLabel": "Map of the ride {title}"
   },
   "RidePage": {
-    "from": "from {location}"
+    "from": "from {location}",
+    "organiserHeading": "FROM THE ORGANISER",
+    "organiserRole": "Organiser",
+    "organiserFallbackName": "Rider"
   },
   "FavoriteLocation": {
     "title": "Where do you usually ride?",
