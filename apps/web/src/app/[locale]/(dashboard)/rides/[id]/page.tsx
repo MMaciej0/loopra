@@ -41,7 +41,7 @@ export default async function RidePage({ params }: Props) {
               <RideHeader ride={ride} />
               <RideStats ride={ride} />
               <RideContractCards ride={ride} />
-              <OrganiserCard description={ride.description} creator={ride.creator} />
+              <OrganiserCard ride={ride} />
             </div>
             <aside className="flex flex-col gap-4 lg:sticky lg:top-0 lg:px-7 lg:pt-[26px] lg:pb-12" />
           </div>

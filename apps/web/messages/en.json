@@ -44,6 +44,7 @@
     "unitKmh": "km/h",
     "unitHoursEstimate": "{count, plural, one {hr est.} other {hrs est.}}",
     "organiserHeading": "FROM THE ORGANISER",
+    "organiserQuote": "“{text}”",
     "organiserRole": "Organiser",
     "organiserFallbackName": "Rider"
   },
