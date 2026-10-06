@@ -1,4 +1,6 @@
 import { describe, expect, it } from 'vitest';
+import { eq } from 'drizzle-orm';
+import { ERROR_TYPES } from '@loopra/domain';
 import { useApp } from '../../helpers/app.js';
 import { useAuthenticatedUser } from '../../helpers/auth.js';
 import { newRide } from '../../helpers/rides.js';
@@ -111,5 +113,43 @@ describe('POST /rides/:rideId/join', () => {
     });
 
     expect(response.statusCode).toBe(400);
+  });
+
+  it('gives the last seat to only one of two riders who join at the same time', async () => {
+    const rideResponse = await appRef.app.inject({
+      method: 'POST',
+      url: '/rides',
+      body: newRide({
+        user_id: creatorAuth.userId,
+        city: 'Warsaw',
+        country: 'Poland',
+        max_participants: 2,
+      }),
+      cookies: { accessToken: creatorAuth.accessToken },
+    });
+
+    const rideId = rideResponse.json().data.id as string;
+
+    const responses = await Promise.all(
+      [participantAuth, exceedingParticipantAuth].map((auth) =>
+        appRef.app.inject({
+          method: 'POST',
+          url: `/rides/${rideId}/join`,
+          cookies: { accessToken: auth.accessToken },
+        }),
+      ),
+    );
+
+    const refused = responses.filter((response) => response.statusCode !== 200);
+
+    expect(responses.map((response) => response.statusCode).sort()).toEqual([200, 400]);
+    expect(refused[0].json().type).toBe(ERROR_TYPES.MAX_PARTICIPANTS);
+
+    const participants = await appRef.app.db
+      .select()
+      .from(ride_participants)
+      .where(eq(ride_participants.ride_id, rideId));
+
+    expect(participants).toHaveLength(2);
   });
 });
