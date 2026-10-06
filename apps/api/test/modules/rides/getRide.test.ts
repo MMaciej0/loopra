@@ -90,7 +90,7 @@ describe('GET /rides/:id', () => {
     expect(data.participants[0].user_id).toBe(auth.userId);
   });
 
-  it('does not expose rider emails on the creator or participants', async () => {
+  it('exposes the creator email but no participant emails', async () => {
     const body = newRide({ user_id: auth.userId, city: 'Warsaw', country: 'PL' });
 
     const createResponse = await appRef.app.inject({
@@ -108,9 +108,10 @@ describe('GET /rides/:id', () => {
 
     const { data } = response.json();
 
-    expect(Object.keys(data.creator).sort()).toEqual(['id', 'username']);
+    expect(Object.keys(data.creator).sort()).toEqual(['email', 'id', 'username']);
+    expect(data.creator.email).toBe(auth.email);
     expect(Object.keys(data.participants[0].user).sort()).toEqual(['id', 'username']);
-    expect(JSON.stringify(data)).not.toContain(auth.email);
+    expect(JSON.stringify(data.participants)).not.toContain(auth.email);
   });
 
   it('returns the route path as one [lon, lat] array per segment', async () => {

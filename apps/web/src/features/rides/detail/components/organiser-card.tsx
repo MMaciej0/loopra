@@ -15,7 +15,7 @@ export function OrganiserCard({ ride }: Props) {
     return null;
   }
 
-  const name = ride.creator.username || t('organiserFallbackName');
+  const name = ride.creator.username ?? ride.creator.email;
 
   return (
     <section className="bg-card border-border mb-7 rounded-[14px] border px-[22px] py-5">

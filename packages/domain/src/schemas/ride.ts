@@ -17,11 +17,15 @@ const StringEnum = <T extends readonly string[]>(values: T) =>
 const Nullable = <T extends ReturnType<typeof Type.String>>(schema: T) =>
   Type.Union([schema, Type.Null()]);
 
-export const RiderSchema = Type.Object(
-  {
-    id: Type.String({ format: 'uuid' }),
-    username: Type.Union([Type.String(), Type.Null()]),
-  },
+const riderProperties = {
+  id: Type.String({ format: 'uuid' }),
+  username: Type.Union([Type.String(), Type.Null()]),
+} as const;
+
+export const RiderSchema = Type.Object(riderProperties, { additionalProperties: false });
+
+export const RideCreatorSchema = Type.Object(
+  { ...riderProperties, email: Type.String() },
   { additionalProperties: false },
 );
 
@@ -85,7 +89,7 @@ export const RideRouteSchema = Type.Object(
 export const RideDetailSchema = Type.Object(
   {
     ...rideProperties,
-    creator: RiderSchema,
+    creator: RideCreatorSchema,
     route: Type.Union([RideRouteSchema, Type.Null()]),
     participants: Type.Array(
       Type.Object({ ...participantProperties, user: RiderSchema }, { additionalProperties: false }),
