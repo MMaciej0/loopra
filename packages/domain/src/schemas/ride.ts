@@ -73,8 +73,8 @@ const rideProperties = {
 export const RideSchema = Type.Object(rideProperties, { additionalProperties: false });
 
 const routeStatsProperties = {
-  distance_km: Type.String(),
-  ascent_m: Type.String(),
+  distance_km: Nullable(Type.String()),
+  ascent_m: Nullable(Type.String()),
 } as const;
 
 export const RideRouteSchema = Type.Object(

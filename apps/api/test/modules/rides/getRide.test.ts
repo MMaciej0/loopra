@@ -166,4 +166,20 @@ describe('GET /rides/:id', () => {
     expect(Number(route.distance_km)).toBe(12.5);
     expect(Number(route.ascent_m)).toBe(140);
   });
+
+  it('returns null distance and ascent for a route stored without them', async () => {
+    const [stored] = await appRef.app.db
+      .insert(routes)
+      .values({
+        user_id: auth.userId,
+        name: 'Stats-less Route',
+        s3_key: `routes/${crypto.randomUUID()}.gpx`,
+      })
+      .returning({ id: routes.id });
+
+    const response = await createAndGetRide(stored.id);
+
+    expect(response.statusCode).toBe(200);
+    expect(response.json().data.route).toEqual({ path: null, distance_km: null, ascent_m: null });
+  });
 });
