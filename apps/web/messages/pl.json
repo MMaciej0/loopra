@@ -45,7 +45,11 @@
     "unitHoursEstimate": "godz. (szac.)",
     "organiserHeading": "OD ORGANIZATORA",
     "organiserQuote": "„{text}”",
-    "organiserRole": "Organizator"
+    "organiserRole": "Organizator",
+    "joinRiders": "{count} z {capacity} uczestników",
+    "joinSeatsLeft": "{count, plural, one {Zostało # miejsce} few {Zostały # miejsca} many {Zostało # miejsc} other {Zostało # miejsca}}",
+    "joinFull": "Komplet",
+    "joinOrganising": "Organizujesz tę jazdę"
   },
   "FavoriteLocation": {
     "title": "Gdzie zwykle jeździsz?",
