@@ -57,7 +57,10 @@
     "joinVerifyEmail": "Verify your email to join",
     "joinJoined": "You're in",
     "joinLeave": "Leave ride",
-    "joinError": "Something went wrong. Try again."
+    "joinError": "Something went wrong. Try again.",
+    "participantsHeading": "WHO'S COMING",
+    "participantsOrganiser": "· Organiser",
+    "participantsShowAll": "Show all {count} riders"
   },
   "FavoriteLocation": {
     "title": "Where do you usually ride?",

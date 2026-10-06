@@ -11,6 +11,7 @@ import { RideStats } from '@/features/rides/detail/components/ride-stats';
 import { RideContractCards } from '@/features/rides/detail/components/ride-contract-cards';
 import { OrganiserCard } from '@/features/rides/detail/components/organiser-card';
 import { JoinCard } from '@/features/rides/detail/components/join-card';
+import { ParticipantsCard } from '@/features/rides/detail/components/participants-card';
 
 type Props = Readonly<{ params: Promise<{ id: string }> }>;
 
@@ -50,8 +51,9 @@ export default async function RidePage({ params }: Props) {
               <RideContractCards ride={ride} />
               <OrganiserCard ride={ride} />
             </div>
-            <aside className="contents lg:sticky lg:top-0 lg:flex lg:flex-col lg:gap-4 lg:px-7 lg:pt-[26px] lg:pb-12">
+            <aside className="contents lg:sticky lg:top-0 lg:flex lg:flex-col lg:gap-4 lg:px-7 lg:pt-[26px] lg:pb-12 xl:max-h-[calc(100svh-4rem)] xl:pb-[26px]">
               <JoinCard ride={ride} />
+              <ParticipantsCard ride={ride} />
             </aside>
           </div>
         </div>

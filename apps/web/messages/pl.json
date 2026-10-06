@@ -57,7 +57,10 @@
     "joinVerifyEmail": "Potwierdź adres e-mail, aby dołączyć",
     "joinJoined": "Jedziesz z nami",
     "joinLeave": "Zrezygnuj",
-    "joinError": "Coś poszło nie tak. Spróbuj ponownie."
+    "joinError": "Coś poszło nie tak. Spróbuj ponownie.",
+    "participantsHeading": "KTO JEDZIE",
+    "participantsOrganiser": "· Organizator",
+    "participantsShowAll": "Pokaż wszystkich ({count})"
   },
   "FavoriteLocation": {
     "title": "Gdzie zwykle jeździsz?",
