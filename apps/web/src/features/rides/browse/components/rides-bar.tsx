@@ -1,10 +1,10 @@
 import { FavoriteLocationPill } from '@/features/locations/components/favorite-location-pill/favorite-location-pill';
-import { RidesFilters } from './rides-filters';
+import { RidesFilterControls } from './rides-filter-controls';
 import { RidesViewToggle } from './rides-view-toggle';
-import type { RidesFilters as RidesFiltersValue } from '@/features/rides/browse/filters';
+import type { RidesFilters } from '@/features/rides/browse/filters';
 import type { RidesView } from '@/features/rides/browse/view';
 
-type Props = Readonly<{ view: RidesView; filters: RidesFiltersValue }>;
+type Props = Readonly<{ view: RidesView; filters: RidesFilters }>;
 
 export function RidesBar({ view, filters }: Props) {
   return (
@@ -13,7 +13,7 @@ export function RidesBar({ view, filters }: Props) {
         <FavoriteLocationPill />
       </div>
 
-      <RidesFilters view={view} filters={filters} />
+      <RidesFilterControls view={view} filters={filters} />
 
       <div className="col-start-2 row-start-2 justify-self-end md:col-start-3 md:row-start-1">
         <RidesViewToggle view={view} filters={filters} />
