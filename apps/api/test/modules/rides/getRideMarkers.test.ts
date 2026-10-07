@@ -61,10 +61,11 @@ describe('GET /rides/markers', () => {
   });
 
   it('applies the same filters as the list', async () => {
-    const [open] = await insertRides(1);
-    await insertRides(1, { status: 'cancelled' });
-    await insertRides(1, { is_private: true });
-    await insertRides(1, { start_time: new Date(Date.now() + 60 * 60 * 1000) });
+    const urbanCasual = { bike_type: 'urban', ride_type: 'casual' };
+    const [open] = await insertRides(1, urbanCasual);
+    await insertRides(1, { ...urbanCasual, status: 'cancelled' });
+    await insertRides(1, { ...urbanCasual, is_private: true });
+    await insertRides(1, { ...urbanCasual, start_time: new Date(Date.now() + 60 * 60 * 1000) });
 
     const { data } = await listMarkers({
       bbox: krakowBBox,
@@ -73,6 +74,28 @@ describe('GET /rides/markers', () => {
     });
 
     expect(data.map((marker: { id: string }) => marker.id)).toEqual([open.id]);
+
+    const [road] = await insertRides(1, { bike_type: 'road', ride_type: 'training' });
+    const [any] = await insertRides(1, { bike_type: 'any', ride_type: 'training' });
+    const [gravelCoffee] = await insertRides(1, { bike_type: 'gravel', ride_type: 'coffee_ride' });
+    const [gravelSightseeing] = await insertRides(1, {
+      bike_type: 'gravel',
+      ride_type: 'sightseeing',
+    });
+    await insertRides(1, { bike_type: 'mtb', ride_type: 'coffee_ride' });
+
+    const markerIds = async (filters: Record<string, string>) => {
+      const body = await listMarkers({ bbox: krakowBBox, status: 'open', ...filters });
+
+      return body.data.map((marker: { id: string }) => marker.id);
+    };
+
+    expect(await markerIds({ bike_type: 'road' })).toEqual([road.id]);
+    expect(await markerIds({ bike_type: 'any' })).toEqual([any.id]);
+    expect(await markerIds({ ride_type: 'sightseeing' })).toEqual([gravelSightseeing.id]);
+    expect(await markerIds({ bike_type: 'gravel', ride_type: 'coffee_ride' })).toEqual([
+      gravelCoffee.id,
+    ]);
   });
 
   it('with the lower bound set to now, returns a ride inside the creation lead time and leaves out a started ride', async () => {
