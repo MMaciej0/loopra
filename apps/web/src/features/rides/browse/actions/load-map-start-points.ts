@@ -6,9 +6,9 @@ import { groupByStartPoint } from '@/features/rides/browse/components/rides-map/
 import { toSearchParams } from '@/features/rides/browse/to-search-params';
 import type { RidesListQuery } from '@/features/rides/browse/list-query';
 
-export async function loadMapStartPoints({ bbox, date_from, status }: RidesListQuery) {
+export async function loadMapStartPoints({ bbox, date_from, status, filters }: RidesListQuery) {
   const response = await protectedRequest<ListRideMarkersResponse>(
-    `/rides/markers?${toSearchParams({ bbox, date_from, status })}`,
+    `/rides/markers?${toSearchParams({ bbox, date_from, status, ...filters })}`,
   );
 
   if (!response.ok) {
