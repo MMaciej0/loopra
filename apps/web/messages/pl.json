@@ -21,6 +21,8 @@
     "filterRideTypeLabel": "Typ jazdy",
     "filterRideTypeAll": "Wszystkie typy jazd",
     "filterClearAll": "Wyczyść wszystko",
+    "filtersButton": "Filtry",
+    "filtersButtonCount": "Filtry · {count}",
     "filteredEmpty": "Żadna jazda nie pasuje do filtrów",
     "filteredEmptyClear": "Wyczyść filtry",
     "viewToggleLabel": "Widok jazd",

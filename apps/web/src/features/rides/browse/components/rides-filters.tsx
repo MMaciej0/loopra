@@ -1,7 +1,9 @@
 'use client';
 
 import { BIKE_TYPES, RIDE_TYPES } from '@loopra/domain';
+import { SlidersHorizontal } from 'lucide-react';
 import { useTranslations } from 'next-intl';
+import { useId, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Select,
@@ -14,7 +16,7 @@ import { useRouter } from '@/i18n/navigation';
 import { cn } from '@/lib/utils';
 import {
   RIDES_WHEN,
-  hasActiveRidesFilters,
+  activeRidesFilterCount,
   ridesHref,
   withRidesFilter,
   type RidesFilterKey,
@@ -76,49 +78,74 @@ export function RidesFilters({ view, filters }: Props) {
   const tRideTypes = useTranslations('RideTypes');
   const router = useRouter();
   const clearFilters = useClearRidesFilters(view);
+  const [open, setOpen] = useState(false);
+  const panelId = useId();
+  const activeCount = activeRidesFilterCount(filters);
 
   const setFilter = <Key extends RidesFilterKey>(key: Key, value: RidesFilters[Key]) => {
     router.replace(ridesHref(view, withRidesFilter(filters, key, value)));
   };
 
   return (
-    <div className="flex min-w-0 flex-wrap items-center gap-2">
-      <FilterSelect<'when'>
-        label={t('filterWhenLabel')}
-        allLabel={t('filterWhenAll')}
-        options={RIDES_WHEN.map((when) => ({ value: when, label: t(`filterWhen.${when}`) }))}
-        value={filters.when}
-        onChange={(value) => setFilter('when', value)}
-      />
-      <FilterSelect<'bike_type'>
-        label={t('filterBikeTypeLabel')}
-        allLabel={t('filterBikeTypeAll')}
-        options={BIKE_TYPES.map((bikeType) => ({
-          value: bikeType,
-          label: bikeType === 'any' ? t('filterBikeTypeAny') : tBikeTypes(bikeType),
-        }))}
-        value={filters.bike_type}
-        onChange={(value) => setFilter('bike_type', value)}
-      />
-      <FilterSelect<'ride_type'>
-        label={t('filterRideTypeLabel')}
-        allLabel={t('filterRideTypeAll')}
-        options={RIDE_TYPES.map((rideType) => ({
-          value: rideType,
-          label: tRideTypes(`${rideType}.label`),
-        }))}
-        value={filters.ride_type}
-        onChange={(value) => setFilter('ride_type', value)}
-      />
+    <>
       <Button
-        variant="ghost"
-        size="sm"
-        className="h-10"
-        disabled={!hasActiveRidesFilters(filters)}
-        onClick={clearFilters}
+        variant="secondary"
+        className={cn(
+          'col-start-1 row-start-2 h-10 justify-self-start py-0 md:hidden',
+          activeCount > 0 && 'border-accent bg-accent/10 hover:border-accent hover:bg-accent/10',
+        )}
+        aria-expanded={open}
+        aria-controls={panelId}
+        onClick={() => setOpen((current) => !current)}
       >
-        {t('filterClearAll')}
+        <SlidersHorizontal />
+        {activeCount > 0 ? t('filtersButtonCount', { count: activeCount }) : t('filtersButton')}
       </Button>
-    </div>
+
+      <div
+        id={panelId}
+        className={cn(
+          'col-span-2 col-start-1 row-start-3 min-w-0 flex-wrap items-center gap-2 md:col-span-1 md:col-start-2 md:row-start-1 md:flex',
+          open ? 'flex' : 'hidden',
+        )}
+      >
+        <FilterSelect<'when'>
+          label={t('filterWhenLabel')}
+          allLabel={t('filterWhenAll')}
+          options={RIDES_WHEN.map((when) => ({ value: when, label: t(`filterWhen.${when}`) }))}
+          value={filters.when}
+          onChange={(value) => setFilter('when', value)}
+        />
+        <FilterSelect<'bike_type'>
+          label={t('filterBikeTypeLabel')}
+          allLabel={t('filterBikeTypeAll')}
+          options={BIKE_TYPES.map((bikeType) => ({
+            value: bikeType,
+            label: bikeType === 'any' ? t('filterBikeTypeAny') : tBikeTypes(bikeType),
+          }))}
+          value={filters.bike_type}
+          onChange={(value) => setFilter('bike_type', value)}
+        />
+        <FilterSelect<'ride_type'>
+          label={t('filterRideTypeLabel')}
+          allLabel={t('filterRideTypeAll')}
+          options={RIDE_TYPES.map((rideType) => ({
+            value: rideType,
+            label: tRideTypes(`${rideType}.label`),
+          }))}
+          value={filters.ride_type}
+          onChange={(value) => setFilter('ride_type', value)}
+        />
+        <Button
+          variant="ghost"
+          size="sm"
+          className="h-10"
+          disabled={activeCount === 0}
+          onClick={clearFilters}
+        >
+          {t('filterClearAll')}
+        </Button>
+      </div>
+    </>
   );
 }

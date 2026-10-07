@@ -21,6 +21,8 @@
     "filterRideTypeLabel": "Ride type",
     "filterRideTypeAll": "All ride types",
     "filterClearAll": "Clear all",
+    "filtersButton": "Filters",
+    "filtersButtonCount": "Filters · {count}",
     "filteredEmpty": "No rides match your filters",
     "filteredEmptyClear": "Clear filters",
     "viewToggleLabel": "Rides view",
