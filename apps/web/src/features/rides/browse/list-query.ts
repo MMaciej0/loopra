@@ -5,7 +5,6 @@ const PAGE_SIZE = 24;
 
 export type RidesListQuery = Readonly<{
   bbox: string;
-  date_from: string;
   status: RideStatus;
   limit: number;
   filters: RidesFilters;
@@ -14,7 +13,6 @@ export type RidesListQuery = Readonly<{
 export function buildRidesListQuery(searchArea: BBox, filters: RidesFilters): RidesListQuery {
   return {
     bbox: formatBBox(searchArea),
-    date_from: new Date().toISOString(),
     status: 'open',
     limit: PAGE_SIZE,
     filters,

@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
 import { loadRidesPage } from '@/features/rides/browse/actions/load-rides-page';
 import type { RidesListQuery } from '@/features/rides/browse/list-query';
+import { buildRidesTimeWindow } from '@/features/rides/browse/time-window';
 import { RideCardSkeleton } from './ride-card-skeleton';
 
 const SKELETON_COUNT = 3;
@@ -42,7 +43,7 @@ export function RidesList({ query }: { query: RidesListQuery }) {
     if (inFlight.current) return;
     inFlight.current = true;
 
-    loadRidesPage(initialQuery, cursor)
+    loadRidesPage(initialQuery, buildRidesTimeWindow(initialQuery.filters.when), cursor)
       .catch(() => null)
       .then(applyPage);
   };
