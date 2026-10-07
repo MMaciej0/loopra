@@ -52,7 +52,7 @@ function FilterSelect<Key extends RidesFilterKey>({
       <SelectTrigger
         aria-label={label}
         className={cn(
-          'min-w-0 data-[size=default]:h-10',
+          'w-full min-w-0 data-[size=default]:h-10',
           value && 'border-accent bg-accent/10 text-foreground dark:bg-accent/10',
         )}
       >
@@ -91,7 +91,7 @@ export function RidesFilterControls({ view, filters }: Props) {
       <Button
         variant="secondary"
         className={cn(
-          'col-start-1 row-start-2 h-10 justify-self-start py-0 md:hidden',
+          'col-start-1 row-start-2 h-10 justify-self-start py-0 @3xl:hidden',
           activeCount > 0 && 'border-accent bg-accent/10 hover:border-accent hover:bg-accent/10',
         )}
         aria-expanded={open}
@@ -105,8 +105,8 @@ export function RidesFilterControls({ view, filters }: Props) {
       <div
         id={panelId}
         className={cn(
-          'col-span-2 col-start-1 row-start-3 min-w-0 flex-wrap items-center gap-2 md:col-span-1 md:col-start-2 md:row-start-1 md:flex',
-          open ? 'flex' : 'hidden',
+          'col-span-2 col-start-1 row-start-3 min-w-0 grid-cols-2 items-center gap-2 @3xl:row-start-2 @3xl:grid @3xl:grid-cols-[repeat(3,minmax(0,12rem))_auto] @7xl:col-span-1 @7xl:col-start-2 @7xl:row-start-1',
+          open ? 'grid' : 'hidden',
         )}
       >
         <FilterSelect<'when'>
@@ -139,7 +139,7 @@ export function RidesFilterControls({ view, filters }: Props) {
         <Button
           variant="ghost"
           size="sm"
-          className="h-10"
+          className="h-10 justify-self-start"
           disabled={activeCount === 0}
           onClick={clearFilters}
         >
