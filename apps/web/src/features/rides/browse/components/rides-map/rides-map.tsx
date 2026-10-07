@@ -4,7 +4,9 @@ import type { Point } from '@loopra/domain';
 import { useTranslations } from 'next-intl';
 import { Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { hasActiveRidesFilters } from '@/features/rides/browse/filters';
 import type { RidesListQuery } from '@/features/rides/browse/list-query';
+import { useClearRidesFilters } from '@/features/rides/browse/use-clear-rides-filters';
 import { MapChip } from './map-chip';
 import { mapNotice } from './map-notice';
 import { RidePanel } from './ride-panel';
@@ -22,12 +24,14 @@ export function RidesMap({ query, center, screenReaderLocationLabel }: Props) {
   const { status, startPoints, truncated, retry, loadArea } = useStartPoints(query);
   const { containerRef, panelRef, selected, clearSelection, hasStartPointInView, showAll } =
     useRidesMap({ center, startPoints, onSearchAreaChange: loadArea });
+  const clearFilters = useClearRidesFilters('map');
 
   const notice = mapNotice({
     status,
     startPointCount: startPoints.length,
     hasStartPointInView,
     truncated,
+    hasActiveFilters: hasActiveRidesFilters(query.filters),
   });
   const rideCount = startPoints.reduce((total, group) => total + group.rideIds.length, 0);
 
@@ -49,6 +53,14 @@ export function RidesMap({ query, center, screenReaderLocationLabel }: Props) {
         {notice === 'empty' && (
           <MapChip role="status" className="pr-3.5">
             {t('mapEmpty')}
+          </MapChip>
+        )}
+        {notice === 'empty-filtered' && (
+          <MapChip role="status">
+            {t('filteredEmpty')}
+            <Button variant="secondary" size="xs" className="rounded-full" onClick={clearFilters}>
+              {t('filteredEmptyClear')}
+            </Button>
           </MapChip>
         )}
         {notice === 'out-of-view' && (
