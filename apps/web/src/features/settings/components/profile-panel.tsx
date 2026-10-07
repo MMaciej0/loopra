@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardLabel } from '@/components/ui/card';
 import { ControlledForm } from '@/components/ui/controlled-form';
 import { Field } from '@/components/ui/field';
-import { saveUsername } from '@/features/onboarding/actions/save-username';
+import { saveUsername } from '@/features/auth/actions/save-username';
 
 type Props = Readonly<{
   username: string;
