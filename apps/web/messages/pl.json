@@ -48,6 +48,7 @@
     "rideMapLabel": "Mapa jazdy {title}"
   },
   "RidePage": {
+    "back": "Wróć do jazd",
     "from": "start: {location}",
     "distance": "Dystans",
     "elevation": "Przewyższenie",

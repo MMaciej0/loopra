@@ -48,6 +48,7 @@
     "rideMapLabel": "Map of the ride {title}"
   },
   "RidePage": {
+    "back": "Back to rides",
     "from": "from {location}",
     "distance": "Distance",
     "elevation": "Elevation",
