@@ -4,7 +4,7 @@ import type { NextRequest } from 'next/server';
 import { getPathname } from '@/i18n/navigation';
 import { routing } from '@/i18n/routing';
 import { apiRequest, apiRequestWithCookie } from '@/lib/api';
-import { clearAuthCookies, getAuthCookies, setAuthCookies } from '@/lib/cookies';
+import { getAuthCookies, setAuthCookies } from '@/lib/cookies';
 
 export async function GET(request: NextRequest, context: RouteContext<'/[locale]/verify-email'>) {
   const { locale: requestedLocale } = await context.params;
@@ -38,11 +38,9 @@ export async function GET(request: NextRequest, context: RouteContext<'/[locale]
     { method: 'POST' },
   ).catch(() => null);
 
-  if (!refreshResponse?.ok) {
-    await clearAuthCookies();
-    redirect(getPathname({ href: '/login', locale }));
+  if (refreshResponse?.ok) {
+    await setAuthCookies(refreshResponse.headers);
   }
 
-  await setAuthCookies(refreshResponse.headers);
   redirect(getPathname({ href: '/rides', locale }));
 }
