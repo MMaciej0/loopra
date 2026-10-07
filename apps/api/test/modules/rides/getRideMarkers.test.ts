@@ -75,6 +75,21 @@ describe('GET /rides/markers', () => {
     expect(data.map((marker: { id: string }) => marker.id)).toEqual([open.id]);
   });
 
+  it('with the lower bound set to now, returns a ride inside the creation lead time and leaves out a started ride', async () => {
+    const [startsSoon] = await insertRides(1, {
+      start_time: new Date(Date.now() + 60 * 60 * 1000),
+    });
+    await insertRides(1, { start_time: new Date(Date.now() - 60 * 60 * 1000) });
+
+    const { data } = await listMarkers({
+      bbox: krakowBBox,
+      status: 'open',
+      date_from: new Date().toISOString(),
+    });
+
+    expect(data.map((marker: { id: string }) => marker.id)).toEqual([startsSoon.id]);
+  });
+
   it('orders markers by start time', async () => {
     const [later] = await insertRides(1, { start_time: new Date(Date.now() + 9 * 3600_000) });
     const [sooner] = await insertRides(1, { start_time: new Date(Date.now() + 7 * 3600_000) });
