@@ -3,8 +3,7 @@
     "rides": "Rides",
     "createRide": "Create ride",
     "userMenu": "Account menu for {name}",
-    "darkMode": "Dark mode",
-    "lightMode": "Light mode",
+    "settings": "Settings",
     "logOut": "Log out"
   },
   "RidesPage": {
@@ -379,6 +378,9 @@
       "placeholder": "yourname",
       "submit": "Continue"
     }
+  },
+  "SettingsPage": {
+    "title": "Settings"
   },
   "HomePage": {
     "title": "Hello world!"

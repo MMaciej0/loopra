@@ -3,8 +3,7 @@
     "rides": "Jazdy",
     "createRide": "Utwórz jazdę",
     "userMenu": "Menu konta {name}",
-    "darkMode": "Tryb ciemny",
-    "lightMode": "Tryb jasny",
+    "settings": "Ustawienia",
     "logOut": "Wyloguj się"
   },
   "RidesPage": {
@@ -379,6 +378,9 @@
       "placeholder": "twojanazwa",
       "submit": "Dalej"
     }
+  },
+  "SettingsPage": {
+    "title": "Ustawienia"
   },
   "HomePage": {
     "title": "Witaj świecie!"

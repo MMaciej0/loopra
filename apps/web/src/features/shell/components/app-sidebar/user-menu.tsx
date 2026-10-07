@@ -1,10 +1,10 @@
 'use client';
 
 import { useTransition } from 'react';
-import { Loader2, LogOut, Moon, Sun } from 'lucide-react';
+import { Loader2, LogOut, Settings } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { useTheme } from 'next-themes';
 
+import { Link } from '@/i18n/navigation';
 import { UserAvatar } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import {
@@ -21,15 +21,13 @@ import { cn } from '@/lib/utils';
 
 export function UserMenu() {
   const user = useCurrentUser();
-  const { isMobile } = useSidebar();
+  const { isMobile, setOpenMobile } = useSidebar();
   const t = useTranslations('Sidebar');
-  const { resolvedTheme, setTheme } = useTheme();
   const [isLoggingOut, startLogout] = useTransition();
 
   if (!user) return null;
 
   const displayName = user.username ?? user.email;
-  const isDark = resolvedTheme === 'dark';
 
   return (
     <DropdownMenu>
@@ -52,9 +50,11 @@ export function UserMenu() {
         align={isMobile ? 'start' : 'end'}
         className="min-w-48"
       >
-        <DropdownMenuItem onSelect={() => setTheme(isDark ? 'light' : 'dark')}>
-          {isDark ? <Sun /> : <Moon />}
-          {isDark ? t('lightMode') : t('darkMode')}
+        <DropdownMenuItem asChild onSelect={() => setOpenMobile(false)}>
+          <Link href="/settings">
+            <Settings />
+            {t('settings')}
+          </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
