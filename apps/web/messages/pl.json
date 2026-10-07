@@ -393,6 +393,13 @@
       "sendAgain": "Wyślij ponownie",
       "sent": "Wysłaliśmy link na adres {email}",
       "rateLimited": "Zbyt wiele prób, poczekaj chwilę"
+    },
+    "appearance": {
+      "title": "Wygląd",
+      "themeLabel": "Motyw",
+      "themeLight": "Jasny",
+      "themeDark": "Ciemny",
+      "languageLabel": "Język"
     }
   },
   "HomePage": {
