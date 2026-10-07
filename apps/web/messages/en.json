@@ -393,6 +393,13 @@
       "sendAgain": "Send again",
       "sent": "We sent a link to {email}",
       "rateLimited": "Too many tries, wait a moment"
+    },
+    "appearance": {
+      "title": "Appearance",
+      "themeLabel": "Theme",
+      "themeLight": "Light",
+      "themeDark": "Dark",
+      "languageLabel": "Language"
     }
   },
   "HomePage": {
