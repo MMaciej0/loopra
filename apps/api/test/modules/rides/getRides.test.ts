@@ -308,6 +308,26 @@ describe('GET /rides', () => {
     expect(unfiltered.data.map((ride: { id: string }) => ride.id)).toEqual([publicId]);
     expect(filtered.data.map((ride: { id: string }) => ride.id)).toEqual([publicId]);
   });
+  it('with the lower bound set to now, returns a ride inside the creation lead time and leaves out a started ride', async () => {
+    const [startsSoon] = await appRef.app.db
+      .insert(rides)
+      .values([
+        {
+          ...newRide({ user_id: auth.userId }),
+          start_time: new Date(Date.now() + 60 * 60 * 1000),
+        },
+        {
+          ...newRide({ user_id: auth.userId }),
+          start_time: new Date(Date.now() - 60 * 60 * 1000),
+        },
+      ])
+      .returning({ id: rides.id });
+
+    const { data } = await listRides({ status: 'open', date_from: new Date().toISOString() });
+
+    expect(data.map((ride: { id: string }) => ride.id)).toEqual([startsSoon.id]);
+  });
+
   it('never repeats a ride across pages when start times carry microseconds', async () => {
     const inserted = await appRef.app.db
       .insert(rides)
