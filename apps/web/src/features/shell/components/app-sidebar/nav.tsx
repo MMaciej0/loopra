@@ -1,6 +1,6 @@
 'use client';
 
-import { Bike, Route } from 'lucide-react';
+import { Bike } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
 import { Link, usePathname } from '@/i18n/navigation';
@@ -9,10 +9,7 @@ import { SidebarGroup, SidebarMenu, SidebarMenuItem, useSidebar } from '@/compon
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 
-const ITEMS = [
-  { key: 'rides', href: '/rides', icon: Bike },
-  { key: 'routes', href: '/routes', icon: Route },
-] as const;
+const ITEMS = [{ key: 'rides', href: '/rides', icon: Bike }] as const;
 
 export function AppSidebarNav() {
   const t = useTranslations('Sidebar');

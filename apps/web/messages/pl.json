@@ -1,7 +1,6 @@
 {
   "Sidebar": {
     "rides": "Jazdy",
-    "routes": "Trasy",
     "createRide": "Utwórz jazdę",
     "userMenu": "Menu konta {name}",
     "darkMode": "Tryb ciemny",

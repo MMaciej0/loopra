@@ -1,7 +1,6 @@
 {
   "Sidebar": {
     "rides": "Rides",
-    "routes": "Routes",
     "createRide": "Create ride",
     "userMenu": "Account menu for {name}",
     "darkMode": "Dark mode",
