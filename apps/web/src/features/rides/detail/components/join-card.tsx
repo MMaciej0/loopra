@@ -7,7 +7,7 @@ import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Text } from '@/components/ui/text';
-import { useRouter } from '@/i18n/navigation';
+import { Link, useRouter } from '@/i18n/navigation';
 import { joinRide } from '@/features/rides/detail/actions/join-ride';
 import { leaveRide } from '@/features/rides/detail/actions/leave-ride';
 import { useCurrentUser } from '@/features/shell/components/current-user-provider';
@@ -106,7 +106,9 @@ export function JoinCard({ ride }: Props) {
             {t('joinAction')}
           </Button>
           <Text variant="body-xs" className="text-muted-foreground mt-2 text-center">
-            {t('joinVerifyEmail')}
+            <Link href="/settings" className="underline underline-offset-2">
+              {t('joinVerifyEmail')}
+            </Link>
           </Text>
         </>
       ) : (

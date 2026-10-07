@@ -13,7 +13,7 @@ export async function SettingsPanels() {
       <div className="mx-auto flex max-w-[720px] flex-col gap-[18px] px-1 pt-6 pb-12 md:px-3">
         <Text variant="heading-xl">{t('title')}</Text>
         {user && <ProfilePanel username={user.username ?? ''} />}
-        {user && <EmailPanel email={user.email} />}
+        {user && <EmailPanel email={user.email} emailVerified={user.email_verified} />}
       </div>
     </div>
   );
