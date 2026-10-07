@@ -3,6 +3,7 @@ import { formatBBox, type BBox } from '@loopra/domain';
 import { loadMapStartPoints } from '@/features/rides/browse/actions/load-map-start-points';
 import { ridesFiltersKey } from '@/features/rides/browse/filters';
 import type { RidesListQuery } from '@/features/rides/browse/list-query';
+import { buildRidesTimeWindow } from '@/features/rides/browse/time-window';
 import type { StartPointGroup } from './start-points';
 
 export type StartPointsStatus = 'loading' | 'error' | 'done';
@@ -22,7 +23,10 @@ export function useStartPoints(query: RidesListQuery) {
     const request = ++latestRequestRef.current;
     const requestedFiltersKey = filtersKey;
 
-    loadMapStartPoints({ ...query, bbox: bboxRef.current })
+    loadMapStartPoints(
+      { ...query, bbox: bboxRef.current },
+      buildRidesTimeWindow(query.filters.when),
+    )
       .catch(() => null)
       .then((result) => {
         if (request !== latestRequestRef.current) return;

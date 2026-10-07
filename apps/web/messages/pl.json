@@ -9,6 +9,12 @@
     "logOut": "Wyloguj się"
   },
   "RidesPage": {
+    "filterWhenLabel": "Kiedy",
+    "filterWhenAll": "Dowolny termin",
+    "filterWhen": {
+      "today": "Dzisiaj",
+      "next_7_days": "Najbliższe 7 dni"
+    },
     "filterBikeTypeLabel": "Typ roweru",
     "filterBikeTypeAll": "Wszystkie rowery",
     "filterBikeTypeAny": "Dla każdego roweru",
