@@ -21,35 +21,10 @@ Next.js reserved files keep their required names (`page.tsx`, `layout.tsx`, `err
 
 Filename and its main export do not have to match casing — `login-form.tsx` exports `LoginForm`.
 
-### Where a file lives
+### Where a file lives, Server Actions, index files
 
-One question: **used by more than one route?**
+The root `AGENTS.md` is the single source for these rules. See its "Web Architecture (`apps/web`)" section. In short:
 
-- No → stays in that route's `_components/`
-- Yes → `src/components/<name>/`
-
-Three buckets, nothing else:
-
-| Location                 | Holds                                                  |
-| ------------------------ | ------------------------------------------------------ |
-| `app/**/_components/`    | UI used by exactly one route or route group            |
-| `src/components/ui/`     | Design-system primitives only (button, input, dialog…) |
-| `src/components/<name>/` | UI shared across two or more routes                    |
-
-Colocation is the default. Delete a route folder → its components go with it, no orphans.
-
-### Server actions live beside their consumer
-
-Split by **unit**, not by kind. An action used by one component sits in that component's folder:
-
-```
-_components/logout-button/
-  index.tsx     LogoutButton
-  action.ts     logout()
-```
-
-Do **not** create a top-level `_actions/` sibling for a single-consumer action — it costs a `../` hop and hides the component. Hoist to a shared `_actions/` only once a second consumer appears.
-
-### index files
-
-Add `index.tsx` only when a folder is a real public boundary — one exported thing with internal parts (`components/ride-card/`, `_components/logout-button/`). Never one per leaf file; a tree full of `index.tsx` tabs is unnavigable.
+- Feature code lives in `src/features/<name>/`. `src/app/` holds routing files only, with no `_components` or `_actions` folders.
+- Server Actions live in `features/<name>/actions/`, one action per file, named after the action.
+- No `index.ts` or `index.tsx` files. A component folder repeats its name in the main file (`ride-card/ride-card.tsx`).
