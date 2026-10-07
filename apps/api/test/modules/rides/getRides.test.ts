@@ -42,6 +42,21 @@ describe('GET /rides', () => {
     return response.json();
   };
 
+  const insertRides = async (...overrides: Record<string, unknown>[]) => {
+    const inserted = await appRef.app.db
+      .insert(rides)
+      .values(overrides.map((override) => ({ ...newRide({ user_id: auth.userId }), ...override })))
+      .returning({ id: rides.id });
+
+    return inserted.map((ride) => ride.id);
+  };
+
+  const listIds = async (query: Record<string, string>) => {
+    const { data } = await listRides(query);
+
+    return data.map((ride: { id: string }) => ride.id);
+  };
+
   it('returns first 20 records (limit) when cursor is not defined', async () => {
     await createMultipleRandomRides(appRef.app.db, LIMIT + 1, auth.userId);
 
@@ -310,23 +325,6 @@ describe('GET /rides', () => {
   });
 
   describe('bike_type and ride_type', () => {
-    const insertRides = async (...overrides: Record<string, unknown>[]) => {
-      const inserted = await appRef.app.db
-        .insert(rides)
-        .values(
-          overrides.map((override) => ({ ...newRide({ user_id: auth.userId }), ...override })),
-        )
-        .returning({ id: rides.id });
-
-      return inserted.map((ride) => ride.id);
-    };
-
-    const listIds = async (query: Record<string, string>) => {
-      const { data } = await listRides(query);
-
-      return data.map((ride: { id: string }) => ride.id);
-    };
-
     it('bike_type=road leaves out a ride marked any', async () => {
       const [road] = await insertRides(
         { bike_type: 'road' },
@@ -393,23 +391,6 @@ describe('GET /rides', () => {
 
   describe('date_to', () => {
     const HOUR = 60 * 60 * 1000;
-
-    const insertRides = async (...overrides: Record<string, unknown>[]) => {
-      const inserted = await appRef.app.db
-        .insert(rides)
-        .values(
-          overrides.map((override) => ({ ...newRide({ user_id: auth.userId }), ...override })),
-        )
-        .returning({ id: rides.id });
-
-      return inserted.map((ride) => ride.id);
-    };
-
-    const listIds = async (query: Record<string, string>) => {
-      const { data } = await listRides(query);
-
-      return data.map((ride: { id: string }) => ride.id);
-    };
 
     it('keeps a ride that starts before it and leaves out one that starts after it', async () => {
       const now = Date.now();
