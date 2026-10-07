@@ -13,9 +13,7 @@ export function RidesBar({ view, filters }: Props) {
         <FavoriteLocationPill />
       </div>
 
-      <div className="col-start-1 row-start-2 min-w-0 md:col-start-2 md:row-start-1">
-        <RidesFilters view={view} filters={filters} />
-      </div>
+      <RidesFilters view={view} filters={filters} />
 
       <div className="col-start-2 row-start-2 justify-self-end md:col-start-3 md:row-start-1">
         <RidesViewToggle view={view} filters={filters} />
