@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { ControlledForm } from '@/components/ui/controlled-form';
 import { Field } from '@/components/ui/field';
 import { Text } from '@/components/ui/text';
-import { saveUsername } from '@/features/onboarding/actions/save-username';
+import { saveUsername } from '@/features/auth/actions/save-username';
 
 export function UsernameStep() {
   const [state, action, isLoading] = useActionState(saveUsername, null);
