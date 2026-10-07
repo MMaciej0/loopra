@@ -113,6 +113,48 @@ describe('GET /rides/markers', () => {
     expect(data.map((marker: { id: string }) => marker.id)).toEqual([startsSoon.id]);
   });
 
+  it('gives the same result as the list for the same time window', async () => {
+    const HOUR = 60 * 60 * 1000;
+    const now = Date.now();
+    const gravelCoffee = { bike_type: 'gravel', ride_type: 'coffee_ride' };
+    const [inside] = await insertRides(1, { start_time: new Date(now + 2 * HOUR) });
+    const [insideGravelCoffee] = await insertRides(1, {
+      ...gravelCoffee,
+      start_time: new Date(now + 2.5 * HOUR),
+    });
+    await insertRides(1, { start_time: new Date(now + 4 * HOUR) });
+    await insertRides(1, { ...gravelCoffee, start_time: new Date(now + 4 * HOUR) });
+    await insertRides(1, { start_time: new Date(now - HOUR) });
+
+    const timeWindow = {
+      bbox: krakowBBox,
+      status: 'open',
+      date_from: new Date(now).toISOString(),
+      date_to: new Date(now + 3 * HOUR).toISOString(),
+    };
+
+    const idsFrom = async (url: string, query: Record<string, string>) => {
+      const response = await appRef.app.inject({
+        method: 'GET',
+        url,
+        query,
+        cookies: { accessToken: auth.accessToken },
+      });
+
+      expect(response.statusCode).toBe(200);
+
+      return response.json().data.map((ride: { id: string }) => ride.id);
+    };
+
+    expect(await idsFrom('/rides/markers', timeWindow)).toEqual([inside.id, insideGravelCoffee.id]);
+    expect(await idsFrom('/rides', timeWindow)).toEqual([inside.id, insideGravelCoffee.id]);
+
+    const filtered = { ...timeWindow, ...gravelCoffee };
+
+    expect(await idsFrom('/rides/markers', filtered)).toEqual([insideGravelCoffee.id]);
+    expect(await idsFrom('/rides', filtered)).toEqual([insideGravelCoffee.id]);
+  });
+
   it('orders markers by start time', async () => {
     const [later] = await insertRides(1, { start_time: new Date(Date.now() + 9 * 3600_000) });
     const [sooner] = await insertRides(1, { start_time: new Date(Date.now() + 7 * 3600_000) });

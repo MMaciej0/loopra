@@ -391,6 +391,62 @@ describe('GET /rides', () => {
     expect(data.map((ride: { id: string }) => ride.id)).toEqual([startsSoon.id]);
   });
 
+  describe('date_to', () => {
+    const HOUR = 60 * 60 * 1000;
+
+    const insertRides = async (...overrides: Record<string, unknown>[]) => {
+      const inserted = await appRef.app.db
+        .insert(rides)
+        .values(
+          overrides.map((override) => ({ ...newRide({ user_id: auth.userId }), ...override })),
+        )
+        .returning({ id: rides.id });
+
+      return inserted.map((ride) => ride.id);
+    };
+
+    const listIds = async (query: Record<string, string>) => {
+      const { data } = await listRides(query);
+
+      return data.map((ride: { id: string }) => ride.id);
+    };
+
+    it('keeps a ride that starts before it and leaves out one that starts after it', async () => {
+      const now = Date.now();
+      const [before] = await insertRides(
+        { start_time: new Date(now + 2 * HOUR) },
+        { start_time: new Date(now + 4 * HOUR) },
+      );
+
+      expect(
+        await listIds({
+          date_from: new Date(now).toISOString(),
+          date_to: new Date(now + 3 * HOUR).toISOString(),
+        }),
+      ).toEqual([before]);
+    });
+
+    it('combines with bike_type and ride_type', async () => {
+      const now = Date.now();
+      const gravelCoffee = { bike_type: 'gravel', ride_type: 'coffee_ride' };
+      const [match] = await insertRides(
+        { ...gravelCoffee, start_time: new Date(now + 2 * HOUR) },
+        { ...gravelCoffee, start_time: new Date(now + 4 * HOUR) },
+        { ...gravelCoffee, start_time: new Date(now - HOUR) },
+        { bike_type: 'road', ride_type: 'coffee_ride', start_time: new Date(now + 2 * HOUR) },
+        { bike_type: 'gravel', ride_type: 'training', start_time: new Date(now + 2 * HOUR) },
+      );
+
+      expect(
+        await listIds({
+          ...gravelCoffee,
+          date_from: new Date(now).toISOString(),
+          date_to: new Date(now + 3 * HOUR).toISOString(),
+        }),
+      ).toEqual([match]);
+    });
+  });
+
   it('never repeats a ride across pages when start times carry microseconds', async () => {
     const inserted = await appRef.app.db
       .insert(rides)
