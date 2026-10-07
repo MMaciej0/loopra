@@ -1,6 +1,7 @@
 import { useEffect, useEffectEvent, useRef, useState } from 'react';
 import { formatBBox, type BBox } from '@loopra/domain';
 import { loadMapStartPoints } from '@/features/rides/browse/actions/load-map-start-points';
+import { ridesFiltersKey } from '@/features/rides/browse/filters';
 import type { RidesListQuery } from '@/features/rides/browse/list-query';
 import type { StartPointGroup } from './start-points';
 
@@ -8,20 +9,25 @@ export type StartPointsStatus = 'loading' | 'error' | 'done';
 
 const NO_START_POINTS: readonly StartPointGroup[] = [];
 
-export function useStartPoints(initialQuery: RidesListQuery) {
-  const queryRef = useRef(initialQuery);
+export function useStartPoints(query: RidesListQuery) {
+  const bboxRef = useRef(query.bbox);
   const latestRequestRef = useRef(0);
   const [startPoints, setStartPoints] = useState(NO_START_POINTS);
   const [truncated, setTruncated] = useState(false);
   const [status, setStatus] = useState<StartPointsStatus>('loading');
+  const filtersKey = ridesFiltersKey(query.filters);
+  const [loadedFiltersKey, setLoadedFiltersKey] = useState(filtersKey);
 
   const load = () => {
     const request = ++latestRequestRef.current;
+    const requestedFiltersKey = filtersKey;
 
-    loadMapStartPoints(queryRef.current)
+    loadMapStartPoints({ ...query, bbox: bboxRef.current })
       .catch(() => null)
       .then((result) => {
         if (request !== latestRequestRef.current) return;
+
+        setLoadedFiltersKey(requestedFiltersKey);
 
         if (!result?.ok) {
           setStatus('error');
@@ -34,11 +40,11 @@ export function useStartPoints(initialQuery: RidesListQuery) {
       });
   };
 
-  const loadInitial = useEffectEvent(load);
+  const loadForFilters = useEffectEvent(load);
 
   useEffect(() => {
-    loadInitial();
-  }, []);
+    loadForFilters();
+  }, [filtersKey]);
 
   const reload = () => {
     setStatus('loading');
@@ -46,9 +52,15 @@ export function useStartPoints(initialQuery: RidesListQuery) {
   };
 
   const loadArea = (searchArea: BBox) => {
-    queryRef.current = { ...queryRef.current, bbox: formatBBox(searchArea) };
+    bboxRef.current = formatBBox(searchArea);
     reload();
   };
 
-  return { status, startPoints, truncated, retry: reload, loadArea };
+  return {
+    status: loadedFiltersKey === filtersKey ? status : 'loading',
+    startPoints,
+    truncated,
+    retry: reload,
+    loadArea,
+  };
 }
