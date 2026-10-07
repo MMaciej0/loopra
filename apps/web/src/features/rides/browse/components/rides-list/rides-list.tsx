@@ -7,6 +7,7 @@ import type { RideCardData } from '@/features/rides/components/ride-card/types';
 import { Link } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
+import { cn } from '@/lib/utils';
 import { loadRidesPage } from '@/features/rides/browse/actions/load-rides-page';
 import { hasActiveRidesFilters } from '@/features/rides/browse/filters';
 import type { RidesListQuery } from '@/features/rides/browse/list-query';
@@ -83,28 +84,28 @@ export function RidesList({ query }: { query: RidesListQuery }) {
     requestPage(nextCursor);
   };
 
-  if (status === 'done' && rides.length === 0 && hasActiveRidesFilters(initialQuery.filters)) {
-    return (
-      <div className="border-border flex flex-col items-center justify-center gap-3 rounded-xl border border-dashed p-10 text-center">
-        <Text variant="body-l" as="h2" className="text-foreground font-semibold">
-          {t('filteredEmpty')}
-        </Text>
-        <Button variant="secondary" size="sm" onClick={clearFilters}>
-          {t('filteredEmptyClear')}
-        </Button>
-      </div>
-    );
-  }
-
   if (status === 'done' && rides.length === 0) {
+    const filtered = hasActiveRidesFilters(initialQuery.filters);
+
     return (
-      <div className="border-border flex flex-col items-center justify-center gap-1.5 rounded-xl border border-dashed p-10 text-center">
+      <div
+        className={cn(
+          'border-border flex flex-col items-center justify-center rounded-xl border border-dashed p-10 text-center',
+          filtered ? 'gap-3' : 'gap-1.5',
+        )}
+      >
         <Text variant="body-l" as="h2" className="text-foreground font-semibold">
-          {t('listEmptyTitle')}
+          {filtered ? t('filteredEmpty') : t('listEmptyTitle')}
         </Text>
-        <Text variant="body-s" className="text-muted-foreground max-w-sm">
-          {t('listEmptyHint')}
-        </Text>
+        {filtered ? (
+          <Button variant="secondary" size="sm" onClick={clearFilters}>
+            {t('filteredEmptyClear')}
+          </Button>
+        ) : (
+          <Text variant="body-s" className="text-muted-foreground max-w-sm">
+            {t('listEmptyHint')}
+          </Text>
+        )}
       </div>
     );
   }
