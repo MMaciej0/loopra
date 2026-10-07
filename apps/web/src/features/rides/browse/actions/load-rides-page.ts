@@ -6,8 +6,8 @@ import { toRideCard } from '@/features/rides/browse/components/rides-list/to-rid
 import { toSearchParams } from '@/features/rides/browse/to-search-params';
 import type { RidesListQuery } from '@/features/rides/browse/list-query';
 
-export async function loadRidesPage(query: RidesListQuery, cursor: string | null) {
-  const params = toSearchParams(query);
+export async function loadRidesPage({ filters, ...query }: RidesListQuery, cursor: string | null) {
+  const params = toSearchParams({ ...query, ...filters });
 
   if (cursor) {
     params.set('cursor', cursor);

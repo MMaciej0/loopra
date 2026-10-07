@@ -9,8 +9,11 @@
     "logOut": "Log out"
   },
   "RidesPage": {
-    "searchLabel": "Search rides",
-    "searchPlaceholder": "Search rides, places, riders…",
+    "filterBikeTypeLabel": "Bike type",
+    "filterBikeTypeAll": "All bikes",
+    "filterBikeTypeAny": "Open to any bike",
+    "filterRideTypeLabel": "Ride type",
+    "filterRideTypeAll": "All ride types",
     "viewToggleLabel": "Rides view",
     "viewMap": "Map",
     "viewList": "List",

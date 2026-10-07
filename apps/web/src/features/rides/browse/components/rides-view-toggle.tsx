@@ -3,6 +3,7 @@ import { getTranslations } from 'next-intl/server';
 import { Button } from '@/components/ui/button';
 import { Link } from '@/i18n/navigation';
 import { cn } from '@/lib/utils';
+import { ridesHref, type RidesFilters } from '@/features/rides/browse/filters';
 import { RIDES_VIEWS, type RidesView } from '@/features/rides/browse/view';
 
 const VIEW_OPTIONS = {
@@ -10,7 +11,9 @@ const VIEW_OPTIONS = {
   list: { icon: List, labelKey: 'viewList' },
 } as const;
 
-export async function RidesViewToggle({ view }: { view: RidesView }) {
+type Props = Readonly<{ view: RidesView; filters: RidesFilters }>;
+
+export async function RidesViewToggle({ view, filters }: Props) {
   const t = await getTranslations('RidesPage');
 
   return (
@@ -34,7 +37,7 @@ export async function RidesViewToggle({ view }: { view: RidesView }) {
             )}
           >
             <Link
-              href={{ pathname: '/rides', query: { view: candidate } }}
+              href={ridesHref(candidate, filters)}
               replace
               aria-current={isActive ? 'page' : undefined}
             >

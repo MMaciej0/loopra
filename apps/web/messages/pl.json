@@ -9,8 +9,11 @@
     "logOut": "Wyloguj się"
   },
   "RidesPage": {
-    "searchLabel": "Szukaj jazd",
-    "searchPlaceholder": "Szukaj jazd, miejsc, rowerzystów…",
+    "filterBikeTypeLabel": "Typ roweru",
+    "filterBikeTypeAll": "Wszystkie rowery",
+    "filterBikeTypeAny": "Dla każdego roweru",
+    "filterRideTypeLabel": "Typ jazdy",
+    "filterRideTypeAll": "Wszystkie typy jazd",
     "viewToggleLabel": "Widok jazd",
     "viewMap": "Mapa",
     "viewList": "Lista",
