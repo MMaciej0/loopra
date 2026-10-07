@@ -25,7 +25,7 @@ import {
 import { useClearRidesFilters } from '@/features/rides/browse/use-clear-rides-filters';
 import type { RidesView } from '@/features/rides/browse/view';
 
-const ALL = 'all';
+const NO_FILTER = '__no_filter__';
 
 type Option<Value extends string> = Readonly<{ value: Value; label: string }>;
 
@@ -46,7 +46,7 @@ function FilterSelect<Key extends RidesFilterKey>({
 }: FilterSelectProps<Key>) {
   return (
     <Select
-      value={value ?? ALL}
+      value={value ?? NO_FILTER}
       onValueChange={(next) => onChange(options.find((option) => option.value === next)?.value)}
     >
       <SelectTrigger
@@ -59,7 +59,7 @@ function FilterSelect<Key extends RidesFilterKey>({
         <SelectValue />
       </SelectTrigger>
       <SelectContent position="popper" align="start">
-        <SelectItem value={ALL}>{allLabel}</SelectItem>
+        <SelectItem value={NO_FILTER}>{allLabel}</SelectItem>
         {options.map((option) => (
           <SelectItem key={option.value} value={option.value}>
             {option.label}
@@ -72,7 +72,7 @@ function FilterSelect<Key extends RidesFilterKey>({
 
 type Props = Readonly<{ view: RidesView; filters: RidesFilters }>;
 
-export function RidesFilters({ view, filters }: Props) {
+export function RidesFilterControls({ view, filters }: Props) {
   const t = useTranslations('RidesPage');
   const tBikeTypes = useTranslations('BikeTypes');
   const tRideTypes = useTranslations('RideTypes');
