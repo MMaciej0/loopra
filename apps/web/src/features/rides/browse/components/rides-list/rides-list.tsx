@@ -8,8 +8,10 @@ import { Link } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
 import { loadRidesPage } from '@/features/rides/browse/actions/load-rides-page';
+import { hasActiveRidesFilters } from '@/features/rides/browse/filters';
 import type { RidesListQuery } from '@/features/rides/browse/list-query';
 import { buildRidesTimeWindow } from '@/features/rides/browse/time-window';
+import { useClearRidesFilters } from '@/features/rides/browse/use-clear-rides-filters';
 import { RideCardSkeleton } from './ride-card-skeleton';
 
 const SKELETON_COUNT = 3;
@@ -25,6 +27,7 @@ export function RidesList({ query }: { query: RidesListQuery }) {
   const [nextCursor, setNextCursor] = useState<string | null>(null);
   const [status, setStatus] = useState<Status>('loading');
   const inFlight = useRef(false);
+  const clearFilters = useClearRidesFilters('list');
 
   const applyPage = (result: Awaited<ReturnType<typeof loadRidesPage>> | null) => {
     inFlight.current = false;
@@ -79,6 +82,19 @@ export function RidesList({ query }: { query: RidesListQuery }) {
     setStatus('loading');
     requestPage(nextCursor);
   };
+
+  if (status === 'done' && rides.length === 0 && hasActiveRidesFilters(initialQuery.filters)) {
+    return (
+      <div className="border-border flex flex-col items-center justify-center gap-3 rounded-xl border border-dashed p-10 text-center">
+        <Text variant="body-l" as="h2" className="text-foreground font-semibold">
+          {t('filteredEmpty')}
+        </Text>
+        <Button variant="secondary" size="sm" onClick={clearFilters}>
+          {t('filteredEmptyClear')}
+        </Button>
+      </div>
+    );
+  }
 
   if (status === 'done' && rides.length === 0) {
     return (

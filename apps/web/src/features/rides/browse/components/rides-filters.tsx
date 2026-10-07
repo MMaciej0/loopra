@@ -2,6 +2,7 @@
 
 import { BIKE_TYPES, RIDE_TYPES } from '@loopra/domain';
 import { useTranslations } from 'next-intl';
+import { Button } from '@/components/ui/button';
 import {
   Select,
   SelectContent,
@@ -13,11 +14,13 @@ import { useRouter } from '@/i18n/navigation';
 import { cn } from '@/lib/utils';
 import {
   RIDES_WHEN,
+  hasActiveRidesFilters,
   ridesHref,
   withRidesFilter,
   type RidesFilterKey,
   type RidesFilters,
 } from '@/features/rides/browse/filters';
+import { useClearRidesFilters } from '@/features/rides/browse/use-clear-rides-filters';
 import type { RidesView } from '@/features/rides/browse/view';
 
 const ALL = 'all';
@@ -72,6 +75,7 @@ export function RidesFilters({ view, filters }: Props) {
   const tBikeTypes = useTranslations('BikeTypes');
   const tRideTypes = useTranslations('RideTypes');
   const router = useRouter();
+  const clearFilters = useClearRidesFilters(view);
 
   const setFilter = <Key extends RidesFilterKey>(key: Key, value: RidesFilters[Key]) => {
     router.replace(ridesHref(view, withRidesFilter(filters, key, value)));
@@ -106,6 +110,15 @@ export function RidesFilters({ view, filters }: Props) {
         value={filters.ride_type}
         onChange={(value) => setFilter('ride_type', value)}
       />
+      <Button
+        variant="ghost"
+        size="sm"
+        className="h-10"
+        disabled={!hasActiveRidesFilters(filters)}
+        onClick={clearFilters}
+      >
+        {t('filterClearAll')}
+      </Button>
     </div>
   );
 }

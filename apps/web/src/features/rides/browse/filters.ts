@@ -50,6 +50,16 @@ export function toApiFilters({ bike_type, ride_type }: RidesFilters) {
   return { bike_type, ride_type };
 }
 
+export const NO_RIDES_FILTERS: RidesFilters = {};
+
+export function activeRidesFilterCount(filters: RidesFilters): number {
+  return RIDES_FILTER_KEYS.filter((key) => filters[key] !== undefined).length;
+}
+
+export function hasActiveRidesFilters(filters: RidesFilters): boolean {
+  return activeRidesFilterCount(filters) > 0;
+}
+
 export function ridesFiltersKey(filters: RidesFilters): string {
   return JSON.stringify(RIDES_FILTER_KEYS.map((key) => filters[key] ?? null));
 }
