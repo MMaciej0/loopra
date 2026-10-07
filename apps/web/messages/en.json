@@ -9,6 +9,12 @@
     "logOut": "Log out"
   },
   "RidesPage": {
+    "filterWhenLabel": "When",
+    "filterWhenAll": "Any time",
+    "filterWhen": {
+      "today": "Today",
+      "next_7_days": "Next 7 days"
+    },
     "filterBikeTypeLabel": "Bike type",
     "filterBikeTypeAll": "All bikes",
     "filterBikeTypeAny": "Open to any bike",

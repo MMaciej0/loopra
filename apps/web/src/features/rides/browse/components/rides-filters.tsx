@@ -12,6 +12,7 @@ import {
 import { useRouter } from '@/i18n/navigation';
 import { cn } from '@/lib/utils';
 import {
+  RIDES_WHEN,
   ridesHref,
   withRidesFilter,
   type RidesFilterKey,
@@ -78,6 +79,13 @@ export function RidesFilters({ view, filters }: Props) {
 
   return (
     <div className="flex min-w-0 flex-wrap items-center gap-2">
+      <FilterSelect<'when'>
+        label={t('filterWhenLabel')}
+        allLabel={t('filterWhenAll')}
+        options={RIDES_WHEN.map((when) => ({ value: when, label: t(`filterWhen.${when}`) }))}
+        value={filters.when}
+        onChange={(value) => setFilter('when', value)}
+      />
       <FilterSelect<'bike_type'>
         label={t('filterBikeTypeLabel')}
         allLabel={t('filterBikeTypeAll')}
