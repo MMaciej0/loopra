@@ -1,7 +1,6 @@
-import { formatBBox, MIN_LEAD_HOURS, type BBox, type RideStatus } from '@loopra/domain';
+import { formatBBox, type BBox, type RideStatus } from '@loopra/domain';
 
 const PAGE_SIZE = 24;
-const HOUR_MS = 60 * 60 * 1000;
 
 export type RidesListQuery = Readonly<{
   bbox: string;
@@ -13,7 +12,7 @@ export type RidesListQuery = Readonly<{
 export function buildRidesListQuery(searchArea: BBox): RidesListQuery {
   return {
     bbox: formatBBox(searchArea),
-    date_from: new Date(Date.now() + MIN_LEAD_HOURS * HOUR_MS).toISOString(),
+    date_from: new Date().toISOString(),
     status: 'open',
     limit: PAGE_SIZE,
   };
