@@ -308,6 +308,69 @@ describe('GET /rides', () => {
     expect(unfiltered.data.map((ride: { id: string }) => ride.id)).toEqual([publicId]);
     expect(filtered.data.map((ride: { id: string }) => ride.id)).toEqual([publicId]);
   });
+
+  describe('bike_type and ride_type', () => {
+    const insertRides = async (...overrides: Record<string, unknown>[]) => {
+      const inserted = await appRef.app.db
+        .insert(rides)
+        .values(
+          overrides.map((override) => ({ ...newRide({ user_id: auth.userId }), ...override })),
+        )
+        .returning({ id: rides.id });
+
+      return inserted.map((ride) => ride.id);
+    };
+
+    const listIds = async (query: Record<string, string>) => {
+      const { data } = await listRides(query);
+
+      return data.map((ride: { id: string }) => ride.id);
+    };
+
+    it('bike_type=road leaves out a ride marked any', async () => {
+      const [road] = await insertRides(
+        { bike_type: 'road' },
+        { bike_type: 'any' },
+        { bike_type: 'gravel' },
+      );
+
+      expect(await listIds({ bike_type: 'road' })).toEqual([road]);
+    });
+
+    it('bike_type=any returns only rides marked any', async () => {
+      const [any] = await insertRides(
+        { bike_type: 'any' },
+        { bike_type: 'road' },
+        { bike_type: 'gravel' },
+      );
+
+      expect(await listIds({ bike_type: 'any' })).toEqual([any]);
+    });
+
+    it('ride_type returns only rides of that type', async () => {
+      const [coffee] = await insertRides(
+        { ride_type: 'coffee_ride' },
+        { ride_type: 'training' },
+        { ride_type: 'casual' },
+      );
+
+      expect(await listIds({ ride_type: 'coffee_ride' })).toEqual([coffee]);
+    });
+
+    it('combines both filters', async () => {
+      const [gravelCoffee] = await insertRides(
+        { bike_type: 'gravel', ride_type: 'coffee_ride' },
+        { bike_type: 'gravel', ride_type: 'training' },
+        { bike_type: 'road', ride_type: 'coffee_ride' },
+        { bike_type: 'any', ride_type: 'coffee_ride' },
+      );
+
+      expect(await listIds({ bike_type: 'gravel', ride_type: 'coffee_ride' })).toEqual([
+        gravelCoffee,
+      ]);
+    });
+  });
+
   it('with the lower bound set to now, returns a ride inside the creation lead time and leaves out a started ride', async () => {
     const [startsSoon] = await appRef.app.db
       .insert(rides)
