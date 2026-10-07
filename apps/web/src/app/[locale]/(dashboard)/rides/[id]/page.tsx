@@ -1,10 +1,10 @@
 import { notFound } from 'next/navigation';
 import { getLocale } from 'next-intl/server';
 import { redirect } from '@/i18n/navigation';
-import TopNav from '@/features/shell/components/top-nav';
 import { PageBody } from '@/features/shell/components/page-body';
 import { getRide } from '@/features/rides/detail/get-ride';
 import { mapCenter } from '@/features/rides/detail/map-center';
+import { RideTopNav } from '@/features/rides/detail/components/ride-top-nav';
 import { RideMap } from '@/features/rides/detail/components/ride-map/ride-map';
 import { RideHeader } from '@/features/rides/detail/components/ride-header/ride-header';
 import { RideStats } from '@/features/rides/detail/components/ride-stats';
@@ -32,7 +32,7 @@ export default async function RidePage({ params }: Props) {
 
   return (
     <>
-      <TopNav />
+      <RideTopNav ride={ride} />
       <PageBody>
         <div className="h-full lg:overflow-y-auto">
           {center && (
