@@ -27,7 +27,7 @@ Where a ride begins: coordinates plus the resolved place (city, region, country)
 _Avoid_: Location, meeting point
 
 **Lead Time**:
-The minimum gap between now and a ride's start for the ride to be published or listed. Stops rides nobody can discover in time: a ride leaves the rides list once it starts within its lead time, so every listed ride still leaves riders time to join.
+The minimum gap between now and a ride's start for the ride to be created or rescheduled. Stops rides nobody can discover in time. It is a rule of ride creation only: a ride stays on the rides page until it starts, because riders can join until then.
 
 ### The ride contract
 
