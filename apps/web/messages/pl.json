@@ -387,11 +387,20 @@
       "save": "Zapisz"
     },
     "email": {
-      "title": "E-mail"
+      "title": "E-mail",
+      "verified": "Potwierdzony",
+      "notVerified": "Niepotwierdzony",
+      "sendAgain": "Wyślij ponownie",
+      "sent": "Wysłaliśmy link na adres {email}",
+      "rateLimited": "Zbyt wiele prób, poczekaj chwilę"
     }
   },
   "HomePage": {
     "title": "Witaj świecie!"
+  },
+  "VerifyEmailPage": {
+    "invalid": "Ten link jest nieprawidłowy albo został już użyty. Jeśli Twój adres e-mail jest już potwierdzony, nie musisz nic robić.",
+    "settings": "Przejdź do ustawień"
   },
   "NotFoundPage": {
     "eyebrow": "404",

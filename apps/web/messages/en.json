@@ -387,11 +387,20 @@
       "save": "Save"
     },
     "email": {
-      "title": "Email"
+      "title": "Email",
+      "verified": "Verified",
+      "notVerified": "Not verified",
+      "sendAgain": "Send again",
+      "sent": "We sent a link to {email}",
+      "rateLimited": "Too many tries, wait a moment"
     }
   },
   "HomePage": {
     "title": "Hello world!"
+  },
+  "VerifyEmailPage": {
+    "invalid": "This link is not valid or was already used. If your email is already verified, you do not need to do anything.",
+    "settings": "Go to Settings"
   },
   "NotFoundPage": {
     "eyebrow": "404",
