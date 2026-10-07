@@ -380,7 +380,15 @@
     }
   },
   "SettingsPage": {
-    "title": "Settings"
+    "title": "Settings",
+    "profile": {
+      "title": "Profile",
+      "usernameLabel": "Username",
+      "save": "Save"
+    },
+    "email": {
+      "title": "Email"
+    }
   },
   "HomePage": {
     "title": "Hello world!"
