@@ -184,7 +184,7 @@ export class RideNotFoundError extends AppError {
 
 Services throw them; controllers let them fall through to `plugins/globalErrorHandler.ts`, which is the only place that turns an error into a response. **No controller translates errors** — a `try/catch` in a controller means that endpoint performs a side effect on failure (both surviving ones clear auth cookies), never boilerplate.
 
-`ERROR_TYPES` in `packages/domain` is the wire vocabulary shared with web. Name an error class for the **response it produces**, not the cause: login answers `InvalidCredentialsError` for both an unknown email and a wrong password, so the anti-enumeration behaviour is visible in the name rather than discoverable.
+`ERROR_TYPES` in `packages/domain` is the wire vocabulary shared with web. Name an error class for the **response it produces**, not the cause: login answers `InvalidCredentialsError` for an unknown email, a wrong password and a Google-only account (no `password_hash`), so the anti-enumeration behaviour is visible in the name rather than discoverable. Register does the same with `UserAlreadyExistsError` for every taken email. `OAUTH_ONLY_ACCOUNT` is answered only by `POST /auth/change-password`, which requires login — no unauthenticated endpoint may reveal how an account signs in.
 
 ### Key Architectural Decisions
 
