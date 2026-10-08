@@ -357,7 +357,7 @@
   },
   "ResetPasswordPage": {
     "eyebrow": "RESET HASŁA",
-    "heading": "Ustaw <i>nowe</i> hasło",
+    "heading": "Ustaw nowe hasło",
     "description": "Wybierz nowe hasło do swojego konta. Zalogujesz się nim za chwilę.",
     "passwordLabel": "Nowe hasło",
     "submit": "Zapisz nowe hasło",
