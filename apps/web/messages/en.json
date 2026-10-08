@@ -296,7 +296,6 @@
     "USERNAME_TOO_LONG": "Username must be at most {max} characters.",
     "INVALID_CREDENTIALS": "Wrong email or password.",
     "USER_ALREADY_EXISTS": "An account with this email already exists.",
-    "OAUTH_ONLY_ACCOUNT": "This account uses Google sign-in. Please log in with Google.",
     "RATE_LIMIT_EXCEEDED": "Too many attempts. Try again later.",
     "TITLE_TOO_SHORT": "Title must be at least {min} characters.",
     "TITLE_TOO_LONG": "Title is too long.",
