@@ -6,6 +6,7 @@ import { redirect } from 'next/navigation';
 import { publicRequest } from '@/lib/api';
 import { setAuthCookies } from '@/lib/cookies';
 import { usernameSchema } from '@/features/auth/username-schema';
+import { passwordSchema } from '@/features/auth/password-schema';
 
 const schema = z.object({
   email: z
@@ -13,12 +14,7 @@ const schema = z.object({
     .min(1, APP_ERROR_TYPES.REQUIRED)
     .pipe(z.email({ error: APP_ERROR_TYPES.INVALID_EMAIL })),
   username: usernameSchema,
-  password: z
-    .string()
-    .min(1, APP_ERROR_TYPES.REQUIRED)
-    .min(8, APP_ERROR_TYPES.PASSWORD_TOO_SHORT)
-    .regex(/[A-Z]/, APP_ERROR_TYPES.PASSWORD_REQUIRES_UPPERCASE)
-    .regex(/[^A-Za-z0-9]/, APP_ERROR_TYPES.PASSWORD_REQUIRES_SPECIAL_CHAR),
+  password: passwordSchema,
 });
 
 type LoginFieldErrors = {

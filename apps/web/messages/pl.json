@@ -355,6 +355,15 @@
     "rememberedIt": "Pamiętasz hasło?",
     "logIn": "Zaloguj się"
   },
+  "ResetPasswordPage": {
+    "eyebrow": "RESET HASŁA",
+    "heading": "Ustaw <i>nowe</i> hasło",
+    "description": "Wybierz nowe hasło do swojego konta. Zalogujesz się nim za chwilę.",
+    "passwordLabel": "Nowe hasło",
+    "submit": "Zapisz nowe hasło",
+    "linkNotWorking": "Link nie działa?",
+    "requestNew": "Poproś o nowy"
+  },
   "RegisterPage": {
     "eyebrow": "ZAŁÓŻ KONTO",
     "heading": "Dołącz do <i>loopra</i>",
