@@ -1,3 +1,5 @@
+import { CONTACT_EMAIL } from '@/lib/contact-email';
+
 export function PrivacyPolicyPl() {
   return (
     <>
@@ -9,7 +11,7 @@ export function PrivacyPolicyPl() {
       <h2>1. Kto odpowiada za Twoje dane</h2>
       <p>
         Administratorem danych jest Maciej Mądry, Kraków, Polska. W każdej sprawie dotyczącej Twoich
-        danych napisz na adres <a href="mailto:loopra67@gmail.com">loopra67@gmail.com</a>.
+        danych napisz na adres <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
       </p>
 
       <h2>2. Jakie dane przechowujemy</h2>
@@ -89,15 +91,15 @@ export function PrivacyPolicyPl() {
       </ul>
       <p>
         Aby skorzystać z tych praw, napisz na adres{' '}
-        <a href="mailto:loopra67@gmail.com">loopra67@gmail.com</a>. Masz też prawo wnieść skargę do
+        <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>. Masz też prawo wnieść skargę do
         polskiego organu nadzorczego — Prezesa Urzędu Ochrony Danych Osobowych (UODO).
       </p>
 
       <h2>7. Usunięcie konta</h2>
       <p>
         W aplikacji nie ma jeszcze przycisku usuwania konta. Aby usunąć konto, wyślij prośbę na
-        adres <a href="mailto:loopra67@gmail.com">loopra67@gmail.com</a> z adresu e-mail
-        przypisanego do konta. Konto usuwamy w ciągu 30 dni.
+        adres <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a> z adresu e-mail przypisanego
+        do konta. Konto usuwamy w ciągu 30 dni.
       </p>
     </>
   );

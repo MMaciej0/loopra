@@ -1,9 +1,11 @@
+import { CONTACT_EMAIL } from '@/lib/contact-email';
+
 export function TermsPl() {
   return (
     <>
       <p>
         Ten regulamin określa zasady korzystania z Loopra. Zakładając konto, akceptujesz go. W razie
-        pytań napisz na adres <a href="mailto:loopra67@gmail.com">loopra67@gmail.com</a>.
+        pytań napisz na adres <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
       </p>
 
       <h2>1. Czym jest Loopra</h2>

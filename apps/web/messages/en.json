@@ -431,6 +431,7 @@
     "header": {
       "home": "Loopra home",
       "howItWorks": "How it works",
+      "navLabel": "Main",
       "switchLanguage": "Switch to Polish",
       "signIn": "Sign in"
     },
@@ -452,7 +453,7 @@
         },
         "hills": {
           "day": "Sat",
-          "name": "Hill Repeats Club",
+          "name": "Saturday Hill Repeats",
           "meta": "58 km · 29 km/h · drop"
         },
         "beginner": {
@@ -503,6 +504,7 @@
     },
     "footer": {
       "copyright": "© {year} Loopra",
+      "navLabel": "Footer",
       "privacy": "Privacy",
       "terms": "Terms",
       "contact": "Contact"
