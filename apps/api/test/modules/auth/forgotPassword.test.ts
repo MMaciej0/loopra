@@ -128,13 +128,6 @@ describe('POST /auth/forgot-password', () => {
   });
 
   describe('when email send rate limit is exceeded', () => {
-    beforeEach(async () => {
-      const ipKeys = await appRef.app.redis.keys('rate-limit:email-send:ip:*');
-      const addressKeys = await appRef.app.redis.keys('rate-limit:email-send:address:*');
-      if (ipKeys.length > 0) await appRef.app.redis.del(...ipKeys);
-      if (addressKeys.length > 0) await appRef.app.redis.del(...addressKeys);
-    });
-
     const RATE_LIMIT = 3;
 
     it('returns 429 when address rate limit is exceeded', async () => {
