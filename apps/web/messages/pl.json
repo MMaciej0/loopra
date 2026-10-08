@@ -425,24 +425,25 @@
   },
   "LandingPage": {
     "metadata": {
-      "title": "Loopra — wspólne przejazdy w Twojej okolicy",
-      "description": "Znajdź wspólne przejazdy w swoim tempie, dołącz jednym kliknięciem i ruszaj z ludźmi, którzy jeżdżą tak jak Ty."
+      "title": "Loopra — wspólne jazdy w Twojej okolicy",
+      "description": "Znajdź wspólne jazdy w swoim tempie, dołącz jednym kliknięciem i ruszaj z ludźmi, którzy jeżdżą tak jak Ty."
     },
     "header": {
       "home": "Strona główna Loopra",
       "howItWorks": "Jak to działa",
+      "navLabel": "Główna",
       "switchLanguage": "Przełącz na angielski",
       "signIn": "Zaloguj się"
     },
     "hero": {
-      "eyebrow": "Wspólne przejazdy w Twojej okolicy",
+      "eyebrow": "Wspólne jazdy w Twojej okolicy",
       "headline": "Zacznij jeździć<br></br>w grupie.",
-      "body": "Znajdź wspólne przejazdy w swoim tempie, dołącz jednym kliknięciem i ruszaj z ludźmi, którzy jeżdżą tak jak Ty.",
+      "body": "Znajdź wspólne jazdy w swoim tempie, dołącz jednym kliknięciem i ruszaj z ludźmi, którzy jeżdżą tak jak Ty.",
       "getStarted": "Załóż konto"
     },
     "exampleRides": {
       "heading": "W ten weekend · blisko Ciebie",
-      "count": "{count, plural, one {# przejazd} few {# przejazdy} other {# przejazdów}}",
+      "count": "{count, plural, one {# jazda} few {# jazdy} many {# jazd} other {# jazdy}}",
       "going": "{count, plural, few {# jadą} other {# jedzie}}",
       "rides": {
         "coffee": {
@@ -469,15 +470,15 @@
     },
     "howItWorks": {
       "join": {
-        "label": "Dołącz do przejazdu",
+        "label": "Dołącz do jazdy",
         "title": "Przyjedź, jedź, powtórz.",
         "step1": {
-          "title": "Znajdź przejazd dla siebie",
-          "body": "Filtruj po dniu, typie roweru i rodzaju przejazdu — na liście albo na mapie."
+          "title": "Znajdź jazdę dla siebie",
+          "body": "Filtruj po dniu, typie roweru i rodzaju jazdy — na liście albo na mapie."
         },
         "step2": {
           "title": "Wiesz, na co się piszesz",
-          "body": "Zanim się zdecydujesz, zobacz trasę, profil wysokości, tempo i zasady przejazdu."
+          "body": "Zanim się zdecydujesz, zobacz trasę, profil wysokości, tempo i zasady jazdy."
         },
         "step3": {
           "title": "Dołącz jednym kliknięciem",
@@ -485,24 +486,25 @@
         }
       },
       "organise": {
-        "label": "Zorganizuj przejazd",
+        "label": "Zorganizuj jazdę",
         "title": "Twoja trasa, Twoi ludzie.",
         "step1": {
-          "title": "Dodaj przejazd",
+          "title": "Dodaj jazdę",
           "body": "Wybierz miejsce startu, godzinę i tempo. Wgraj plik GPX, a trasa narysuje się sama."
         },
         "step2": {
           "title": "Ustal zasady",
-          "body": "Czekamy na wszystkich czy nie, kto nadaje tempo, dla kogo jest przejazd. Każdy wie, czego się spodziewać."
+          "body": "Czekamy na wszystkich czy nie, kto nadaje tempo, dla kogo jest jazda. Każdy wie, czego się spodziewać."
         },
         "step3": {
           "title": "Zapełnij linię startu",
-          "body": "Osoby z okolicy znajdują Twój przejazd i dołączają. Od razu widzisz, kto jedzie."
+          "body": "Osoby z okolicy znajdują Twoją jazdę i dołączają. Od razu widzisz, kto jedzie."
         }
       }
     },
     "footer": {
       "copyright": "© {year} Loopra",
+      "navLabel": "Stopka",
       "privacy": "Prywatność",
       "terms": "Regulamin",
       "contact": "Kontakt"
