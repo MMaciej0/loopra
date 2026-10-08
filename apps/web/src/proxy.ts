@@ -6,7 +6,7 @@ import { captureRequestAuthCookies, copySetCookieHeaders, extractCookieValue } f
 import type { NextRequest } from 'next/server';
 
 const PUBLIC_PATHS = ['/showcase', '/login', '/register', '/forgot-password'];
-const OPEN_PATHS = ['/verify-email'];
+const OPEN_PATHS = ['/verify-email', '/privacy', '/terms'];
 
 const handleLocales = createMiddleware(routing);
 
@@ -19,6 +19,12 @@ export default async function proxy(request: NextRequest) {
 
   if (OPEN_PATHS.some((path) => pathnameWithoutLocale.startsWith(path))) {
     return handleLocales(request);
+  }
+
+  if (pathnameWithoutLocale === '/') {
+    return hasRecoverableSession
+      ? NextResponse.redirect(new URL('/rides', request.url))
+      : handleLocales(request);
   }
 
   if (isPublicPath && accessToken) {
