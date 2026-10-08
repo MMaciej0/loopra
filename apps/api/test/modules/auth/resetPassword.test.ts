@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest';
 import { useApp } from '../../helpers/app.js';
 import { createPasswordResetToken } from '../../../src/modules/auth/services/passwordResetToken.js';
-import { users } from '../../../src/db/schema.js';
+import { oauth_accounts, users } from '../../../src/db/schema.js';
 import { eq } from 'drizzle-orm';
 
 describe('POST /auth/reset-password', () => {
@@ -64,6 +64,36 @@ describe('POST /auth/reset-password', () => {
 
     it('returns 200 and password is updated', async () => {
       const newPassword = 'new-Password123!';
+
+      const response = await appRef.app.inject({
+        method: 'POST',
+        url: '/auth/reset-password',
+        body: { token: rawToken, password: newPassword },
+      });
+
+      expect(response.statusCode).toBe(200);
+
+      const loginResponse = await appRef.app.inject({
+        method: 'POST',
+        url: '/auth/login',
+        body: { email: USER_EMAIL, password: newPassword },
+      });
+
+      expect(loginResponse.statusCode).toBe(200);
+    });
+
+    it('returns 200 and password is updated when a Google account is also linked', async () => {
+      const newPassword = 'new-Password123!';
+      const [user] = await appRef.app.db
+        .select()
+        .from(users)
+        .where(eq(users.email, USER_EMAIL))
+        .limit(1);
+      await appRef.app.db.insert(oauth_accounts).values({
+        provider: 'google',
+        provider_user_id: 'google-sub-123',
+        user_id: user.id,
+      });
 
       const response = await appRef.app.inject({
         method: 'POST',

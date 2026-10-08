@@ -19,6 +19,21 @@ export const sendResetPasswordToken = async (
     throw new UserNotFoundError();
   }
 
+  if (!user.password_hash) {
+    await resend.emails.send({
+      from: 'Loopra <noreply@loopra.cc>',
+      to: email,
+      subject: 'Your Loopra account uses Google sign-in',
+      html: `
+        <p>You asked to reset your Loopra password.</p>
+        <p>Your account has no password. You sign in with Google.</p>
+        <p><a href="${APP_URL}/login">Log in to Loopra</a></p>
+        <p>If you didn't request this, ignore this email.</p>
+      `,
+    });
+    return;
+  }
+
   const { rawToken } = await createPasswordResetToken(redis, user.id);
   const resetLink = `${APP_URL}/reset-password?token=${rawToken}`;
 
