@@ -6,7 +6,7 @@ import { captureRequestAuthCookies, copySetCookieHeaders, extractCookieValue } f
 import type { NextRequest } from 'next/server';
 
 const PUBLIC_PATHS = ['/login', '/register', '/forgot-password'];
-const OPEN_PATHS = ['/verify-email', '/privacy', '/terms'];
+const OPEN_PATHS = ['/verify-email', '/reset-password', '/privacy', '/terms'];
 
 const handleLocales = createMiddleware(routing);
 

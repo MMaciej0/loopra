@@ -355,6 +355,15 @@
     "rememberedIt": "Remembered it?",
     "logIn": "Log in"
   },
+  "ResetPasswordPage": {
+    "eyebrow": "RESET PASSWORD",
+    "heading": "Set a <i>new</i> password",
+    "description": "Choose a new password for your account. You will log in with it next.",
+    "passwordLabel": "New password",
+    "submit": "Save new password",
+    "linkNotWorking": "Link not working?",
+    "requestNew": "Request a new one"
+  },
   "RegisterPage": {
     "eyebrow": "CREATE ACCOUNT",
     "heading": "Join <i>loopra</i>",
