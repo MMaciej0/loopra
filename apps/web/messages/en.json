@@ -507,5 +507,16 @@
       "terms": "Terms",
       "contact": "Contact"
     }
+  },
+  "LegalPages": {
+    "lastUpdated": "Last updated: {date}",
+    "privacy": {
+      "title": "Privacy Policy",
+      "metaTitle": "Privacy Policy — Loopra"
+    },
+    "terms": {
+      "title": "Terms",
+      "metaTitle": "Terms — Loopra"
+    }
   }
 }
