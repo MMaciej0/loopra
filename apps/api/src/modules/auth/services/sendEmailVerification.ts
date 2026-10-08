@@ -26,7 +26,7 @@ export const sendEmailVerification = async (
   const verificationLink = `${APP_URL}/verify-email?token=${rawToken}`;
 
   await resend.emails.send({
-    from: 'Loopra <onboarding@resend.dev>',
+    from: 'Loopra <noreply@loopra.cc>',
     to: email,
     subject: 'Verify your Loopra email',
     html: `

@@ -23,7 +23,7 @@ export const sendResetPasswordToken = async (
   const resetLink = `${APP_URL}/reset-password?token=${rawToken}`;
 
   await resend.emails.send({
-    from: 'Loopra <onboarding@resend.dev>',
+    from: 'Loopra <noreply@loopra.cc>',
     to: email,
     subject: 'Reset your Loopra password',
     html: `
