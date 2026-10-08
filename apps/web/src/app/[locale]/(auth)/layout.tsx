@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 import posterBg from '@/assets/loopra-poster-bg.svg';
 import posterPath from '@/assets/loopra-poster-path.svg';
 import { PosterBadge, PosterBadgeDot } from '@/components/ui/badge';
@@ -12,6 +13,8 @@ type Props = Readonly<{
 }>;
 
 export default function AuthLayout({ children }: Props) {
+  const t = useTranslations('Auth.poster');
+
   return (
     <div className="flex h-dvh w-full flex-col xl:flex-row">
       <div className="flex h-dvh flex-1 flex-col px-[22px] pt-7 pb-9 md:px-8 md:pt-8 md:pb-10 xl:items-end xl:px-14 xl:py-11">
@@ -47,16 +50,16 @@ export default function AuthLayout({ children }: Props) {
         <div className="absolute inset-0 flex flex-col items-start justify-center px-[clamp(24px,4.2vw,80px)] py-16">
           <PosterBadge className="mb-9">
             <PosterBadgeDot />
-            OPEN WORLDWIDE · NEW RIDES DAILY
+            {t('badge')}
           </PosterBadge>
           <Text variant="heading-xxl" className="mb-7 text-white">
-            Find rides you
-            <br />
-            <em className="text-accent">actually belong</em> on.
+            {t.rich('heading', {
+              br: () => <br />,
+              em: (chunks) => <em className="text-accent">{chunks}</em>,
+            })}
           </Text>
           <Text variant="poster-body" className="max-w-[580px] text-white/70">
-            An open ride calendar for cyclists. Log in, create a ride in 60 seconds, or browse
-            what&apos;s nearby.
+            {t('body')}
           </Text>
         </div>
       </div>

@@ -332,7 +332,12 @@
   },
   "Auth": {
     "or": "OR",
-    "continueWithGoogle": "Continue with Google"
+    "continueWithGoogle": "Continue with Google",
+    "poster": {
+      "badge": "OPEN WORLDWIDE · NEW RIDES DAILY",
+      "heading": "Find rides you<br></br><em>actually belong</em> on.",
+      "body": "An open ride calendar for cyclists. Log in, create a ride in 60 seconds, or browse what's nearby."
+    }
   },
   "LoginPage": {
     "eyebrow": "WELCOME BACK",
