@@ -422,5 +422,90 @@
     "retry": "Try again",
     "home": "Go home",
     "reference": "Error reference"
+  },
+  "LandingPage": {
+    "metadata": {
+      "title": "Loopra — group rides near you",
+      "description": "Find group rides at your pace, join in one tap, and roll out with people who ride like you."
+    },
+    "header": {
+      "home": "Loopra home",
+      "howItWorks": "How it works",
+      "switchLanguage": "Switch to Polish",
+      "signIn": "Sign in"
+    },
+    "hero": {
+      "eyebrow": "Group rides, near you",
+      "headline": "Never ride<br></br>the loop alone.",
+      "body": "Find group rides at your pace, join in one tap, and roll out with people who ride like you.",
+      "getStarted": "Get started"
+    },
+    "exampleRides": {
+      "heading": "This weekend · near you",
+      "count": "{count, plural, one {# ride} other {# rides}}",
+      "going": "{count} going",
+      "rides": {
+        "coffee": {
+          "day": "Sat",
+          "name": "Harbour Coffee Loop",
+          "meta": "42 km · 26 km/h · no drop"
+        },
+        "hills": {
+          "day": "Sat",
+          "name": "Hill Repeats Club",
+          "meta": "58 km · 29 km/h · drop"
+        },
+        "beginner": {
+          "day": "Sun",
+          "name": "Beginner Sunday Spin",
+          "meta": "25 km · 20 km/h · no drop"
+        },
+        "gravel": {
+          "day": "Sun",
+          "name": "Gravel & Pastries",
+          "meta": "48 km · 22 km/h · regroup"
+        }
+      }
+    },
+    "howItWorks": {
+      "join": {
+        "label": "Join a ride",
+        "title": "Show up, ride, repeat.",
+        "step1": {
+          "title": "Find your kind of ride",
+          "body": "Filter by day, bike type and ride type, on a list or on the map."
+        },
+        "step2": {
+          "title": "Know before you go",
+          "body": "See the route, the elevation profile, the pace and the ride rules before you commit."
+        },
+        "step3": {
+          "title": "Join in one tap",
+          "body": "Take your spot and see who else is coming."
+        }
+      },
+      "organise": {
+        "label": "Organise a ride",
+        "title": "Your route, your people.",
+        "step1": {
+          "title": "Post a ride",
+          "body": "Pick a start point, a time and a pace. Upload a GPX file and the route draws itself."
+        },
+        "step2": {
+          "title": "Set the rules",
+          "body": "No-drop or drop, who sets the pace, who the ride is for. Riders know what to expect."
+        },
+        "step3": {
+          "title": "Fill the start line",
+          "body": "Riders nearby find your ride and join. You see who is in at a glance."
+        }
+      }
+    },
+    "footer": {
+      "copyright": "© {year} Loopra",
+      "privacy": "Privacy",
+      "terms": "Terms",
+      "contact": "Contact"
+    }
   }
 }

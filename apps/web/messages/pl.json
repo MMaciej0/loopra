@@ -422,5 +422,90 @@
     "retry": "Spróbuj ponownie",
     "home": "Wróć na start",
     "reference": "Identyfikator błędu"
+  },
+  "LandingPage": {
+    "metadata": {
+      "title": "Loopra — wspólne przejazdy w Twojej okolicy",
+      "description": "Znajdź wspólne przejazdy w swoim tempie, dołącz jednym kliknięciem i ruszaj z ludźmi, którzy jeżdżą tak jak Ty."
+    },
+    "header": {
+      "home": "Strona główna Loopra",
+      "howItWorks": "Jak to działa",
+      "switchLanguage": "Przełącz na angielski",
+      "signIn": "Zaloguj się"
+    },
+    "hero": {
+      "eyebrow": "Wspólne przejazdy w Twojej okolicy",
+      "headline": "Zacznij jeździć<br></br>w grupie.",
+      "body": "Znajdź wspólne przejazdy w swoim tempie, dołącz jednym kliknięciem i ruszaj z ludźmi, którzy jeżdżą tak jak Ty.",
+      "getStarted": "Załóż konto"
+    },
+    "exampleRides": {
+      "heading": "W ten weekend · blisko Ciebie",
+      "count": "{count, plural, one {# przejazd} few {# przejazdy} other {# przejazdów}}",
+      "going": "{count, plural, few {# jadą} other {# jedzie}}",
+      "rides": {
+        "coffee": {
+          "day": "Sob",
+          "name": "Portowa pętla na kawę",
+          "meta": "42 km · 26 km/h · nikogo nie zostawiamy"
+        },
+        "hills": {
+          "day": "Sob",
+          "name": "Sobotnie podjazdy",
+          "meta": "58 km · 29 km/h · bez czekania"
+        },
+        "beginner": {
+          "day": "Ndz",
+          "name": "Niedzielna przejażdżka dla początkujących",
+          "meta": "25 km · 20 km/h · nikogo nie zostawiamy"
+        },
+        "gravel": {
+          "day": "Ndz",
+          "name": "Gravel i drożdżówki",
+          "meta": "48 km · 22 km/h · zbiórki"
+        }
+      }
+    },
+    "howItWorks": {
+      "join": {
+        "label": "Dołącz do przejazdu",
+        "title": "Przyjedź, jedź, powtórz.",
+        "step1": {
+          "title": "Znajdź przejazd dla siebie",
+          "body": "Filtruj po dniu, typie roweru i rodzaju przejazdu — na liście albo na mapie."
+        },
+        "step2": {
+          "title": "Wiesz, na co się piszesz",
+          "body": "Zanim się zdecydujesz, zobacz trasę, profil wysokości, tempo i zasady przejazdu."
+        },
+        "step3": {
+          "title": "Dołącz jednym kliknięciem",
+          "body": "Zajmij miejsce i zobacz, kto jeszcze jedzie."
+        }
+      },
+      "organise": {
+        "label": "Zorganizuj przejazd",
+        "title": "Twoja trasa, Twoi ludzie.",
+        "step1": {
+          "title": "Dodaj przejazd",
+          "body": "Wybierz miejsce startu, godzinę i tempo. Wgraj plik GPX, a trasa narysuje się sama."
+        },
+        "step2": {
+          "title": "Ustal zasady",
+          "body": "Czekamy na wszystkich czy nie, kto nadaje tempo, dla kogo jest przejazd. Każdy wie, czego się spodziewać."
+        },
+        "step3": {
+          "title": "Zapełnij linię startu",
+          "body": "Osoby z okolicy znajdują Twój przejazd i dołączają. Od razu widzisz, kto jedzie."
+        }
+      }
+    },
+    "footer": {
+      "copyright": "© {year} Loopra",
+      "privacy": "Prywatność",
+      "terms": "Regulamin",
+      "contact": "Kontakt"
+    }
   }
 }
