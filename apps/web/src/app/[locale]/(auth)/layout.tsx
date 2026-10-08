@@ -4,7 +4,6 @@ import posterPath from '@/assets/loopra-poster-path.svg';
 import { PosterBadge, PosterBadgeDot } from '@/components/ui/badge';
 import { Text } from '@/components/ui/text';
 import { Logo } from '@/components/ui/logo';
-import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 
 type Props = Readonly<{
@@ -20,9 +19,6 @@ export default function AuthLayout({ children }: Props) {
             <Link href="/">
               <Logo height={26} />
             </Link>
-            <Button variant="nav" asChild>
-              <Link href="/help">Need help?</Link>
-            </Button>
           </nav>
           <main className="flex min-h-0 flex-1 flex-col items-center overflow-y-auto py-8 md:py-10 xl:py-12">
             <div className="my-auto w-full max-w-[380px]">{children}</div>

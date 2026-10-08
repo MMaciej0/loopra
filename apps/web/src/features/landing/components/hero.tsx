@@ -13,7 +13,7 @@ export function Hero() {
         <span aria-hidden className="bg-accent size-2 shrink-0 rounded-full" />
         {t('eyebrow')}
       </Text>
-      <h1 className="font-editorial text-[clamp(52px,8.4vw,120px)] leading-[0.92] font-semibold tracking-[-0.045em] text-balance wrap-break-word">
+      <h1 className="font-editorial text-[clamp(52px,8.4vw,108px)] leading-[0.92] font-semibold tracking-[-0.045em] text-balance wrap-break-word">
         {t.rich('headline', { br: () => <br /> })}
       </h1>
       <Text variant="body-l" className="text-foreground/70 max-w-[460px] text-pretty">

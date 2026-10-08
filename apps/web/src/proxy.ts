@@ -5,7 +5,7 @@ import { stripLocale } from '@/lib/locale';
 import { captureRequestAuthCookies, copySetCookieHeaders, extractCookieValue } from '@/lib/cookies';
 import type { NextRequest } from 'next/server';
 
-const PUBLIC_PATHS = ['/showcase', '/login', '/register', '/forgot-password'];
+const PUBLIC_PATHS = ['/login', '/register', '/forgot-password'];
 const OPEN_PATHS = ['/verify-email', '/privacy', '/terms'];
 
 const handleLocales = createMiddleware(routing);
