@@ -7,11 +7,17 @@ import { PrivacyPolicyPl } from './privacy-policy-pl';
 import { TermsEn } from './terms-en';
 import { TermsPl } from './terms-pl';
 
-const LAST_UPDATED = new Date(Date.UTC(2026, 9, 8));
-
 const DOCUMENTS = {
-  privacy: { en: PrivacyPolicyEn, pl: PrivacyPolicyPl },
-  terms: { en: TermsEn, pl: TermsPl },
+  privacy: {
+    lastUpdated: new Date(Date.UTC(2026, 9, 8)),
+    en: PrivacyPolicyEn,
+    pl: PrivacyPolicyPl,
+  },
+  terms: {
+    lastUpdated: new Date(Date.UTC(2026, 9, 8)),
+    en: TermsEn,
+    pl: TermsPl,
+  },
 } as const;
 
 interface LegalPageProps {
@@ -22,7 +28,8 @@ export function LegalPage({ document }: LegalPageProps) {
   const t = useTranslations('LegalPages');
   const format = useFormatter();
   const locale = useLocale();
-  const Content = DOCUMENTS[document][locale === 'pl' ? 'pl' : 'en'];
+  const { lastUpdated, ...content } = DOCUMENTS[document];
+  const Content = content[locale === 'pl' ? 'pl' : 'en'];
 
   return (
     <div className="flex min-h-dvh flex-col overflow-x-clip">
@@ -33,7 +40,7 @@ export function LegalPage({ document }: LegalPageProps) {
         </h1>
         <Text variant="body-s" className="text-muted-foreground mt-4">
           {t('lastUpdated', {
-            date: format.dateTime(LAST_UPDATED, { dateStyle: 'long', timeZone: 'UTC' }),
+            date: format.dateTime(lastUpdated, { dateStyle: 'long', timeZone: 'UTC' }),
           })}
         </Text>
         <div className="text-foreground/80 [&_a]:text-foreground [&_h2]:font-editorial [&_h2]:text-foreground mt-10 text-[15px] leading-[1.65] wrap-break-word [&_a]:underline [&_a]:underline-offset-2 [&_h2]:mt-10 [&_h2]:mb-3 [&_h2]:text-[22px] [&_h2]:leading-[1.2] [&_h2]:font-semibold [&_li]:mb-1.5 [&_p]:mb-4 [&_ul]:mb-4 [&_ul]:list-disc [&_ul]:pl-5">

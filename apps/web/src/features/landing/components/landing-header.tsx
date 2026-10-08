@@ -18,13 +18,14 @@ export function LandingHeader({ pathname }: LandingHeaderProps) {
       <Link href="/" aria-label={t('home')} className="text-foreground">
         <Logo height={24} />
       </Link>
-      <nav className="flex items-center gap-2 sm:gap-4">
+      <nav aria-label={t('navLabel')} className="flex items-center gap-2 sm:gap-4">
         <Button variant="nav" asChild className="hidden text-sm sm:inline-flex">
           <Link href="/#how-it-works">{t('howItWorks')}</Link>
         </Button>
         <Button variant="ghost" size="sm" asChild className="font-data">
-          <Link href={pathname} locale={otherLocale} aria-label={t('switchLanguage')}>
+          <Link href={pathname} locale={otherLocale}>
             {otherLocale.toUpperCase()}
+            <span className="sr-only">{t('switchLanguage')}</span>
           </Link>
         </Button>
         <Button variant="outline" size="sm" asChild className="border-border-strong">

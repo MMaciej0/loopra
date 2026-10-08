@@ -1,9 +1,11 @@
+import { CONTACT_EMAIL } from '@/lib/contact-email';
+
 export function TermsEn() {
   return (
     <>
       <p>
         These terms are the rules for using Loopra. By creating an account you agree to them. If you
-        have a question, write to <a href="mailto:loopra67@gmail.com">loopra67@gmail.com</a>.
+        have a question, write to <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
       </p>
 
       <h2>1. What Loopra is</h2>

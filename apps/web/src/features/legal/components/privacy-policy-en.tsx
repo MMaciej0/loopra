@@ -1,3 +1,5 @@
+import { CONTACT_EMAIL } from '@/lib/contact-email';
+
 export function PrivacyPolicyEn() {
   return (
     <>
@@ -9,7 +11,7 @@ export function PrivacyPolicyEn() {
       <h2>1. Who is responsible for your data</h2>
       <p>
         The data controller is Maciej Mądry, Kraków, Poland. For any question about your data, write
-        to <a href="mailto:loopra67@gmail.com">loopra67@gmail.com</a>.
+        to <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.
       </p>
 
       <h2>2. What we store</h2>
@@ -87,16 +89,16 @@ export function PrivacyPolicyEn() {
         <li>object to processing that is based on our legitimate interest.</li>
       </ul>
       <p>
-        To use any of these rights, write to{' '}
-        <a href="mailto:loopra67@gmail.com">loopra67@gmail.com</a>. You also have the right to lodge
-        a complaint with the Polish supervisory authority, the President of the Personal Data
-        Protection Office (Prezes Urzędu Ochrony Danych Osobowych, UODO).
+        To use any of these rights, write to <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+        . You also have the right to lodge a complaint with the Polish supervisory authority, the
+        President of the Personal Data Protection Office (Prezes Urzędu Ochrony Danych Osobowych,
+        UODO).
       </p>
 
       <h2>7. Deleting your account</h2>
       <p>
         There is no delete button in the app yet. To delete your account, send a request to{' '}
-        <a href="mailto:loopra67@gmail.com">loopra67@gmail.com</a> from the email address of your
+        <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a> from the email address of your
         account. We delete the account within 30 days.
       </p>
     </>
