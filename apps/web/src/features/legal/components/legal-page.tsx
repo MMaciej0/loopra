@@ -43,7 +43,7 @@ export function LegalPage({ document }: LegalPageProps) {
             date: format.dateTime(lastUpdated, { dateStyle: 'long', timeZone: 'UTC' }),
           })}
         </Text>
-        <div className="text-foreground/80 [&_a]:text-foreground [&_h2]:font-editorial [&_h2]:text-foreground mt-10 text-[15px] leading-[1.65] wrap-break-word [&_a]:underline [&_a]:underline-offset-2 [&_h2]:mt-10 [&_h2]:mb-3 [&_h2]:text-[22px] [&_h2]:leading-[1.2] [&_h2]:font-semibold [&_li]:mb-1.5 [&_p]:mb-4 [&_ul]:mb-4 [&_ul]:list-disc [&_ul]:pl-5">
+        <div className="text-foreground/70 [&_a]:text-foreground [&_h2]:font-editorial [&_h2]:text-foreground mt-10 text-[15px] leading-[1.65] wrap-break-word [&_a]:underline [&_a]:underline-offset-2 [&_h2]:mt-10 [&_h2]:mb-3 [&_h2]:text-[22px] [&_h2]:leading-[1.2] [&_h2]:font-semibold [&_li]:mb-1.5 [&_p]:mb-4 [&_ul]:mb-4 [&_ul]:list-disc [&_ul]:pl-5">
           <Content />
         </div>
       </main>
