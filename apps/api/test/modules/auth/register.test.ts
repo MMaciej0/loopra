@@ -63,6 +63,22 @@ describe('POST /auth/register', () => {
     expect(response.statusCode).toBe(409);
   });
 
+  it('returns 409 with user already exists for an account with no password', async () => {
+    await appRef.app.db.insert(users).values({ email: 'google@example.com' });
+
+    const response = await appRef.app.inject({
+      method: 'POST',
+      url: '/auth/register',
+      body: { email: 'google@example.com', password: 'Password123!', username: 'test' },
+    });
+
+    expect(response.statusCode).toBe(409);
+    expect(response.json()).toEqual({
+      type: 'USER_ALREADY_EXISTS',
+      message: 'User already exists',
+    });
+  });
+
   it('returns 400 for missing email', async () => {
     const response = await appRef.app.inject({
       method: 'POST',
