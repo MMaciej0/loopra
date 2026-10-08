@@ -296,7 +296,6 @@
     "USERNAME_TOO_LONG": "Nazwa użytkownika może mieć najwyżej {max, plural, one {# znak} few {# znaki} many {# znaków} other {# znaku}}.",
     "INVALID_CREDENTIALS": "Nieprawidłowy e-mail lub hasło.",
     "USER_ALREADY_EXISTS": "Konto z tym adresem e-mail już istnieje.",
-    "OAUTH_ONLY_ACCOUNT": "To konto używa logowania przez Google. Zaloguj się przez Google.",
     "RATE_LIMIT_EXCEEDED": "Zbyt wiele prób. Spróbuj ponownie później.",
     "TITLE_TOO_SHORT": "Nazwa musi mieć co najmniej {min, plural, one {# znak} few {# znaki} many {# znaków} other {# znaku}}.",
     "TITLE_TOO_LONG": "Nazwa jest za długa.",
