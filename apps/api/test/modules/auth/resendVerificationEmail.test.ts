@@ -133,4 +133,17 @@ describe('POST /auth/resend-verification-email', () => {
       }
     });
   });
+
+  it('creates a verification token when the email is in a different letter case', async () => {
+    await appRef.app.db.insert(users).values({ email: 'user@example.com' });
+
+    await appRef.app.inject({
+      method: 'POST',
+      url: '/auth/resend-verification-email',
+      body: { email: 'User@Example.com' },
+    });
+
+    const hash = await appRef.app.redis.get('email-verification:email:user@example.com');
+    expect(hash).not.toBeNull();
+  });
 });

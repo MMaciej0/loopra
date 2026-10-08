@@ -6,6 +6,7 @@ import {
 } from '@loopra/domain/schemas';
 import {
   ChangePasswordBodySchema,
+  EmailSchema,
   ForgottenPasswordBodySchema,
   LoginBodySchema,
   RegisterBodySchema,
@@ -220,10 +221,12 @@ export const authRoutes = (fastify: FastifyInstance, _options: unknown) => {
 
   fastify.get('/google/callback', async (request, reply) => {
     const { token } = await fastify.oauth2Google!.getAccessTokenFromAuthorizationCodeFlow(request);
-    const { sub, email } = (await fastify.oauth2Google!.userinfo(token)) as {
+    const userinfo = (await fastify.oauth2Google!.userinfo(token)) as {
       sub: string;
       email: string;
     };
+    const { sub } = userinfo;
+    const email = parseBody(userinfo.email, EmailSchema);
 
     const { accessToken, familyUuid, rawRefreshToken } = await findOrCreateOAuthUser({
       fastify,

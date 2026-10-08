@@ -168,4 +168,44 @@ describe('POST /auth/register', () => {
       }
     });
   });
+
+  describe('email normalisation', () => {
+    const register = (email: string) =>
+      appRef.app.inject({
+        method: 'POST',
+        url: '/auth/register',
+        body: { email, password: 'Password123!', username: 'test' },
+      });
+
+    it('returns 409 when the email exists in a different letter case', async () => {
+      await register('user@example.com');
+      const response = await register('User@Example.com');
+
+      expect(response.statusCode).toBe(409);
+      expect(await appRef.app.db.select().from(users)).toHaveLength(1);
+    });
+
+    it('stores and returns the email in lowercase', async () => {
+      const response = await register('User@Example.com');
+
+      expect(response.statusCode).toBe(200);
+      expect(response.json().user.email).toBe('user@example.com');
+
+      const [user] = await appRef.app.db.select().from(users);
+      expect(user.email).toBe('user@example.com');
+    });
+
+    it('accepts an email with spaces around it', async () => {
+      const response = await register('  user@example.com ');
+
+      expect(response.statusCode).toBe(200);
+      expect(response.json().user.email).toBe('user@example.com');
+    });
+
+    it('rejects a direct insert of a mixed-case email', async () => {
+      await expect(
+        appRef.app.db.insert(users).values({ email: 'User@Example.com' }),
+      ).rejects.toThrow();
+    });
+  });
 });
