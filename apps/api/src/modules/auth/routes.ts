@@ -5,6 +5,7 @@ import {
   SessionResponseSchema,
 } from '@loopra/domain/schemas';
 import {
+  ChangePasswordBodySchema,
   ForgottenPasswordBodySchema,
   LoginBodySchema,
   RegisterBodySchema,
@@ -18,6 +19,7 @@ import { refreshSession } from './services/refreshSession.js';
 import { deleteTokenFamily } from './services/tokenFamily.js';
 import { sendResetPasswordToken } from './services/sendResetPasswordToken.js';
 import { resetPassword } from './services/resetPassword.js';
+import { changePassword } from './services/changePassword.js';
 import { findOrCreateOAuthUser } from './services/findOrCreateOAuthUser.js';
 import { sendEmailVerification } from './services/sendEmailVerification.js';
 import { verifyEmail } from './services/verifyEmail.js';
@@ -25,7 +27,13 @@ import { InvalidTokenError, UnauthorizedError } from './errors.js';
 import { clearAuthCookies, setAuthCookies } from './services/cookies.js';
 import { parseBody } from '../../utils/validation.js';
 import { APP_URL } from '../../config/env.js';
-import { authRateLimiter, clearRateLimits, emailSendRateLimiter } from './services/rateLimiter.js';
+import {
+  authRateLimiter,
+  clearPasswordChangeRateLimit,
+  clearRateLimits,
+  emailSendRateLimiter,
+  passwordChangeRateLimiter,
+} from './services/rateLimiter.js';
 
 export const authRoutes = (fastify: FastifyInstance, _options: unknown) => {
   fastify.post(
@@ -156,6 +164,30 @@ export const authRoutes = (fastify: FastifyInstance, _options: unknown) => {
       await resetPassword(token, password, fastify.db, fastify.redis);
 
       return reply.send({ message: 'Password reset successful' });
+    },
+  );
+
+  fastify.post(
+    '/change-password',
+    {
+      onRequest: fastify.authenticate,
+      schema: { response: { 200: MessageResponseSchema } },
+    },
+    async (request, reply) => {
+      const { current_password, new_password } = parseBody(request.body, ChangePasswordBodySchema);
+      const userId = request.user.sub;
+      await passwordChangeRateLimiter(fastify.redis, userId);
+
+      const { accessToken, familyUuid, rawRefreshToken } = await changePassword({
+        fastify,
+        userId,
+        currentPassword: current_password,
+        newPassword: new_password,
+      });
+      setAuthCookies(reply, accessToken, familyUuid, rawRefreshToken);
+      await clearPasswordChangeRateLimit(fastify.redis, userId);
+
+      return reply.send({ message: 'Password change successful' });
     },
   );
 

@@ -6,7 +6,7 @@ import { eq } from 'drizzle-orm';
 export const registerUser = async (
   app: FastifyInstance,
   email = 'test@example.com',
-  password = 'password123',
+  password = 'Password123!',
   username = 'testuser',
 ) => {
   const response = await app.inject({

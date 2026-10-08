@@ -18,7 +18,7 @@ describe('DELETE /auth/logout', () => {
 
   describe('when refresh token is present', () => {
     const TEST_EMAIL = 'logout-test@example.com';
-    const TEST_PASSWORD = 'password123';
+    const TEST_PASSWORD = 'Password123!';
     let refreshToken: string;
 
     beforeEach(async () => {

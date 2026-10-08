@@ -408,6 +408,14 @@
       "sent": "Wysłaliśmy link na adres {email}",
       "rateLimited": "Zbyt wiele prób, poczekaj chwilę"
     },
+    "password": {
+      "title": "Hasło",
+      "currentPasswordLabel": "Obecne hasło",
+      "newPasswordLabel": "Nowe hasło",
+      "save": "Zmień hasło",
+      "changed": "Hasło zmienione",
+      "google": "Logujesz się przez Google"
+    },
     "appearance": {
       "title": "Wygląd",
       "themeLabel": "Motyw",

@@ -16,5 +16,9 @@ export const getCurrentUser = async (db: Db, userId: string) => {
     throw new UserNotFoundError();
   }
 
-  return { ...row.user, selected_location: row.selected_location };
+  return {
+    ...row.user,
+    has_password: row.user.password_hash !== null,
+    selected_location: row.selected_location,
+  };
 };

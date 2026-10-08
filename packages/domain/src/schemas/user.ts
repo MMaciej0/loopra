@@ -10,6 +10,7 @@ export const CurrentUserSchema = Type.Object(
     username: Nullable(Type.String()),
     created_at: Type.String({ format: 'date-time' }),
     email_verified: Type.Boolean(),
+    has_password: Type.Boolean(),
     selected_location: Nullable(SelectedLocationSchema),
   },
   { additionalProperties: false },

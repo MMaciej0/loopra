@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { useApp } from '../../helpers/app.js';
 import { useAuthenticatedUser } from '../../helpers/auth.js';
-import { selected_locations } from '../../../src/db/schema.js';
+import { selected_locations, users } from '../../../src/db/schema.js';
 
 describe('GET /users/me', () => {
   const appRef = useApp();
@@ -55,9 +55,44 @@ describe('GET /users/me', () => {
     const { user } = response.json();
 
     expect(Object.keys(user).sort()).toEqual(
-      ['created_at', 'email', 'email_verified', 'id', 'selected_location', 'username'].sort(),
+      [
+        'created_at',
+        'email',
+        'email_verified',
+        'has_password',
+        'id',
+        'selected_location',
+        'username',
+      ].sort(),
     );
     expect(user.created_at).toBe(new Date(user.created_at).toISOString());
+  });
+
+  it('reports has_password as true for a rider with a password', async () => {
+    const response = await appRef.app.inject({
+      method: 'GET',
+      url: '/users/me',
+      cookies: { accessToken: auth.accessToken },
+    });
+
+    expect(response.json().user.has_password).toBe(true);
+  });
+
+  it('reports has_password as false for a rider with no password', async () => {
+    const [googleRider] = await appRef.app.db
+      .insert(users)
+      .values({ email: 'google@example.com' })
+      .returning();
+
+    const response = await appRef.app.inject({
+      method: 'GET',
+      url: '/users/me',
+      cookies: {
+        accessToken: appRef.app.jwt.sign({ sub: googleRider.id, email_verified: true }),
+      },
+    });
+
+    expect(response.json().user.has_password).toBe(false);
   });
 
   it('serializes a stored Selected Location as the wire DTO', async () => {

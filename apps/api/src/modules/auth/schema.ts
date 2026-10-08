@@ -1,9 +1,21 @@
 import z from 'zod';
-import { USERNAME_MAX_LENGTH, USERNAME_MIN_LENGTH } from '@loopra/domain';
+import {
+  PASSWORD_MIN_LENGTH,
+  PASSWORD_SPECIAL_CHAR_PATTERN,
+  PASSWORD_UPPERCASE_PATTERN,
+  USERNAME_MAX_LENGTH,
+  USERNAME_MIN_LENGTH,
+} from '@loopra/domain';
+
+const PasswordSchema = z
+  .string()
+  .min(PASSWORD_MIN_LENGTH)
+  .regex(PASSWORD_UPPERCASE_PATTERN)
+  .regex(PASSWORD_SPECIAL_CHAR_PATTERN);
 
 export const RegisterBodySchema = z.object({
   email: z.email(),
-  password: z.string().min(8),
+  password: PasswordSchema,
   username: z.string().trim().min(USERNAME_MIN_LENGTH).max(USERNAME_MAX_LENGTH),
 });
 
@@ -18,7 +30,12 @@ export const ForgottenPasswordBodySchema = z.object({
 
 export const ResetPasswordBodySchema = z.object({
   token: z.string(),
-  password: z.string().min(8),
+  password: PasswordSchema,
+});
+
+export const ChangePasswordBodySchema = z.object({
+  current_password: z.string(),
+  new_password: PasswordSchema,
 });
 
 export const VerifyEmailBodySchema = z.object({

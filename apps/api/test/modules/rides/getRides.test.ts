@@ -278,7 +278,7 @@ describe('GET /rides', () => {
 
     expect((await listRides()).data[0].participant_count).toBe(1);
 
-    const other = await registerUser(appRef.app, 'other@example.com', 'password123', 'otheruser');
+    const other = await registerUser(appRef.app, 'other@example.com', 'Password123!', 'otheruser');
     const joinResponse = await appRef.app.inject({
       method: 'POST',
       url: `/rides/${rideId}/join`,

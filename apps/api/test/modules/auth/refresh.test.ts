@@ -16,7 +16,7 @@ describe('POST /auth/refresh', () => {
 
   describe('when refresh token is present', () => {
     const TEST_EMAIL = 'refresh-test@example.com';
-    const TEST_PASSWORD = 'password123';
+    const TEST_PASSWORD = 'Password123!';
     let refreshToken: string;
 
     beforeEach(async () => {

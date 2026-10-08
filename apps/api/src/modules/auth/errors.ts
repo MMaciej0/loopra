@@ -51,6 +51,22 @@ export class OAuthLoginRequiredError extends AppError {
   }
 }
 
+export class OAuthOnlyAccountError extends AppError {
+  constructor() {
+    super(
+      409,
+      ERROR_TYPES.OAUTH_ONLY_ACCOUNT,
+      'This account uses Google sign-in and has no password.',
+    );
+  }
+}
+
+export class InvalidPasswordError extends AppError {
+  constructor() {
+    super(400, ERROR_TYPES.INVALID_PASSWORD, 'Invalid password');
+  }
+}
+
 export class InvalidTokenError extends AppError {
   constructor() {
     super(401, ERROR_TYPES.INVALID_TOKEN, 'Invalid token');

@@ -2,6 +2,7 @@ import { getTranslations } from 'next-intl/server';
 import { Text } from '@/components/ui/text';
 import { AppearancePanel } from '@/features/settings/components/appearance-panel';
 import { EmailPanel } from '@/features/settings/components/email-panel';
+import { PasswordPanel } from '@/features/settings/components/password-panel';
 import { ProfilePanel } from '@/features/settings/components/profile-panel';
 import { getCurrentUser } from '@/lib/user';
 
@@ -15,6 +16,7 @@ export async function SettingsPanels() {
         <Text variant="heading-xl">{t('title')}</Text>
         {user && <ProfilePanel username={user.username ?? ''} />}
         {user && <EmailPanel email={user.email} emailVerified={user.email_verified} />}
+        {user && <PasswordPanel hasPassword={user.has_password} />}
         <AppearancePanel />
       </div>
     </div>

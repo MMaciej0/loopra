@@ -25,6 +25,7 @@ const createIpKey = (ip: string) => `rate-limit:ip:${ip}`;
 const createEmailKey = (email: string) => `rate-limit:email:${email}`;
 const createEmailSendAddressKey = (email: string) => `rate-limit:email-send-address:${email}`;
 const createEmailSendIpKey = (ip: string) => `rate-limit:email-send-ip:${ip}`;
+const createPasswordChangeKey = (userId: string) => `rate-limit:password-change:${userId}`;
 
 const AUTH_OPTIONS = {
   maxAttempts: 5,
@@ -66,4 +67,12 @@ export const clearRateLimits = async (request: FastifyRequest, redis: Redis, ema
   if (email) {
     await redis.del(createEmailKey(email));
   }
+};
+
+export const passwordChangeRateLimiter = async (redis: Redis, userId: string) => {
+  await upsertRateLimit(redis, createPasswordChangeKey(userId), AUTH_OPTIONS);
+};
+
+export const clearPasswordChangeRateLimit = async (redis: Redis, userId: string) => {
+  await redis.del(createPasswordChangeKey(userId));
 };
