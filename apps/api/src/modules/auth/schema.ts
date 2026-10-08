@@ -13,19 +13,21 @@ const PasswordSchema = z
   .regex(PASSWORD_UPPERCASE_PATTERN)
   .regex(PASSWORD_SPECIAL_CHAR_PATTERN);
 
+export const EmailSchema = z.string().trim().toLowerCase().pipe(z.email());
+
 export const RegisterBodySchema = z.object({
-  email: z.email(),
+  email: EmailSchema,
   password: PasswordSchema,
   username: z.string().trim().min(USERNAME_MIN_LENGTH).max(USERNAME_MAX_LENGTH),
 });
 
 export const LoginBodySchema = z.object({
-  email: z.email(),
+  email: EmailSchema,
   password: z.string(),
 });
 
 export const ForgottenPasswordBodySchema = z.object({
-  email: z.email(),
+  email: EmailSchema,
 });
 
 export const ResetPasswordBodySchema = z.object({
@@ -43,7 +45,7 @@ export const VerifyEmailBodySchema = z.object({
 });
 
 export const ResendEmailVerificationBodySchema = z.object({
-  email: z.email(),
+  email: EmailSchema,
 });
 
 export type VerifyEmailBody = z.infer<typeof VerifyEmailBodySchema>;

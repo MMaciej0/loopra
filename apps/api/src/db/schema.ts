@@ -1,5 +1,6 @@
 import {
   boolean,
+  check,
   geometry,
   integer,
   jsonb,
@@ -13,7 +14,7 @@ import {
   uuid,
   index,
 } from 'drizzle-orm/pg-core';
-import { relations } from 'drizzle-orm';
+import { relations, sql } from 'drizzle-orm';
 import type { GpxMetadata } from '@loopra/gpx';
 import {
   BIKE_TYPES,
@@ -26,19 +27,23 @@ import {
   RIDE_TYPES,
 } from '@loopra/domain';
 
-export const users = pgTable('users', {
-  id: uuid().primaryKey().defaultRandom(),
-  email: text().notNull().unique(),
-  password_hash: text(),
-  username: text(),
-  created_at: timestamp({ withTimezone: true }).notNull().defaultNow(),
-  updated_at: timestamp({ withTimezone: true })
-    .notNull()
-    .defaultNow()
-    .$onUpdate(() => new Date()),
-  email_verified: boolean().notNull().default(false),
-  email_verified_at: timestamp({ withTimezone: true }),
-});
+export const users = pgTable(
+  'users',
+  {
+    id: uuid().primaryKey().defaultRandom(),
+    email: text().notNull().unique(),
+    password_hash: text(),
+    username: text(),
+    created_at: timestamp({ withTimezone: true }).notNull().defaultNow(),
+    updated_at: timestamp({ withTimezone: true })
+      .notNull()
+      .defaultNow()
+      .$onUpdate(() => new Date()),
+    email_verified: boolean().notNull().default(false),
+    email_verified_at: timestamp({ withTimezone: true }),
+  },
+  (table) => [check('users_email_lowercase', sql`${table.email} = lower(${table.email})`)],
+);
 
 export const selected_locations = pgTable('selected_locations', {
   user_id: uuid()

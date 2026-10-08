@@ -181,4 +181,38 @@ describe('POST /auth/forgot-password', () => {
       }
     });
   });
+
+  describe('when the email is in a different letter case', () => {
+    it('creates new password reset token', async () => {
+      await appRef.app.inject({
+        method: 'POST',
+        url: '/auth/register',
+        body: { email: 'user@example.com', password: 'Password123!', username: 'test' },
+      });
+
+      await appRef.app.inject({
+        method: 'POST',
+        url: '/auth/forgot-password',
+        body: { email: 'User@Example.com' },
+      });
+
+      const keys = await appRef.app.redis.keys('password-reset:*');
+      expect(keys.length).toBe(1);
+    });
+
+    it('counts all letter cases together in the address rate limit', async () => {
+      const emails = ['target@example.com', 'Target@example.com', 'TARGET@EXAMPLE.COM'];
+      for (const email of emails) {
+        await appRef.app.inject({
+          method: 'POST',
+          url: '/auth/forgot-password',
+          body: { email },
+        });
+      }
+
+      const keys = await appRef.app.redis.keys('rate-limit:email-send-address:*');
+      expect(keys).toEqual(['rate-limit:email-send-address:target@example.com']);
+      expect(await appRef.app.redis.get(keys[0])).toBe('3');
+    });
+  });
 });

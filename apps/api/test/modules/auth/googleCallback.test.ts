@@ -167,4 +167,30 @@ describe('GET /auth/google/callback', () => {
       expect(response.statusCode).toBe(302);
     });
   });
+
+  describe('when Google sends the email in a different letter case', () => {
+    beforeEach(async () => {
+      (appRef.app as any).oauth2Google.userinfo = vi
+        .fn()
+        .mockResolvedValue({ sub: GOOGLE_SUB, email: 'Test@Example.com' });
+      await appRef.app.db.insert(users).values({ email: EMAIL, password_hash: 'hashed' });
+    });
+
+    it('links oauth account to existing user and creates no second user', async () => {
+      await appRef.app.inject({
+        method: 'GET',
+        url: '/auth/google/callback',
+      });
+
+      const allUsers = await appRef.app.db.select().from(users);
+      const [oauthAccount] = await appRef.app.db
+        .select()
+        .from(oauth_accounts)
+        .where(eq(oauth_accounts.provider_user_id, GOOGLE_SUB))
+        .limit(1);
+
+      expect(allUsers).toHaveLength(1);
+      expect(oauthAccount?.user_id).toBe(allUsers[0].id);
+    });
+  });
 });

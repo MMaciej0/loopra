@@ -169,4 +169,21 @@ describe('POST /auth/login', () => {
       });
     });
   });
+
+  it('logs in with the email in a different letter case', async () => {
+    await appRef.app.inject({
+      method: 'POST',
+      url: '/auth/register',
+      body: { email: 'user@example.com', password: 'Password123!', username: 'test' },
+    });
+
+    const response = await appRef.app.inject({
+      method: 'POST',
+      url: '/auth/login',
+      body: { email: 'User@Example.com', password: 'Password123!' },
+    });
+
+    expect(response.statusCode).toBe(200);
+    expect(response.json().user.email).toBe('user@example.com');
+  });
 });
