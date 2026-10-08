@@ -46,16 +46,6 @@ function Avatar({
   );
 }
 
-function AvatarImage({ className, ...props }: React.ComponentProps<typeof AvatarPrimitive.Image>) {
-  return (
-    <AvatarPrimitive.Image
-      data-slot="avatar-image"
-      className={cn('aspect-square size-full rounded-full object-cover', className)}
-      {...props}
-    />
-  );
-}
-
 // Pass `color` (0–5) for palette background, or omit for muted fallback.
 // Use getAvatarColorIndex(userId) to derive a stable index from an ID/name.
 function AvatarFallback({
@@ -94,64 +84,4 @@ function UserAvatar({
   );
 }
 
-function AvatarBadge({ className, ...props }: React.ComponentProps<'span'>) {
-  return (
-    <span
-      data-slot="avatar-badge"
-      className={cn(
-        'bg-primary text-primary-foreground ring-background absolute right-0 bottom-0 z-10 inline-flex items-center justify-center rounded-full ring-2 select-none',
-        'size-2.5 [&>svg]:size-2',
-        'group-data-[size=sm]/avatar:size-2 group-data-[size=sm]/avatar:[&>svg]:hidden',
-        'group-data-[size=lg]/avatar:size-3 group-data-[size=lg]/avatar:[&>svg]:size-2',
-        className,
-      )}
-      {...props}
-    />
-  );
-}
-
-// Wrap Avatar components in AvatarGroup for the stacked overlap effect
-function AvatarGroup({ className, ...props }: React.ComponentProps<'div'>) {
-  return (
-    <div
-      data-slot="avatar-group"
-      className={cn(
-        'group/avatar-group flex items-center',
-        // each avatar gets a 2px background-colored ring to separate discs
-        '*:data-[slot=avatar]:ring-background *:data-[slot=avatar]:ring-2',
-        // overlap: -8px (matches design's margin-left: -8px)
-        '-space-x-2',
-        className,
-      )}
-      {...props}
-    />
-  );
-}
-
-// "+3" overflow indicator — inherits size from AvatarGroup context
-function AvatarGroupCount({ className, ...props }: React.ComponentProps<'div'>) {
-  return (
-    <div
-      data-slot="avatar-group-count"
-      className={cn(
-        'relative flex shrink-0 items-center justify-center rounded-full',
-        'bg-muted text-foreground/60 font-ui font-semibold',
-        'ring-background text-[10px] ring-2',
-        // size mirrors Avatar sizes
-        'size-8 group-has-data-[size=lg]/avatar-group:size-10 group-has-data-[size=sm]/avatar-group:size-[26px]',
-        className,
-      )}
-      {...props}
-    />
-  );
-}
-
-export {
-  Avatar,
-  AvatarImage,
-  AvatarFallback,
-  UserAvatar,
-  AvatarBadge,
-  AvatarGroup,
-  AvatarGroupCount,
-};
+export { Avatar, AvatarFallback, UserAvatar };

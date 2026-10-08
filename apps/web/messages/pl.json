@@ -402,9 +402,6 @@
       "languageLabel": "Język"
     }
   },
-  "HomePage": {
-    "title": "Witaj świecie!"
-  },
   "VerifyEmailPage": {
     "invalid": "Ten link jest nieprawidłowy albo został już użyty. Jeśli Twój adres e-mail jest już potwierdzony, nie musisz nic robić.",
     "settings": "Przejdź do ustawień"
@@ -437,8 +434,8 @@
     },
     "hero": {
       "eyebrow": "Wspólne jazdy w Twojej okolicy",
-      "headline": "Zacznij jeździć<br></br>w grupie.",
-      "body": "Znajdź wspólne jazdy w swoim tempie, dołącz jednym kliknięciem i ruszaj z ludźmi, którzy jeżdżą tak jak Ty.",
+      "headline": "Znajdź ekipę<br></br>na każdą jazdę.",
+      "body": "Wybierz jazdę w swoim tempie, dołącz jednym kliknięciem i ruszaj z ludźmi, którzy jeżdżą tak jak Ty.",
       "getStarted": "Załóż konto"
     },
     "exampleRides": {
