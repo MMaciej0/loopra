@@ -438,7 +438,6 @@
       "home": "Strona główna Loopra",
       "howItWorks": "Jak to działa",
       "navLabel": "Główna",
-      "switchLanguage": "Przełącz na angielski",
       "signIn": "Zaloguj się"
     },
     "hero": {
@@ -515,6 +514,9 @@
       "terms": "Regulamin",
       "contact": "Kontakt"
     }
+  },
+  "LanguageSwitch": {
+    "label": "Przełącz na angielski"
   },
   "LegalPages": {
     "lastUpdated": "Ostatnia aktualizacja: {date}",
