@@ -25,7 +25,7 @@ export function LandingHeader({ pathname }: LandingHeaderProps) {
         <Button variant="ghost" size="sm" asChild className="font-data">
           <Link href={pathname} locale={otherLocale}>
             {otherLocale.toUpperCase()}
-            <span className="sr-only">{t('switchLanguage')}</span>
+            <span className="sr-only">, {t('switchLanguage')}</span>
           </Link>
         </Button>
         <Button variant="outline" size="sm" asChild className="border-border-strong">
