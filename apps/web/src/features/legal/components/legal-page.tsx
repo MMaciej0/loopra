@@ -33,7 +33,7 @@ export function LegalPage({ document }: LegalPageProps) {
 
   return (
     <div className="flex min-h-dvh flex-col overflow-x-clip">
-      <LandingHeader pathname={`/${document}`} />
+      <LandingHeader />
       <main className="mx-auto w-full max-w-[720px] flex-1 px-[clamp(20px,4vw,48px)] pt-[clamp(32px,6vw,72px)] pb-[clamp(56px,8vw,104px)]">
         <h1 className="font-editorial text-[clamp(36px,5vw,56px)] leading-none font-semibold tracking-[-0.035em] text-balance">
           {t(`${document}.title`)}

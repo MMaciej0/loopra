@@ -438,7 +438,6 @@
       "home": "Loopra home",
       "howItWorks": "How it works",
       "navLabel": "Main",
-      "switchLanguage": "Switch to Polish",
       "signIn": "Sign in"
     },
     "hero": {
@@ -515,6 +514,9 @@
       "terms": "Terms",
       "contact": "Contact"
     }
+  },
+  "LanguageSwitch": {
+    "label": "Switch to Polish"
   },
   "LegalPages": {
     "lastUpdated": "Last updated: {date}",
