@@ -357,7 +357,7 @@
   },
   "ResetPasswordPage": {
     "eyebrow": "RESET PASSWORD",
-    "heading": "Set a <i>new</i> password",
+    "heading": "Set a new password",
     "description": "Choose a new password for your account. You will log in with it next.",
     "passwordLabel": "New password",
     "submit": "Save new password",

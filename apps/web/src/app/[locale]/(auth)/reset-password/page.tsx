@@ -19,7 +19,7 @@ export default async function ResetPassword({
     <div className="flex w-full flex-col">
       <AuthHeader
         eyebrow={t('eyebrow')}
-        heading={t.rich('heading', { i: (chunks) => <i>{chunks}</i> })}
+        heading={t('heading')}
         description={token ? t('description') : undefined}
       />
       {token ? (
