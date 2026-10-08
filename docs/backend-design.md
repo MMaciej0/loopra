@@ -222,6 +222,7 @@ No base URL prefix — routes are mounted directly (e.g. `/auth`, `/users`).
 | POST   | `/auth/resend-verification`    | ✓    | Send a new verification email for the current unverified user |
 | POST   | `/auth/forgot-password`        | —    | Send reset email                                              |
 | POST   | `/auth/reset-password`         | —    | Complete password reset                                       |
+| POST   | `/auth/change-password`        | ✓    | Change password; logs out every other session                 |
 | GET    | `/auth/google`                 | —    | Redirect to Google OAuth consent screen                       |
 | GET    | `/auth/google/callback`        | —    | Handle Google callback, set cookies, redirect to frontend     |
 

@@ -10,7 +10,7 @@ describe('POST /auth/register', () => {
     const response = await appRef.app.inject({
       method: 'POST',
       url: '/auth/register',
-      body: { email: 'test@example.com', password: 'password123', username: 'test' },
+      body: { email: 'test@example.com', password: 'Password123!', username: 'test' },
     });
 
     expect(response.statusCode).toBe(200);
@@ -38,7 +38,7 @@ describe('POST /auth/register', () => {
     await appRef.app.inject({
       method: 'POST',
       url: '/auth/register',
-      body: { email: 'test@example.com', password: 'password123', username: 'test' },
+      body: { email: 'test@example.com', password: 'Password123!', username: 'test' },
     });
 
     const [user] = await appRef.app.db
@@ -55,7 +55,7 @@ describe('POST /auth/register', () => {
   });
 
   it('returns 409 when email already exists', async () => {
-    const body = { email: 'test@example.com', password: 'password123', username: 'test' };
+    const body = { email: 'test@example.com', password: 'Password123!', username: 'test' };
 
     await appRef.app.inject({ method: 'POST', url: '/auth/register', body });
     const response = await appRef.app.inject({ method: 'POST', url: '/auth/register', body });
@@ -67,20 +67,25 @@ describe('POST /auth/register', () => {
     const response = await appRef.app.inject({
       method: 'POST',
       url: '/auth/register',
-      body: { password: 'password123' },
+      body: { password: 'Password123!' },
     });
 
     expect(response.statusCode).toBe(400);
   });
 
-  it('returns 400 for password shorter than 8 chars', async () => {
+  it.each([
+    ['is shorter than 8 characters', 'Ab-1'],
+    ['has no uppercase letter', 'password123!'],
+    ['has no special character', 'Password123'],
+  ])('returns 400 for a password that %s', async (_rule, password) => {
     const response = await appRef.app.inject({
       method: 'POST',
       url: '/auth/register',
-      body: { email: 'test@example.com', password: 'short' },
+      body: { email: 'test@example.com', password, username: 'test' },
     });
 
     expect(response.statusCode).toBe(400);
+    expect(response.json()).toMatchObject({ type: 'INVALID_INPUT', field: 'password' });
   });
 
   it.each([
@@ -93,7 +98,7 @@ describe('POST /auth/register', () => {
     const response = await appRef.app.inject({
       method: 'POST',
       url: '/auth/register',
-      body: { email: 'test@example.com', password: 'password123', username },
+      body: { email: 'test@example.com', password: 'Password123!', username },
     });
 
     expect(response.statusCode).toBe(400);
@@ -103,7 +108,7 @@ describe('POST /auth/register', () => {
     const response = await appRef.app.inject({
       method: 'POST',
       url: '/auth/register',
-      body: { email: 'test@example.com', password: 'password123', username: 'abc' },
+      body: { email: 'test@example.com', password: 'Password123!', username: 'abc' },
     });
 
     expect(response.statusCode).toBe(200);
@@ -114,7 +119,7 @@ describe('POST /auth/register', () => {
     const response = await appRef.app.inject({
       method: 'POST',
       url: '/auth/register',
-      body: { email: 'test@example.com', password: 'password123', username: 'a'.repeat(30) },
+      body: { email: 'test@example.com', password: 'Password123!', username: 'a'.repeat(30) },
     });
 
     expect(response.statusCode).toBe(200);
@@ -124,7 +129,7 @@ describe('POST /auth/register', () => {
     const response = await appRef.app.inject({
       method: 'POST',
       url: '/auth/register',
-      body: { email: 'test@example.com', password: 'password123', username: '  abc  ' },
+      body: { email: 'test@example.com', password: 'Password123!', username: '  abc  ' },
     });
 
     expect(response.statusCode).toBe(200);
@@ -152,7 +157,7 @@ describe('POST /auth/register', () => {
         const response = await appRef.app.inject({
           method: 'POST',
           url: '/auth/register',
-          body: { email: `test${i}@example.com`, password: 'password123', username: 'test' },
+          body: { email: `test${i}@example.com`, password: 'Password123!', username: 'test' },
         });
 
         if (i <= RATE_LIMIT) {

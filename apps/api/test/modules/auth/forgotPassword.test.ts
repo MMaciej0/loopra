@@ -26,7 +26,7 @@ describe('POST /auth/forgot-password', () => {
 
     describe('when user exists', () => {
       const EXISTING_EMAIL = 'existing@example.com';
-      const TEST_PASSWORD = 'correct-password123';
+      const TEST_PASSWORD = 'correct-Password123!';
 
       beforeEach(async () => {
         await appRef.app.inject({

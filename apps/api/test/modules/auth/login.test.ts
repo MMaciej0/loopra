@@ -1,5 +1,8 @@
 import { beforeEach, describe, expect, it } from 'vitest';
+import bcrypt from 'bcrypt';
+import { eq } from 'drizzle-orm';
 import { useApp } from '../../helpers/app.js';
+import { users } from '../../../src/db/schema.js';
 
 describe('POST /auth/login', () => {
   const appRef = useApp();
@@ -8,7 +11,7 @@ describe('POST /auth/login', () => {
     const response = await appRef.app.inject({
       method: 'POST',
       url: '/auth/login',
-      body: { password: 'password123' },
+      body: { password: 'Password123!' },
     });
 
     expect(response.statusCode).toBe(400);
@@ -39,7 +42,7 @@ describe('POST /auth/login', () => {
 
   describe('when user exists', () => {
     const TEST_EMAIL = 'wrongpassword@example.com';
-    const TEST_PASSWORD = 'correct-password123';
+    const TEST_PASSWORD = 'correct-Password123!';
     const TEST_USERNAME = 'test';
 
     beforeEach(async () => {
@@ -65,6 +68,21 @@ describe('POST /auth/login', () => {
         'username',
       ]);
       expect(response.body).not.toContain('password_hash');
+    });
+
+    it('does not check the password rules, so an old weak password can still log in', async () => {
+      await appRef.app.db
+        .update(users)
+        .set({ password_hash: await bcrypt.hash('weak', 4) })
+        .where(eq(users.email, TEST_EMAIL));
+
+      const response = await appRef.app.inject({
+        method: 'POST',
+        url: '/auth/login',
+        body: { email: TEST_EMAIL, password: 'weak' },
+      });
+
+      expect(response.statusCode).toBe(200);
     });
 
     it('returns status 401 when password is incorrect', async () => {
@@ -110,7 +128,7 @@ describe('POST /auth/login', () => {
           const response = await appRef.app.inject({
             method: 'POST',
             url: '/auth/login',
-            body: { email: `test@example.com`, password: 'password123' },
+            body: { email: `test@example.com`, password: 'Password123!' },
           });
 
           if (i <= RATE_LIMIT) {

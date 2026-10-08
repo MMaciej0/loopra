@@ -408,6 +408,14 @@
       "sent": "We sent a link to {email}",
       "rateLimited": "Too many tries, wait a moment"
     },
+    "password": {
+      "title": "Password",
+      "currentPasswordLabel": "Current password",
+      "newPasswordLabel": "New password",
+      "save": "Change password",
+      "changed": "Password changed",
+      "google": "You sign in with Google"
+    },
     "appearance": {
       "title": "Appearance",
       "themeLabel": "Theme",
