@@ -402,9 +402,6 @@
       "languageLabel": "Language"
     }
   },
-  "HomePage": {
-    "title": "Hello world!"
-  },
   "VerifyEmailPage": {
     "invalid": "This link is not valid or was already used. If your email is already verified, you do not need to do anything.",
     "settings": "Go to Settings"
