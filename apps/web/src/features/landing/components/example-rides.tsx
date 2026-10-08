@@ -13,7 +13,7 @@ export function ExampleRides() {
   const t = useTranslations('LandingPage.exampleRides');
 
   return (
-    <div className="border-border bg-secondary flex flex-col overflow-hidden rounded-[18px] border">
+    <div className="border-border bg-secondary flex flex-col overflow-hidden rounded-[20px] border">
       <div className="border-border text-muted-foreground flex flex-wrap items-center justify-between gap-x-4 gap-y-1 border-b px-[18px] py-3.5 uppercase">
         <Text variant="meta">{t('heading')}</Text>
         <Text variant="meta">{t('count', { count: RIDES.length })}</Text>
@@ -24,10 +24,10 @@ export function ExampleRides() {
             key={ride.key}
             className="grid grid-cols-[52px_minmax(0,1fr)_auto] items-center gap-3 p-[18px] sm:grid-cols-[64px_minmax(0,1fr)_auto] sm:gap-4"
           >
-            <div className="font-data flex flex-col leading-[1.2]">
-              <span className="text-muted-foreground text-[11px] uppercase">
+            <div className="font-data flex flex-col gap-0.5 leading-[1.2]">
+              <Text variant="meta" className="text-muted-foreground uppercase">
                 {t(`rides.${ride.key}.day`)}
-              </span>
+              </Text>
               <span className="text-[17px] font-medium">{ride.time}</span>
             </div>
             <div className="flex min-w-0 flex-col gap-1 wrap-break-word">

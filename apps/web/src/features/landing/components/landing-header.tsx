@@ -19,7 +19,7 @@ export function LandingHeader({ pathname }: LandingHeaderProps) {
         <Logo height={24} />
       </Link>
       <nav aria-label={t('navLabel')} className="flex items-center gap-2 sm:gap-4">
-        <Button variant="nav" asChild className="hidden text-sm sm:inline-flex">
+        <Button variant="nav" asChild className="hidden text-[13px] sm:inline-flex">
           <Link href="/#how-it-works">{t('howItWorks')}</Link>
         </Button>
         <Button variant="ghost" size="sm" asChild className="font-data">
