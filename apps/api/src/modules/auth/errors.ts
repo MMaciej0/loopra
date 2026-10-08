@@ -31,26 +31,6 @@ export class InvalidCredentialsError extends AppError {
   }
 }
 
-export class OAuthAccountExistsError extends AppError {
-  constructor() {
-    super(
-      409,
-      ERROR_TYPES.OAUTH_ONLY_ACCOUNT,
-      'This email is registered via Google. Please log in with Google.',
-    );
-  }
-}
-
-export class OAuthLoginRequiredError extends AppError {
-  constructor() {
-    super(
-      401,
-      ERROR_TYPES.OAUTH_ONLY_ACCOUNT,
-      'This account uses Google sign-in. Please log in with Google.',
-    );
-  }
-}
-
 export class OAuthOnlyAccountError extends AppError {
   constructor() {
     super(

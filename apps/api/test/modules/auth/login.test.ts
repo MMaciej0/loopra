@@ -40,6 +40,22 @@ describe('POST /auth/login', () => {
     expect(response.json()).toMatchObject({ type: 'INVALID_CREDENTIALS' });
   });
 
+  it('returns status 401 with invalid credentials for an account with no password', async () => {
+    await appRef.app.db.insert(users).values({ email: 'google@example.com' });
+
+    const response = await appRef.app.inject({
+      method: 'POST',
+      url: '/auth/login',
+      body: { email: 'google@example.com', password: 'password-password' },
+    });
+
+    expect(response.statusCode).toBe(401);
+    expect(response.json()).toEqual({
+      type: 'INVALID_CREDENTIALS',
+      message: 'Invalid credentials',
+    });
+  });
+
   describe('when user exists', () => {
     const TEST_EMAIL = 'wrongpassword@example.com';
     const TEST_PASSWORD = 'correct-Password123!';
