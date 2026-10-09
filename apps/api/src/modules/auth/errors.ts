@@ -41,6 +41,12 @@ export class OAuthOnlyAccountError extends AppError {
   }
 }
 
+export class OAuthEmailNotVerifiedError extends AppError {
+  constructor() {
+    super(403, ERROR_TYPES.OAUTH_EMAIL_NOT_VERIFIED, 'Google has not verified this email address.');
+  }
+}
+
 export class InvalidPasswordError extends AppError {
   constructor() {
     super(400, ERROR_TYPES.INVALID_PASSWORD, 'Invalid password');

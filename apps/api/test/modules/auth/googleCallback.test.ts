@@ -15,7 +15,7 @@ describe('GET /auth/google/callback', () => {
       getAccessTokenFromAuthorizationCodeFlow: vi.fn().mockResolvedValue({
         token: { access_token: FAKE_TOKEN },
       }),
-      userinfo: vi.fn().mockResolvedValue({ sub: GOOGLE_SUB, email: EMAIL }),
+      userinfo: vi.fn().mockResolvedValue({ sub: GOOGLE_SUB, email: EMAIL, email_verified: true }),
     };
   });
 
@@ -172,7 +172,7 @@ describe('GET /auth/google/callback', () => {
     beforeEach(async () => {
       (appRef.app as any).oauth2Google.userinfo = vi
         .fn()
-        .mockResolvedValue({ sub: GOOGLE_SUB, email: 'Test@Example.com' });
+        .mockResolvedValue({ sub: GOOGLE_SUB, email: 'Test@Example.com', email_verified: true });
       await appRef.app.db.insert(users).values({ email: EMAIL, password_hash: 'hashed' });
     });
 
@@ -191,6 +191,77 @@ describe('GET /auth/google/callback', () => {
 
       expect(allUsers).toHaveLength(1);
       expect(oauthAccount?.user_id).toBe(allUsers[0].id);
+    });
+  });
+
+  describe('when Google did not verify the email', () => {
+    const mockUserinfo = (userinfo: Record<string, unknown>) => {
+      (appRef.app as any).oauth2Google.userinfo = vi.fn().mockResolvedValue(userinfo);
+    };
+
+    const callback = () => appRef.app.inject({ method: 'GET', url: '/auth/google/callback' });
+
+    it('refuses to link to an existing account', async () => {
+      mockUserinfo({ sub: GOOGLE_SUB, email: EMAIL, email_verified: false });
+      await appRef.app.db.insert(users).values({ email: EMAIL, password_hash: 'hashed' });
+
+      const response = await callback();
+
+      const oauthAccounts = await appRef.app.db.select().from(oauth_accounts);
+      const [user] = await appRef.app.db.select().from(users).where(eq(users.email, EMAIL));
+
+      expect(response.statusCode).toBe(403);
+      expect(response.json()).toMatchObject({ type: 'OAUTH_EMAIL_NOT_VERIFIED' });
+      expect(oauthAccounts).toEqual([]);
+      expect(user.email_verified).toBe(false);
+      expect(user.email_verified_at).toBeNull();
+      expect(response.cookies).toEqual([]);
+    });
+
+    it('creates no user when no account exists', async () => {
+      mockUserinfo({ sub: GOOGLE_SUB, email: EMAIL, email_verified: false });
+
+      const response = await callback();
+
+      const allUsers = await appRef.app.db.select().from(users);
+
+      expect(response.statusCode).toBe(403);
+      expect(response.json()).toMatchObject({ type: 'OAUTH_EMAIL_NOT_VERIFIED' });
+      expect(allUsers).toEqual([]);
+    });
+
+    it('refuses when the field is missing', async () => {
+      mockUserinfo({ sub: GOOGLE_SUB, email: EMAIL });
+
+      const response = await callback();
+
+      expect(response.statusCode).toBe(403);
+      expect(response.json()).toMatchObject({ type: 'OAUTH_EMAIL_NOT_VERIFIED' });
+    });
+
+    it('refuses when the field is the string "true"', async () => {
+      mockUserinfo({ sub: GOOGLE_SUB, email: EMAIL, email_verified: 'true' });
+
+      const response = await callback();
+
+      expect(response.statusCode).toBe(403);
+      expect(response.json()).toMatchObject({ type: 'OAUTH_EMAIL_NOT_VERIFIED' });
+    });
+
+    it('refuses a returning Google user', async () => {
+      mockUserinfo({ sub: GOOGLE_SUB, email: EMAIL, email_verified: false });
+      const [user] = await appRef.app.db.insert(users).values({ email: EMAIL }).returning();
+      await appRef.app.db.insert(oauth_accounts).values({
+        provider: 'google',
+        provider_user_id: GOOGLE_SUB,
+        user_id: user.id,
+      });
+
+      const response = await callback();
+
+      expect(response.statusCode).toBe(403);
+      expect(response.json()).toMatchObject({ type: 'OAUTH_EMAIL_NOT_VERIFIED' });
+      expect(response.cookies).toEqual([]);
     });
   });
 });
