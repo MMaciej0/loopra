@@ -1,7 +1,7 @@
 import { and, eq } from 'drizzle-orm';
 import type { FastifyInstance } from 'fastify';
 import { oauth_accounts, users } from '../../../db/schema.js';
-import { createTokenFamily } from './tokenFamily.js';
+import { createTokenFamily, deleteAllFamilies } from './tokenFamily.js';
 
 interface FindOrCreateOAuthUserParams {
   fastify: FastifyInstance;
@@ -41,31 +41,32 @@ export const findOrCreateOAuthUser = async ({
     return { userId: oauthAccount.user_id, accessToken, familyUuid, rawRefreshToken };
   }
 
-  // Case 2 — existing email user, first OAuth login: link the account and mark verified
+  // Case 2 — existing verified email user, first OAuth login: link the account
   const [existingUser] = await fastify.db
     .select()
     .from(users)
     .where(eq(users.email, email))
     .limit(1);
 
-  if (existingUser) {
+  if (existingUser?.email_verified) {
     await fastify.db.insert(oauth_accounts).values({
       user_id: existingUser.id,
       provider,
       provider_user_id: providerUserId,
     });
 
-    await fastify.db
-      .update(users)
-      .set({ email_verified: true, email_verified_at: new Date() })
-      .where(eq(users.id, existingUser.id));
-
     const { familyUuid, rawRefreshToken } = await createTokenFamily(fastify.redis, existingUser.id);
     const accessToken = fastify.jwt.sign({ sub: existingUser.id, email_verified: true });
     return { userId: existingUser.id, accessToken, familyUuid, rawRefreshToken };
   }
 
-  // Case 3 — brand new user: Google already verified the email
+  // An unverified account is disposable (docs/adr/0002): delete it and fall through to Case 3
+  if (existingUser) {
+    await deleteAllFamilies(fastify.redis, existingUser.id);
+    await fastify.db.delete(users).where(eq(users.id, existingUser.id));
+  }
+
+  // Case 3 — new user: Google already verified the email
   const [newUser] = await fastify.db
     .insert(users)
     .values({

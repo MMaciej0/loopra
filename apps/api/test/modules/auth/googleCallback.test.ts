@@ -1,6 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { useApp } from '../../helpers/app.js';
-import { oauth_accounts, selected_locations, users } from '../../../src/db/schema.js';
+import {
+  favorite_locations,
+  oauth_accounts,
+  selected_locations,
+  users,
+} from '../../../src/db/schema.js';
 import { eq } from 'drizzle-orm';
 
 describe('GET /auth/google/callback', () => {
@@ -54,12 +59,22 @@ describe('GET /auth/google/callback', () => {
     });
   });
 
-  describe('when user exists by email but has no oauth account (first google login)', () => {
+  describe('when a verified account exists by email (first google login)', () => {
+    const PASSWORD = 'Password123!';
+    let existingUserId: string;
+
     beforeEach(async () => {
+      const registerResponse = await appRef.app.inject({
+        method: 'POST',
+        url: '/auth/register',
+        body: { email: EMAIL, password: PASSWORD, username: 'owner' },
+      });
+      existingUserId = registerResponse.json().user.id;
+
       await appRef.app.db
-        .insert(users)
-        .values({ email: EMAIL, password_hash: 'hashed' })
-        .returning();
+        .update(users)
+        .set({ email_verified: true, email_verified_at: new Date() })
+        .where(eq(users.id, existingUserId));
     });
 
     it('links oauth account to existing user', async () => {
@@ -68,22 +83,121 @@ describe('GET /auth/google/callback', () => {
         url: '/auth/google/callback',
       });
 
+      const allUsers = await appRef.app.db.select().from(users);
       const [oauthAccount] = await appRef.app.db
         .select()
         .from(oauth_accounts)
         .where(eq(oauth_accounts.provider_user_id, GOOGLE_SUB))
         .limit(1);
 
-      expect(oauthAccount).toBeDefined();
+      expect(allUsers).toHaveLength(1);
+      expect(allUsers[0].id).toBe(existingUserId);
+      expect(allUsers[0].username).toBe('owner');
+      expect(oauthAccount?.user_id).toBe(existingUserId);
+    });
 
-      const [user] = await appRef.app.db
+    it('keeps the password working', async () => {
+      await appRef.app.inject({
+        method: 'GET',
+        url: '/auth/google/callback',
+      });
+
+      const response = await appRef.app.inject({
+        method: 'POST',
+        url: '/auth/login',
+        body: { email: EMAIL, password: PASSWORD },
+      });
+
+      expect(response.statusCode).toBe(200);
+    });
+
+    it('redirects and sets auth cookies', async () => {
+      const response = await appRef.app.inject({
+        method: 'GET',
+        url: '/auth/google/callback',
+      });
+
+      expect(response.cookies.find((c) => c.name === 'accessToken')).toBeDefined();
+      expect(response.cookies.find((c) => c.name === 'refreshToken')).toBeDefined();
+      expect(response.statusCode).toBe(302);
+    });
+  });
+
+  describe('when an unverified account exists by email (first google login)', () => {
+    const PASSWORD = 'Password123!';
+    let oldUserId: string;
+    let oldRefreshToken: string;
+
+    beforeEach(async () => {
+      const registerResponse = await appRef.app.inject({
+        method: 'POST',
+        url: '/auth/register',
+        body: { email: EMAIL, password: PASSWORD, username: 'stranger' },
+      });
+      oldUserId = registerResponse.json().user.id;
+      oldRefreshToken =
+        registerResponse.cookies.find((c) => c.name === 'refreshToken')?.value || '';
+
+      await appRef.app.db.insert(favorite_locations).values({
+        user_id: oldUserId,
+        location: { x: 19.94, y: 50.06 },
+        city: 'Kraków',
+        country: 'Poland',
+      });
+    });
+
+    it('answers the old password with invalid credentials', async () => {
+      await appRef.app.inject({
+        method: 'GET',
+        url: '/auth/google/callback',
+      });
+
+      const response = await appRef.app.inject({
+        method: 'POST',
+        url: '/auth/login',
+        body: { email: EMAIL, password: PASSWORD },
+      });
+
+      expect(response.statusCode).toBe(401);
+      expect(response.json()).toMatchObject({ type: 'INVALID_CREDENTIALS' });
+    });
+
+    it('refuses the old refresh token', async () => {
+      await appRef.app.inject({
+        method: 'GET',
+        url: '/auth/google/callback',
+      });
+
+      const response = await appRef.app.inject({
+        method: 'POST',
+        url: '/auth/refresh',
+        cookies: { refreshToken: oldRefreshToken },
+      });
+
+      expect(response.statusCode).toBe(401);
+    });
+
+    it('creates a new user and drops the old username and Favourite Locations', async () => {
+      await appRef.app.inject({
+        method: 'GET',
+        url: '/auth/google/callback',
+      });
+
+      const allUsers = await appRef.app.db.select().from(users);
+      const favoriteLocations = await appRef.app.db.select().from(favorite_locations);
+      const [oauthAccount] = await appRef.app.db
         .select()
-        .from(users)
-        .where(eq(users.email, EMAIL))
+        .from(oauth_accounts)
+        .where(eq(oauth_accounts.provider_user_id, GOOGLE_SUB))
         .limit(1);
 
-      expect(user).toBeDefined();
-      expect(oauthAccount?.user_id).toBe(user?.id);
+      expect(allUsers).toHaveLength(1);
+      expect(allUsers[0].id).not.toBe(oldUserId);
+      expect(allUsers[0].username).toBeNull();
+      expect(allUsers[0].password_hash).toBeNull();
+      expect(allUsers[0].email_verified).toBe(true);
+      expect(favoriteLocations).toEqual([]);
+      expect(oauthAccount?.user_id).toBe(allUsers[0].id);
     });
 
     it('redirects and sets auth cookies', async () => {
@@ -173,7 +287,9 @@ describe('GET /auth/google/callback', () => {
       (appRef.app as any).oauth2Google.userinfo = vi
         .fn()
         .mockResolvedValue({ sub: GOOGLE_SUB, email: 'Test@Example.com', email_verified: true });
-      await appRef.app.db.insert(users).values({ email: EMAIL, password_hash: 'hashed' });
+      await appRef.app.db
+        .insert(users)
+        .values({ email: EMAIL, password_hash: 'hashed', email_verified: true });
     });
 
     it('links oauth account to existing user and creates no second user', async () => {
