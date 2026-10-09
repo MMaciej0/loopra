@@ -457,14 +457,14 @@ OAuth is an alternative identity verification path. Once the user's identity is 
 4. Server validates `state` matches the cookie (CSRF check).
 5. Server POSTs to Google's token endpoint with `code` + `client_secret` → receives `access_token` + `id_token`.
 6. Server calls `https://www.googleapis.com/oauth2/v3/userinfo` with the access token → receives `{ sub, email, email_verified, name, picture }`.
-7. `findOrCreateOAuthUser(db, provider="google", providerUserId=sub, email, name, picture)`:
-   - Find `oauth_accounts` by `(provider, providerUserId)` → user exists → proceed to step 8
-   - Else find `users` by `email` → link new `oauth_accounts` row to existing user → proceed to step 8
-   - Else create new `users` row (`password_hash = null`) + new `oauth_accounts` row
-   - If Google returns `email_verified = true`, set `email_verified_at` for that user.
-8. `createTokenFamily(redis, userId)` — same as password login from here
-9. Sign access JWT, set both httpOnly cookies.
-10. `302` redirect to `FRONTEND_URL` (e.g. `/dashboard`).
+7. If `email_verified` is not the boolean `true`, stop with `403 OAUTH_EMAIL_NOT_VERIFIED`. This runs for every Google login, before any database lookup: no link, no new user, no cookies. A Google login proves the Google Account (`sub`); it proves the mailbox only when Google says so.
+8. `findOrCreateOAuthUser(db, provider="google", providerUserId=sub, email, name, picture)`:
+   - Find `oauth_accounts` by `(provider, providerUserId)` → user exists → proceed to step 9
+   - Else find `users` by `email` → link new `oauth_accounts` row to existing user and set `email_verified_at` → proceed to step 9
+   - Else create new `users` row (`password_hash = null`, `email_verified_at` set) + new `oauth_accounts` row
+9. `createTokenFamily(redis, userId)` — same as password login from here
+10. Sign access JWT, set both httpOnly cookies.
+11. `302` redirect to `FRONTEND_URL` (e.g. `/dashboard`).
 
 **Why `sub`, not `email`?** Google's `sub` is a permanent, immutable user ID. Email can be changed or transferred. Always identify OAuth users by `provider_user_id = sub`.
 

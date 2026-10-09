@@ -24,7 +24,7 @@ import { changePassword } from './services/changePassword.js';
 import { findOrCreateOAuthUser } from './services/findOrCreateOAuthUser.js';
 import { sendEmailVerification } from './services/sendEmailVerification.js';
 import { verifyEmail } from './services/verifyEmail.js';
-import { InvalidTokenError, UnauthorizedError } from './errors.js';
+import { InvalidTokenError, OAuthEmailNotVerifiedError, UnauthorizedError } from './errors.js';
 import { clearAuthCookies, setAuthCookies } from './services/cookies.js';
 import { parseBody } from '../../utils/validation.js';
 import { APP_URL } from '../../config/env.js';
@@ -224,7 +224,12 @@ export const authRoutes = (fastify: FastifyInstance, _options: unknown) => {
     const userinfo = (await fastify.oauth2Google!.userinfo(token)) as {
       sub: string;
       email: string;
+      email_verified?: unknown;
     };
+    if (userinfo.email_verified !== true) {
+      throw new OAuthEmailNotVerifiedError();
+    }
+
     const { sub } = userinfo;
     const email = parseBody(userinfo.email, EmailSchema);
 
