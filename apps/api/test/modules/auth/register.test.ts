@@ -79,6 +79,24 @@ describe('POST /auth/register', () => {
     });
   });
 
+  it('returns 409 to the request that loses when two arrive at once', async () => {
+    const body = { email: 'test@example.com', password: 'Password123!', username: 'test' };
+
+    const responses = await Promise.all([
+      appRef.app.inject({ method: 'POST', url: '/auth/register', body }),
+      appRef.app.inject({ method: 'POST', url: '/auth/register', body }),
+    ]);
+
+    const refused = responses.filter((response) => response.statusCode !== 200);
+
+    expect(responses.map((response) => response.statusCode).sort((a, b) => a - b)).toEqual([
+      200, 409,
+    ]);
+    expect(refused[0].json().type).toBe('USER_ALREADY_EXISTS');
+    expect(refused[0].cookies).toEqual([]);
+    expect(await appRef.app.db.select().from(users)).toHaveLength(1);
+  });
+
   it('returns 400 for missing email', async () => {
     const response = await appRef.app.inject({
       method: 'POST',

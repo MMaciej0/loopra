@@ -186,6 +186,8 @@ Services throw them; controllers let them fall through to `plugins/globalErrorHa
 
 `ERROR_TYPES` in `packages/domain` is the wire vocabulary shared with web. Name an error class for the **response it produces**, not the cause: login answers `InvalidCredentialsError` for an unknown email, a wrong password and a Google-only account (no `password_hash`), so the anti-enumeration behaviour is visible in the name rather than discoverable. Register does the same with `UserAlreadyExistsError` for every taken email. `OAUTH_ONLY_ACCOUNT` is answered only by `POST /auth/change-password`, which requires login — no unauthenticated endpoint may reveal how an account signs in.
 
+A unique value is checked by the insert itself, never by a `select` first: `insert ... onConflictDoNothing({ target })`, then throw the module's error when no row came back. `registerUser` has no lookup before its insert for this reason — a `select` followed by an `insert` is a race condition, and the request that loses it gets a raw Postgres `23505`, which the handler answers as `500`.
+
 ### Key Architectural Decisions
 
 - **PostGIS** for all geospatial queries. Rides filter by a `bbox` with `&&` against `ST_MakeEnvelope`, so the GiST index serves it; the box's maximum size is `SEARCH_AREA_MAX_KM` in `packages/domain`
