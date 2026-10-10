@@ -1,4 +1,4 @@
-import { and, eq } from 'drizzle-orm';
+import { and, eq, TransactionRollbackError } from 'drizzle-orm';
 import type { FastifyInstance } from 'fastify';
 import { oauth_accounts, users } from '../../../db/schema.js';
 import { createTokenFamily, deleteAllFamilies } from './tokenFamily.js';
@@ -10,7 +10,9 @@ interface FindOrCreateOAuthUserParams {
   email: string;
 }
 
-export const findOrCreateOAuthUser = async ({
+const MAX_ATTEMPTS = 3;
+
+const attemptFindOrCreate = async ({
   fastify,
   provider,
   providerUserId,
@@ -30,15 +32,7 @@ export const findOrCreateOAuthUser = async ({
     .limit(1);
 
   if (oauthAccount) {
-    const { familyUuid, rawRefreshToken } = await createTokenFamily(
-      fastify.redis,
-      oauthAccount.user_id,
-    );
-    const accessToken = fastify.jwt.sign({
-      sub: oauthAccount.user_id,
-      email_verified: oauthAccount.email_verified,
-    });
-    return { userId: oauthAccount.user_id, accessToken, familyUuid, rawRefreshToken };
+    return { userId: oauthAccount.user_id, emailVerified: oauthAccount.email_verified };
   }
 
   // Case 2 — existing verified email user, first OAuth login: link the account
@@ -49,15 +43,13 @@ export const findOrCreateOAuthUser = async ({
     .limit(1);
 
   if (existingUser?.email_verified) {
-    await fastify.db.insert(oauth_accounts).values({
-      user_id: existingUser.id,
-      provider,
-      provider_user_id: providerUserId,
-    });
+    const [linked] = await fastify.db
+      .insert(oauth_accounts)
+      .values({ user_id: existingUser.id, provider, provider_user_id: providerUserId })
+      .onConflictDoNothing({ target: [oauth_accounts.provider, oauth_accounts.provider_user_id] })
+      .returning({ id: oauth_accounts.id });
 
-    const { familyUuid, rawRefreshToken } = await createTokenFamily(fastify.redis, existingUser.id);
-    const accessToken = fastify.jwt.sign({ sub: existingUser.id, email_verified: true });
-    return { userId: existingUser.id, accessToken, familyUuid, rawRefreshToken };
+    return linked ? { userId: existingUser.id, emailVerified: true } : null;
   }
 
   // An unverified account is disposable (docs/adr/0002): delete it and fall through to Case 3
@@ -67,23 +59,58 @@ export const findOrCreateOAuthUser = async ({
   }
 
   // Case 3 — new user: Google already verified the email
-  const [newUser] = await fastify.db
-    .insert(users)
-    .values({
-      email,
-      password_hash: null,
-      email_verified: true,
-      email_verified_at: new Date(),
-    })
-    .returning();
+  try {
+    return await fastify.db.transaction(async (tx) => {
+      const [newUser] = await tx
+        .insert(users)
+        .values({
+          email,
+          password_hash: null,
+          email_verified: true,
+          email_verified_at: new Date(),
+        })
+        .onConflictDoNothing({ target: users.email })
+        .returning();
 
-  await fastify.db.insert(oauth_accounts).values({
-    user_id: newUser.id,
-    provider,
-    provider_user_id: providerUserId,
-  });
+      if (!newUser) {
+        return null;
+      }
 
-  const { familyUuid, rawRefreshToken } = await createTokenFamily(fastify.redis, newUser.id);
-  const accessToken = fastify.jwt.sign({ sub: newUser.id, email_verified: true });
-  return { userId: newUser.id, accessToken, familyUuid, rawRefreshToken };
+      const [linked] = await tx
+        .insert(oauth_accounts)
+        .values({ user_id: newUser.id, provider, provider_user_id: providerUserId })
+        .onConflictDoNothing({ target: [oauth_accounts.provider, oauth_accounts.provider_user_id] })
+        .returning({ id: oauth_accounts.id });
+
+      if (!linked) {
+        tx.rollback();
+      }
+
+      return { userId: newUser.id, emailVerified: true };
+    });
+  } catch (error) {
+    if (error instanceof TransactionRollbackError) {
+      return null;
+    }
+    throw error;
+  }
+};
+
+export const findOrCreateOAuthUser = async (params: FindOrCreateOAuthUserParams) => {
+  const { fastify } = params;
+
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+    const found = await attemptFindOrCreate(params);
+
+    if (found) {
+      const { familyUuid, rawRefreshToken } = await createTokenFamily(fastify.redis, found.userId);
+      const accessToken = fastify.jwt.sign({
+        sub: found.userId,
+        email_verified: found.emailVerified,
+      });
+      return { userId: found.userId, accessToken, familyUuid, rawRefreshToken };
+    }
+  }
+
+  throw new Error(`OAuth login lost the race ${MAX_ATTEMPTS} times in a row`);
 };
