@@ -1,4 +1,3 @@
-import { eq } from 'drizzle-orm';
 import bcrypt from 'bcrypt';
 import type { FastifyInstance } from 'fastify';
 import { users } from '../../../db/schema.js';
@@ -14,22 +13,17 @@ interface RegisterUserParams {
 
 export const registerUser = async ({ fastify, registerCredentials }: RegisterUserParams) => {
   const { email, password, username } = registerCredentials;
-  const [existingUser] = await fastify.db
-    .select()
-    .from(users)
-    .where(eq(users.email, email))
-    .limit(1);
-
-  if (existingUser) {
-    throw new UserAlreadyExistsError();
-  }
-
   const passwordHash = await bcrypt.hash(password, 10);
 
   const [user] = await fastify.db
     .insert(users)
     .values({ email, password_hash: passwordHash, username })
+    .onConflictDoNothing({ target: users.email })
     .returning();
+
+  if (!user) {
+    throw new UserAlreadyExistsError();
+  }
 
   const { familyUuid, rawRefreshToken } = await createTokenFamily(fastify.redis, user.id);
   const accessToken = fastify.jwt.sign({ sub: user.id, email_verified: user.email_verified });
