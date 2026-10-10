@@ -18,7 +18,7 @@ An unverified account can hold nothing worth keeping, and this decision depends 
 
 An honest person who registered with a password, never verified and then logs in with Google silently loses their username and locations, and their password stops working. No message tells them. Password reset later sends the "you sign in with Google" email, which is the only explanation they get.
 
-The delete and the create are not wrapped in a transaction. If the create fails after the delete, the next Google login finds no account and creates one; the unverified row being gone is the wanted state either way.
+The delete and the create are not wrapped in one transaction. The create is a transaction of its own (the `users` row and the `oauth_accounts` row are written together, #127), and the delete stays outside it. If the create fails after the delete, the next Google login finds no account and creates one; the unverified row being gone is the wanted state either way.
 
 The stranger's access token is a stateless JWT and lives up to 15 minutes after the delete. It carries `email_verified: false` and points to a user that no longer exists, so `/users/me` endpoints answer it with an error. That window is accepted; a deny-list checked on every request was judged too much for it.
 
