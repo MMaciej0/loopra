@@ -24,6 +24,12 @@ describe('GET /auth/google/callback', () => {
     };
   });
 
+  const callbackTwiceAtOnce = () =>
+    Promise.all([
+      appRef.app.inject({ method: 'GET', url: '/auth/google/callback' }),
+      appRef.app.inject({ method: 'GET', url: '/auth/google/callback' }),
+    ]);
+
   describe('when oauth account already exists (returning user)', () => {
     beforeEach(async () => {
       const [user] = await appRef.app.db.insert(users).values({ email: EMAIL }).returning();
@@ -120,6 +126,24 @@ describe('GET /auth/google/callback', () => {
       expect(response.cookies.find((c) => c.name === 'accessToken')).toBeDefined();
       expect(response.cookies.find((c) => c.name === 'refreshToken')).toBeDefined();
       expect(response.statusCode).toBe(302);
+    });
+
+    it('logs in both requests when two arrive at once', async () => {
+      const responses = await callbackTwiceAtOnce();
+
+      expect(responses.map((response) => response.statusCode)).toEqual([302, 302]);
+      for (const response of responses) {
+        expect(response.cookies.find((c) => c.name === 'accessToken')).toBeDefined();
+        expect(response.cookies.find((c) => c.name === 'refreshToken')).toBeDefined();
+      }
+
+      const allUsers = await appRef.app.db.select().from(users);
+      const allOauthAccounts = await appRef.app.db.select().from(oauth_accounts);
+
+      expect(allUsers).toHaveLength(1);
+      expect(allUsers[0].id).toBe(existingUserId);
+      expect(allOauthAccounts).toHaveLength(1);
+      expect(allOauthAccounts[0].user_id).toBe(existingUserId);
     });
   });
 
@@ -279,6 +303,23 @@ describe('GET /auth/google/callback', () => {
       expect(response.cookies.find((c) => c.name === 'accessToken')).toBeDefined();
       expect(response.cookies.find((c) => c.name === 'refreshToken')).toBeDefined();
       expect(response.statusCode).toBe(302);
+    });
+
+    it('logs in both requests when two arrive at once', async () => {
+      const responses = await callbackTwiceAtOnce();
+
+      expect(responses.map((response) => response.statusCode)).toEqual([302, 302]);
+      for (const response of responses) {
+        expect(response.cookies.find((c) => c.name === 'accessToken')).toBeDefined();
+        expect(response.cookies.find((c) => c.name === 'refreshToken')).toBeDefined();
+      }
+
+      const allUsers = await appRef.app.db.select().from(users);
+      const allOauthAccounts = await appRef.app.db.select().from(oauth_accounts);
+
+      expect(allUsers).toHaveLength(1);
+      expect(allOauthAccounts).toHaveLength(1);
+      expect(allOauthAccounts[0].user_id).toBe(allUsers[0].id);
     });
   });
 
