@@ -53,9 +53,11 @@ export function JoinCard({ ride }: Props) {
     setHasError(false);
     startTransition(async () => {
       const result = await action(ride.id);
-      setIsCancelOpen(false);
 
-      if (result.ok) return;
+      if (result.ok) {
+        setIsCancelOpen(false);
+        return;
+      }
 
       switch (result.errorType) {
         case ERROR_TYPES.MAX_PARTICIPANTS:
@@ -72,6 +74,11 @@ export function JoinCard({ ride }: Props) {
           setHasError(true);
       }
     });
+  }
+
+  function handleCancelOpenChange(open: boolean) {
+    setIsCancelOpen(open);
+    setHasError(false);
   }
 
   return (
@@ -105,7 +112,7 @@ export function JoinCard({ ride }: Props) {
           <Text variant="body-s" className="text-muted-foreground">
             {t('joinOrganising')}
           </Text>
-          <Dialog open={isCancelOpen} onOpenChange={setIsCancelOpen}>
+          <Dialog open={isCancelOpen} onOpenChange={handleCancelOpenChange}>
             <DialogTrigger asChild>
               <Button variant="ghost" size="xs">
                 {t('cancelAction')}
@@ -118,6 +125,11 @@ export function JoinCard({ ride }: Props) {
                   {t('cancelDialogRiders', { count: otherRidersCount })} {t('cancelDialogFinal')}
                 </DialogDescription>
               </DialogHeader>
+              {hasError && (
+                <p role="alert" className="text-destructive text-[11.5px]">
+                  {t('cancelError')}
+                </p>
+              )}
               <DialogFooter showCancel cancelLabel={t('cancelDialogKeep')}>
                 <Button
                   variant="destructive"
@@ -177,7 +189,7 @@ export function JoinCard({ ride }: Props) {
           )}
         </>
       )}
-      {hasError && (
+      {hasError && !isCancelOpen && (
         <p role="alert" className="text-destructive mt-1.5 text-[11.5px]">
           {t('joinError')}
         </p>

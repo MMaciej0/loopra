@@ -127,6 +127,7 @@
     "cancelDialogFinal": "Cancelling is final. You cannot undo it.",
     "cancelDialogKeep": "Keep ride",
     "cancelDialogConfirm": "Cancel ride",
+    "cancelError": "The ride was not cancelled. Try again.",
     "cancelledBanner": "Cancelled. The organiser called this ride off.",
     "participantsHeading": "WHO'S COMING",
     "participantsOrganiser": "· Organiser",

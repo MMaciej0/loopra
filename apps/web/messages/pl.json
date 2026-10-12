@@ -127,6 +127,7 @@
     "cancelDialogFinal": "Odwołanie jest ostateczne. Nie można go cofnąć.",
     "cancelDialogKeep": "Zostaw jazdę",
     "cancelDialogConfirm": "Odwołaj jazdę",
+    "cancelError": "Jazda nie została odwołana. Spróbuj ponownie.",
     "cancelledBanner": "Odwołana. Organizator odwołał tę jazdę.",
     "participantsHeading": "KTO JEDZIE",
     "participantsOrganiser": "· Organizator",
