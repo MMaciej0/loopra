@@ -8,16 +8,22 @@ interface Options {
 }
 
 const upsertRateLimit = async (redis: Redis, key: string, options: Options) => {
-  const value = await redis.get(key);
+  const result = await redis.multi().incr(key).expire(key, options.timeout, 'NX').exec();
 
-  if (value) {
-    if (Number(value) >= options.maxAttempts) {
-      throw new RateLimitExceededError();
-    } else {
-      await redis.incr(key);
-    }
-  } else {
-    await redis.set(key, 1, 'EX', options.timeout);
+  if (!result) {
+    throw new Error('Rate limit transaction returned no result');
+  }
+
+  const error = result[0][0] || result[1][0];
+
+  if (error) {
+    throw error;
+  }
+
+  const count = Number(result[0][1]);
+
+  if (count > options.maxAttempts) {
+    throw new RateLimitExceededError();
   }
 };
 
