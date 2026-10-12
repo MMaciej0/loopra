@@ -247,7 +247,7 @@ No base URL prefix — routes are mounted directly (e.g. `/auth`, `/users`).
 | POST   | `/rides`                  | ✓ + verified | Create ride                                 |
 | GET    | `/rides/:id`              | ✓            | Ride details                                |
 | PATCH  | `/rides/:id`              | ✓            | Update (creator only)                       |
-| DELETE | `/rides/:id`              | ✓            | Cancel (creator only)                       |
+| POST   | `/rides/:id/cancel`       | ✓ + verified | Cancel (organiser only, final)              |
 | POST   | `/rides/:id/join`         | ✓ + verified | Join ride                                   |
 | DELETE | `/rides/:id/leave`        | ✓            | Leave ride                                  |
 | GET    | `/rides/:id/participants` | ✓            | Participant list                            |

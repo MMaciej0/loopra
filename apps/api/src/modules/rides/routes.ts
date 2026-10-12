@@ -17,7 +17,7 @@ import { listRides } from './services/listRides.js';
 import { listRideMarkers } from './services/listRideMarkers.js';
 import { createRide } from './services/createRide.js';
 import { updateRide } from './services/updateRide.js';
-import { deleteRide } from './services/deleteRide.js';
+import { cancelRide } from './services/cancelRide.js';
 import { joinRide } from './services/joinRide.js';
 import { leaveRide } from './services/leaveRide.js';
 import { getRide } from './services/getRide.js';
@@ -85,17 +85,17 @@ export const ridesRoutes = async (fastify: FastifyInstance) => {
     },
   );
 
-  fastify.delete(
-    '/:id',
+  fastify.post(
+    '/:id/cancel',
     {
       preHandler: fastify.requireVerifiedEmail,
       schema: { response: { 200: RideResponseSchema } },
     },
     async (request, reply) => {
       const { id } = request.params as { id: string };
-      const deletedRide = await deleteRide(fastify.db, id, request.user.sub);
+      const cancelledRide = await cancelRide(fastify.db, id, request.user.sub);
 
-      return reply.send({ data: deletedRide });
+      return reply.send({ data: cancelledRide });
     },
   );
 

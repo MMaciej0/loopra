@@ -4,6 +4,7 @@ import { ride_participants, rides } from '../../../db/schema.js';
 import {
   RideNotFoundError,
   RideAlreadyStartedError,
+  RideCancelledError,
   MaxParticipantsError,
   ParticipantExistsError,
 } from '../errors.js';
@@ -21,6 +22,10 @@ export const joinRide = async (db: Db, userId: string, rideId: string) => {
 
     if (!existingRide) {
       throw new RideNotFoundError();
+    }
+
+    if (existingRide.status === 'cancelled') {
+      throw new RideCancelledError();
     }
 
     if (existingRide.start_time <= new Date()) {

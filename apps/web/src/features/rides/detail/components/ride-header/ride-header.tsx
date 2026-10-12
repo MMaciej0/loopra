@@ -12,9 +12,18 @@ export function RideHeader({ ride }: Props) {
   const tRide = useTranslations('RideTypes');
   const tDrop = useTranslations('DropPolicies');
   const tExperience = useTranslations('ExperiencePolicies');
+  const tPage = useTranslations('RidePage');
 
   return (
     <div className="-order-2 lg:order-none">
+      {ride.status === 'cancelled' && (
+        <div
+          role="status"
+          className="bg-destructive-bg text-destructive border-destructive-border font-ui mb-4 rounded-xl border px-3.5 py-3 text-[13.5px] font-medium"
+        >
+          {tPage('cancelledBanner')}
+        </div>
+      )}
       <div className="mb-3.5 flex flex-wrap gap-2">
         <Badge variant="accentDeep" size="sm" className="py-1 tracking-[0.02em]">
           <BadgeDot />

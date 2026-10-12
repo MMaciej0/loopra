@@ -2,7 +2,7 @@ import { eq } from 'drizzle-orm';
 import { Db } from '../../../db/index.js';
 import { rides } from '../../../db/schema.js';
 import { UpdateRideBody } from '../schema.js';
-import { RideNotFoundError, RideUpdateBadBodyError } from '../errors.js';
+import { RideCancelledError, RideNotFoundError, RideUpdateBadBodyError } from '../errors.js';
 
 export const updateRide = async (
   db: Db,
@@ -18,6 +18,10 @@ export const updateRide = async (
 
   if (existingRide.creator_id !== creatorId) {
     throw new RideNotFoundError();
+  }
+
+  if (existingRide.status === 'cancelled') {
+    throw new RideCancelledError();
   }
 
   if (

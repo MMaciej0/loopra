@@ -5,6 +5,7 @@ import {
   CreatorCannotLeaveError,
   ParticipantNotFoundError,
   RideAlreadyStartedError,
+  RideCancelledError,
   RideNotFoundError,
 } from '../errors.js';
 
@@ -13,6 +14,10 @@ export const leaveRide = async (db: Db, userId: string, rideId: string) => {
 
   if (!existingRide) {
     throw new RideNotFoundError();
+  }
+
+  if (existingRide.status === 'cancelled') {
+    throw new RideCancelledError();
   }
 
   if (existingRide.start_time <= new Date()) {
