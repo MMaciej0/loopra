@@ -3,7 +3,7 @@
 import { AVAILABILITIES, BIKE_TYPES, RIDE_TYPES } from '@loopra/domain';
 import { SlidersHorizontal } from 'lucide-react';
 import { useTranslations } from 'next-intl';
-import { useId, useState } from 'react';
+import { useId, useState, type ReactNode } from 'react';
 import { Button } from '@/components/ui/button';
 import {
   Select,
@@ -70,9 +70,9 @@ function FilterSelect<Key extends RidesFilterKey>({
   );
 }
 
-type Props = Readonly<{ view: RidesView; filters: RidesFilters }>;
+type Props = Readonly<{ view: RidesView; filters: RidesFilters; children: ReactNode }>;
 
-export function RidesFilterControls({ view, filters }: Props) {
+export function RidesFilterControls({ view, filters, children }: Props) {
   const t = useTranslations('RidesPage');
   const tBikeTypes = useTranslations('BikeTypes');
   const tRideTypes = useTranslations('RideTypes');
@@ -90,22 +90,35 @@ export function RidesFilterControls({ view, filters }: Props) {
     <>
       <Button
         variant="secondary"
+        size="icon-md"
         className={cn(
-          'col-start-1 row-start-2 h-10 justify-self-start py-0 @3xl:hidden',
+          'relative',
           activeCount > 0 && 'border-accent bg-accent/10 hover:border-accent hover:bg-accent/10',
         )}
+        aria-label={
+          activeCount > 0 ? t('filtersButtonCount', { count: activeCount }) : t('filtersButton')
+        }
         aria-expanded={open}
         aria-controls={panelId}
         onClick={() => setOpen((current) => !current)}
       >
         <SlidersHorizontal />
-        {activeCount > 0 ? t('filtersButtonCount', { count: activeCount }) : t('filtersButton')}
+        {activeCount > 0 && (
+          <span
+            aria-hidden
+            className="bg-accent text-accent-foreground absolute -top-1.5 -right-1.5 flex h-4 min-w-4 items-center justify-center rounded-full px-1 text-[10px] leading-none font-semibold"
+          >
+            {activeCount}
+          </span>
+        )}
       </Button>
+
+      {children}
 
       <div
         id={panelId}
         className={cn(
-          'col-span-2 col-start-1 row-start-3 min-w-0 grid-cols-2 items-center gap-2 @3xl:row-start-2 @3xl:grid @3xl:grid-cols-[repeat(4,minmax(0,12rem))_auto] @7xl:col-span-1 @7xl:col-start-2 @7xl:row-start-1',
+          'col-span-full min-w-0 grid-cols-2 items-center gap-2 @3xl:grid-cols-[repeat(auto-fill,minmax(0,12rem))]',
           open ? 'grid' : 'hidden',
         )}
       >
