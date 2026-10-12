@@ -16,6 +16,7 @@ const schema = z.object({
   S3_ACCESS_KEY_ID: z.string(),
   S3_SECRET_ACCESS_KEY: z.string(),
   S3_REGION: z.string().default('auto'),
+  TRUSTED_PROXIES: z.string().optional(),
 });
 
 export const {
@@ -34,4 +35,5 @@ export const {
   S3_ACCESS_KEY_ID,
   S3_SECRET_ACCESS_KEY,
   S3_REGION,
+  TRUSTED_PROXIES,
 } = schema.parse(process.env);

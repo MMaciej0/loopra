@@ -26,6 +26,7 @@ export function PrivacyPolicyPl() {
         <li>Twoje ulubione lokalizacje.</li>
         <li>Jazdy, które utworzyłeś(-aś), i jazdy, do których dołączyłeś(-aś).</li>
         <li>Przesłane przez Ciebie trasy GPX.</li>
+        <li>Twój adres IP, który nasz serwer zapisuje w logach przy każdym żądaniu.</li>
       </ul>
 
       <h2>3. Po co ich używamy</h2>

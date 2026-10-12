@@ -1,3 +1,4 @@
+import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
 import { APP_ERROR_TYPES, AppErrorType, isAppErrorType } from '@/lib/errors';
 import {
@@ -115,11 +116,18 @@ function jsonContentType(body: RequestInit['body']): Record<string, string> {
   return body && !(body instanceof FormData) ? { 'Content-Type': 'application/json' } : {};
 }
 
+async function forwardedFor(): Promise<Record<string, string>> {
+  const value = (await headers()).get('x-forwarded-for');
+
+  return value ? { 'X-Forwarded-For': value } : {};
+}
+
 export async function apiRequest(url: string, options?: RequestInit) {
   return fetch(`${process.env.API_URL}${url}`, {
     ...options,
     headers: {
       ...jsonContentType(options?.body),
+      ...(await forwardedFor()),
       ...options?.headers,
     },
   });
@@ -130,6 +138,7 @@ export async function apiRequestWithCookie(url: string, cookie: string, options?
     ...options,
     headers: {
       ...jsonContentType(options?.body),
+      ...(await forwardedFor()),
       ...options?.headers,
       Cookie: cookie,
     },

@@ -188,6 +188,19 @@ Services throw them; controllers let them fall through to `plugins/globalErrorHa
 
 A unique value is checked by the insert itself, never by a `select` first: `insert ... onConflictDoNothing({ target })`, then throw the module's error when no row came back. `registerUser` has no lookup before its insert for this reason — a `select` followed by an `insert` is a race condition, and the request that loses it gets a raw Postgres `23505`, which the handler answers as `500`. When the request that loses has a right to the result, do not throw: run the lookup again. `findOrCreateOAuthUser` does this — two Google logins of one rider must both end logged in, so an insert that returns no row starts the service again, at most three times.
 
+### Client IP
+
+The web calls the API from the Next.js server, so the socket address the API sees is the web server, not the rider. Two halves fix that, and each is unsafe without the other:
+
+- **Web forwards.** `apiRequest` and `apiRequestWithCookie` in `apps/web/src/lib/api.ts` copy the incoming `X-Forwarded-For` header to the API request unchanged. The web parses nothing and decides nothing.
+- **API trusts a list.** `TRUSTED_PROXIES` in `config/env.ts` goes to Fastify `trustProxy`. Unset means nothing is trusted and `request.ip` is the socket address.
+
+**Never `trustProxy: true`.** Fastify would then take the leftmost address in the header, which the client writes. With a trust list it reads right to left and stops at the first address that is not trusted, so a value a client adds is ignored. `test/modules/auth/rateLimitClientIp.test.ts` holds this.
+
+The auth rate limits and the request log both read `request.ip`. In production a reverse proxy must stand in front of the web and write the header, because the web forwards whatever arrives. The API port must not be published on the host — a direct caller from a trusted range could then set its own address. Conditions are tracked in #131.
+
+Dev trusts `loopback,uniquelocal`: `uniquelocal` covers the `web` container, and `loopback` is there for the tests. Compose values win over `apps/api/.env.test` inside the container, and `app.inject` sends from `127.0.0.1`.
+
 ### Key Architectural Decisions
 
 - **PostGIS** for all geospatial queries. Rides filter by a `bbox` with `&&` against `ST_MakeEnvelope`, so the GiST index serves it; the box's maximum size is `SEARCH_AREA_MAX_KM` in `packages/domain`
