@@ -348,6 +348,96 @@ describe('GET /rides', () => {
     expect(await listIds({ status: 'open' })).toEqual([published]);
   });
 
+  describe('availability', () => {
+    const hoursFromNow = (hours: number) =>
+      new Date(Date.now() + hours * 60 * 60 * 1000).toISOString();
+
+    const registerOther = () =>
+      registerUser(appRef.app, 'other@example.com', 'Password123!', 'otheruser');
+
+    const changeSeat = async (action: 'join' | 'leave', rideId: string, accessToken: string) => {
+      const response = await appRef.app.inject({
+        method: action === 'join' ? 'POST' : 'DELETE',
+        url: `/rides/${rideId}/${action}`,
+        cookies: { accessToken },
+      });
+
+      expect(response.statusCode).toBe(200);
+    };
+
+    it('open returns rides with a free seat, full returns rides at Capacity, and no parameter returns both', async () => {
+      const other = await registerOther();
+      const fullRide = await createRide({ max_participants: 2, start_time: hoursFromNow(6) });
+      const openRide = await createRide({ max_participants: 3, start_time: hoursFromNow(7) });
+      await changeSeat('join', fullRide, other.accessToken);
+      await changeSeat('join', openRide, other.accessToken);
+
+      expect(await listIds({ availability: 'open' })).toEqual([openRide]);
+      expect(await listIds({ availability: 'full' })).toEqual([fullRide]);
+      expect(await listIds({})).toEqual([fullRide, openRide]);
+    });
+
+    it('moves a ride to the full set when the last seat is taken, and back when a participant leaves', async () => {
+      const other = await registerOther();
+      const rideId = await createRide({ max_participants: 2 });
+
+      expect(await listIds({ availability: 'open' })).toEqual([rideId]);
+      expect(await listIds({ availability: 'full' })).toEqual([]);
+
+      await changeSeat('join', rideId, other.accessToken);
+
+      expect(await listIds({ availability: 'open' })).toEqual([]);
+      expect(await listIds({ availability: 'full' })).toEqual([rideId]);
+
+      await changeSeat('leave', rideId, other.accessToken);
+
+      expect(await listIds({ availability: 'open' })).toEqual([rideId]);
+      expect(await listIds({ availability: 'full' })).toEqual([]);
+    });
+
+    it('rejects an invalid value as a bad request', async () => {
+      const response = await appRef.app.inject({
+        method: 'GET',
+        url: '/rides',
+        query: { availability: 'all' },
+        cookies: { accessToken: auth.accessToken },
+      });
+
+      expect(response.statusCode).toBe(400);
+      expect(response.json().field).toBe('availability');
+    });
+
+    it('pages through every full ride exactly once', async () => {
+      const other = await registerOther();
+      const fullRides: string[] = [];
+
+      for (let hour = 6; hour < 11; hour++) {
+        const isFull = hour % 2 === 0;
+        const rideId = await createRide({
+          max_participants: isFull ? 2 : 3,
+          start_time: hoursFromNow(hour),
+        });
+        await changeSeat('join', rideId, other.accessToken);
+        if (isFull) fullRides.push(rideId);
+      }
+
+      const listedIds: string[] = [];
+      let cursor: string | null = null;
+
+      do {
+        const page = await listRides({
+          availability: 'full',
+          limit: '1',
+          ...(cursor && { cursor }),
+        });
+        listedIds.push(...page.data.map((ride: { id: string }) => ride.id));
+        cursor = page.nextCursor;
+      } while (cursor);
+
+      expect(listedIds).toEqual(fullRides);
+    });
+  });
+
   describe('bike_type and ride_type', () => {
     it('bike_type=road leaves out a ride marked any', async () => {
       const [road] = await insertRides(

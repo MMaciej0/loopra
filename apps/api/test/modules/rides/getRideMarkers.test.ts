@@ -3,7 +3,7 @@ import { bboxAround, formatBBox, RIDE_MARKERS_MAX, SEARCH_AREA_MAX_KM } from '@l
 import { useApp } from '../../helpers/app.js';
 import { newRide } from '../../helpers/rides.js';
 import { rides } from '../../../src/db/schema.js';
-import { useAuthenticatedUser } from '../../helpers/auth.js';
+import { registerUser, useAuthenticatedUser } from '../../helpers/auth.js';
 
 describe('GET /rides/markers', () => {
   const appRef = useApp();
@@ -181,6 +181,68 @@ describe('GET /rides/markers', () => {
     const { data } = await listMarkers({ bbox: krakowBBox });
 
     expect(data.map((marker: { id: string }) => marker.id)).toEqual([sooner.id, later.id]);
+  });
+
+  describe('availability', () => {
+    const createRide = async (max_participants: number) => {
+      const response = await appRef.app.inject({
+        method: 'POST',
+        url: '/rides',
+        body: {
+          ...newRide({ user_id: auth.userId }),
+          start_location: NOWA_HUTA,
+          max_participants,
+        },
+        cookies: { accessToken: auth.accessToken },
+      });
+
+      return response.json().data.id as string;
+    };
+
+    const changeSeat = async (action: 'join' | 'leave', rideId: string, accessToken: string) => {
+      const response = await appRef.app.inject({
+        method: action === 'join' ? 'POST' : 'DELETE',
+        url: `/rides/${rideId}/${action}`,
+        cookies: { accessToken },
+      });
+
+      expect(response.statusCode).toBe(200);
+    };
+
+    const markerIds = async (query: Record<string, string> = {}) => {
+      const { data } = await listMarkers({ bbox: krakowBBox, ...query });
+
+      return data.map((marker: { id: string }) => marker.id).sort();
+    };
+
+    it('open returns rides with a free seat, full returns rides at Capacity, and no parameter returns both', async () => {
+      const other = await registerUser(
+        appRef.app,
+        'other@example.com',
+        'Password123!',
+        'otheruser',
+      );
+      const fullRide = await createRide(2);
+      const openRide = await createRide(3);
+      await changeSeat('join', fullRide, other.accessToken);
+      await changeSeat('join', openRide, other.accessToken);
+
+      expect(await markerIds({ availability: 'open' })).toEqual([openRide]);
+      expect(await markerIds({ availability: 'full' })).toEqual([fullRide]);
+      expect(await markerIds()).toEqual([fullRide, openRide].sort());
+
+      await changeSeat('leave', fullRide, other.accessToken);
+
+      expect(await markerIds({ availability: 'full' })).toEqual([]);
+      expect(await markerIds({ availability: 'open' })).toEqual([fullRide, openRide].sort());
+    });
+
+    it('rejects an invalid value as a bad request', async () => {
+      const response = await listMarkersRaw({ bbox: krakowBBox, availability: 'all' });
+
+      expect(response.statusCode).toBe(400);
+      expect(response.json().field).toBe('availability');
+    });
   });
 
   it('requires a bbox', async () => {

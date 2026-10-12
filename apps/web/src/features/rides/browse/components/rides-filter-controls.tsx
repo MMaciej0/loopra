@@ -1,6 +1,6 @@
 'use client';
 
-import { BIKE_TYPES, RIDE_TYPES } from '@loopra/domain';
+import { AVAILABILITIES, BIKE_TYPES, RIDE_TYPES } from '@loopra/domain';
 import { SlidersHorizontal } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { useId, useState } from 'react';
@@ -105,7 +105,7 @@ export function RidesFilterControls({ view, filters }: Props) {
       <div
         id={panelId}
         className={cn(
-          'col-span-2 col-start-1 row-start-3 min-w-0 grid-cols-2 items-center gap-2 @3xl:row-start-2 @3xl:grid @3xl:grid-cols-[repeat(3,minmax(0,12rem))_auto] @7xl:col-span-1 @7xl:col-start-2 @7xl:row-start-1',
+          'col-span-2 col-start-1 row-start-3 min-w-0 grid-cols-2 items-center gap-2 @3xl:row-start-2 @3xl:grid @3xl:grid-cols-[repeat(4,minmax(0,12rem))_auto] @7xl:col-span-1 @7xl:col-start-2 @7xl:row-start-1',
           open ? 'grid' : 'hidden',
         )}
       >
@@ -135,6 +135,16 @@ export function RidesFilterControls({ view, filters }: Props) {
           }))}
           value={filters.ride_type}
           onChange={(value) => setFilter('ride_type', value)}
+        />
+        <FilterSelect<'availability'>
+          label={t('filterAvailabilityLabel')}
+          allLabel={t('filterAvailabilityAll')}
+          options={AVAILABILITIES.map((availability) => ({
+            value: availability,
+            label: t(`filterAvailability.${availability}`),
+          }))}
+          value={filters.availability}
+          onChange={(value) => setFilter('availability', value)}
         />
         <Button
           variant="ghost"

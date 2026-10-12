@@ -1,4 +1,11 @@
-import { BIKE_TYPES, RIDE_TYPES, type BikeType, type RideType } from '@loopra/domain';
+import {
+  AVAILABILITIES,
+  BIKE_TYPES,
+  RIDE_TYPES,
+  type Availability,
+  type BikeType,
+  type RideType,
+} from '@loopra/domain';
 import { z } from 'zod';
 import type { RidesView } from './view';
 
@@ -10,6 +17,7 @@ export type RidesFilters = Readonly<{
   when?: RidesWhen;
   bike_type?: BikeType;
   ride_type?: RideType;
+  availability?: Availability;
 }>;
 
 export type RidesFilterKey = keyof RidesFilters;
@@ -20,21 +28,25 @@ const RIDES_FILTER_KEYS = [
   'when',
   'bike_type',
   'ride_type',
+  'availability',
 ] as const satisfies readonly RidesFilterKey[];
 
 const whenSchema = z.enum(RIDES_WHEN);
 const bikeTypeSchema = z.enum(BIKE_TYPES);
 const rideTypeSchema = z.enum(RIDE_TYPES);
+const availabilitySchema = z.enum(AVAILABILITIES);
 
 export function parseRidesFilters(searchParams: Partial<RidesFilterParams>): RidesFilters {
   const when = whenSchema.safeParse(searchParams.when);
   const bikeType = bikeTypeSchema.safeParse(searchParams.bike_type);
   const rideType = rideTypeSchema.safeParse(searchParams.ride_type);
+  const availability = availabilitySchema.safeParse(searchParams.availability);
 
   return {
     ...(when.success && { when: when.data }),
     ...(bikeType.success && { bike_type: bikeType.data }),
     ...(rideType.success && { ride_type: rideType.data }),
+    ...(availability.success && { availability: availability.data }),
   };
 }
 
@@ -46,8 +58,8 @@ export function withRidesFilter<Key extends RidesFilterKey>(
   return parseRidesFilters({ ...filters, [key]: value });
 }
 
-export function toApiFilters({ bike_type, ride_type }: RidesFilters) {
-  return { bike_type, ride_type };
+export function toApiFilters({ bike_type, ride_type, availability }: RidesFilters) {
+  return { bike_type, ride_type, availability };
 }
 
 export const NO_RIDES_FILTERS: RidesFilters = {};

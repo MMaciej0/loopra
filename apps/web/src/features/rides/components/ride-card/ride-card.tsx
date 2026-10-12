@@ -1,3 +1,4 @@
+import { rideAvailability } from '@loopra/domain';
 import { useTranslations } from 'next-intl';
 import { Bike, MapPin } from 'lucide-react';
 import { UserAvatar } from '@/components/ui/avatar';
@@ -26,6 +27,9 @@ export function RideCard({ data, className }: RideCardProps) {
 
   const creatorName = data.creator?.name || t('creatorPlaceholder');
   const participants = data.participant_count ?? 1;
+  const isFull =
+    data.max_participants !== undefined &&
+    rideAvailability(participants, data.max_participants) === 'full';
 
   const distanceKm = data.elevation?.distance_km ?? data.distance_km;
 
@@ -50,6 +54,11 @@ export function RideCard({ data, className }: RideCardProps) {
             {tBike(data.bike_type)}
           </Badge>
           <Badge size="sm">{tExperience(`${data.experience_policy}.label`)}</Badge>
+          {isFull && (
+            <Badge variant="destructive" size="sm" className="ml-auto">
+              {t('full')}
+            </Badge>
+          )}
         </div>
 
         <Text
