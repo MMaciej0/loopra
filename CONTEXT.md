@@ -55,6 +55,24 @@ _Avoid_: "all" as a value
 The maximum number of participants a ride accepts, organiser included. Every ride is capped; there is no uncapped ride.
 _Avoid_: Limit, slots, spots
 
+### The ride lifecycle
+
+**Ride Status**:
+What the organiser has decided about a ride: draft, published, or cancelled. Only the organiser changes it. It says nothing about seats or time.
+_Avoid_: State — and never "open", "full" or "completed" as a status: those are Availability and Phase
+
+**Cancelled**:
+A Ride Status. The organiser has called the ride off, and that is final: a cancelled ride cannot be published again. Its participants stay on it, so they can see what happened. An organiser cannot delete a ride, only cancel it.
+_Avoid_: Deleted, removed, closed
+
+**Availability**:
+Whether a published ride still has a free seat: open or full. Follows from Capacity and the number of participants, so it changes by itself when a rider joins or leaves.
+_Avoid_: Status
+
+**Phase**:
+Where a ride is in time: upcoming until its start time, past from then on. A past ride is not known to have happened — only its start time is behind us.
+_Avoid_: Completed, finished, in progress
+
 ### Routes
 
 **Route**:
