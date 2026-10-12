@@ -25,9 +25,9 @@ export class RideUpdateBadBodyError extends AppError {
   }
 }
 
-export class RideHasParticipantsError extends AppError {
+export class RideCancelledError extends AppError {
   constructor() {
-    super(400, ERROR_TYPES.RIDE_HAS_PARTICIPANTS, 'Ride has participants');
+    super(400, ERROR_TYPES.RIDE_CANCELLED, 'Ride is cancelled');
   }
 }
 

@@ -6,8 +6,18 @@ import { Check } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog';
 import { Text } from '@/components/ui/text';
 import { Link, useRouter } from '@/i18n/navigation';
+import { cancelRide } from '@/features/rides/detail/actions/cancel-ride';
 import { joinRide } from '@/features/rides/detail/actions/join-ride';
 import { leaveRide } from '@/features/rides/detail/actions/leave-ride';
 import { useCurrentUser } from '@/features/shell/components/current-user-provider';
@@ -16,7 +26,7 @@ type Props = Readonly<{
   ride: RideDetail;
 }>;
 
-type ParticipationAction = typeof joinRide | typeof leaveRide;
+type RideAction = typeof joinRide | typeof leaveRide | typeof cancelRide;
 
 export function JoinCard({ ride }: Props) {
   const t = useTranslations('RidePage');
@@ -24,6 +34,7 @@ export function JoinCard({ ride }: Props) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [hasError, setHasError] = useState(false);
+  const [isCancelOpen, setIsCancelOpen] = useState(false);
 
   const capacity = ride.max_participants;
   const participantCount = ride.participants.length;
@@ -33,11 +44,16 @@ export function JoinCard({ ride }: Props) {
   const isParticipant = ride.participants.some((participant) => participant.user.id === user?.id);
   const isFull = seatsLeft === 0;
   const isVerified = user?.email_verified === true;
+  const isCancelled = ride.status === 'cancelled';
+  const otherRidersCount = ride.participants.filter(
+    (participant) => participant.user.id !== ride.creator.id,
+  ).length;
 
-  function changeParticipation(action: ParticipationAction) {
+  function runAction(action: RideAction) {
     setHasError(false);
     startTransition(async () => {
       const result = await action(ride.id);
+      setIsCancelOpen(false);
 
       if (result.ok) return;
 
@@ -45,6 +61,7 @@ export function JoinCard({ ride }: Props) {
         case ERROR_TYPES.MAX_PARTICIPANTS:
         case ERROR_TYPES.PARTICIPANT_EXISTS:
         case ERROR_TYPES.PARTICIPANT_NOT_FOUND:
+        case ERROR_TYPES.RIDE_CANCELLED:
           router.refresh();
           return;
         case ERROR_TYPES.RIDE_NOT_FOUND:
@@ -63,9 +80,11 @@ export function JoinCard({ ride }: Props) {
         <span className="font-ui text-foreground text-[13.5px] font-medium">
           {t('joinRiders', { count: participantCount, capacity })}
         </span>
-        <Text variant="caption" className="text-muted-foreground shrink-0">
-          {isFull ? t('joinFull') : t('joinSeatsLeft', { count: seatsLeft })}
-        </Text>
+        {!isCancelled && (
+          <Text variant="caption" className="text-muted-foreground shrink-0">
+            {isFull ? t('joinFull') : t('joinSeatsLeft', { count: seatsLeft })}
+          </Text>
+        )}
       </div>
       <div
         role="progressbar"
@@ -77,10 +96,40 @@ export function JoinCard({ ride }: Props) {
       >
         <div className="bg-accent h-full rounded-full" style={{ width: `${takenPercent}%` }} />
       </div>
-      {isOrganiser ? (
+      {isCancelled ? (
         <Text variant="body-s" className="text-muted-foreground mt-4">
-          {t('joinOrganising')}
+          {t('joinCancelled')}
         </Text>
+      ) : isOrganiser ? (
+        <div className="mt-4 flex items-center justify-between gap-3">
+          <Text variant="body-s" className="text-muted-foreground">
+            {t('joinOrganising')}
+          </Text>
+          <Dialog open={isCancelOpen} onOpenChange={setIsCancelOpen}>
+            <DialogTrigger asChild>
+              <Button variant="ghost" size="xs">
+                {t('cancelAction')}
+              </Button>
+            </DialogTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>{t('cancelDialogTitle')}</DialogTitle>
+                <DialogDescription>
+                  {t('cancelDialogRiders', { count: otherRidersCount })} {t('cancelDialogFinal')}
+                </DialogDescription>
+              </DialogHeader>
+              <DialogFooter showCancel cancelLabel={t('cancelDialogKeep')}>
+                <Button
+                  variant="destructive"
+                  loading={isPending}
+                  onClick={() => runAction(cancelRide)}
+                >
+                  {t('cancelDialogConfirm')}
+                </Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+        </div>
       ) : isParticipant ? (
         <div className="mt-4 flex items-center justify-between gap-3">
           <span className="font-ui text-foreground inline-flex items-center gap-1.5 text-[13.5px] font-medium">
@@ -91,7 +140,7 @@ export function JoinCard({ ride }: Props) {
             variant="ghost"
             size="xs"
             loading={isPending}
-            onClick={() => changeParticipation(leaveRide)}
+            onClick={() => runAction(leaveRide)}
           >
             {t('joinLeave')}
           </Button>
@@ -116,7 +165,7 @@ export function JoinCard({ ride }: Props) {
           <Button
             variant="accent"
             loading={isPending}
-            onClick={() => changeParticipation(joinRide)}
+            onClick={() => runAction(joinRide)}
             className="mt-4 w-full"
           >
             {t('joinAction')}
