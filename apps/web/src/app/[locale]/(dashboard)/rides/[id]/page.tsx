@@ -1,5 +1,6 @@
 import { notFound } from 'next/navigation';
 import { getLocale } from 'next-intl/server';
+import { ridePhase } from '@loopra/domain';
 import { redirect } from '@/i18n/navigation';
 import { PageBody } from '@/features/shell/components/page-body';
 import { getRide } from '@/features/rides/detail/get-ride';
@@ -24,7 +25,7 @@ export default async function RidePage({ params }: Props) {
     notFound();
   }
 
-  if (new Date(ride.start_time) <= new Date()) {
+  if (ridePhase(new Date(ride.start_time), new Date()) === 'past') {
     redirect({ href: '/rides', locale: await getLocale() });
   }
 
