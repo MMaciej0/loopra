@@ -19,7 +19,7 @@
     "filterRideTypeLabel": "Typ jazdy",
     "filterRideTypeAll": "Wszystkie typy jazd",
     "filterAvailabilityLabel": "Dostępność",
-    "filterAvailabilityAll": "Wolne i pełne",
+    "filterAvailabilityAll": "Dowolna dostępność",
     "filterAvailability": {
       "open": "Są wolne miejsca",
       "full": "Komplet"
