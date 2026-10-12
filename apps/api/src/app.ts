@@ -1,4 +1,5 @@
 import Fastify from 'fastify';
+import { TRUSTED_PROXIES } from './config/env.js';
 import databasePlugin from './plugins/database.js';
 import redisPlugin from './plugins/redis.js';
 import authPlugin from './plugins/auth.js';
@@ -17,6 +18,7 @@ import routesModule from './modules/routes/index.js';
 export const buildApp = () => {
   const app = Fastify({
     logger: true,
+    trustProxy: TRUSTED_PROXIES ?? false,
   });
 
   app.register(corsPlugin);

@@ -26,6 +26,7 @@ export function PrivacyPolicyEn() {
         <li>Your favourite locations.</li>
         <li>The rides you created and the rides you joined.</li>
         <li>The GPX routes you uploaded.</li>
+        <li>Your IP address, which our server writes to its logs with each request.</li>
       </ul>
 
       <h2>3. Why we use it</h2>

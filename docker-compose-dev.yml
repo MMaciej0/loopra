@@ -21,6 +21,7 @@ services:
       DATABASE_URL: postgres://loopra:loopra@postgres:5432/loopra
       REDIS_URL: redis://redis:6379
       PORT: 8080
+      TRUSTED_PROXIES: loopback,uniquelocal
     env_file:
       - .env
 
