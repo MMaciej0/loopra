@@ -19,7 +19,7 @@ type Props = Readonly<{
 
 export function RideTopNav({ ride }: Props) {
   const t = useTranslations('RidePage');
-  const tSidebar = useTranslations('Sidebar');
+  const tNav = useTranslations('RidesNav');
 
   return (
     <TopNav>
@@ -33,7 +33,7 @@ export function RideTopNav({ ride }: Props) {
         <BreadcrumbList className="flex-nowrap">
           <BreadcrumbItem className="hidden sm:inline-flex">
             <BreadcrumbLink asChild>
-              <Link href="/rides">{tSidebar('rides')}</Link>
+              <Link href="/rides">{tNav('discover')}</Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator className="hidden sm:block" />
