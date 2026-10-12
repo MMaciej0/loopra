@@ -15,7 +15,9 @@ export function RidesBar({ view, filters }: Props) {
         </div>
 
         <RidesFilterControls view={view} filters={filters}>
-          <RidesViewToggle view={view} filters={filters} />
+          <div className="justify-self-end">
+            <RidesViewToggle view={view} filters={filters} />
+          </div>
         </RidesFilterControls>
       </div>
     </div>
