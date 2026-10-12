@@ -6,6 +6,11 @@
     "settings": "Ustawienia",
     "logOut": "Wyloguj się"
   },
+  "RidesNav": {
+    "label": "Sekcje jazd",
+    "discover": "Odkrywaj",
+    "myRides": "Moje jazdy"
+  },
   "RidesPage": {
     "filterWhenLabel": "Kiedy",
     "filterWhenAll": "Dowolny termin",
@@ -50,6 +55,37 @@
     "listLoadError": "Nie udało się wczytać jazd.",
     "listRetry": "Spróbuj ponownie",
     "rideMapLabel": "Mapa jazdy {title}"
+  },
+  "RideCardList": {
+    "loadError": "Nie udało się wczytać jazd.",
+    "retry": "Spróbuj ponownie"
+  },
+  "MyRidesPage": {
+    "title": "Moje jazdy",
+    "phaseLabel": "Czas",
+    "phase": {
+      "upcoming": "Nadchodzące",
+      "past": "Historia"
+    },
+    "roleLabel": "Moja rola",
+    "role": {
+      "all": "Wszystkie",
+      "organising": "Organizuję",
+      "joined": "Dołączam"
+    },
+    "empty": {
+      "upcoming": {
+        "all": "Nie masz nadchodzących jazd",
+        "organising": "Nie organizujesz żadnej nadchodzącej jazdy",
+        "joined": "Brak nadchodzących jazd organizowanych przez innych"
+      },
+      "past": {
+        "all": "Nie masz jeszcze jazd w historii",
+        "organising": "Brak zorganizowanych jazd w historii",
+        "joined": "Brak w historii jazd organizowanych przez innych"
+      }
+    },
+    "emptyDiscover": "Znajdź jazdę"
   },
   "RidePage": {
     "back": "Wróć do jazd",
@@ -210,7 +246,9 @@
     "creatorPlaceholder": "Ty",
     "participants": "{count}/{max}",
     "participantsOpen": "{count} jedzie",
-    "full": "Komplet"
+    "full": "Komplet",
+    "organiser": "Organizujesz",
+    "cancelled": "Odwołana"
   },
   "BikeTypes": {
     "any": "Dowolny",

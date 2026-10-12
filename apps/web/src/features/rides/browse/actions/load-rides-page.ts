@@ -2,9 +2,9 @@
 
 import type { ListRidesResponse } from '@loopra/domain';
 import { protectedRequest } from '@/lib/api';
-import { toRideCard } from '@/features/rides/browse/components/rides-list/to-ride-card';
+import { toRideCard } from '@/features/rides/components/ride-card/to-ride-card';
 import { toApiFilters } from '@/features/rides/browse/filters';
-import { toSearchParams } from '@/features/rides/browse/to-search-params';
+import { toSearchParams } from '@/features/rides/to-search-params';
 import type { RidesListQuery } from '@/features/rides/browse/list-query';
 import type { RidesTimeWindow } from '@/features/rides/browse/time-window';
 

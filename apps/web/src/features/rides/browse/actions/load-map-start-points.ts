@@ -4,7 +4,7 @@ import type { ListRideMarkersResponse } from '@loopra/domain';
 import { protectedRequest } from '@/lib/api';
 import { groupByStartPoint } from '@/features/rides/browse/components/rides-map/start-points';
 import { toApiFilters } from '@/features/rides/browse/filters';
-import { toSearchParams } from '@/features/rides/browse/to-search-params';
+import { toSearchParams } from '@/features/rides/to-search-params';
 import type { RidesListQuery } from '@/features/rides/browse/list-query';
 import type { RidesTimeWindow } from '@/features/rides/browse/time-window';
 
