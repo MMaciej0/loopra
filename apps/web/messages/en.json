@@ -19,7 +19,7 @@
     "filterRideTypeLabel": "Ride type",
     "filterRideTypeAll": "All ride types",
     "filterAvailabilityLabel": "Availability",
-    "filterAvailabilityAll": "Open and full",
+    "filterAvailabilityAll": "Any availability",
     "filterAvailability": {
       "open": "Has free seats",
       "full": "Full"
