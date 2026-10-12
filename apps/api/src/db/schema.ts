@@ -150,7 +150,7 @@ export const rides = pgTable(
     experience_policy: experiencePolicyEnum().notNull().default('first_timers'),
     max_participants: integer().notNull(),
     is_private: boolean().notNull().default(false),
-    status: rideStatusEnum().notNull().default('open'),
+    status: rideStatusEnum().notNull().default('published'),
     created_at: timestamp({ withTimezone: true }).notNull().defaultNow(),
     updated_at: timestamp({ withTimezone: true })
       .notNull()
