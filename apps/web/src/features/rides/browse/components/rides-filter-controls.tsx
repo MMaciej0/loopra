@@ -92,7 +92,7 @@ export function RidesFilterControls({ view, filters, children }: Props) {
         variant="secondary"
         size="icon-md"
         className={cn(
-          'relative',
+          'relative justify-self-end',
           activeCount > 0 && 'border-accent bg-accent/10 hover:border-accent hover:bg-accent/10',
         )}
         aria-label={
