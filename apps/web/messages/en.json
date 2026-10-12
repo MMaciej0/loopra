@@ -9,6 +9,7 @@
   "RidesNav": {
     "label": "Rides sections",
     "discover": "Discover",
+    "back": "Back to Discover",
     "myRides": "My rides"
   },
   "RidesPage": {
@@ -88,7 +89,6 @@
     "emptyDiscover": "Find a ride"
   },
   "RidePage": {
-    "back": "Back to rides",
     "from": "from {location}",
     "distance": "Distance",
     "elevation": "Elevation",
@@ -180,7 +180,6 @@
     "safetyMinors": "Riders under 18 need a guardian's consent and whatever cycling permit their country requires.",
     "title": "New ride",
     "description": "Create and share a new ride with the community.",
-    "back": "Back",
     "cancel": "Cancel",
     "useStartPoint": "Use this start point",
     "submit": "Post ride",

@@ -18,7 +18,7 @@ import type { CreateRideInput } from '@/features/rides/create/schema';
 
 export function CreateRideTopNav() {
   const t = useTranslations('CreateRide');
-  const tSidebar = useTranslations('Sidebar');
+  const tNav = useTranslations('RidesNav');
   const {
     formState: { isSubmitting },
   } = useFormContext<CreateRideInput>();
@@ -38,7 +38,7 @@ export function CreateRideTopNav() {
       }
     >
       <Button asChild variant="ghost" size="icon">
-        <Link href="/rides" aria-label={t('back')}>
+        <Link href="/rides" aria-label={tNav('back')}>
           <ArrowLeft />
         </Link>
       </Button>
@@ -47,7 +47,7 @@ export function CreateRideTopNav() {
         <BreadcrumbList className="flex-nowrap">
           <BreadcrumbItem className="hidden sm:inline-flex">
             <BreadcrumbLink asChild>
-              <Link href="/rides">{tSidebar('rides')}</Link>
+              <Link href="/rides">{tNav('discover')}</Link>
             </BreadcrumbLink>
           </BreadcrumbItem>
           <BreadcrumbSeparator className="hidden sm:block" />
