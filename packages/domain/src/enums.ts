@@ -35,5 +35,8 @@ export type Availability = (typeof AVAILABILITIES)[number];
 export const PHASES = ['upcoming', 'past'] as const;
 export type Phase = (typeof PHASES)[number];
 
+export const RIDE_ROLES = ['organising', 'joined'] as const;
+export type RideRole = (typeof RIDE_ROLES)[number];
+
 export const PARTICIPANT_STATUSES = ['pending', 'confirmed', 'declined'] as const;
 export type ParticipantStatus = (typeof PARTICIPANT_STATUSES)[number];

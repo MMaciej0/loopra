@@ -27,7 +27,10 @@ export function RideCard({ data, className }: RideCardProps) {
 
   const creatorName = data.creator?.name || t('creatorPlaceholder');
   const participants = data.participant_count ?? 1;
+  const isCancelled = data.status === 'cancelled';
+  const isOrganiser = data.viewer === 'organiser';
   const isFull =
+    data.viewer === undefined &&
     data.max_participants !== undefined &&
     rideAvailability(participants, data.max_participants) === 'full';
 
@@ -54,10 +57,24 @@ export function RideCard({ data, className }: RideCardProps) {
             {tBike(data.bike_type)}
           </Badge>
           <Badge size="sm">{tExperience(`${data.experience_policy}.label`)}</Badge>
-          {isFull && (
-            <Badge variant="destructive" size="sm" className="ml-auto">
-              {t('full')}
-            </Badge>
+          {(isOrganiser || isCancelled || isFull) && (
+            <div className="ml-auto flex items-center gap-1.5">
+              {isOrganiser && (
+                <Badge variant="accent" size="sm">
+                  {t('organiser')}
+                </Badge>
+              )}
+              {isCancelled && (
+                <Badge variant="destructive" size="sm">
+                  {t('cancelled')}
+                </Badge>
+              )}
+              {isFull && (
+                <Badge variant="destructive" size="sm">
+                  {t('full')}
+                </Badge>
+              )}
+            </div>
           )}
         </div>
 

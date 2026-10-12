@@ -9,11 +9,13 @@ import {
 import { parseBody, parseSearchParams } from '../../utils/validation.js';
 import {
   CreateRideBodySchema,
+  ListMyRidesQuerySchema,
   ListRideMarkersQuerySchema,
   ListRidesQuerySchema,
   UpdateRideBodySchema,
 } from './schema.js';
 import { listRides } from './services/listRides.js';
+import { listMyRides } from './services/listMyRides.js';
 import { listRideMarkers } from './services/listRideMarkers.js';
 import { createRide } from './services/createRide.js';
 import { updateRide } from './services/updateRide.js';
@@ -42,6 +44,17 @@ export const ridesRoutes = async (fastify: FastifyInstance) => {
       const markers = await listRideMarkers(fastify.db, searchParams);
 
       return reply.send(markers);
+    },
+  );
+
+  fastify.get(
+    '/mine',
+    { schema: { response: { 200: ListRidesResponseSchema } } },
+    async (request, reply) => {
+      const searchParams = parseSearchParams(request.query, ListMyRidesQuerySchema);
+      const { data, nextCursor } = await listMyRides(fastify.db, request.user.sub, searchParams);
+
+      return reply.send({ data, nextCursor });
     },
   );
 

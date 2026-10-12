@@ -19,6 +19,8 @@ import {
   PACE_POLICIES,
   PARTICIPANTS_MAX,
   PARTICIPANTS_MIN,
+  PHASES,
+  RIDE_ROLES,
   RIDE_IDS_MAX,
   RIDE_TYPES,
   SEARCH_AREA_MAX_KM,
@@ -71,6 +73,13 @@ export const ListRidesQuerySchema = z.object({
 export const ListRideMarkersQuerySchema = z.object({
   ...rideFilterProperties,
   bbox: BBoxSchema,
+});
+
+export const ListMyRidesQuerySchema = z.object({
+  cursor: z.string().optional(),
+  limit: z.coerce.number().int().min(1).max(100).default(20),
+  phase: z.enum(PHASES).default('upcoming'),
+  role: z.enum(RIDE_ROLES).optional(),
 });
 
 export const CreateRideBodySchema = z
@@ -195,4 +204,5 @@ export const UpdateRideBodySchema = z
 export type UpdateRideBody = z.infer<typeof UpdateRideBodySchema>;
 export type CreateRideBody = z.infer<typeof CreateRideBodySchema>;
 export type ListRidesQuery = z.infer<typeof ListRidesQuerySchema>;
+export type ListMyRidesQuery = z.infer<typeof ListMyRidesQuerySchema>;
 export type ListRideMarkersQuery = z.infer<typeof ListRideMarkersQuerySchema>;

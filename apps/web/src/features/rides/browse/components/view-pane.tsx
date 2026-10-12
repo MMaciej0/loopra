@@ -3,7 +3,7 @@ import { formatLocationLabel } from '@/features/locations/geocoding';
 import { getCurrentUser } from '@/lib/user';
 import { buildRidesListQuery, ridesListKey, ridesMapKey } from '@/features/rides/browse/list-query';
 import { RidesMap } from '@/features/rides/browse/components/rides-map/rides-map';
-import { RidesList } from './rides-list/rides-list';
+import { RidesList } from './rides-list';
 import type { RidesFilters } from '@/features/rides/browse/filters';
 import type { RidesView } from '@/features/rides/browse/view';
 

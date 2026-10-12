@@ -3,34 +3,35 @@
 import { useEffect, useEffectEvent, useRef, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { RideCard } from '@/features/rides/components/ride-card/ride-card';
+import { RideCardSkeleton } from '@/features/rides/components/ride-card/ride-card-skeleton';
 import type { RideCardData } from '@/features/rides/components/ride-card/types';
 import { Link } from '@/i18n/navigation';
 import { Button } from '@/components/ui/button';
 import { Text } from '@/components/ui/text';
-import { cn } from '@/lib/utils';
-import { loadRidesPage } from '@/features/rides/browse/actions/load-rides-page';
-import { hasActiveRidesFilters } from '@/features/rides/browse/filters';
-import type { RidesListQuery } from '@/features/rides/browse/list-query';
-import { buildRidesTimeWindow } from '@/features/rides/browse/time-window';
-import { useClearRidesFilters } from '@/features/rides/browse/use-clear-rides-filters';
-import { RideCardSkeleton } from './ride-card-skeleton';
 
 const SKELETON_COUNT = 3;
 
 type ListedRide = Readonly<{ id: string; data: RideCardData }>;
 
+type RideCardsPage =
+  | Readonly<{ ok: false }>
+  | Readonly<{ ok: true; cards: ListedRide[]; nextCursor: string | null }>;
+
 type Status = 'loading' | 'idle' | 'error' | 'done';
 
-export function RidesList({ query }: { query: RidesListQuery }) {
-  const t = useTranslations('RidesPage');
-  const [initialQuery] = useState(query);
+type Props = Readonly<{
+  loadPage: (cursor: string | null) => Promise<RideCardsPage>;
+  empty: React.ReactNode;
+}>;
+
+export function RideCardList({ loadPage, empty }: Props) {
+  const t = useTranslations('RideCardList');
   const [rides, setRides] = useState<ListedRide[]>([]);
   const [nextCursor, setNextCursor] = useState<string | null>(null);
   const [status, setStatus] = useState<Status>('loading');
   const inFlight = useRef(false);
-  const clearFilters = useClearRidesFilters('list');
 
-  const applyPage = (result: Awaited<ReturnType<typeof loadRidesPage>> | null) => {
+  const applyPage = (result: RideCardsPage | null) => {
     inFlight.current = false;
 
     if (!result?.ok) {
@@ -47,7 +48,7 @@ export function RidesList({ query }: { query: RidesListQuery }) {
     if (inFlight.current) return;
     inFlight.current = true;
 
-    loadRidesPage(initialQuery, buildRidesTimeWindow(initialQuery.filters.when), cursor)
+    loadPage(cursor)
       .catch(() => null)
       .then(applyPage);
   };
@@ -85,29 +86,7 @@ export function RidesList({ query }: { query: RidesListQuery }) {
   };
 
   if (status === 'done' && rides.length === 0) {
-    const filtered = hasActiveRidesFilters(initialQuery.filters);
-
-    return (
-      <div
-        className={cn(
-          'border-border flex flex-col items-center justify-center rounded-xl border border-dashed p-10 text-center',
-          filtered ? 'gap-3' : 'gap-1.5',
-        )}
-      >
-        <Text variant="body-l" as="h2" className="text-foreground font-semibold">
-          {filtered ? t('filteredEmpty') : t('listEmptyTitle')}
-        </Text>
-        {filtered ? (
-          <Button variant="secondary" size="sm" onClick={clearFilters}>
-            {t('filteredEmptyClear')}
-          </Button>
-        ) : (
-          <Text variant="body-s" className="text-muted-foreground max-w-sm">
-            {t('listEmptyHint')}
-          </Text>
-        )}
-      </div>
-    );
+    return empty;
   }
 
   return (
@@ -129,10 +108,10 @@ export function RidesList({ query }: { query: RidesListQuery }) {
       {status === 'error' && (
         <div role="alert" className="flex flex-col items-center gap-3 py-4 text-center">
           <Text variant="body-s" className="text-muted-foreground">
-            {t('listLoadError')}
+            {t('loadError')}
           </Text>
           <Button variant="secondary" size="sm" onClick={retry}>
-            {t('listRetry')}
+            {t('retry')}
           </Button>
         </div>
       )}

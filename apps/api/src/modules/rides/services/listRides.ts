@@ -4,6 +4,13 @@ import { rides, routes, users } from '../../../db/schema.js';
 import { ListRidesQuery } from '../schema.js';
 import { participantCount, rideFilterConditions } from './rideFilterConditions.js';
 
+export const rideListColumns = {
+  ...getTableColumns(rides),
+  creator: { id: users.id, username: users.username },
+  participant_count: participantCount.mapWith(Number),
+  route: { distance_km: routes.distance_km, ascent_m: routes.ascent_m },
+};
+
 export const listRides = async (db: Db, searchParams: ListRidesQuery) => {
   const conditions = rideFilterConditions(searchParams);
   const limit = searchParams.ids?.length ?? searchParams.limit;
@@ -18,12 +25,7 @@ export const listRides = async (db: Db, searchParams: ListRidesQuery) => {
   }
 
   const selectedRides = await db
-    .select({
-      ...getTableColumns(rides),
-      creator: { id: users.id, username: users.username },
-      participant_count: participantCount.mapWith(Number),
-      route: { distance_km: routes.distance_km, ascent_m: routes.ascent_m },
-    })
+    .select(rideListColumns)
     .from(rides)
     .innerJoin(users, eq(users.id, rides.creator_id))
     .leftJoin(routes, eq(routes.id, rides.route_id))

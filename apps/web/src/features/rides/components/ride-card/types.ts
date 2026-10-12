@@ -1,4 +1,11 @@
-import type { BikeType, DropPolicy, ExperiencePolicy, PacePolicy, RideType } from '@loopra/domain';
+import type {
+  BikeType,
+  DropPolicy,
+  ExperiencePolicy,
+  PacePolicy,
+  RideStatus,
+  RideType,
+} from '@loopra/domain';
 import type { ElevationPoint } from '@/features/rides/project-elevation-profile';
 
 export interface RideCardElevation {
@@ -28,4 +35,6 @@ export interface RideCardData {
   elevation?: RideCardElevation;
   creator?: RideCardCreator;
   participant_count?: number;
+  status?: RideStatus;
+  viewer?: 'organiser' | 'participant';
 }

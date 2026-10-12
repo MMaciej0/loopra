@@ -1,6 +1,6 @@
 import { getLocale } from 'next-intl/server';
 import { redirect } from '@/i18n/navigation';
-import TopNav from '@/features/shell/components/top-nav';
+import { RidesTopNav } from '@/features/rides/components/rides-top-nav';
 import { PageBody } from '@/features/shell/components/page-body';
 import { RidesBar } from '@/features/rides/browse/components/rides-bar';
 import { ViewPane } from '@/features/rides/browse/components/view-pane';
@@ -27,7 +27,7 @@ export default async function RidesPage({ searchParams }: Props) {
 
   return (
     <>
-      <TopNav />
+      <RidesTopNav />
       <PageBody>
         <div className="flex h-full min-h-0 flex-col">
           <RidesBar view={view} filters={filters} />

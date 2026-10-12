@@ -9,7 +9,9 @@ import { SidebarGroup, SidebarMenu, SidebarMenuItem, useSidebar } from '@/compon
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 
-const ITEMS = [{ key: 'rides', href: '/rides', icon: Bike }] as const;
+const ITEMS = [
+  { key: 'rides', href: '/rides', sections: ['/rides', '/my-rides'], icon: Bike },
+] as const;
 
 export function AppSidebarNav() {
   const t = useTranslations('Sidebar');
@@ -19,9 +21,11 @@ export function AppSidebarNav() {
   return (
     <SidebarGroup>
       <SidebarMenu>
-        {ITEMS.map(({ key, href, icon: Icon }) => {
+        {ITEMS.map(({ key, href, sections, icon: Icon }) => {
           const label = t(key);
-          const isActive = pathname === href || pathname.startsWith(`${href}/`);
+          const isActive = sections.some(
+            (section) => pathname === section || pathname.startsWith(`${section}/`),
+          );
 
           return (
             <SidebarMenuItem key={key}>

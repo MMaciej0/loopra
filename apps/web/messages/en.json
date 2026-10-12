@@ -6,6 +6,11 @@
     "settings": "Settings",
     "logOut": "Log out"
   },
+  "RidesNav": {
+    "label": "Rides sections",
+    "discover": "Discover",
+    "myRides": "My rides"
+  },
   "RidesPage": {
     "filterWhenLabel": "When",
     "filterWhenAll": "Any time",
@@ -50,6 +55,37 @@
     "listLoadError": "Could not load rides.",
     "listRetry": "Try again",
     "rideMapLabel": "Map of the ride {title}"
+  },
+  "RideCardList": {
+    "loadError": "Could not load rides.",
+    "retry": "Try again"
+  },
+  "MyRidesPage": {
+    "title": "My rides",
+    "phaseLabel": "Time",
+    "phase": {
+      "upcoming": "Upcoming",
+      "past": "History"
+    },
+    "roleLabel": "My role",
+    "role": {
+      "all": "All",
+      "organising": "Organising",
+      "joined": "Joined"
+    },
+    "empty": {
+      "upcoming": {
+        "all": "You have no upcoming rides",
+        "organising": "You are not organising any upcoming ride",
+        "joined": "You have not joined any upcoming ride"
+      },
+      "past": {
+        "all": "No past rides yet",
+        "organising": "No past rides that you organised",
+        "joined": "No past rides that you joined"
+      }
+    },
+    "emptyDiscover": "Find a ride"
   },
   "RidePage": {
     "back": "Back to rides",
@@ -210,7 +246,9 @@
     "creatorPlaceholder": "You",
     "participants": "{count}/{max}",
     "participantsOpen": "{count} going",
-    "full": "Full"
+    "full": "Full",
+    "organiser": "Organiser",
+    "cancelled": "Cancelled"
   },
   "BikeTypes": {
     "any": "Any",
