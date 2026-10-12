@@ -51,6 +51,12 @@ const RideIdsSchema = z
   .transform((value) => value.split(','))
   .pipe(z.array(z.uuid()).min(1).max(RIDE_IDS_MAX));
 
+const RideCursorSchema = z
+  .string()
+  .transform((value) => value.split(':'))
+  .pipe(z.tuple([z.uuid(), z.string().regex(/^\d{1,15}$/)]))
+  .transform(([id, startTime]) => ({ id, startTime: new Date(Number(startTime)) }));
+
 const rideFilterProperties = {
   bike_type: z.enum(BIKE_TYPES).optional(),
   ride_type: z.enum(RIDE_TYPES).optional(),
@@ -63,7 +69,7 @@ const rideFilterProperties = {
 };
 
 export const ListRidesQuerySchema = z.object({
-  cursor: z.string().optional(),
+  cursor: RideCursorSchema.optional(),
   limit: z.coerce.number().int().min(1).max(100).default(20),
   ...rideFilterProperties,
   bbox: BBoxSchema.optional(),
@@ -76,7 +82,7 @@ export const ListRideMarkersQuerySchema = z.object({
 });
 
 export const ListMyRidesQuerySchema = z.object({
-  cursor: z.string().optional(),
+  cursor: RideCursorSchema.optional(),
   limit: z.coerce.number().int().min(1).max(100).default(20),
   phase: z.enum(PHASES).default('upcoming'),
   role: z.enum(RIDE_ROLES).optional(),
@@ -201,6 +207,7 @@ export const UpdateRideBodySchema = z
     path: ['average_pace_kmh'],
   });
 
+export type RideCursor = z.infer<typeof RideCursorSchema>;
 export type UpdateRideBody = z.infer<typeof UpdateRideBodySchema>;
 export type CreateRideBody = z.infer<typeof CreateRideBodySchema>;
 export type ListRidesQuery = z.infer<typeof ListRidesQuerySchema>;
