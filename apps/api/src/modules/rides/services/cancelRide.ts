@@ -1,4 +1,5 @@
 import { eq } from 'drizzle-orm';
+import { ridePhase } from '@loopra/domain';
 import { Db } from '../../../db/index.js';
 import { rides } from '../../../db/schema.js';
 import { RideAlreadyStartedError, RideCancelledError, RideNotFoundError } from '../errors.js';
@@ -15,7 +16,7 @@ export const cancelRide = async (db: Db, rideId: string, organiserId: string) =>
       throw new RideCancelledError();
     }
 
-    if (existingRide.start_time <= new Date()) {
+    if (ridePhase(existingRide.start_time, new Date()) === 'past') {
       throw new RideAlreadyStartedError();
     }
 

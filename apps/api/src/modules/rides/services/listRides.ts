@@ -1,8 +1,9 @@
-import { and, eq, getTableColumns, inArray, sql } from 'drizzle-orm';
+import { and, eq, getTableColumns, inArray } from 'drizzle-orm';
 import { Db } from '../../../db/index.js';
 import { rides, routes, users } from '../../../db/schema.js';
 import { ListRidesQuery } from '../schema.js';
 import { participantCount, rideFilterConditions } from './rideFilterConditions.js';
+import { afterRideCursor, toRidePage } from './rideCursor.js';
 
 export const rideListColumns = {
   ...getTableColumns(rides),
@@ -17,12 +18,7 @@ export const listRides = async (db: Db, searchParams: ListRidesQuery) => {
 
   if (searchParams.ids) conditions.push(inArray(rides.id, searchParams.ids));
 
-  if (searchParams.cursor) {
-    const [cursorUUID, cursorStartTime] = searchParams.cursor.split(':');
-    conditions.push(
-      sql`(${rides.start_time}, ${rides.id}) > (${new Date(Number(cursorStartTime))}::timestamptz, ${cursorUUID}::uuid)`,
-    );
-  }
+  if (searchParams.cursor) conditions.push(afterRideCursor(searchParams.cursor));
 
   const selectedRides = await db
     .select(rideListColumns)
@@ -33,15 +29,5 @@ export const listRides = async (db: Db, searchParams: ListRidesQuery) => {
     .orderBy(rides.start_time, rides.id)
     .limit(limit + 1);
 
-  const data = selectedRides.slice(0, limit);
-  let newCursor = null;
-
-  if (selectedRides.length > limit) {
-    newCursor = `${data[data.length - 1].id}:${data[data.length - 1].start_time.getTime()}`;
-  }
-
-  return {
-    data,
-    nextCursor: newCursor,
-  };
+  return toRidePage(selectedRides, limit);
 };

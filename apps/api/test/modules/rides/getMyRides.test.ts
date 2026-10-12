@@ -181,6 +181,25 @@ describe('GET /rides/mine', () => {
 
       expect(await pageThrough({ role: 'joined' })).toEqual(joined);
     });
+
+    it('rejects a malformed cursor as a bad request', async () => {
+      const rideId = await insertRide(auth.userId);
+      const malformed = [
+        'garbage',
+        'not-a-uuid:1760000000000',
+        `${rideId}:soon`,
+        `${rideId}:`,
+        `${rideId}:99999999999999999999`,
+        `${rideId}:1760000000000:extra`,
+      ];
+
+      for (const cursor of malformed) {
+        const response = await listMineRaw({ cursor });
+
+        expect(response.statusCode, cursor).toBe(400);
+        expect(response.json().field).toBe('cursor');
+      }
+    });
   });
 
   describe('phase', () => {
