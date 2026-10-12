@@ -60,20 +60,41 @@ describe('GET /rides/markers', () => {
     expect(data.map((marker: { id: string }) => marker.id)).toEqual([inside.id]);
   });
 
+  it('returns published rides only', async () => {
+    const [published] = await insertRides(1, { status: 'published' });
+    await insertRides(1, { status: 'draft' });
+    await insertRides(1, { status: 'cancelled' });
+
+    const { data } = await listMarkers({ bbox: krakowBBox });
+
+    expect(data.map((marker: { id: string }) => marker.id)).toEqual([published.id]);
+  });
+
+  it('ignores a status query parameter', async () => {
+    const [published] = await insertRides(1, { status: 'published' });
+    await insertRides(1, { status: 'draft' });
+    await insertRides(1, { status: 'cancelled' });
+
+    for (const status of ['cancelled', 'draft', 'open']) {
+      const { data } = await listMarkers({ bbox: krakowBBox, status });
+
+      expect(data.map((marker: { id: string }) => marker.id)).toEqual([published.id]);
+    }
+  });
+
   it('applies the same filters as the list', async () => {
     const urbanCasual = { bike_type: 'urban', ride_type: 'casual' };
-    const [open] = await insertRides(1, urbanCasual);
+    const [published] = await insertRides(1, urbanCasual);
     await insertRides(1, { ...urbanCasual, status: 'cancelled' });
     await insertRides(1, { ...urbanCasual, is_private: true });
     await insertRides(1, { ...urbanCasual, start_time: new Date(Date.now() + 60 * 60 * 1000) });
 
     const { data } = await listMarkers({
       bbox: krakowBBox,
-      status: 'open',
       date_from: new Date(Date.now() + 5 * 60 * 60 * 1000).toISOString(),
     });
 
-    expect(data.map((marker: { id: string }) => marker.id)).toEqual([open.id]);
+    expect(data.map((marker: { id: string }) => marker.id)).toEqual([published.id]);
 
     const [road] = await insertRides(1, { bike_type: 'road', ride_type: 'training' });
     const [any] = await insertRides(1, { bike_type: 'any', ride_type: 'training' });
@@ -85,7 +106,7 @@ describe('GET /rides/markers', () => {
     await insertRides(1, { bike_type: 'mtb', ride_type: 'coffee_ride' });
 
     const markerIds = async (filters: Record<string, string>) => {
-      const body = await listMarkers({ bbox: krakowBBox, status: 'open', ...filters });
+      const body = await listMarkers({ bbox: krakowBBox, ...filters });
 
       return body.data.map((marker: { id: string }) => marker.id);
     };
@@ -106,7 +127,6 @@ describe('GET /rides/markers', () => {
 
     const { data } = await listMarkers({
       bbox: krakowBBox,
-      status: 'open',
       date_from: new Date().toISOString(),
     });
 
@@ -128,7 +148,6 @@ describe('GET /rides/markers', () => {
 
     const timeWindow = {
       bbox: krakowBBox,
-      status: 'open',
       date_from: new Date(now).toISOString(),
       date_to: new Date(now + 3 * HOUR).toISOString(),
     };

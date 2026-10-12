@@ -108,26 +108,26 @@ Links external OAuth identities to local users. Supports multiple providers per 
 
 Unified model for both **trips** (social group rides) and **trainings** (structured workouts).
 
-| Column              | Type                  | Notes                                                     |
-| ------------------- | --------------------- | --------------------------------------------------------- |
-| id                  | uuid PK               |                                                           |
-| type                | enum                  | `trip` \| `training`                                      |
-| title               | text                  |                                                           |
-| description         | text                  |                                                           |
-| creator_id          | uuid FK → users       |                                                           |
-| route_id            | uuid FK → routes      | optional                                                  |
-| start_location      | geometry(Point, 4326) | meetup point                                              |
-| start_location_name | text                  | human-readable address                                    |
-| start_time          | timestamptz           |                                                           |
-| end_time            | timestamptz           | optional                                                  |
-| distance_km         | numeric               | estimated                                                 |
-| pace_kmh            | integer               | target pace                                               |
-| difficulty          | enum                  | `easy` \| `moderate` \| `hard` \| `expert`                |
-| max_participants    | integer NOT NULL      | 2-500; the creator holds a seat                           |
-| is_private          | boolean               |                                                           |
-| status              | enum                  | `draft` \| `open` \| `full` \| `cancelled` \| `completed` |
-| created_at          | timestamptz           |                                                           |
-| updated_at          | timestamptz           |                                                           |
+| Column              | Type                  | Notes                                      |
+| ------------------- | --------------------- | ------------------------------------------ |
+| id                  | uuid PK               |                                            |
+| type                | enum                  | `trip` \| `training`                       |
+| title               | text                  |                                            |
+| description         | text                  |                                            |
+| creator_id          | uuid FK → users       |                                            |
+| route_id            | uuid FK → routes      | optional                                   |
+| start_location      | geometry(Point, 4326) | meetup point                               |
+| start_location_name | text                  | human-readable address                     |
+| start_time          | timestamptz           |                                            |
+| end_time            | timestamptz           | optional                                   |
+| distance_km         | numeric               | estimated                                  |
+| pace_kmh            | integer               | target pace                                |
+| difficulty          | enum                  | `easy` \| `moderate` \| `hard` \| `expert` |
+| max_participants    | integer NOT NULL      | 2-500; the creator holds a seat            |
+| is_private          | boolean               |                                            |
+| status              | enum                  | `draft` \| `published` \| `cancelled`      |
+| created_at          | timestamptz           |                                            |
+| updated_at          | timestamptz           |                                            |
 
 ### `ride_participants`
 

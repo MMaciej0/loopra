@@ -26,8 +26,14 @@ export type FormationPolicy = (typeof FORMATION_POLICIES)[number];
 export const EXPERIENCE_POLICIES = ['first_timers', 'moderate', 'advanced'] as const;
 export type ExperiencePolicy = (typeof EXPERIENCE_POLICIES)[number];
 
-export const RIDE_STATUSES = ['draft', 'open', 'full', 'cancelled', 'completed'] as const;
+export const RIDE_STATUSES = ['draft', 'published', 'cancelled'] as const;
 export type RideStatus = (typeof RIDE_STATUSES)[number];
+
+export const AVAILABILITIES = ['open', 'full'] as const;
+export type Availability = (typeof AVAILABILITIES)[number];
+
+export const PHASES = ['upcoming', 'past'] as const;
+export type Phase = (typeof PHASES)[number];
 
 export const PARTICIPANT_STATUSES = ['pending', 'confirmed', 'declined'] as const;
 export type ParticipantStatus = (typeof PARTICIPANT_STATUSES)[number];

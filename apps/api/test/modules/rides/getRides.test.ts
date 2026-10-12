@@ -317,11 +317,35 @@ describe('GET /rides', () => {
     const unfiltered = await listRides();
     const filtered = await listRides({
       bbox: formatBBox(bboxAround({ x: 21.01178, y: 52.22977 }, 1)),
-      status: 'open',
     });
 
     expect(unfiltered.data.map((ride: { id: string }) => ride.id)).toEqual([publicId]);
     expect(filtered.data.map((ride: { id: string }) => ride.id)).toEqual([publicId]);
+  });
+
+  it('returns published rides only', async () => {
+    const [published] = await insertRides(
+      { status: 'published' },
+      { status: 'draft' },
+      { status: 'cancelled' },
+    );
+
+    const { data } = await listRides();
+
+    expect(data.map((ride: { id: string }) => ride.id)).toEqual([published]);
+    expect(data[0].status).toBe('published');
+  });
+
+  it('ignores a status query parameter', async () => {
+    const [published] = await insertRides(
+      { status: 'published' },
+      { status: 'draft' },
+      { status: 'cancelled' },
+    );
+
+    expect(await listIds({ status: 'cancelled' })).toEqual([published]);
+    expect(await listIds({ status: 'draft' })).toEqual([published]);
+    expect(await listIds({ status: 'open' })).toEqual([published]);
   });
 
   describe('bike_type and ride_type', () => {
@@ -384,7 +408,7 @@ describe('GET /rides', () => {
       ])
       .returning({ id: rides.id });
 
-    const { data } = await listRides({ status: 'open', date_from: new Date().toISOString() });
+    const { data } = await listRides({ date_from: new Date().toISOString() });
 
     expect(data.map((ride: { id: string }) => ride.id)).toEqual([startsSoon.id]);
   });

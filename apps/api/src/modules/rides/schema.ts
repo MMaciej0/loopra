@@ -19,7 +19,6 @@ import {
   PARTICIPANTS_MAX,
   PARTICIPANTS_MIN,
   RIDE_IDS_MAX,
-  RIDE_STATUSES,
   RIDE_TYPES,
   SEARCH_AREA_MAX_KM,
   TITLE_MAX_LENGTH,
@@ -57,7 +56,6 @@ const rideFilterProperties = {
   country: z.string().optional(),
   date_from: z.coerce.date().optional(),
   date_to: z.coerce.date().optional(),
-  status: z.enum(RIDE_STATUSES).optional(),
 };
 
 export const ListRidesQuerySchema = z.object({

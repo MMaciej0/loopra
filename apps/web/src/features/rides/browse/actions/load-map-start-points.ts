@@ -9,11 +9,11 @@ import type { RidesListQuery } from '@/features/rides/browse/list-query';
 import type { RidesTimeWindow } from '@/features/rides/browse/time-window';
 
 export async function loadMapStartPoints(
-  { bbox, status, filters }: RidesListQuery,
+  { bbox, filters }: RidesListQuery,
   timeWindow: RidesTimeWindow,
 ) {
   const response = await protectedRequest<ListRideMarkersResponse>(
-    `/rides/markers?${toSearchParams({ bbox, status, ...toApiFilters(filters), ...timeWindow })}`,
+    `/rides/markers?${toSearchParams({ bbox, ...toApiFilters(filters), ...timeWindow })}`,
   );
 
   if (!response.ok) {
