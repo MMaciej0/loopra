@@ -1,8 +1,10 @@
 import { eq, gte, lte, sql, SQL } from 'drizzle-orm';
-import { rides } from '../../../db/schema.js';
+import { ride_participants, rides } from '../../../db/schema.js';
 import { ListRidesQuery } from '../schema.js';
 
 type RideFilters = Omit<ListRidesQuery, 'cursor' | 'limit' | 'ids'>;
+
+export const participantCount = sql<number>`(select count(*) from ${ride_participants} where ${ride_participants.ride_id} = ${rides.id})`;
 
 export const rideFilterConditions = (filters: RideFilters) => {
   const conditions: SQL[] = [eq(rides.is_private, false), eq(rides.status, 'published')];
@@ -14,6 +16,13 @@ export const rideFilterConditions = (filters: RideFilters) => {
   if (filters.country) conditions.push(eq(rides.country, filters.country));
   if (filters.date_from) conditions.push(gte(rides.start_time, filters.date_from));
   if (filters.date_to) conditions.push(lte(rides.start_time, filters.date_to));
+
+  if (filters.availability === 'open') {
+    conditions.push(sql`${participantCount} < ${rides.max_participants}`);
+  }
+  if (filters.availability === 'full') {
+    conditions.push(sql`${participantCount} >= ${rides.max_participants}`);
+  }
 
   if (filters.bbox) {
     const { west, south, east, north } = filters.bbox;

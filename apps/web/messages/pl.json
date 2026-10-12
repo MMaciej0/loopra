@@ -18,6 +18,12 @@
     "filterBikeTypeAny": "Dla każdego roweru",
     "filterRideTypeLabel": "Typ jazdy",
     "filterRideTypeAll": "Wszystkie typy jazd",
+    "filterAvailabilityLabel": "Dostępność",
+    "filterAvailabilityAll": "Wolne i pełne",
+    "filterAvailability": {
+      "open": "Są wolne miejsca",
+      "full": "Komplet"
+    },
     "filterClearAll": "Wyczyść wszystko",
     "filtersButton": "Filtry",
     "filtersButtonCount": "Filtry · {count}",
@@ -203,7 +209,8 @@
     "datePlaceholder": "Data i godzina",
     "creatorPlaceholder": "Ty",
     "participants": "{count}/{max}",
-    "participantsOpen": "{count} jedzie"
+    "participantsOpen": "{count} jedzie",
+    "full": "Komplet"
   },
   "BikeTypes": {
     "any": "Dowolny",

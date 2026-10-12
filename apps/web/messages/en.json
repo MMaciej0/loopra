@@ -18,6 +18,12 @@
     "filterBikeTypeAny": "Open to any bike",
     "filterRideTypeLabel": "Ride type",
     "filterRideTypeAll": "All ride types",
+    "filterAvailabilityLabel": "Availability",
+    "filterAvailabilityAll": "Open and full",
+    "filterAvailability": {
+      "open": "Has free seats",
+      "full": "Full"
+    },
     "filterClearAll": "Clear all",
     "filtersButton": "Filters",
     "filtersButtonCount": "Filters · {count}",
@@ -203,7 +209,8 @@
     "datePlaceholder": "Date & time",
     "creatorPlaceholder": "You",
     "participants": "{count}/{max}",
-    "participantsOpen": "{count} going"
+    "participantsOpen": "{count} going",
+    "full": "Full"
   },
   "BikeTypes": {
     "any": "Any",

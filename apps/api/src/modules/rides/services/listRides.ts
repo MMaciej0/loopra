@@ -1,8 +1,8 @@
 import { and, eq, getTableColumns, inArray, sql } from 'drizzle-orm';
 import { Db } from '../../../db/index.js';
-import { ride_participants, rides, routes, users } from '../../../db/schema.js';
+import { rides, routes, users } from '../../../db/schema.js';
 import { ListRidesQuery } from '../schema.js';
-import { rideFilterConditions } from './rideFilterConditions.js';
+import { participantCount, rideFilterConditions } from './rideFilterConditions.js';
 
 export const listRides = async (db: Db, searchParams: ListRidesQuery) => {
   const conditions = rideFilterConditions(searchParams);
@@ -21,10 +21,7 @@ export const listRides = async (db: Db, searchParams: ListRidesQuery) => {
     .select({
       ...getTableColumns(rides),
       creator: { id: users.id, username: users.username },
-      participant_count:
-        sql<number>`(select count(*) from ${ride_participants} where ${ride_participants.ride_id} = ${rides.id})`.mapWith(
-          Number,
-        ),
+      participant_count: participantCount.mapWith(Number),
       route: { distance_km: routes.distance_km, ascent_m: routes.ascent_m },
     })
     .from(rides)

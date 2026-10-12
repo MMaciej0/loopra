@@ -1,5 +1,6 @@
 import z from 'zod';
 import {
+  AVAILABILITIES,
   BIKE_TYPES,
   fitsSearchArea,
   DISTANCE_MAX_KM,
@@ -56,6 +57,7 @@ const rideFilterProperties = {
   country: z.string().optional(),
   date_from: z.coerce.date().optional(),
   date_to: z.coerce.date().optional(),
+  availability: z.enum(AVAILABILITIES).optional(),
 };
 
 export const ListRidesQuerySchema = z.object({
