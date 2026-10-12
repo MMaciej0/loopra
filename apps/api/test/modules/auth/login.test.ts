@@ -153,10 +153,26 @@ describe('POST /auth/login', () => {
             const ipValue = await appRef.app.redis.get('rate-limit:ip:127.0.0.1');
             const emailValue = await appRef.app.redis.get('rate-limit:email:test@example.com');
             expect(emailValue).toBe('5');
-            expect(ipValue).toBe('5');
+            expect(ipValue).toBe('6');
             expect(response.statusCode).toBe(429);
           }
         }
+      });
+
+      it('lets only 5 attempts through when 10 arrive in parallel', async () => {
+        const responses = await Promise.all(
+          Array.from({ length: RATE_LIMIT * 2 }, () =>
+            appRef.app.inject({
+              method: 'POST',
+              url: '/auth/login',
+              body: { email: `test@example.com`, password: 'Password123!' },
+            }),
+          ),
+        );
+
+        const statusCodes = responses.map((response) => response.statusCode);
+        expect(statusCodes.filter((code) => code === 401)).toHaveLength(RATE_LIMIT);
+        expect(statusCodes.filter((code) => code === 429)).toHaveLength(RATE_LIMIT);
       });
 
       it('after 5 attempts fails and successful login returns 200 and clears rate limits', async () => {
