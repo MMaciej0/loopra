@@ -9,6 +9,7 @@
   "RidesNav": {
     "label": "Sekcje jazd",
     "discover": "Odkrywaj",
+    "back": "Wróć do odkrywania",
     "myRides": "Moje jazdy"
   },
   "RidesPage": {
@@ -88,7 +89,6 @@
     "emptyDiscover": "Znajdź jazdę"
   },
   "RidePage": {
-    "back": "Wróć do jazd",
     "from": "start: {location}",
     "distance": "Dystans",
     "elevation": "Przewyższenie",
@@ -180,7 +180,6 @@
     "safetyMinors": "Osoby poniżej 18 lat potrzebują zgody opiekuna i karty rowerowej.",
     "title": "Nowa jazda",
     "description": "Utwórz i udostępnij nową jazdę społeczności.",
-    "back": "Wstecz",
     "cancel": "Anuluj",
     "useStartPoint": "Użyj tego punktu startowego",
     "submit": "Opublikuj",

@@ -18,13 +18,12 @@ type Props = Readonly<{
 }>;
 
 export function RideTopNav({ ride }: Props) {
-  const t = useTranslations('RidePage');
   const tNav = useTranslations('RidesNav');
 
   return (
     <TopNav>
       <Button asChild variant="ghost" size="icon">
-        <Link href="/rides" aria-label={t('back')}>
+        <Link href="/rides" aria-label={tNav('back')}>
           <ArrowLeft />
         </Link>
       </Button>
