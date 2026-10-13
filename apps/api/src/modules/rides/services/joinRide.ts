@@ -12,14 +12,15 @@ import {
 
 export const joinRide = async (db: Db, userId: string, rideId: string) => {
   return await db.transaction(async (tx) => {
-    await tx.select({ id: rides.id }).from(rides).where(eq(rides.id, rideId)).for('update');
-
-    const existingRide = await tx.query.rides.findFirst({
-      where: eq(rides.id, rideId),
-      with: {
-        participants: true,
-      },
-    });
+    const [existingRide] = await tx
+      .select({
+        status: rides.status,
+        start_time: rides.start_time,
+        max_participants: rides.max_participants,
+      })
+      .from(rides)
+      .where(eq(rides.id, rideId))
+      .for('update');
 
     if (!existingRide) {
       throw new RideNotFoundError();
@@ -33,12 +34,17 @@ export const joinRide = async (db: Db, userId: string, rideId: string) => {
       throw new RideAlreadyStartedError();
     }
 
+    const participants = await tx
+      .select({ user_id: ride_participants.user_id })
+      .from(ride_participants)
+      .where(eq(ride_participants.ride_id, rideId));
+
     // the creator has a participant row of their own, so this covers them too
-    if (existingRide.participants.some((participant) => participant.user_id === userId)) {
+    if (participants.some((participant) => participant.user_id === userId)) {
       throw new ParticipantExistsError();
     }
 
-    if (existingRide.participants.length >= existingRide.max_participants) {
+    if (participants.length >= existingRide.max_participants) {
       throw new MaxParticipantsError();
     }
 
