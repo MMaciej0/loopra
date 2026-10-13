@@ -9,7 +9,7 @@ export const rideListColumns = {
   ...getTableColumns(rides),
   creator: { id: users.id, username: users.username },
   participant_count: participantCount.mapWith(Number),
-  route: { distance_km: routes.distance_km, ascent_m: routes.ascent_m },
+  route: { id: routes.id, distance_km: routes.distance_km, ascent_m: routes.ascent_m },
 };
 
 export const listRides = async (db: Db, searchParams: ListRidesQuery) => {
