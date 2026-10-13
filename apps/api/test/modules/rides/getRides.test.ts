@@ -5,7 +5,7 @@ import { sql } from 'drizzle-orm';
 import { bboxAround, formatBBox, RIDE_IDS_MAX, SEARCH_AREA_MAX_KM } from '@loopra/domain';
 import { useApp } from '../../helpers/app.js';
 import { createMultipleRandomRides, newRide } from '../../helpers/rides.js';
-import { rides } from '../../../src/db/schema.js';
+import { rides, routes } from '../../../src/db/schema.js';
 import { registerUser, useAuthenticatedUser } from '../../helpers/auth.js';
 import { buildFileUpload } from '../../helpers/multipart.js';
 
@@ -330,8 +330,28 @@ describe('GET /rides', () => {
     const withRoute = data.find((ride: { id: string }) => ride.id === withRouteId);
     const withoutRoute = data.find((ride: { id: string }) => ride.id === withoutRouteId);
 
-    expect(withRoute.route).toEqual({ distance_km: route.distance_km, ascent_m: route.ascent_m });
+    expect(withRoute.route).toEqual({
+      id: route.id,
+      distance_km: route.distance_km,
+      ascent_m: route.ascent_m,
+    });
     expect(withoutRoute.route).toBeNull();
+  });
+
+  it('keeps the route of a ride whose Route was stored without a distance', async () => {
+    const [stored] = await appRef.app.db
+      .insert(routes)
+      .values({
+        user_id: auth.userId,
+        name: 'Stats-less Route',
+        s3_key: `routes/${randomUUID()}.gpx`,
+      })
+      .returning({ id: routes.id });
+
+    const rideId = await createRide({ route_id: stored.id });
+    const { data } = await listRides({ ids: rideId });
+
+    expect(data[0].route).toEqual({ id: stored.id, distance_km: null, ascent_m: null });
   });
 
   it('never lists private rides, with or without query parameters', async () => {
