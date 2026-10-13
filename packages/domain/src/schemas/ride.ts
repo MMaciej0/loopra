@@ -106,7 +106,10 @@ export const RideListItemSchema = Type.Object(
     creator: RiderSchema,
     participant_count: Type.Integer(),
     route: Type.Union([
-      Type.Object(routeStatsProperties, { additionalProperties: false }),
+      Type.Object(
+        { id: Type.String({ format: 'uuid' }), ...routeStatsProperties },
+        { additionalProperties: false },
+      ),
       Type.Null(),
     ]),
   },
