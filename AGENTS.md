@@ -205,6 +205,7 @@ Dev trusts `loopback,uniquelocal`: `uniquelocal` covers the `web` container, and
 
 - **PostGIS** for all geospatial queries. Rides filter by a `bbox` with `&&` against `ST_MakeEnvelope`, so the GiST index serves it; the box's maximum size is `SEARCH_AREA_MAX_KM` in `packages/domain`
 - **Drizzle ORM** — schema-as-code in `db/schema.ts`, migrations via `drizzle-kit` into `apps/api/drizzle/`
+- **SQL-like queries only** — `db.select()` with joins, never `db.query` / `with:`. `db/schema.ts` declares no `relations()` and `drizzle()` gets no `schema`, so the relational API does not compile. A new table needs `.references()` and nothing more. A nested result is built in the service from two queries — `getRide` is the reference. With `leftJoin`, Drizzle nulls a nested object when its **first** key is `null`, so that key must be a `notNull` column (`route.id`)
 - A **Ride** is the core domain object; `ride_type` (`casual`, `coffee_ride`, `sightseeing`, `training`) says what kind. See `CONTEXT.md` for the glossary
 - Enum declaration order is UI display order, and the default value comes first. `drizzle-kit generate` reporting **"No schema changes"** is the check that `db/schema.ts` and `packages/domain/src/enums.ts` still agree
 - All routes are registered as Fastify plugins for clean encapsulation

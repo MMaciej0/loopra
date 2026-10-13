@@ -136,6 +136,7 @@ describe('GET /rides/:id', () => {
       'ascent_m',
       'distance_km',
       'elevation_profile',
+      'id',
       'max_elevation_m',
       'min_elevation_m',
       'path',
@@ -207,6 +208,7 @@ describe('GET /rides/:id', () => {
 
     expect(response.statusCode).toBe(200);
     expect(response.json().data.route).toEqual({
+      id: stored.id,
       path: null,
       elevation_profile: null,
       max_elevation_m: null,
