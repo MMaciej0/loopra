@@ -14,7 +14,7 @@ import {
   uuid,
   index,
 } from 'drizzle-orm/pg-core';
-import { relations, sql } from 'drizzle-orm';
+import { sql } from 'drizzle-orm';
 import type { GpxMetadata } from '@loopra/gpx';
 import {
   BIKE_TYPES,
@@ -174,19 +174,3 @@ export const ride_participants = pgTable(
   },
   (t) => [primaryKey({ columns: [t.ride_id, t.user_id] })],
 );
-
-export const ridesRelations = relations(rides, ({ many, one }) => ({
-  participants: many(ride_participants),
-  creator: one(users, { fields: [rides.creator_id], references: [users.id] }),
-  route: one(routes, { fields: [rides.route_id], references: [routes.id] }),
-}));
-
-export const rideParticipantsRelations = relations(ride_participants, ({ one }) => ({
-  ride: one(rides, { fields: [ride_participants.ride_id], references: [rides.id] }),
-  user: one(users, { fields: [ride_participants.user_id], references: [users.id] }),
-}));
-
-export const routesRelations = relations(routes, ({ one, many }) => ({
-  user: one(users, { fields: [routes.user_id], references: [users.id] }),
-  rides: many(rides),
-}));
