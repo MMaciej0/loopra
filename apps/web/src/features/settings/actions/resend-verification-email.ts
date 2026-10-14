@@ -2,6 +2,7 @@
 
 import { publicRequest } from '@/lib/api';
 import { APP_ERROR_TYPES } from '@loopra/domain';
+import { MessageResponseSchema } from '@loopra/domain/schemas';
 import { getCurrentUser } from '@/lib/user';
 
 export async function resendVerificationEmail() {
@@ -15,6 +16,7 @@ export async function resendVerificationEmail() {
     const response = await publicRequest('/auth/resend-verification-email', {
       method: 'POST',
       body: JSON.stringify({ email: user.email }),
+      schema: MessageResponseSchema,
     });
 
     if (!response.ok) {

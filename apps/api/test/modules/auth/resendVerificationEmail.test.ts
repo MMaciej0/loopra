@@ -19,6 +19,9 @@ describe('POST /auth/resend-verification-email', () => {
     });
 
     expect(response.statusCode).toBe(200);
+    expect(response.json()).toEqual({
+      message: 'If that email exists and is unverified, a new link has been sent.',
+    });
   });
 
   it('returns 400 for missing email', async () => {

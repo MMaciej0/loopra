@@ -1,4 +1,4 @@
-import type { Static } from 'typebox';
+import type z from 'zod';
 import type {
   AuthUserResponseSchema,
   AuthUserSchema,
@@ -6,7 +6,7 @@ import type {
   SessionResponseSchema,
 } from '../schemas/auth.js';
 
-export type AuthUser = Static<typeof AuthUserSchema>;
-export type AuthUserResponse = Static<typeof AuthUserResponseSchema>;
-export type SessionResponse = Static<typeof SessionResponseSchema>;
-export type MessageResponse = Static<typeof MessageResponseSchema>;
+export type AuthUser = z.output<typeof AuthUserSchema>;
+export type AuthUserResponse = z.output<typeof AuthUserResponseSchema>;
+export type SessionResponse = z.output<typeof SessionResponseSchema>;
+export type MessageResponse = z.output<typeof MessageResponseSchema>;

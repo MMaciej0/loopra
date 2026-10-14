@@ -1,19 +1,17 @@
-import { FastifyInstance } from 'fastify';
+import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import {
   AuthUserResponseSchema,
-  MessageResponseSchema,
-  SessionResponseSchema,
-} from '@loopra/domain/schemas';
-import {
   ChangePasswordBodySchema,
   EmailSchema,
-  ForgottenPasswordBodySchema,
+  ForgotPasswordBodySchema,
   LoginBodySchema,
+  MessageResponseSchema,
   RegisterBodySchema,
-  ResendEmailVerificationBodySchema,
+  ResendVerificationEmailBodySchema,
   ResetPasswordBodySchema,
+  SessionResponseSchema,
   VerifyEmailBodySchema,
-} from './schema.js';
+} from '@loopra/domain/schemas';
 import { registerUser } from './services/registerUser.js';
 import { loginUser } from './services/loginUser.js';
 import { refreshSession } from './services/refreshSession.js';
@@ -36,12 +34,12 @@ import {
   passwordChangeRateLimiter,
 } from './services/rateLimiter.js';
 
-export const authRoutes = (fastify: FastifyInstance, _options: unknown) => {
+export const authRoutes: FastifyPluginAsyncZod = async (fastify) => {
   fastify.post(
     '/register',
-    { schema: { response: { 200: AuthUserResponseSchema } } },
+    { schema: { body: RegisterBodySchema, response: { 200: AuthUserResponseSchema } } },
     async (request, reply) => {
-      const registerCredentials = parseBody(request.body, RegisterBodySchema);
+      const registerCredentials = request.body;
       await authRateLimiter(request, fastify.redis);
 
       const { user, accessToken, familyUuid, rawRefreshToken } = await registerUser({
@@ -63,9 +61,9 @@ export const authRoutes = (fastify: FastifyInstance, _options: unknown) => {
 
   fastify.post(
     '/login',
-    { schema: { response: { 200: AuthUserResponseSchema } } },
+    { schema: { body: LoginBodySchema, response: { 200: AuthUserResponseSchema } } },
     async (request, reply) => {
-      const { email, password } = parseBody(request.body, LoginBodySchema);
+      const { email, password } = request.body;
       await authRateLimiter(request, fastify.redis, email);
 
       const { user, accessToken, familyUuid, rawRefreshToken } = await loginUser({
@@ -143,9 +141,9 @@ export const authRoutes = (fastify: FastifyInstance, _options: unknown) => {
 
   fastify.post(
     '/forgot-password',
-    { schema: { response: { 200: MessageResponseSchema } } },
+    { schema: { body: ForgotPasswordBodySchema, response: { 200: MessageResponseSchema } } },
     async (request, reply) => {
-      const { email } = parseBody(request.body, ForgottenPasswordBodySchema);
+      const { email } = request.body;
       await emailSendRateLimiter(request, fastify.redis, email);
 
       // Always return 200 — never reveal whether email exists in the system
@@ -158,9 +156,9 @@ export const authRoutes = (fastify: FastifyInstance, _options: unknown) => {
 
   fastify.post(
     '/reset-password',
-    { schema: { response: { 200: MessageResponseSchema } } },
+    { schema: { body: ResetPasswordBodySchema, response: { 200: MessageResponseSchema } } },
     async (request, reply) => {
-      const { token, password } = parseBody(request.body, ResetPasswordBodySchema);
+      const { token, password } = request.body;
 
       await resetPassword(token, password, fastify.db, fastify.redis);
 
@@ -172,10 +170,10 @@ export const authRoutes = (fastify: FastifyInstance, _options: unknown) => {
     '/change-password',
     {
       onRequest: fastify.authenticate,
-      schema: { response: { 200: MessageResponseSchema } },
+      schema: { body: ChangePasswordBodySchema, response: { 200: MessageResponseSchema } },
     },
     async (request, reply) => {
-      const { current_password, new_password } = parseBody(request.body, ChangePasswordBodySchema);
+      const { current_password, new_password } = request.body;
       const userId = request.user.sub;
       await passwordChangeRateLimiter(fastify.redis, userId);
 
@@ -194,9 +192,11 @@ export const authRoutes = (fastify: FastifyInstance, _options: unknown) => {
 
   fastify.post(
     '/resend-verification-email',
-    { schema: { response: { 200: MessageResponseSchema } } },
+    {
+      schema: { body: ResendVerificationEmailBodySchema, response: { 200: MessageResponseSchema } },
+    },
     async (request, reply) => {
-      const { email } = parseBody(request.body, ResendEmailVerificationBodySchema);
+      const { email } = request.body;
       await emailSendRateLimiter(request, fastify.redis, email);
 
       // Always return 200 — never reveal whether email exists or is already verified
@@ -209,9 +209,9 @@ export const authRoutes = (fastify: FastifyInstance, _options: unknown) => {
 
   fastify.post(
     '/verify-email',
-    { schema: { response: { 200: MessageResponseSchema } } },
+    { schema: { body: VerifyEmailBodySchema, response: { 200: MessageResponseSchema } } },
     async (request, reply) => {
-      const { token } = parseBody(request.body, VerifyEmailBodySchema);
+      const { token } = request.body;
 
       await verifyEmail(token, fastify.db, fastify.redis);
 

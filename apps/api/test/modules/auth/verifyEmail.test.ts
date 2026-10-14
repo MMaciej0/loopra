@@ -49,6 +49,7 @@ describe('POST /auth/verify-email', () => {
       });
 
       expect(response.statusCode).toBe(200);
+      expect(response.json()).toEqual({ message: 'Email verification successful' });
     });
 
     it('sets email_verified and email_verified_at on user', async () => {

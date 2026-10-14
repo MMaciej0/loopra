@@ -3,6 +3,8 @@
 import { z } from 'zod';
 import { publicRequest } from '@/lib/api';
 import { APP_ERROR_TYPES, type AppErrorType } from '@loopra/domain';
+import { AuthUserResponseSchema, LoginBodySchema } from '@loopra/domain/schemas';
+import { emailSchema } from '@/features/auth/email-schema';
 import { getZodValidationErrorTypes } from '@/lib/errors';
 import { setAuthCookies } from '@/lib/cookies';
 import { redirect } from 'next/navigation';
@@ -12,11 +14,8 @@ type LoginFieldErrors = {
   password?: AppErrorType[];
 };
 
-const schema = z.object({
-  email: z
-    .string()
-    .min(1, APP_ERROR_TYPES.REQUIRED)
-    .pipe(z.email({ error: APP_ERROR_TYPES.INVALID_EMAIL })),
+const schema = LoginBodySchema.extend({
+  email: emailSchema,
   password: z.string().min(1, APP_ERROR_TYPES.REQUIRED).min(8, APP_ERROR_TYPES.PASSWORD_TOO_SHORT),
 });
 
@@ -47,6 +46,7 @@ export async function login(
     const response = await publicRequest('/auth/login', {
       method: 'POST',
       body: JSON.stringify({ email, password }),
+      schema: AuthUserResponseSchema,
     });
 
     if (!response.ok) {

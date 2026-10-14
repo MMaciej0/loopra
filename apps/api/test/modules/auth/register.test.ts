@@ -16,6 +16,8 @@ describe('POST /auth/register', () => {
     expect(response.statusCode).toBe(200);
 
     const body = response.json();
+    expect(Object.keys(body)).toEqual(['user']);
+    expect(Object.keys(body.user).sort()).toEqual(['email', 'email_verified', 'id', 'username']);
     expect(body.user.email).toBe('test@example.com');
     expect(body.user.username).toBe('test');
     expect(body.user.password_hash).toBeUndefined();
@@ -105,6 +107,21 @@ describe('POST /auth/register', () => {
     });
 
     expect(response.statusCode).toBe(400);
+  });
+
+  it('returns 400 with the password rule code for a short password', async () => {
+    const response = await appRef.app.inject({
+      method: 'POST',
+      url: '/auth/register',
+      body: { email: 'test@example.com', password: 'Ab-1', username: 'test' },
+    });
+
+    expect(response.statusCode).toBe(400);
+    expect(response.json()).toEqual({
+      type: 'INVALID_INPUT',
+      message: 'PASSWORD_TOO_SHORT',
+      field: 'password',
+    });
   });
 
   it.each([

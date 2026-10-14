@@ -1,14 +1,5 @@
 import z from 'zod';
-import {
-  PASSWORD_MIN_LENGTH,
-  PASSWORD_SPECIAL_CHAR_PATTERN,
-  PASSWORD_UPPERCASE_PATTERN,
-} from '@loopra/domain';
 import { APP_ERROR_TYPES } from '@loopra/domain';
+import { PasswordSchema } from '@loopra/domain/schemas';
 
-export const passwordSchema = z
-  .string()
-  .min(1, APP_ERROR_TYPES.REQUIRED)
-  .min(PASSWORD_MIN_LENGTH, APP_ERROR_TYPES.PASSWORD_TOO_SHORT)
-  .regex(PASSWORD_UPPERCASE_PATTERN, APP_ERROR_TYPES.PASSWORD_REQUIRES_UPPERCASE)
-  .regex(PASSWORD_SPECIAL_CHAR_PATTERN, APP_ERROR_TYPES.PASSWORD_REQUIRES_SPECIAL_CHAR);
+export const passwordSchema = z.string().min(1, APP_ERROR_TYPES.REQUIRED).pipe(PasswordSchema);

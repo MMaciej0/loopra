@@ -72,6 +72,7 @@ describe('POST /auth/reset-password', () => {
       });
 
       expect(response.statusCode).toBe(200);
+      expect(response.json()).toEqual({ message: 'Password reset successful' });
 
       const loginResponse = await appRef.app.inject({
         method: 'POST',
