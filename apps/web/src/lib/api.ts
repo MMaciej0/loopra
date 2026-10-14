@@ -23,7 +23,7 @@ interface SuccessResponse<T> {
 
 type ApiResponse<T> = SuccessResponse<T> | ErrorResponse;
 
-type RequestOptions = RequestInit & { schema?: z.ZodType };
+type RequestOptions<S extends z.ZodType> = RequestInit & { schema: S };
 
 const refreshSession = cache(async (refreshToken: string) => {
   const response = await apiRequestWithCookie('/auth/refresh', `refreshToken=${refreshToken}`, {
@@ -47,16 +47,8 @@ const refreshSession = cache(async (refreshToken: string) => {
 
 export async function publicRequest<S extends z.ZodType>(
   url: string,
-  options: RequestInit & { schema: S },
-): Promise<ApiResponse<z.output<S>>>;
-export async function publicRequest<T = unknown>(
-  url: string,
-  options?: RequestInit,
-): Promise<ApiResponse<T>>;
-export async function publicRequest(
-  url: string,
-  { schema, ...options }: RequestOptions = {},
-): Promise<ApiResponse<unknown>> {
+  { schema, ...options }: RequestOptions<S>,
+): Promise<ApiResponse<z.output<S>>> {
   const response = await apiRequest(url, options);
 
   if (!response.ok) {
@@ -68,16 +60,8 @@ export async function publicRequest(
 
 export async function protectedRequest<S extends z.ZodType>(
   url: string,
-  options: RequestInit & { schema: S },
-): Promise<ApiResponse<z.output<S>>>;
-export async function protectedRequest<T = unknown>(
-  url: string,
-  options?: RequestInit,
-): Promise<ApiResponse<T>>;
-export async function protectedRequest(
-  url: string,
-  { schema, ...options }: RequestOptions = {},
-): Promise<ApiResponse<unknown>> {
+  { schema, ...options }: RequestOptions<S>,
+): Promise<ApiResponse<z.output<S>>> {
   const { accessToken, refreshToken } = await getAuthCookies();
 
   if (accessToken) {
@@ -109,16 +93,11 @@ export async function protectedRequest(
   return await parseApiSuccess(secondResponse, schema);
 }
 
-async function parseApiSuccess(
+async function parseApiSuccess<S extends z.ZodType>(
   response: Response,
-  schema?: z.ZodType,
-): Promise<ApiResponse<unknown>> {
+  schema: S,
+): Promise<ApiResponse<z.output<S>>> {
   const data = await response.json();
-
-  if (!schema) {
-    return { ok: true, data, headers: response.headers };
-  }
-
   const result = schema.safeParse(data);
 
   if (!result.success) {
