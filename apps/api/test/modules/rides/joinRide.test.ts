@@ -22,6 +22,17 @@ describe('POST /rides/:rideId/join', () => {
     expect(response.statusCode).toBe(404);
   });
 
+  it('returns 404 RIDE_NOT_FOUND for a malformed id', async () => {
+    const response = await appRef.app.inject({
+      method: 'POST',
+      url: '/rides/abc/join',
+      cookies: { accessToken: participantAuth.accessToken },
+    });
+
+    expect(response.statusCode).toBe(404);
+    expect(response.json()).toMatchObject({ type: ERROR_TYPES.RIDE_NOT_FOUND });
+  });
+
   it('returns 200 when ride exists and user is not creator of ride and existing participant', async () => {
     const rideResponse = await appRef.app.inject({
       method: 'POST',

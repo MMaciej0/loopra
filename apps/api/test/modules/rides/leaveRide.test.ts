@@ -21,6 +21,17 @@ describe('DELETE /rides/:id/leave', () => {
     expect(response.json()).toMatchObject({ type: 'RIDE_NOT_FOUND' });
   });
 
+  it('returns 404 RIDE_NOT_FOUND for a malformed id', async () => {
+    const response = await appRef.app.inject({
+      method: 'DELETE',
+      url: '/rides/abc/leave',
+      cookies: { accessToken: participantAuth.accessToken },
+    });
+
+    expect(response.statusCode).toBe(404);
+    expect(response.json()).toMatchObject({ type: 'RIDE_NOT_FOUND' });
+  });
+
   it('returns 404 when not a participant', async () => {
     const rideResponse = await appRef.app.inject({
       method: 'POST',

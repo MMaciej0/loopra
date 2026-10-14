@@ -6,6 +6,7 @@ import {
   DISTANCE_MAX_KM,
   DISTANCE_MIN_KM,
   DROP_POLICIES,
+  ERROR_TYPES,
   EXPERIENCE_POLICIES,
   FORMATION_POLICIES,
   LAT_MAX,
@@ -27,6 +28,10 @@ import {
   TITLE_MAX_LENGTH,
   TITLE_MIN_LENGTH,
 } from '@loopra/domain';
+
+export const RideParamsSchema = z.object({
+  id: z.uuid(ERROR_TYPES.RIDE_NOT_FOUND),
+});
 
 const BBoxSchema = z
   .string()

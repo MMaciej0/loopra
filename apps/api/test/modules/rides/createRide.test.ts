@@ -194,6 +194,7 @@ describe('POST /rides', () => {
     });
 
     expect(response.statusCode).toBe(400);
+    expect(response.json()).toMatchObject({ type: 'INVALID_INPUT', field: 'bike_type' });
   });
 
   it.each(DROP_POLICIES)('accepts drop_policy %s', async (drop_policy) => {
