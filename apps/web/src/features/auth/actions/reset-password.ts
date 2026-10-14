@@ -1,13 +1,11 @@
 'use server';
 
-import z from 'zod';
 import { redirect } from 'next/navigation';
 import { APP_ERROR_TYPES, type AppErrorType } from '@loopra/domain';
-import { MessageResponseSchema } from '@loopra/domain/schemas';
+import { MessageResponseSchema, ResetPasswordBodySchema } from '@loopra/domain/schemas';
 import { getZodValidationErrorTypes } from '@/lib/errors';
 import { publicRequest } from '@/lib/api';
 import { clearAuthCookies } from '@/lib/cookies';
-import { passwordSchema } from '@/features/auth/password-schema';
 
 interface ResetPasswordFieldErrors {
   password?: AppErrorType[];
@@ -18,9 +16,7 @@ type ResetPasswordState = {
   formError?: AppErrorType;
 } | null;
 
-const schema = z.object({
-  password: passwordSchema,
-});
+const schema = ResetPasswordBodySchema.pick({ password: true });
 
 export async function resetPassword(
   token: string,

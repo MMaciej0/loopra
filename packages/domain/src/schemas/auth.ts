@@ -1,10 +1,5 @@
 import { z } from 'zod';
-import { VALIDATION_ERROR_TYPES } from '../errors.js';
-import { EmailSchema, PasswordSchema, UsernameSchema } from './common.js';
-
-const RequiredStringSchema = z
-  .string(VALIDATION_ERROR_TYPES.REQUIRED)
-  .min(1, VALIDATION_ERROR_TYPES.REQUIRED);
+import { EmailSchema, PasswordSchema, RequiredStringSchema, UsernameSchema } from './common.js';
 
 export const RegisterBodySchema = z.object({
   email: EmailSchema,

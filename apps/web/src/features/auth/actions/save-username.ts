@@ -2,13 +2,12 @@
 
 import z from 'zod';
 import { refresh } from 'next/cache';
-import { usernameSchema } from '@/features/auth/username-schema';
-import { UpdateCurrentUserResponseSchema } from '@loopra/domain/schemas';
+import { UpdateCurrentUserResponseSchema, UsernameSchema } from '@loopra/domain/schemas';
 import { protectedRequest } from '@/lib/api';
 import { APP_ERROR_TYPES, type AppErrorType } from '@loopra/domain';
 import { getZodValidationErrorTypes } from '@/lib/errors';
 
-const schema = z.object({ username: usernameSchema });
+const schema = z.object({ username: UsernameSchema });
 
 type SaveUsernameState = {
   values?: { username?: string };

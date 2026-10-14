@@ -6,16 +6,6 @@ import { getZodValidationErrorTypes } from '@/lib/errors';
 import { redirect } from 'next/navigation';
 import { publicRequest } from '@/lib/api';
 import { setAuthCookies } from '@/lib/cookies';
-import { emailSchema } from '@/features/auth/email-schema';
-import { usernameSchema } from '@/features/auth/username-schema';
-import { passwordSchema } from '@/features/auth/password-schema';
-
-const schema = RegisterBodySchema.extend({
-  email: emailSchema,
-  username: usernameSchema,
-  password: passwordSchema,
-});
-
 type LoginFieldErrors = {
   email?: AppErrorType[];
   username?: AppErrorType[];
@@ -30,7 +20,7 @@ type RegisterState = {
 
 export async function register(previousState: RegisterState, formData: FormData) {
   const raw = Object.fromEntries(formData);
-  const result = schema.safeParse(raw);
+  const result = RegisterBodySchema.safeParse(raw);
 
   if (!result.success) {
     return {
