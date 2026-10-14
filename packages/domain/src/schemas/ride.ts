@@ -9,7 +9,10 @@ import {
   RIDE_STATUSES,
   RIDE_TYPES,
 } from '../enums.js';
-import { ElevationProfileSchema, RoutePathSchema } from './route.js';
+
+const ElevationProfileSchema = Type.Array(Type.Array(Type.Tuple([Type.Number(), Type.Number()])));
+
+const RoutePathSchema = Type.Array(Type.Array(Type.Tuple([Type.Number(), Type.Number()])));
 
 const StringEnum = <T extends readonly string[]>(values: T) =>
   Type.Unsafe<T[number]>({ type: 'string', enum: [...values] });

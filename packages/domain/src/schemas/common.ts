@@ -1,4 +1,4 @@
-import z from 'zod';
+import { z } from 'zod';
 import { VALIDATION_ERROR_TYPES } from '../errors.js';
 import {
   PASSWORD_MIN_LENGTH,

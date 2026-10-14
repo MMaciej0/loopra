@@ -1,26 +1,18 @@
-import { Type } from 'typebox';
+import { z } from 'zod';
 
-export const ElevationProfileSchema = Type.Array(
-  Type.Array(Type.Tuple([Type.Number(), Type.Number()])),
-);
+export const ElevationProfileSchema = z.array(z.array(z.tuple([z.number(), z.number()])));
 
-export const RoutePathSchema = Type.Array(Type.Array(Type.Tuple([Type.Number(), Type.Number()])));
+export const RoutePathSchema = z.array(z.array(z.tuple([z.number(), z.number()])));
 
-export const RouteSchema = Type.Object(
-  {
-    id: Type.String({ format: 'uuid' }),
-    user_id: Type.Union([Type.String({ format: 'uuid' }), Type.Null()]),
-    name: Type.String(),
-    distance_km: Type.String(),
-    ascent_m: Type.String(),
-    descent_m: Type.String(),
-    point_count: Type.Integer(),
-    elevation_profile: ElevationProfileSchema,
-  },
-  { additionalProperties: false },
-);
+export const RouteSchema = z.object({
+  id: z.uuid(),
+  user_id: z.uuid().nullable(),
+  name: z.string(),
+  distance_km: z.string(),
+  ascent_m: z.string(),
+  descent_m: z.string(),
+  point_count: z.int(),
+  elevation_profile: ElevationProfileSchema,
+});
 
-export const CreateRouteResponseSchema = Type.Object(
-  { data: RouteSchema },
-  { additionalProperties: false },
-);
+export const CreateRouteResponseSchema = z.object({ data: RouteSchema });
