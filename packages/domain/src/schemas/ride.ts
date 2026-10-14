@@ -1,4 +1,4 @@
-import { Type } from 'typebox';
+import { z } from 'zod';
 import {
   BIKE_TYPES,
   DROP_POLICIES,
@@ -9,152 +9,102 @@ import {
   RIDE_STATUSES,
   RIDE_TYPES,
 } from '../enums.js';
+import { IsoDateTime } from './common.js';
+import { ElevationProfileSchema, RoutePathSchema } from './route.js';
 
-const ElevationProfileSchema = Type.Array(Type.Array(Type.Tuple([Type.Number(), Type.Number()])));
-
-const RoutePathSchema = Type.Array(Type.Array(Type.Tuple([Type.Number(), Type.Number()])));
-
-const StringEnum = <T extends readonly string[]>(values: T) =>
-  Type.Unsafe<T[number]>({ type: 'string', enum: [...values] });
-
-const Nullable = <T extends ReturnType<typeof Type.String>>(schema: T) =>
-  Type.Union([schema, Type.Null()]);
-
-const riderProperties = {
-  id: Type.String({ format: 'uuid' }),
-  username: Type.Union([Type.String(), Type.Null()]),
-} as const;
-
-export const RiderSchema = Type.Object(riderProperties, { additionalProperties: false });
-
-const participantProperties = {
-  ride_id: Type.String({ format: 'uuid' }),
-  user_id: Type.String({ format: 'uuid' }),
-  status: StringEnum(PARTICIPANT_STATUSES),
-  joined_at: Type.String({ format: 'date-time' }),
-} as const;
-
-export const RideParticipantSchema = Type.Object(participantProperties, {
-  additionalProperties: false,
+export const RiderSchema = z.object({
+  id: z.uuid(),
+  username: z.string().nullable(),
 });
 
-const rideProperties = {
-  id: Type.String({ format: 'uuid' }),
-  title: Type.String(),
-  description: Nullable(Type.String()),
-  creator_id: Type.String({ format: 'uuid' }),
-  route_id: Nullable(Type.String({ format: 'uuid' })),
-  start_location: Type.Union([
-    Type.Object({ x: Type.Number(), y: Type.Number() }, { additionalProperties: false }),
-    Type.Null(),
-  ]),
-  start_location_name: Nullable(Type.String()),
-  city: Nullable(Type.String()),
-  municipality: Nullable(Type.String()),
-  region: Nullable(Type.String()),
-  country: Nullable(Type.String()),
-  postal_code: Nullable(Type.String()),
-  full_address: Nullable(Type.String()),
-  start_time: Type.String({ format: 'date-time' }),
-  end_time: Nullable(Type.String({ format: 'date-time' })),
-  distance_km: Nullable(Type.String()),
-  average_pace_kmh: Type.Union([Type.Integer(), Type.Null()]),
-  ride_type: StringEnum(RIDE_TYPES),
-  bike_type: StringEnum(BIKE_TYPES),
-  drop_policy: StringEnum(DROP_POLICIES),
-  pace_policy: StringEnum(PACE_POLICIES),
-  formation_policy: StringEnum(FORMATION_POLICIES),
-  experience_policy: StringEnum(EXPERIENCE_POLICIES),
-  max_participants: Type.Integer(),
-  is_private: Type.Boolean(),
-  status: StringEnum(RIDE_STATUSES),
-  created_at: Type.String({ format: 'date-time' }),
-  updated_at: Type.String({ format: 'date-time' }),
-} as const;
+const participantShape = {
+  ride_id: z.uuid(),
+  user_id: z.uuid(),
+  status: z.enum(PARTICIPANT_STATUSES),
+  joined_at: IsoDateTime,
+};
 
-export const RideSchema = Type.Object(rideProperties, { additionalProperties: false });
+export const RideParticipantSchema = z.object(participantShape);
 
-const routeStatsProperties = {
-  distance_km: Nullable(Type.String()),
-  ascent_m: Nullable(Type.String()),
-} as const;
+const rideShape = {
+  id: z.uuid(),
+  title: z.string(),
+  description: z.string().nullable(),
+  creator_id: z.uuid(),
+  route_id: z.uuid().nullable(),
+  start_location: z.object({ x: z.number(), y: z.number() }).nullable(),
+  start_location_name: z.string().nullable(),
+  city: z.string().nullable(),
+  municipality: z.string().nullable(),
+  region: z.string().nullable(),
+  country: z.string().nullable(),
+  postal_code: z.string().nullable(),
+  full_address: z.string().nullable(),
+  start_time: IsoDateTime,
+  end_time: IsoDateTime.nullable(),
+  distance_km: z.string().nullable(),
+  average_pace_kmh: z.int().nullable(),
+  ride_type: z.enum(RIDE_TYPES),
+  bike_type: z.enum(BIKE_TYPES),
+  drop_policy: z.enum(DROP_POLICIES),
+  pace_policy: z.enum(PACE_POLICIES),
+  formation_policy: z.enum(FORMATION_POLICIES),
+  experience_policy: z.enum(EXPERIENCE_POLICIES),
+  max_participants: z.int(),
+  is_private: z.boolean(),
+  status: z.enum(RIDE_STATUSES),
+  created_at: IsoDateTime,
+  updated_at: IsoDateTime,
+};
 
-export const RideRouteSchema = Type.Object(
-  {
-    id: Type.String({ format: 'uuid' }),
-    path: Type.Union([RoutePathSchema, Type.Null()]),
-    elevation_profile: Type.Union([ElevationProfileSchema, Type.Null()]),
-    max_elevation_m: Type.Union([Type.Integer(), Type.Null()]),
-    min_elevation_m: Type.Union([Type.Integer(), Type.Null()]),
-    ...routeStatsProperties,
-  },
-  { additionalProperties: false },
-);
+export const RideSchema = z.object(rideShape);
 
-export const RideDetailSchema = Type.Object(
-  {
-    ...rideProperties,
-    creator: RiderSchema,
-    route: Type.Union([RideRouteSchema, Type.Null()]),
-    participants: Type.Array(
-      Type.Object({ ...participantProperties, user: RiderSchema }, { additionalProperties: false }),
-    ),
-  },
-  { additionalProperties: false },
-);
+const routeStatsShape = {
+  distance_km: z.string().nullable(),
+  ascent_m: z.string().nullable(),
+};
 
-export const RideListItemSchema = Type.Object(
-  {
-    ...rideProperties,
-    creator: RiderSchema,
-    participant_count: Type.Integer(),
-    route: Type.Union([
-      Type.Object(
-        { id: Type.String({ format: 'uuid' }), ...routeStatsProperties },
-        { additionalProperties: false },
-      ),
-      Type.Null(),
-    ]),
-  },
-  { additionalProperties: false },
-);
+export const RideRouteSchema = z.object({
+  id: z.uuid(),
+  path: RoutePathSchema.nullable(),
+  elevation_profile: ElevationProfileSchema.nullable(),
+  max_elevation_m: z.int().nullable(),
+  min_elevation_m: z.int().nullable(),
+  ...routeStatsShape,
+});
 
-export const ListRidesResponseSchema = Type.Object(
-  {
-    data: Type.Array(RideListItemSchema),
-    nextCursor: Type.Union([Type.String(), Type.Null()]),
-  },
-  { additionalProperties: false },
-);
+export const RideDetailSchema = z.object({
+  ...rideShape,
+  creator: RiderSchema,
+  route: RideRouteSchema.nullable(),
+  participants: z.array(z.object({ ...participantShape, user: RiderSchema })),
+});
 
-export const RideMarkerSchema = Type.Object(
-  {
-    id: Type.String({ format: 'uuid' }),
-    lng: Type.Number(),
-    lat: Type.Number(),
-  },
-  { additionalProperties: false },
-);
+export const RideListItemSchema = z.object({
+  ...rideShape,
+  creator: RiderSchema,
+  participant_count: z.int(),
+  route: z.object({ id: z.uuid(), ...routeStatsShape }).nullable(),
+});
 
-export const ListRideMarkersResponseSchema = Type.Object(
-  {
-    data: Type.Array(RideMarkerSchema),
-    truncated: Type.Boolean(),
-  },
-  { additionalProperties: false },
-);
+export const ListRidesResponseSchema = z.object({
+  data: z.array(RideListItemSchema),
+  nextCursor: z.string().nullable(),
+});
 
-export const RideResponseSchema = Type.Object(
-  { data: RideSchema },
-  { additionalProperties: false },
-);
+export const RideMarkerSchema = z.object({
+  id: z.uuid(),
+  lng: z.number(),
+  lat: z.number(),
+});
 
-export const RideDetailResponseSchema = Type.Object(
-  { data: RideDetailSchema },
-  { additionalProperties: false },
-);
+export const ListRideMarkersResponseSchema = z.object({
+  data: z.array(RideMarkerSchema),
+  truncated: z.boolean(),
+});
 
-export const RideParticipantResponseSchema = Type.Object(
-  { data: RideParticipantSchema },
-  { additionalProperties: false },
-);
+export const RideResponseSchema = z.object({ data: RideSchema });
+
+export const RideDetailResponseSchema = z.object({ data: RideDetailSchema });
+
+export const RideParticipantResponseSchema = z.object({ data: RideParticipantSchema });

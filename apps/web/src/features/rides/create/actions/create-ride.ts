@@ -1,5 +1,6 @@
 'use server';
 
+import { RideResponseSchema } from '@loopra/domain/schemas';
 import { protectedRequest } from '@/lib/api';
 import { createRideSchema, type CreateRideInput } from '@/features/rides/create/schema';
 
@@ -18,6 +19,7 @@ export async function createRide(input: CreateRideInput) {
   const response = await protectedRequest('/rides', {
     method: 'POST',
     body: JSON.stringify(payload),
+    schema: RideResponseSchema,
   });
 
   if (!response.ok) {

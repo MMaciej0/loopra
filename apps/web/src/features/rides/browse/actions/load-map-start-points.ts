@@ -1,6 +1,6 @@
 'use server';
 
-import type { ListRideMarkersResponse } from '@loopra/domain';
+import { ListRideMarkersResponseSchema } from '@loopra/domain/schemas';
 import { protectedRequest } from '@/lib/api';
 import { groupByStartPoint } from '@/features/rides/browse/components/rides-map/start-points';
 import { toApiFilters } from '@/features/rides/browse/filters';
@@ -12,8 +12,9 @@ export async function loadMapStartPoints(
   { bbox, filters }: RidesListQuery,
   timeWindow: RidesTimeWindow,
 ) {
-  const response = await protectedRequest<ListRideMarkersResponse>(
+  const response = await protectedRequest(
     `/rides/markers?${toSearchParams({ bbox, ...toApiFilters(filters), ...timeWindow })}`,
+    { schema: ListRideMarkersResponseSchema },
   );
 
   if (!response.ok) {

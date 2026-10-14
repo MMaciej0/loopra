@@ -1,6 +1,6 @@
 'use server';
 
-import type { ListRidesResponse } from '@loopra/domain';
+import { ListRidesResponseSchema } from '@loopra/domain/schemas';
 import { protectedRequest } from '@/lib/api';
 import { toRideCard } from '@/features/rides/components/ride-card/to-ride-card';
 import { toApiFilters } from '@/features/rides/browse/filters';
@@ -19,7 +19,7 @@ export async function loadRidesPage(
     params.set('cursor', cursor);
   }
 
-  const response = await protectedRequest<ListRidesResponse>(`/rides?${params}`);
+  const response = await protectedRequest(`/rides?${params}`, { schema: ListRidesResponseSchema });
 
   if (!response.ok) {
     return { ok: false as const, errorType: response.errorType };

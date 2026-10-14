@@ -34,7 +34,7 @@ function toPositiveNumber(value: string | number | null | undefined) {
 
 function durationHours(ride: RideDetail, distanceKm: number | null, paceKmh: number | null) {
   if (ride.end_time) {
-    const hours = (Date.parse(ride.end_time) - Date.parse(ride.start_time)) / HOUR_MS;
+    const hours = (ride.end_time.getTime() - ride.start_time.getTime()) / HOUR_MS;
 
     return toPositiveNumber(hours);
   }

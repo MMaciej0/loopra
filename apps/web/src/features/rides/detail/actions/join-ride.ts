@@ -1,11 +1,13 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
+import { RideParticipantResponseSchema } from '@loopra/domain/schemas';
 import { protectedRequest } from '@/lib/api';
 
 export async function joinRide(rideId: string) {
   const response = await protectedRequest(`/rides/${encodeURIComponent(rideId)}/join`, {
     method: 'POST',
+    schema: RideParticipantResponseSchema,
   });
 
   if (!response.ok) {

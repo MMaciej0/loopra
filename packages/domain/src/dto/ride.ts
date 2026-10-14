@@ -1,4 +1,4 @@
-import type { Static } from 'typebox';
+import type { z } from 'zod';
 import type {
   ListRideMarkersResponseSchema,
   ListRidesResponseSchema,
@@ -14,15 +14,15 @@ import type {
   RiderSchema,
 } from '../schemas/ride.js';
 
-export type Rider = Static<typeof RiderSchema>;
-export type RideParticipant = Static<typeof RideParticipantSchema>;
-export type Ride = Static<typeof RideSchema>;
-export type RideRoute = Static<typeof RideRouteSchema>;
-export type RideDetail = Static<typeof RideDetailSchema>;
-export type RideListItem = Static<typeof RideListItemSchema>;
-export type RideMarker = Static<typeof RideMarkerSchema>;
-export type ListRideMarkersResponse = Static<typeof ListRideMarkersResponseSchema>;
-export type ListRidesResponse = Static<typeof ListRidesResponseSchema>;
-export type RideResponse = Static<typeof RideResponseSchema>;
-export type RideDetailResponse = Static<typeof RideDetailResponseSchema>;
-export type RideParticipantResponse = Static<typeof RideParticipantResponseSchema>;
+export type Rider = z.output<typeof RiderSchema>;
+export type RideParticipant = z.output<typeof RideParticipantSchema>;
+export type Ride = z.output<typeof RideSchema>;
+export type RideRoute = z.output<typeof RideRouteSchema>;
+export type RideDetail = z.output<typeof RideDetailSchema>;
+export type RideListItem = z.output<typeof RideListItemSchema>;
+export type RideMarker = z.output<typeof RideMarkerSchema>;
+export type ListRideMarkersResponse = z.output<typeof ListRideMarkersResponseSchema>;
+export type ListRidesResponse = z.output<typeof ListRidesResponseSchema>;
+export type RideResponse = z.output<typeof RideResponseSchema>;
+export type RideDetailResponse = z.output<typeof RideDetailResponseSchema>;
+export type RideParticipantResponse = z.output<typeof RideParticipantResponseSchema>;

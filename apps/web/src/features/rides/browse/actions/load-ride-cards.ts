@@ -1,6 +1,7 @@
 'use server';
 
-import { RIDE_IDS_MAX, type ListRidesResponse, type RideListItem } from '@loopra/domain';
+import { RIDE_IDS_MAX, type RideListItem } from '@loopra/domain';
+import { ListRidesResponseSchema } from '@loopra/domain/schemas';
 import { protectedRequest } from '@/lib/api';
 import { toRideCard } from '@/features/rides/components/ride-card/to-ride-card';
 import { toSearchParams } from '@/features/rides/to-search-params';
@@ -11,7 +12,9 @@ export async function loadRideCards(ids: readonly string[]) {
   );
   const responses = await Promise.all(
     chunks.map((chunk) =>
-      protectedRequest<ListRidesResponse>(`/rides?${toSearchParams({ ids: chunk.join(',') })}`),
+      protectedRequest(`/rides?${toSearchParams({ ids: chunk.join(',') })}`, {
+        schema: ListRidesResponseSchema,
+      }),
     ),
   );
 
