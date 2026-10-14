@@ -1,7 +1,7 @@
 'use server';
 
 import { publicRequest } from '@/lib/api';
-import { APP_ERROR_TYPES } from '@/lib/errors';
+import { APP_ERROR_TYPES } from '@loopra/domain';
 import { getCurrentUser } from '@/lib/user';
 
 export async function resendVerificationEmail() {

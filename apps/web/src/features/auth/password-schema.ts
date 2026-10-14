@@ -4,7 +4,7 @@ import {
   PASSWORD_SPECIAL_CHAR_PATTERN,
   PASSWORD_UPPERCASE_PATTERN,
 } from '@loopra/domain';
-import { APP_ERROR_TYPES } from '@/lib/errors';
+import { APP_ERROR_TYPES } from '@loopra/domain';
 
 export const passwordSchema = z
   .string()

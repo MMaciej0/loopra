@@ -1,6 +1,6 @@
 import z from 'zod';
 import { USERNAME_MAX_LENGTH, USERNAME_MIN_LENGTH } from '@loopra/domain';
-import { APP_ERROR_TYPES } from '@/lib/errors';
+import { APP_ERROR_TYPES } from '@loopra/domain';
 
 export const usernameSchema = z
   .string()
