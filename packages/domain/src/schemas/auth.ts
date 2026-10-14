@@ -1,5 +1,10 @@
 import { z } from 'zod';
+import { VALIDATION_ERROR_TYPES } from '../errors.js';
 import { EmailSchema, PasswordSchema, UsernameSchema } from './common.js';
+
+const RequiredStringSchema = z
+  .string(VALIDATION_ERROR_TYPES.REQUIRED)
+  .min(1, VALIDATION_ERROR_TYPES.REQUIRED);
 
 export const RegisterBodySchema = z.object({
   email: EmailSchema,
@@ -9,7 +14,7 @@ export const RegisterBodySchema = z.object({
 
 export const LoginBodySchema = z.object({
   email: EmailSchema,
-  password: z.string(),
+  password: RequiredStringSchema,
 });
 
 export const ForgotPasswordBodySchema = z.object({
@@ -17,17 +22,17 @@ export const ForgotPasswordBodySchema = z.object({
 });
 
 export const ResetPasswordBodySchema = z.object({
-  token: z.string(),
+  token: RequiredStringSchema,
   password: PasswordSchema,
 });
 
 export const ChangePasswordBodySchema = z.object({
-  current_password: z.string(),
+  current_password: RequiredStringSchema,
   new_password: PasswordSchema,
 });
 
 export const VerifyEmailBodySchema = z.object({
-  token: z.string(),
+  token: RequiredStringSchema,
 });
 
 export const ResendVerificationEmailBodySchema = z.object({
