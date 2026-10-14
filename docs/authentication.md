@@ -68,6 +68,6 @@ There is one exception: for 10 seconds after a rotation, the token that was just
 ## Known limits
 
 - **An access token cannot be cancelled.** After a logout, a copied access token still works until it expires, at most 15 minutes later. This is the price of not asking Redis on every request.
-- **`email_verified` is inside the JWT.** After a rider verifies the email, the old access token still says "not verified" until the next refresh.
+- **`email_verified` is inside the JWT.** The verify link refreshes the session at once, so the browser that opens it can join rides right away. Another device that is already logged in keeps its old access token, and its ride actions answer `403` until its next refresh, at most 15 minutes later.
 - **A lost refresh response logs the rider out.** If the response of a rotation never reaches the browser (a closed tab, a lost connection), Redis holds the new token and the browser the replaced one. Its next refresh after the 10-second window is read as theft.
 - **Google login needs one host.** The API sets the cookies in the Google flow. This works on `localhost`, because cookies do not look at the port. In production the API and the web must share a host, or the cookies need a `Domain`.
