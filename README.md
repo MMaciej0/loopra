@@ -17,7 +17,6 @@ Strava is good at tracking a ride. Facebook groups are good at talking. Neither 
 - How it is built, and why
   - [Authentication](#authentication)
   - [Rides](#rides)
-  - [Finding rides](#finding-rides)
   - [Across the whole project](#across-the-whole-project)
 - [Getting started](#getting-started)
 - [Testing and CI](#testing-and-ci)
@@ -118,19 +117,31 @@ The full reasons, the flow step by step, and all known limits are in [`docs/auth
 
 ## Rides
 
-### Two riders cannot take the last seat
+An organiser creates a ride with a start point, a time, a Capacity (the maximum number of riders) and a ride contract. Other riders find it on a list or on a map, and join it.
 
-**Problem:** a ride has a maximum number of riders. Two riders can press "Join" at the same moment when one seat is left. If both requests read the headcount before either of them writes, both get in.
+A ride stores only what the organiser decided. Facts that change by themselves are calculated when they are needed:
 
-**Decision:** joining a ride locks the ride row (`SELECT ... FOR UPDATE`) inside a transaction. The second request waits for the first one to finish, and then sees a full ride.
+| Value        | Values                            | Where it comes from                       |
+| ------------ | --------------------------------- | ----------------------------------------- |
+| Ride Status  | `draft`, `published`, `cancelled` | Stored. Only the organiser changes it.    |
+| Availability | `open`, `full`                    | Calculated from Capacity and participants |
+| Phase        | `upcoming`, `past`                | Calculated from the start time and clock  |
 
-## Finding rides
+The main decisions:
 
-### Map search with PostGIS
+- **Availability and Phase are never stored**, so they can never be out of date. One pure function for each lives in `packages/domain`, and the API and the web both call it ([ADR-0003](docs/adr/0003-availability-and-phase-are-derived.md)).
+- **Two riders cannot take the last seat.** Join locks the ride row (`SELECT ... FOR UPDATE`) in a transaction, so the second request waits and then sees a full ride.
+- **The organiser holds a seat.** Creating a ride also adds the organiser as a participant, so no count needs a special case. The organiser cannot leave, only cancel.
+- **Cancel, never delete.** A cancelled ride keeps its participants, so they can see what happened. Cancel is final.
+- **A ride needs 5 hours of lead time**, so nobody creates a ride that no one can find in time.
+- **A stranger gets `404`, not `403`**, when they try to change or cancel a ride that is not theirs.
+- **Map search uses PostGIS.** The map sends its visible box (`bbox`), and the `&&` operator uses a **GiST index** (an index made for geometry). The box is at most 100 km, so nobody can ask for the whole world.
+- **The map loads points first, cards later.** It gets only id and coordinates for each ride, and loads full cards when the rider clicks a marker.
+- **The list uses a cursor**, not page numbers, so a new ride never makes the rider see one ride twice.
 
-**Problem:** the map must show rides for the visible area, and it must stay fast when there are many rides.
+Known limits: an organiser can lower Capacity below the number of riders who already joined, and a past ride can still be edited. Nothing happens at the moment a ride ends, because nothing writes to it. Private rides wait for an alert or messaging system, because the organiser needs a way to invite riders.
 
-**Decision:** the web sends the map's bounding box (`bbox` — the four edges of the visible area). The API compares it with the ride's start point using the PostGIS `&&` operator, which can use a **GiST index** (an index made for geometry). The box has a maximum size of 100 km, so nobody can ask for the whole world in one request.
+The full reasons, the flow step by step, and all known limits are in [`docs/rides.md`](docs/rides.md).
 
 ## Across the whole project
 
@@ -238,7 +249,7 @@ The workflow has no logic of its own. Every step is a script that you can run on
 ## More documentation
 
 - [`CONTEXT.md`](CONTEXT.md) — the glossary. One word for one thing, used in the database, the API and the UI.
-- [`docs/backend-design.md`](docs/backend-design.md) — the API design in detail.
 - [`docs/authentication.md`](docs/authentication.md) — login, tokens and cookies: every decision with its reasons.
+- [`docs/rides.md`](docs/rides.md) — creating, joining and finding rides: every decision with its reasons.
 - [`docs/adr/`](docs/adr) — decision records: a hard decision, the options, and why one was chosen.
-- [`docs/product-vision.md`](docs/product-vision.md) and [`docs/features.md`](docs/features.md) — the product idea and the full feature plan.
+- [`docs/product-vision.md`](docs/product-vision.md) — the product idea: who Loopra is for, and why.
