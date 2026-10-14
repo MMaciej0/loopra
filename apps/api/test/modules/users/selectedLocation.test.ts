@@ -66,15 +66,16 @@ describe('PUT /users/me/selected-location', () => {
   });
 
   it.each([
-    ['a missing location', { ...BERLIN, location: undefined }],
-    ['an out-of-range longitude', { ...BERLIN, location: { x: 181, y: 52 } }],
-    ['an out-of-range latitude', { ...BERLIN, location: { x: 13, y: -91 } }],
-    ['a missing city', { ...BERLIN, city: undefined }],
-    ['an empty country', { ...BERLIN, country: '' }],
-  ])('rejects a body with %s', async (_case, payload) => {
+    ['a missing location', { ...BERLIN, location: undefined }, 'location'],
+    ['an out-of-range longitude', { ...BERLIN, location: { x: 181, y: 52 } }, 'location'],
+    ['an out-of-range latitude', { ...BERLIN, location: { x: 13, y: -91 } }, 'location'],
+    ['a missing city', { ...BERLIN, city: undefined }, 'city'],
+    ['an empty country', { ...BERLIN, country: '' }, 'country'],
+  ])('rejects a body with %s', async (_case, payload, field) => {
     const response = await put(payload);
 
     expect(response.statusCode).toBe(400);
+    expect(response.json()).toMatchObject({ type: 'INVALID_INPUT', field });
   });
 
   it('returns 404 when the account no longer exists', async () => {

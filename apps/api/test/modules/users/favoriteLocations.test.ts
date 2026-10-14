@@ -88,7 +88,7 @@ describe('/users/me/favorite-locations', () => {
         'region',
       ].sort(),
     );
-    expect(favorite_location.created_at).toBe(new Date(favorite_location.created_at).toISOString());
+    expect(favorite_location.created_at).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/);
   });
 
   it('fills in the place names the body does not carry', async () => {
@@ -229,6 +229,15 @@ describe('/users/me/favorite-locations', () => {
     expect(response.statusCode).toBe(200);
     expect(response.json().favorite_location).toMatchObject({ id: mitte.id, district: 'Mitte' });
     expect(await districts()).toEqual(['Kreuzberg', 'Neukölln']);
+  });
+
+  it('answers a delete with the removed favourite as the wire DTO', async () => {
+    const created = (await create(KREUZBERG)).json().favorite_location;
+
+    const response = await remove(created.id);
+
+    expect(response.json()).toEqual({ favorite_location: created });
+    expect(created.created_at).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/);
   });
 
   it('deletes the last remaining favourite', async () => {

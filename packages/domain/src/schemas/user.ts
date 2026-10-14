@@ -1,27 +1,17 @@
-import { Type, type TSchema } from 'typebox';
+import { z } from 'zod';
+import { IsoDateTime } from './common.js';
 import { SelectedLocationSchema } from './location.js';
 
-const Nullable = <T extends TSchema>(schema: T) => Type.Union([schema, Type.Null()]);
+export const CurrentUserSchema = z.object({
+  id: z.uuid(),
+  email: z.string(),
+  username: z.string().nullable(),
+  created_at: IsoDateTime,
+  email_verified: z.boolean(),
+  has_password: z.boolean(),
+  selected_location: SelectedLocationSchema.nullable(),
+});
 
-export const CurrentUserSchema = Type.Object(
-  {
-    id: Type.String({ format: 'uuid' }),
-    email: Type.String(),
-    username: Nullable(Type.String()),
-    created_at: Type.String({ format: 'date-time' }),
-    email_verified: Type.Boolean(),
-    has_password: Type.Boolean(),
-    selected_location: Nullable(SelectedLocationSchema),
-  },
-  { additionalProperties: false },
-);
+export const GetCurrentUserResponseSchema = z.object({ user: CurrentUserSchema });
 
-export const GetCurrentUserResponseSchema = Type.Object(
-  { user: CurrentUserSchema },
-  { additionalProperties: false },
-);
-
-export const UpdateCurrentUserResponseSchema = Type.Object(
-  { updatedUser: CurrentUserSchema },
-  { additionalProperties: false },
-);
+export const UpdateCurrentUserResponseSchema = z.object({ updatedUser: CurrentUserSchema });
