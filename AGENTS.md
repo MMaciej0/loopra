@@ -131,7 +131,7 @@ Inside `packages/domain`, import Zod as `import { z } from 'zod'`. The default i
 
 ## API Architecture (`apps/api`)
 
-See `docs/backend-design.md` for full design. Key structure:
+Key structure:
 
 ```
 apps/api/src/
@@ -244,7 +244,7 @@ Code is grouped by feature, not by the URL that renders it:
 ```
 apps/web/src/
   app/          # Routing files only: pages, layouts, error/not-found, route handlers
-  features/     # All feature code: auth, locations, shell, rides/{browse,create,components}
+  features/     # All feature code: auth, landing, legal, locations, onboarding, rides/{browse,create,components}, settings, shell
   components/   # Feature-free only: ui/ (shadcn), icons/, providers/
   hooks/        # Hooks used by more than one feature
   lib/          # Shared helpers: api, cookies, errors, locale, user, cn

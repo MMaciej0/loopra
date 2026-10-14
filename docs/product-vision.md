@@ -64,20 +64,14 @@ If an unverified user tries to create or join a ride, the UI should not feel lik
 
 Loopra should make expectations explicit before someone joins. This reduces fear for newer riders and prevents frustration for stronger riders.
 
-Important ride attributes:
+The ride contract is four promises, always set together and always shown together:
 
-- Discipline: road, gravel, MTB, mixed, urban, CX.
-- Distance.
-- Elevation / climbing profile.
-- Expected pace range.
-- Ride type: social, coffee, endurance, training, fast group, intro ride.
-- Drop policy: no-drop, regroup points, or drop ride.
-- First-timers welcome.
-- Group riding experience required or not.
-- Max riders.
-- Organizer approval required or open join.
-- Coffee stop / social stop.
-- Route or GPX attachment, optional at creation.
+- **Drop Policy:** what happens to a rider who falls back.
+- **Pace Policy:** who decides the speed.
+- **Formation Policy:** how the group rides on the road.
+- **Experience Policy:** who the ride is for.
+
+Next to the contract, a ride says its Ride Type, Bike Type, Capacity, Start Point and start time, and it can have a Route. The full list of values is in [`docs/rides.md`](rides.md).
 
 The ride contract should be honest, not judgmental. A beginner-friendly no-drop ride and a 34 km/h drop training ride are both valid. The product should help each rider find the right room.
 
@@ -85,27 +79,7 @@ The ride contract should be honest, not judgmental. A beginner-friendly no-drop 
 
 Creating a ride should feel almost as easy as posting a message, but structured enough that people know what they are joining.
 
-Minimum ride creation fields:
-
-- Where?
-- When?
-- Discipline?
-- Distance?
-- Pace range?
-- No-drop or drop?
-- Max riders?
-- Optional route.
-- Optional short note.
-
-Templates can reduce friction:
-
-- Chill coffee ride.
-- Beginner group ride.
-- Gravel exploration.
-- Endurance ride.
-- Fast training.
-- Women/social ride.
-- Night ride.
+The create-ride form shows a live preview of the ride card, so the organiser sees what other riders will see.
 
 ## What To Avoid Early
 
