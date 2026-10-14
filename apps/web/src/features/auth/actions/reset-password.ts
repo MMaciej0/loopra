@@ -3,6 +3,7 @@
 import z from 'zod';
 import { redirect } from 'next/navigation';
 import { APP_ERROR_TYPES, type AppErrorType } from '@loopra/domain';
+import { MessageResponseSchema } from '@loopra/domain/schemas';
 import { getZodValidationErrorTypes } from '@/lib/errors';
 import { publicRequest } from '@/lib/api';
 import { clearAuthCookies } from '@/lib/cookies';
@@ -36,6 +37,7 @@ export async function resetPassword(
     const response = await publicRequest('/auth/reset-password', {
       method: 'POST',
       body: JSON.stringify({ token, password: result.data.password }),
+      schema: MessageResponseSchema,
     });
 
     if (!response.ok) {

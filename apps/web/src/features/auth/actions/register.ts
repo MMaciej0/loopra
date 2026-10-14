@@ -1,19 +1,17 @@
 'use server';
 
-import z from 'zod';
 import { APP_ERROR_TYPES, type AppErrorType } from '@loopra/domain';
+import { AuthUserResponseSchema, RegisterBodySchema } from '@loopra/domain/schemas';
 import { getZodValidationErrorTypes } from '@/lib/errors';
 import { redirect } from 'next/navigation';
 import { publicRequest } from '@/lib/api';
 import { setAuthCookies } from '@/lib/cookies';
+import { emailSchema } from '@/features/auth/email-schema';
 import { usernameSchema } from '@/features/auth/username-schema';
 import { passwordSchema } from '@/features/auth/password-schema';
 
-const schema = z.object({
-  email: z
-    .string()
-    .min(1, APP_ERROR_TYPES.REQUIRED)
-    .pipe(z.email({ error: APP_ERROR_TYPES.INVALID_EMAIL })),
+const schema = RegisterBodySchema.extend({
+  email: emailSchema,
   username: usernameSchema,
   password: passwordSchema,
 });
@@ -47,6 +45,7 @@ export async function register(previousState: RegisterState, formData: FormData)
     const response = await publicRequest('/auth/register', {
       method: 'POST',
       body: JSON.stringify({ email, username, password }),
+      schema: AuthUserResponseSchema,
     });
 
     if (!response.ok) {

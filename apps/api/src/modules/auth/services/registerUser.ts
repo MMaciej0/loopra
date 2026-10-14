@@ -4,11 +4,12 @@ import { users } from '../../../db/schema.js';
 import { createTokenFamily } from './tokenFamily.js';
 import { sendEmailVerification } from './sendEmailVerification.js';
 import { UserAlreadyExistsError } from '../errors.js';
-import { RegisterBody } from '../schema.js';
+import type z from 'zod';
+import type { RegisterBodySchema } from '@loopra/domain/schemas';
 
 interface RegisterUserParams {
   fastify: FastifyInstance;
-  registerCredentials: RegisterBody;
+  registerCredentials: z.output<typeof RegisterBodySchema>;
 }
 
 export const registerUser = async ({ fastify, registerCredentials }: RegisterUserParams) => {

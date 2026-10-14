@@ -1,10 +1,11 @@
 'use server';
 
-import z from 'zod';
 import { APP_ERROR_TYPES, type AppErrorType } from '@loopra/domain';
+import { ForgotPasswordBodySchema, MessageResponseSchema } from '@loopra/domain/schemas';
 import { getZodValidationErrorTypes } from '@/lib/errors';
 import { publicRequest } from '@/lib/api';
 import { redirect } from 'next/navigation';
+import { emailSchema } from '@/features/auth/email-schema';
 
 interface ForgotPasswordFieldErrors {
   email?: AppErrorType[];
@@ -16,11 +17,8 @@ type ForgotPasswordState = {
   formError?: AppErrorType;
 } | null;
 
-const schema = z.object({
-  email: z
-    .string()
-    .min(1, APP_ERROR_TYPES.REQUIRED)
-    .pipe(z.email({ error: APP_ERROR_TYPES.INVALID_EMAIL })),
+const schema = ForgotPasswordBodySchema.extend({
+  email: emailSchema,
 });
 
 export async function forgotPassword(previousState: ForgotPasswordState, formData: FormData) {
@@ -40,6 +38,7 @@ export async function forgotPassword(previousState: ForgotPasswordState, formDat
     const response = await publicRequest('/auth/forgot-password', {
       method: 'POST',
       body: JSON.stringify({ email }),
+      schema: MessageResponseSchema,
     });
 
     if (!response.ok) {

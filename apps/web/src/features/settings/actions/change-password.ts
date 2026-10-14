@@ -1,13 +1,14 @@
 'use server';
 
 import z from 'zod';
+import { ChangePasswordBodySchema, MessageResponseSchema } from '@loopra/domain/schemas';
 import { passwordSchema } from '@/features/auth/password-schema';
 import { protectedRequest } from '@/lib/api';
 import { setAuthCookies } from '@/lib/cookies';
 import { APP_ERROR_TYPES, type AppErrorType } from '@loopra/domain';
 import { getZodValidationErrorTypes } from '@/lib/errors';
 
-const schema = z.object({
+const schema = ChangePasswordBodySchema.extend({
   current_password: z.string().min(1, APP_ERROR_TYPES.REQUIRED),
   new_password: passwordSchema,
 });
@@ -32,6 +33,7 @@ export async function changePassword(
     const response = await protectedRequest('/auth/change-password', {
       method: 'POST',
       body: JSON.stringify(result.data),
+      schema: MessageResponseSchema,
     });
 
     if (!response.ok) {

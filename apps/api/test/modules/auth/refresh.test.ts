@@ -61,6 +61,8 @@ describe('POST /auth/refresh', () => {
       });
 
       expect(response.statusCode).toBe(200);
+      expect(Object.keys(response.json())).toEqual(['user']);
+      expect(Object.keys(response.json().user)).toEqual(['id']);
 
       const cookies = response.cookies;
       const newAccessToken = cookies.find((c) => c.name === 'accessToken');
