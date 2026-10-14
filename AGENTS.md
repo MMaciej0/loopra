@@ -123,6 +123,8 @@ Two entry points, and the split is load-bearing:
 | `@loopra/domain`         | enums, bounds, error codes, DTO **types** | none         |
 | `@loopra/domain/schemas` | Zod **schemas** shared by API and web     | `zod` (peer) |
 
+Error codes come in two sets in `errors.ts`. `ERROR_TYPES` are the wire `type` of an error response. `VALIDATION_ERROR_TYPES` (`REQUIRED`, `INVALID_EMAIL`, `PASSWORD_TOO_SHORT`, …) are the Zod messages of the shared schemas. `APP_ERROR_TYPES` is both sets together — what web can translate. `isErrorType` and `isAppErrorType` check a value against them.
+
 The main barrel has no path to `schemas/`, so importing a constant never loads Zod or every schema. `dto/*.ts` reaches its schemas through `import type` only (`z.output<typeof XResponseSchema>`), so the emitted JS is `export {}`. **Adding a `schemas/` re-export to `src/index.ts` would ship every schema to any browser code that imports a constant** — no error, no failing test.
 
 Inside `packages/domain`, import Zod as `import { z } from 'zod'`. The default import (`import z from 'zod'`, also with `import type`) compiles, but the web reads the emitted `.d.ts` differently and every DTO type becomes `any` there — silently, since `skipLibCheck` is on. Quick check in web: `const x: SomeDto = 5` must be a type error.
@@ -161,6 +163,8 @@ drizzle/            # Generated migrations + snapshots
 
 Zod is the only schema library ([ADR-0005](docs/adr/0005-zod-is-the-only-schema-library.md)). `buildApp` in `app.ts` sets the `fastify-type-provider-zod` validator and serializer compilers once, and every module's routes plugin is typed `FastifyPluginAsyncZod`. A route declares `schema: { body, querystring, params, response: { 200: XResponseSchema } }`, and the handler reads `request.body` / `request.query` / `request.params` already parsed and typed — no cast, no hand-written parse.
 
+The one hand-written parse is in the Google callback (`GET /auth/google/callback`): `EmailSchema.safeParse(userinfo.email)`. It checks external data — the userinfo Google returns — not the request, so no route schema can do it. A failure answers `InvalidInputError` (`400 INVALID_INPUT`).
+
 A response schema is the **only** thing filtering the database row — handlers send rows straight from Drizzle, and the serializer strips keys the schema does not list. An endpoint without one leaks every column, `password_hash` included. Add the schema with the route, and assert the exact key set in a test. A missing required field is not a dropped field: the serializer fails, the error is logged, and the endpoint answers **500**. Narrowing a query's columns without narrowing its schema breaks the endpoint outright.
 
 **Where a schema lives.** In `packages/domain/src/schemas/` only when both API and web use it — one file per resource (`auth`, `user`, `location`, `route`, `ride`) plus `common.ts` for building blocks (`EmailSchema`, `PasswordSchema`, `UsernameSchema`, the `IsoDateTime` codec). API-only schemas go in the module's `schema.ts`; web-only ones stay in the web feature. A web form that needs more fields `.extend`s the shared schema; a really different form gets its own.
@@ -177,7 +181,7 @@ A response schema is the **only** thing filtering the database row — handlers 
 
 **The exception:** the multipart GPX upload (`POST /routes`) has no body schema. The file is checked by `@loopra/gpx` and the multipart limits. Its response still has a Zod schema.
 
-**Web side.** `publicRequest` / `protectedRequest` in `apps/web/src/lib/api.ts` require the route's response `schema`, and the data type comes from it. Pass the real response schema even when the caller ignores the body. A reply that does not parse is logged with its issues and returned as `{ ok: false, errorType: UNKNOWN }`. The parse runs on the Next.js server only.
+**Web side.** `publicRequest` / `protectedRequest` / `cookieRequest` in `apps/web/src/lib/api.ts` require the route's response `schema`, and the data type comes from it. `cookieRequest` sends a cookie the caller chooses (the refresh token for `/auth/refresh`, both tokens for `/auth/logout`). Do not call the raw `apiRequest` / `apiRequestWithCookie` outside `lib/api.ts`. Pass the real response schema even when the caller ignores the body. A reply that does not parse is logged with its issues and returned as `{ ok: false, errorType: UNKNOWN }`. The parse runs on the Next.js server only.
 
 **Checks**, run from the repo root. Each must print nothing, except the last:
 
@@ -186,6 +190,7 @@ grep -rnE "request\.(body|query|params) as" apps/api/src         # no casts of r
 grep -L FastifyPluginAsyncZod apps/api/src/modules/*/routes.ts    # every routes file is typed for Zod
 grep -rnE "import (type )?z from 'zod'" packages/domain/src       # named import only in domain
 grep -rli typebox apps/*/src apps/*/package.json packages/*/src packages/*/package.json
+grep -rlE "apiRequest(WithCookie)?\(" apps/web/src | grep -v lib/api.ts   # web parses every reply
 realpath apps/api/node_modules/zod apps/web/node_modules/zod packages/domain/node_modules/zod | sort -u
 ```
 
@@ -205,7 +210,7 @@ export class RideNotFoundError extends AppError {
 
 Services throw them; controllers let them fall through to `plugins/globalErrorHandler.ts`, which is the only place that turns an error into a response. **No controller translates errors** — a `try/catch` in a controller means that endpoint performs a side effect on failure (both surviving ones clear auth cookies), never boilerplate.
 
-`ERROR_TYPES` in `packages/domain` is the wire vocabulary shared with web. Name an error class for the **response it produces**, not the cause: login answers `InvalidCredentialsError` for an unknown email, a wrong password and a Google-only account (no `password_hash`), so the anti-enumeration behaviour is visible in the name rather than discoverable. Register does the same with `UserAlreadyExistsError` for every taken email. `OAUTH_ONLY_ACCOUNT` is answered only by `POST /auth/change-password`, which requires login — no unauthenticated endpoint may reveal how an account signs in.
+`ERROR_TYPES` in `packages/domain` is the wire vocabulary shared with web. A validation code from `VALIDATION_ERROR_TYPES` goes on the wire too: as the `message` of a `400 INVALID_INPUT`, next to `field`, so web can show the same error its own form check would show. Name an error class for the **response it produces**, not the cause: login answers `InvalidCredentialsError` for an unknown email, a wrong password and a Google-only account (no `password_hash`), so the anti-enumeration behaviour is visible in the name rather than discoverable. Register does the same with `UserAlreadyExistsError` for every taken email. `OAUTH_ONLY_ACCOUNT` is answered only by `POST /auth/change-password`, which requires login — no unauthenticated endpoint may reveal how an account signs in.
 
 A unique value is checked by the insert itself, never by a `select` first: `insert ... onConflictDoNothing({ target })`, then throw the module's error when no row came back. `registerUser` has no lookup before its insert for this reason — a `select` followed by an `insert` is a race condition, and the request that loses it gets a raw Postgres `23505`, which the handler answers as `500`. When the request that loses has a right to the result, do not throw: run the lookup again. `findOrCreateOAuthUser` does this — two Google logins of one rider must both end logged in, so an insert that returns no row starts the service again, at most three times.
 

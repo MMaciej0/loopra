@@ -3,7 +3,8 @@ import { hasLocale } from 'next-intl';
 import type { NextRequest } from 'next/server';
 import { getPathname } from '@/i18n/navigation';
 import { routing } from '@/i18n/routing';
-import { apiRequest, apiRequestWithCookie } from '@/lib/api';
+import { MessageResponseSchema, SessionResponseSchema } from '@loopra/domain/schemas';
+import { cookieRequest, publicRequest } from '@/lib/api';
 import { getAuthCookies, setAuthCookies } from '@/lib/cookies';
 
 export async function GET(request: NextRequest, context: RouteContext<'/[locale]/verify-email'>) {
@@ -17,9 +18,10 @@ export async function GET(request: NextRequest, context: RouteContext<'/[locale]
     redirect(getPathname({ href: '/verify-email/invalid', locale }));
   }
 
-  const verifyResponse = await apiRequest('/auth/verify-email', {
+  const verifyResponse = await publicRequest('/auth/verify-email', {
     method: 'POST',
     body: JSON.stringify({ token }),
+    schema: MessageResponseSchema,
   });
 
   if (!verifyResponse.ok) {
@@ -32,11 +34,10 @@ export async function GET(request: NextRequest, context: RouteContext<'/[locale]
     redirect(getPathname({ href: '/login', locale }));
   }
 
-  const refreshResponse = await apiRequestWithCookie(
-    '/auth/refresh',
-    `refreshToken=${refreshToken}`,
-    { method: 'POST' },
-  ).catch(() => null);
+  const refreshResponse = await cookieRequest('/auth/refresh', `refreshToken=${refreshToken}`, {
+    method: 'POST',
+    schema: SessionResponseSchema,
+  }).catch(() => null);
 
   if (refreshResponse?.ok) {
     await setAuthCookies(refreshResponse.headers);
