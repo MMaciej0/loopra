@@ -65,6 +65,13 @@ describe('POST /rides/:id/cancel', () => {
     expect(response.json()).toMatchObject({ type: ERROR_TYPES.RIDE_NOT_FOUND });
   });
 
+  it('returns 404 RIDE_NOT_FOUND for a malformed id', async () => {
+    const response = await cancel('abc', organiserAuth.accessToken);
+
+    expect(response.statusCode).toBe(404);
+    expect(response.json()).toMatchObject({ type: ERROR_TYPES.RIDE_NOT_FOUND });
+  });
+
   it('cancels a ride nobody else has joined and returns it', async () => {
     const rideId = await createRide();
 

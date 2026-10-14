@@ -54,6 +54,17 @@ describe('GET /rides/:id', () => {
     expect(response.statusCode).toBe(404);
   });
 
+  it('returns 404 RIDE_NOT_FOUND for a malformed id', async () => {
+    const response = await appRef.app.inject({
+      method: 'GET',
+      url: '/rides/abc',
+      cookies: { accessToken: auth.accessToken },
+    });
+
+    expect(response.statusCode).toBe(404);
+    expect(response.json()).toMatchObject({ type: 'RIDE_NOT_FOUND' });
+  });
+
   it('returns ride when found', async () => {
     const body = newRide({
       user_id: auth.userId,
