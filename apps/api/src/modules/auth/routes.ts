@@ -25,7 +25,7 @@ import { verifyEmail } from './services/verifyEmail.js';
 import {
   InvalidTokenError,
   OAuthEmailNotVerifiedError,
-  OAuthInvalidEmailError,
+  InvalidInputError,
   UnauthorizedError,
 } from './errors.js';
 import { clearAuthCookies, setAuthCookies } from './services/cookies.js';
@@ -237,7 +237,7 @@ export const authRoutes: FastifyPluginAsyncZod = async (fastify) => {
     const { sub } = userinfo;
     const parsedEmail = EmailSchema.safeParse(userinfo.email);
     if (!parsedEmail.success) {
-      throw new OAuthInvalidEmailError();
+      throw new InvalidInputError();
     }
     const email = parsedEmail.data;
 

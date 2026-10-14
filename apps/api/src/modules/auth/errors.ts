@@ -47,7 +47,7 @@ export class OAuthEmailNotVerifiedError extends AppError {
   }
 }
 
-export class OAuthInvalidEmailError extends AppError {
+export class InvalidInputError extends AppError {
   constructor() {
     super(400, ERROR_TYPES.INVALID_INPUT, 'Invalid input');
   }
