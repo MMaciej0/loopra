@@ -109,6 +109,18 @@ describe('POST /auth/register', () => {
     expect(response.statusCode).toBe(400);
   });
 
+  it.each([
+    ['email', { password: 'Password123!', username: 'test' }],
+    ['email', { email: '   ', password: 'Password123!', username: 'test' }],
+    ['password', { email: 'test@example.com', password: '', username: 'test' }],
+    ['username', { email: 'test@example.com', password: 'Password123!', username: '  ' }],
+  ])('returns 400 with REQUIRED for a missing or empty %s', async (field, body) => {
+    const response = await appRef.app.inject({ method: 'POST', url: '/auth/register', body });
+
+    expect(response.statusCode).toBe(400);
+    expect(response.json()).toEqual({ type: 'INVALID_INPUT', message: 'REQUIRED', field });
+  });
+
   it('returns 400 with the password rule code for a short password', async () => {
     const response = await appRef.app.inject({
       method: 'POST',

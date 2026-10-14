@@ -5,7 +5,6 @@ import { ForgotPasswordBodySchema, MessageResponseSchema } from '@loopra/domain/
 import { getZodValidationErrorTypes } from '@/lib/errors';
 import { publicRequest } from '@/lib/api';
 import { redirect } from 'next/navigation';
-import { emailSchema } from '@/features/auth/email-schema';
 
 interface ForgotPasswordFieldErrors {
   email?: AppErrorType[];
@@ -17,13 +16,9 @@ type ForgotPasswordState = {
   formError?: AppErrorType;
 } | null;
 
-const schema = ForgotPasswordBodySchema.extend({
-  email: emailSchema,
-});
-
 export async function forgotPassword(previousState: ForgotPasswordState, formData: FormData) {
   const raw = Object.fromEntries(formData);
-  const result = schema.safeParse(raw);
+  const result = ForgotPasswordBodySchema.safeParse(raw);
 
   if (!result.success) {
     return {

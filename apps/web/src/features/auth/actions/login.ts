@@ -4,7 +4,6 @@ import { z } from 'zod';
 import { publicRequest } from '@/lib/api';
 import { APP_ERROR_TYPES, type AppErrorType } from '@loopra/domain';
 import { AuthUserResponseSchema, LoginBodySchema } from '@loopra/domain/schemas';
-import { emailSchema } from '@/features/auth/email-schema';
 import { getZodValidationErrorTypes } from '@/lib/errors';
 import { setAuthCookies } from '@/lib/cookies';
 import { redirect } from 'next/navigation';
@@ -15,7 +14,6 @@ type LoginFieldErrors = {
 };
 
 const schema = LoginBodySchema.extend({
-  email: emailSchema,
   password: z.string().min(1, APP_ERROR_TYPES.REQUIRED).min(8, APP_ERROR_TYPES.PASSWORD_TOO_SHORT),
 });
 
