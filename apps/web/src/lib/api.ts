@@ -1,4 +1,5 @@
 import { headers } from 'next/headers';
+import type z from 'zod';
 import { redirect } from 'next/navigation';
 import { APP_ERROR_TYPES, isAppErrorType, type AppErrorType } from '@loopra/domain';
 import {
@@ -20,6 +21,10 @@ interface SuccessResponse<T> {
   headers: Headers;
 }
 
+type ApiResponse<T> = SuccessResponse<T> | ErrorResponse;
+
+type RequestOptions = RequestInit & { schema?: z.ZodType };
+
 const refreshSession = cache(async (refreshToken: string) => {
   const response = await apiRequestWithCookie('/auth/refresh', `refreshToken=${refreshToken}`, {
     method: 'POST',
@@ -40,30 +45,46 @@ const refreshSession = cache(async (refreshToken: string) => {
   return newAccessToken;
 });
 
-export async function publicRequest<T>(
+export async function publicRequest<S extends z.ZodType>(
+  url: string,
+  options: RequestInit & { schema: S },
+): Promise<ApiResponse<z.output<S>>>;
+export async function publicRequest<T = unknown>(
   url: string,
   options?: RequestInit,
-): Promise<SuccessResponse<T> | ErrorResponse> {
+): Promise<ApiResponse<T>>;
+export async function publicRequest(
+  url: string,
+  { schema, ...options }: RequestOptions = {},
+): Promise<ApiResponse<unknown>> {
   const response = await apiRequest(url, options);
 
   if (!response.ok) {
     return await parseApiError(response);
   }
 
-  return await parseApiSuccess(response);
+  return await parseApiSuccess(response, schema);
 }
 
-export async function protectedRequest<T>(
+export async function protectedRequest<S extends z.ZodType>(
+  url: string,
+  options: RequestInit & { schema: S },
+): Promise<ApiResponse<z.output<S>>>;
+export async function protectedRequest<T = unknown>(
   url: string,
   options?: RequestInit,
-): Promise<SuccessResponse<T> | ErrorResponse> {
+): Promise<ApiResponse<T>>;
+export async function protectedRequest(
+  url: string,
+  { schema, ...options }: RequestOptions = {},
+): Promise<ApiResponse<unknown>> {
   const { accessToken, refreshToken } = await getAuthCookies();
 
   if (accessToken) {
     const firstResponse = await apiRequestWithCookie(url, `accessToken=${accessToken}`, options);
 
     if (firstResponse.ok) {
-      return await parseApiSuccess(firstResponse);
+      return await parseApiSuccess(firstResponse, schema);
     }
 
     const firstResponseError = await parseApiError(firstResponse);
@@ -85,17 +106,27 @@ export async function protectedRequest<T>(
     return await parseApiError(secondResponse);
   }
 
-  return await parseApiSuccess(secondResponse);
+  return await parseApiSuccess(secondResponse, schema);
 }
 
-async function parseApiSuccess<T>(response: Response): Promise<SuccessResponse<T>> {
+async function parseApiSuccess(
+  response: Response,
+  schema?: z.ZodType,
+): Promise<ApiResponse<unknown>> {
   const data = await response.json();
 
-  return {
-    ok: true,
-    data: data as T,
-    headers: response.headers,
-  };
+  if (!schema) {
+    return { ok: true, data, headers: response.headers };
+  }
+
+  const result = schema.safeParse(data);
+
+  if (!result.success) {
+    console.error(`API response from ${response.url} failed to parse`, result.error.issues);
+    return { ok: false, errorType: APP_ERROR_TYPES.UNKNOWN };
+  }
+
+  return { ok: true, data: result.data, headers: response.headers };
 }
 
 async function parseApiError(response: Response): Promise<ErrorResponse> {
