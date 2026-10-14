@@ -10,23 +10,25 @@ export const setAuthCookies = (
   reply: FastifyReply,
   accessToken: string,
   familyUuid: string,
-  rawRefreshToken: string,
+  rawRefreshToken: string | null,
 ) => {
-  reply
-    .setCookie('accessToken', accessToken, {
-      httpOnly: true,
-      secure: isProduction,
-      sameSite: 'lax',
-      path: '/',
-      maxAge: ACCESS_TOKEN_MAX_AGE,
-    })
-    .setCookie('refreshToken', `${familyUuid}.${rawRefreshToken}`, {
+  reply.setCookie('accessToken', accessToken, {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: 'lax',
+    path: '/',
+    maxAge: ACCESS_TOKEN_MAX_AGE,
+  });
+
+  if (rawRefreshToken) {
+    reply.setCookie('refreshToken', `${familyUuid}.${rawRefreshToken}`, {
       httpOnly: true,
       secure: isProduction,
       sameSite: 'lax',
       path: '/',
       maxAge: REFRESH_TOKEN_MAX_AGE,
     });
+  }
 };
 
 export const clearAuthCookies = (reply: FastifyReply) => {
