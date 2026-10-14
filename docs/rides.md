@@ -109,6 +109,65 @@ WHERE rides.start_location && ST_MakeEnvelope(west, south, east, north, 4326)
 
 `&&` means "the boxes overlap", and it can use the **GiST index** on `start_location` (an index made for geometry). So the database does not have to check every ride.
 
+#### How a start point is stored
+
+`rides.start_location` is a PostGIS `geometry(Point, 4326)` column (`db/schema.ts`). A point has two numbers: **x is longitude** (east–west) and **y is latitude** (north–south). The order is `lng, lat`, not `lat, lng`. A ride in Zakopane is stored as `POINT(19.9496 49.2992)`. `listRideMarkers` reads the two numbers back with `ST_X` and `ST_Y`.
+
+#### What 4326 means
+
+Two numbers alone do not say _where_ a point is. `19.9496, 49.2992` could be degrees on the globe, or metres on some local map. The **SRID** (Spatial Reference ID) is the number that says which system the numbers belong to.
+
+**4326** is the ID of **WGS 84**, the system GPS uses: longitude and latitude in **degrees**. It is the most common SRID on the web. MapLibre, MapTiler and GPX files all give us WGS 84 coordinates, so we store them as they come, with no conversion.
+
+Rules that follow from it:
+
+- **Units are degrees, not kilometres.** `&&` compares degrees. That is why the size check (`bboxSizeKm`) converts degrees to km itself. One degree of latitude is always about 111 km, but one degree of longitude gets shorter as you go north (about 72 km in Kraków), so the width uses `cos(latitude)`.
+- **Both sides must have the same SRID.** This is why `ST_MakeEnvelope` gets `4326` as its last argument. Most PostGIS functions (`ST_Intersects`, `ST_DWithin`) throw `Operation on mixed SRID geometries`. `&&` is more dangerous: it does **not** check the SRID. It compares the raw numbers and returns a wrong answer with no error. drizzle-kit once created the column without the SRID, so the rows had SRID `0`, and migration `0016` pinned the column to 4326.
+
+#### What `&&` checks
+
+`ST_MakeEnvelope(west, south, east, north, 4326)` builds a rectangle. `&&` asks: "does the **bounding box** of the left side overlap the bounding box of the right side?" A bounding box is the smallest rectangle around a shape. For a point, the bounding box is the point itself, so for us `&&` simply means "the start point is inside the rectangle". A point on the edge counts as inside.
+
+`&&` only compares boxes. It never computes a real shape or a distance, which makes it the cheapest spatial check in PostGIS.
+
+#### What a GiST index is
+
+A normal Postgres index is a **B-tree**. It keeps values in sorted order, like the words in a dictionary. That works for one dimension (`start_time`), but a map has two: there is no single sort order that keeps points that are close on the map also close in the list.
+
+**GiST** (Generalized Search Tree) is a different kind of index. For geometry, PostGIS uses it as an **R-tree**: a tree of boxes inside boxes.
+
+```
+root:   [ box: all of Europe ]
+          ├── [ box: southern Poland ]
+          │     ├── [ box: Kraków ]    → ride A, ride B, ride C
+          │     └── [ box: Zakopane ]  → ride D
+          └── [ box: northern Italy ]
+                └── ...                → ride E, ride F
+```
+
+Each node stores one box that contains everything below it. To answer `&&`, Postgres starts at the root and goes down only into boxes that overlap the search rectangle. If the rider looks at Kraków, the "northern Italy" branch is skipped with one comparison, together with every ride inside it. The work grows with the number of rides _near the rectangle_, not with the number of rides in the table.
+
+The index is declared in `db/schema.ts`: `index('rides_start_location_idx').using('gist', t.start_location)`. Only some operators can use it. `&&` can. A query that computes something first (for example a distance in kilometres) cannot use this index.
+
+#### Check it yourself
+
+Ask Postgres for its plan with `EXPLAIN`:
+
+```bash
+docker exec loopra-postgres sh -c 'psql -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "EXPLAIN SELECT id FROM rides WHERE start_location && ST_MakeEnvelope(19.8, 49.9, 20.2, 50.2, 4326)"'
+```
+
+On the dev database (about 50 rides) the plan says `Seq Scan on rides`: Postgres reads the whole table. This is correct, not a bug. For a few dozen rows, reading the table is cheaper than reading the index. Run `SET enable_seqscan = off;` before the query, and the plan changes to:
+
+```
+Bitmap Heap Scan on rides
+  Recheck Cond: (start_location && '...'::geometry)
+  ->  Bitmap Index Scan on rides_start_location_idx
+        Index Cond: (start_location && '...'::geometry)
+```
+
+`Index Cond` shows the GiST index finds the matching rides. With thousands of rides, Postgres chooses this plan by itself.
+
 The box has a maximum size, `SEARCH_AREA_MAX_KM` (100 km on its longest side). Nobody can ask for the whole world in one request. The check is one function, `fitsSearchArea`, in `packages/domain`: the API uses it to refuse a box that is too large, and the map uses it to stop zooming out too far. The box also cannot cross the antimeridian (the 180° line).
 
 ### The map loads points first, and cards later
