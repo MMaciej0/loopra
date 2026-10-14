@@ -31,6 +31,10 @@ export const ERROR_TYPES = {
 
 export type ErrorType = (typeof ERROR_TYPES)[keyof typeof ERROR_TYPES];
 
+export function isErrorType(value: unknown): value is ErrorType {
+  return Object.values(ERROR_TYPES).includes(value as ErrorType);
+}
+
 export const VALIDATION_ERROR_TYPES = {
   REQUIRED: 'REQUIRED',
   INVALID_EMAIL: 'INVALID_EMAIL',
