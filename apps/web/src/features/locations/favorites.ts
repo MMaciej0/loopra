@@ -1,12 +1,12 @@
 import { cache } from 'react';
-import type { ListFavoriteLocationsResponse } from '@loopra/domain';
+import { ListFavoriteLocationsResponseSchema } from '@loopra/domain/schemas';
 import { protectedRequest } from '@/lib/api';
 import { toLocationSuggestion, type LocationSuggestion } from '@/features/locations/geocoding';
 
 export const getFavoriteLocations = cache(async (): Promise<LocationSuggestion[]> => {
-  const response = await protectedRequest<ListFavoriteLocationsResponse>(
-    '/users/me/favorite-locations',
-  );
+  const response = await protectedRequest('/users/me/favorite-locations', {
+    schema: ListFavoriteLocationsResponseSchema,
+  });
 
   if (!response.ok) {
     return [];
