@@ -1,3 +1,4 @@
+import type { Route } from '@loopra/domain';
 import { Db } from '../../../db/index.js';
 import { parseGPX } from '@loopra/gpx';
 import { routes } from '../../../db/schema.js';
@@ -71,7 +72,7 @@ export const createRoute = async (
         elevation_profile: routes.elevation_profile,
       });
 
-    return newRoute;
+    return newRoute as Route;
   } catch (error) {
     try {
       await deleteFromS3(s3, s3Key);
