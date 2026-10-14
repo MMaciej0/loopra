@@ -2,7 +2,8 @@
 
 import z from 'zod';
 import { redirect } from 'next/navigation';
-import { APP_ERROR_TYPES, AppErrorType, getZodValidationErrorTypes } from '@/lib/errors';
+import { APP_ERROR_TYPES, type AppErrorType } from '@loopra/domain';
+import { getZodValidationErrorTypes } from '@/lib/errors';
 import { publicRequest } from '@/lib/api';
 import { clearAuthCookies } from '@/lib/cookies';
 import { passwordSchema } from '@/features/auth/password-schema';

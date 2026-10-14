@@ -1,6 +1,6 @@
 import { headers } from 'next/headers';
 import { redirect } from 'next/navigation';
-import { APP_ERROR_TYPES, AppErrorType, isAppErrorType } from '@/lib/errors';
+import { APP_ERROR_TYPES, isAppErrorType, type AppErrorType } from '@loopra/domain';
 import {
   clearAuthCookies,
   extractCookieValue,

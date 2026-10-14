@@ -1,7 +1,8 @@
 'use server';
 
 import z from 'zod';
-import { APP_ERROR_TYPES, AppErrorType, getZodValidationErrorTypes } from '@/lib/errors';
+import { APP_ERROR_TYPES, type AppErrorType } from '@loopra/domain';
+import { getZodValidationErrorTypes } from '@/lib/errors';
 import { publicRequest } from '@/lib/api';
 import { redirect } from 'next/navigation';
 

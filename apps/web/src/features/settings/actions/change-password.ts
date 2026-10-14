@@ -4,7 +4,8 @@ import z from 'zod';
 import { passwordSchema } from '@/features/auth/password-schema';
 import { protectedRequest } from '@/lib/api';
 import { setAuthCookies } from '@/lib/cookies';
-import { APP_ERROR_TYPES, AppErrorType, getZodValidationErrorTypes } from '@/lib/errors';
+import { APP_ERROR_TYPES, type AppErrorType } from '@loopra/domain';
+import { getZodValidationErrorTypes } from '@/lib/errors';
 
 const schema = z.object({
   current_password: z.string().min(1, APP_ERROR_TYPES.REQUIRED),
