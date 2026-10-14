@@ -11,20 +11,19 @@ It is the single source: `CLAUDE.md` imports it, so edit this file, not that one
 
 ## Tech Stack
 
-| Layer              | Technology                                       |
-| ------------------ | ------------------------------------------------ |
-| Monorepo           | pnpm workspaces                                  |
-| API                | Fastify + TypeScript                             |
-| Web                | Next.js (App Router)                             |
-| Database           | PostgreSQL + PostGIS                             |
-| ORM                | Drizzle ORM                                      |
-| Auth               | JWT (access + refresh tokens) via `@fastify/jwt` |
-| Cache              | Redis                                            |
-| Storage            | S3-compatible (GPX files, avatars)               |
-| Request validation | Zod                                              |
-| Response schemas   | TypeBox, in `packages/domain`                    |
+| Layer    | Technology                                       |
+| -------- | ------------------------------------------------ |
+| Monorepo | pnpm workspaces                                  |
+| API      | Fastify + TypeScript                             |
+| Web      | Next.js (App Router)                             |
+| Database | PostgreSQL + PostGIS                             |
+| ORM      | Drizzle ORM                                      |
+| Auth     | JWT (access + refresh tokens) via `@fastify/jwt` |
+| Cache    | Redis                                            |
+| Storage  | S3-compatible (GPX files, avatars)               |
+| Schemas  | Zod, through `fastify-type-provider-zod`         |
 
-Planned, not installed: Expo mobile app, `@fastify/websocket` for real-time, `@fastify/swagger` for API docs.
+Planned, not installed: Expo mobile app, `@fastify/websocket` for real-time. Installed but not registered: `@fastify/swagger`, for API docs later.
 
 ## Docker & Local Development
 
@@ -107,7 +106,7 @@ apps/
   api/          # Fastify REST API — the core, serves web and mobile
   web/          # Next.js website
 packages/
-  domain/       # Shared vocabulary: enums, bounds, error codes, DTOs, TypeBox schemas
+  domain/       # Shared vocabulary: enums, bounds, error codes, DTOs, Zod schemas
   gpx/          # GPX parsing, elevation profiles, simplified map paths
 docs/           # Architecture and design documents
 pnpm-workspace.yaml
@@ -122,9 +121,11 @@ Two entry points, and the split is load-bearing:
 | import                   | holds                                     | dependencies |
 | ------------------------ | ----------------------------------------- | ------------ |
 | `@loopra/domain`         | enums, bounds, error codes, DTO **types** | none         |
-| `@loopra/domain/schemas` | TypeBox response **schemas**              | typebox      |
+| `@loopra/domain/schemas` | Zod **schemas** shared by API and web     | `zod` (peer) |
 
-The main barrel has no path to `schemas/`, which is what keeps TypeBox out of the web bundle. `dto/*.ts` reaches its schemas through `import type` only, so the emitted JS is `export {}`. **Adding a `schemas/` re-export to `src/index.ts` would ship TypeBox to the browser silently** — no error, no failing test.
+The main barrel has no path to `schemas/`, so importing a constant never loads Zod or every schema. `dto/*.ts` reaches its schemas through `import type` only (`z.output<typeof XResponseSchema>`), so the emitted JS is `export {}`. **Adding a `schemas/` re-export to `src/index.ts` would ship every schema to any browser code that imports a constant** — no error, no failing test.
+
+Inside `packages/domain`, import Zod as `import { z } from 'zod'`. The default import (`import z from 'zod'`, also with `import type`) compiles, but the web reads the emitted `.d.ts` differently and every DTO type becomes `any` there — silently, since `skipLibCheck` is on. Quick check in web: `const x: SomeDto = 5` must be a type error.
 
 ## API Architecture (`apps/api`)
 
@@ -139,7 +140,7 @@ apps/api/src/
   modules/          # Feature modules — each is a Fastify plugin: auth, users, rides, routes
   db/
     schema.ts       # Drizzle table definitions, single file
-  utils/            # errors (AppError), validation (parseBody/parseSearchParams), s3
+  utils/            # errors (AppError), s3
 drizzle/            # Generated migrations + snapshots
 ```
 
@@ -151,24 +152,44 @@ drizzle/            # Generated migrations + snapshots
 <module>/
   index.ts      # Registers the Fastify plugin + mounts routes
   routes.ts     # Route definitions: schema + service call + send
-  schema.ts     # Zod schemas for requests
+  schema.ts     # API-only Zod request schemas, if the module has any
   errors.ts     # Domain error classes, each extending AppError
   services/     # One file per operation, no Fastify imports
 ```
 
 ### Requests in, responses out
 
-Two schema systems, split by direction:
+Zod is the only schema library ([ADR-0005](docs/adr/0005-zod-is-the-only-schema-library.md)). `buildApp` in `app.ts` sets the `fastify-type-provider-zod` validator and serializer compilers once, and every module's routes plugin is typed `FastifyPluginAsyncZod`. A route declares `schema: { body, querystring, params, response: { 200: XResponseSchema } }`, and the handler reads `request.body` / `request.query` / `request.params` already parsed and typed — no cast, no hand-written parse.
 
-- **Requests** are Zod, parsed explicitly in the controller with `parseBody` / `parseSearchParams`. Zod is used because the input side needs coercion (`z.coerce.date()`) and transforms (`distance_km` → string for Drizzle's `numeric`) that JSON Schema cannot express.
-- **Responses** are TypeBox schemas from `@loopra/domain/schemas`, declared as `schema: { response: { 200: XResponseSchema } }` on every route.
+A response schema is the **only** thing filtering the database row — handlers send rows straight from Drizzle, and the serializer strips keys the schema does not list. An endpoint without one leaks every column, `password_hash` included. Add the schema with the route, and assert the exact key set in a test. A missing required field is not a dropped field: the serializer fails, the error is logged, and the endpoint answers **500**. Narrowing a query's columns without narrowing its schema breaks the endpoint outright.
 
-A response schema is the **only** thing filtering the database row — handlers send rows straight from Drizzle, so an endpoint without one leaks every column, `password_hash` included. Add the schema with the route, and assert the exact key set in a test.
+**Where a schema lives.** In `packages/domain/src/schemas/` only when both API and web use it — one file per resource (`auth`, `user`, `location`, `route`, `ride`) plus `common.ts` for building blocks (`EmailSchema`, `PasswordSchema`, `UsernameSchema`, the `IsoDateTime` codec). API-only schemas go in the module's `schema.ts`; web-only ones stay in the web feature. A web form that needs more fields `.extend`s the shared schema; a really different form gets its own.
 
-Two schema gotchas, both load-bearing:
+**Writing one.**
 
-- TypeBox v1 has no `Type.Composite`, and `Type.Intersect` emits `allOf`, which `fast-json-stringify` handles poorly. Compose by spreading shared **property maps** into `Type.Object` so every schema stays a flat `type: object`.
-- A missing required field is not a dropped field: `fast-json-stringify` throws and the endpoint returns **500**. Narrowing a query's columns without narrowing its schema breaks the endpoint outright.
+- Names: `<Thing>BodySchema`, `<Thing>QuerySchema`, `<Thing>ParamsSchema`, `<Thing>ResponseSchema`. DTO types are `z.output<typeof …>` through `import type`.
+- `z.object` always, never `z.strictObject` / `z.looseObject`. Share fields by spreading `.shape` (`...SelectedLocationSchema.shape`).
+- A shared schema uses an error code from `packages/domain` as its Zod message, so web can translate it. An API-only schema may keep Zod's default text.
+- A date field is `IsoDateTime`: an ISO string on the wire, a `Date` in the API and in web. Do not convert response dates by hand.
+- A params id is `z.object({ id: z.uuid(ERROR_TYPES.RIDE_NOT_FOUND) })` — the resource's not-found code as the message.
+
+**What a bad request gets.** `plugins/globalErrorHandler.ts` turns the first Zod issue into the usual wire shape: body or query → `400 { type: INVALID_INPUT, message: <issue message>, field }`; params whose message is an error code → `404` with that code as `type`. Validation runs **before** `preHandler` hooks, so an unverified rider with a bad body or a malformed id gets `400`/`404`, not the `403` of `requireVerifiedEmail`.
+
+**The exception:** the multipart GPX upload (`POST /routes`) has no body schema. The file is checked by `@loopra/gpx` and the multipart limits. Its response still has a Zod schema.
+
+**Web side.** `publicRequest` / `protectedRequest` in `apps/web/src/lib/api.ts` require the route's response `schema`, and the data type comes from it. Pass the real response schema even when the caller ignores the body. A reply that does not parse is logged with its issues and returned as `{ ok: false, errorType: UNKNOWN }`. The parse runs on the Next.js server only.
+
+**Checks**, run from the repo root. Each must print nothing, except the last:
+
+```bash
+grep -rnE "request\.(body|query|params) as" apps/api/src         # no casts of request data
+grep -L FastifyPluginAsyncZod apps/api/src/modules/*/routes.ts    # every routes file is typed for Zod
+grep -rnE "import (type )?z from 'zod'" packages/domain/src       # named import only in domain
+grep -rli typebox apps/*/src apps/*/package.json packages/*/src packages/*/package.json
+realpath apps/api/node_modules/zod apps/web/node_modules/zod packages/domain/node_modules/zod | sort -u
+```
+
+The last one must print **one** path, a `zod@4.x` one: API, web and `packages/domain` share a single Zod copy, which the type provider and the shared schemas need. `pnpm why zod -r` also lists `zod 3.25.76`, but only under `shadcn` (and its `@modelcontextprotocol/sdk`). Web uses shadcn only for its CLI and the `shadcn/tailwind.css` import, never its JS at runtime, so that copy never meets our schemas. Ignore it, and do not change shadcn to remove it.
 
 ### Errors
 

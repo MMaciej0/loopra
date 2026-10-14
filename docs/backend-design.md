@@ -57,7 +57,7 @@ Every feature module follows the same internal structure:
 modules/<name>/
   index.ts        # Registers Fastify plugin, mounts routes on a prefix
   routes.ts       # Route definitions (method, url, schema, handler)
-  schema.ts       # Zod schemas for request body, params, query, response
+  schema.ts       # API-only Zod schemas for request body, params, query (shared ones live in packages/domain)
   services/       # Business logic — pure functions, no Fastify types
     <action>.ts   # One file per service action (e.g. registerUser.ts, loginUser.ts)
     cookies.ts    # Shared cookie helpers (setAuthCookies, clearAuthCookies)
