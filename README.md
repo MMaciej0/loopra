@@ -109,7 +109,7 @@ A rider logs in with email and password, or with Google. After that, two tokens 
 1. **Login.** The API checks the password and creates a **token family** in Redis. One family is one login on one device. The API then sets both cookies.
 2. **A normal request.** The request carries the access token. The API checks only the signature, so it asks no database and no Redis.
 3. **The access token expires.** The web sends the refresh token to `POST /auth/refresh`.
-4. **Rotation.** The API compares the token with the hash in Redis. If they match, it gives a new access token and a new refresh token. The old refresh token stops working.
+4. **Rotation.** The API compares the token with the hash in Redis. If they match, it gives a new access token and a new refresh token. The old refresh token stops working. The compare and the write are one Lua script, so two refreshes at the same moment cannot both rotate.
 5. **Logout.** The API deletes the family, so its refresh token can never be used again.
 
 ### Refresh tokens live in Redis
@@ -130,6 +130,8 @@ Redis also holds the rate limit counters: five login attempts per 15 minutes for
 **Problem:** if someone steals a refresh token, they can keep a session alive for 30 days.
 
 **Decision:** every refresh gives a new refresh token and makes the old one invalid. This is **refresh token rotation**. If an old token is used again, either the rider or the thief has a token that was already replaced. The API cannot know which one, so it deletes all families of that user and everyone must log in again.
+
+There is one exception: for 10 seconds after a rotation, the token that was just replaced still gets a new access token, but no new refresh token. Two browser tabs, or one page with several requests, often refresh at the same moment, and only one of them can win. See [ADR-0004](docs/adr/0004-replaced-refresh-token-has-a-reuse-window.md).
 
 ### Tokens live in `httpOnly` cookies
 
@@ -170,7 +172,7 @@ A **race condition** is a bug where two requests arrive at the same time and the
 
 - **An access token cannot be cancelled.** After a logout, a copied access token still works until it expires, at most 15 minutes later. This is the price of not asking Redis on every request.
 - **`email_verified` is inside the JWT.** After a rider verifies the email, the old access token still says "not verified" until the next refresh.
-- **Rotation is not atomic.** The API reads the hash from Redis and then writes the new one, in two steps. Two refreshes at the same moment, for example from two browser tabs, can both pass. One of the tabs then holds a replaced token, and its next refresh logs the rider out everywhere.
+- **A lost refresh response logs the rider out.** If the response of a rotation never reaches the browser (a closed tab, a lost connection), Redis holds the new token and the browser the replaced one. Its next refresh after the 10-second window is read as theft.
 - **Google login needs one host.** The API sets the cookies in the Google flow. This works on `localhost`, because cookies do not look at the port. In production the API and the web must share a host, or the cookies need a `Domain`.
 
 ## Rides
