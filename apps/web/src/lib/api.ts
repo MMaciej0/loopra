@@ -9,6 +9,7 @@ import {
   setAuthCookies,
 } from '@/lib/cookies';
 import { cache } from 'react';
+import { SessionResponseSchema } from '@loopra/domain/schemas';
 
 interface ErrorResponse {
   ok: false;
@@ -26,8 +27,9 @@ type ApiResponse<T> = SuccessResponse<T> | ErrorResponse;
 type RequestOptions<S extends z.ZodType> = RequestInit & { schema: S };
 
 const refreshSession = cache(async (refreshToken: string) => {
-  const response = await apiRequestWithCookie('/auth/refresh', `refreshToken=${refreshToken}`, {
+  const response = await cookieRequest('/auth/refresh', `refreshToken=${refreshToken}`, {
     method: 'POST',
+    schema: SessionResponseSchema,
   });
 
   if (!response.ok) {
@@ -50,6 +52,20 @@ export async function publicRequest<S extends z.ZodType>(
   { schema, ...options }: RequestOptions<S>,
 ): Promise<ApiResponse<z.output<S>>> {
   const response = await apiRequest(url, options);
+
+  if (!response.ok) {
+    return await parseApiError(response);
+  }
+
+  return await parseApiSuccess(response, schema);
+}
+
+export async function cookieRequest<S extends z.ZodType>(
+  url: string,
+  cookie: string,
+  { schema, ...options }: RequestOptions<S>,
+): Promise<ApiResponse<z.output<S>>> {
+  const response = await apiRequestWithCookie(url, cookie, options);
 
   if (!response.ok) {
     return await parseApiError(response);
