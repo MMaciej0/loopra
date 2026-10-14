@@ -421,4 +421,23 @@ describe('GET /auth/google/callback', () => {
       expect(response.cookies).toEqual([]);
     });
   });
+
+  describe('when Google sends an invalid email', () => {
+    beforeEach(() => {
+      (appRef.app as any).oauth2Google.userinfo = vi
+        .fn()
+        .mockResolvedValue({ sub: GOOGLE_SUB, email: 'not-an-email', email_verified: true });
+    });
+
+    it('answers 400 invalid input and logs nobody in', async () => {
+      const response = await appRef.app.inject({ method: 'GET', url: '/auth/google/callback' });
+
+      const allUsers = await appRef.app.db.select().from(users);
+
+      expect(response.statusCode).toBe(400);
+      expect(response.json()).toEqual({ type: 'INVALID_INPUT', message: 'Invalid input' });
+      expect(allUsers).toEqual([]);
+      expect(response.cookies).toEqual([]);
+    });
+  });
 });

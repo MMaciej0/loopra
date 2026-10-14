@@ -47,6 +47,12 @@ export class OAuthEmailNotVerifiedError extends AppError {
   }
 }
 
+export class OAuthInvalidEmailError extends AppError {
+  constructor() {
+    super(400, ERROR_TYPES.INVALID_INPUT, 'Invalid input');
+  }
+}
+
 export class InvalidPasswordError extends AppError {
   constructor() {
     super(400, ERROR_TYPES.INVALID_PASSWORD, 'Invalid password');

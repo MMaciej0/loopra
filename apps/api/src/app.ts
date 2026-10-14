@@ -1,4 +1,5 @@
 import Fastify from 'fastify';
+import { serializerCompiler, validatorCompiler } from 'fastify-type-provider-zod';
 import { TRUSTED_PROXIES } from './config/env.js';
 import databasePlugin from './plugins/database.js';
 import redisPlugin from './plugins/redis.js';
@@ -20,6 +21,9 @@ export const buildApp = () => {
     logger: true,
     trustProxy: TRUSTED_PROXIES ?? false,
   });
+
+  app.setValidatorCompiler(validatorCompiler);
+  app.setSerializerCompiler(serializerCompiler);
 
   app.register(corsPlugin);
 
