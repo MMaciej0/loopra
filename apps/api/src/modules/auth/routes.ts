@@ -52,14 +52,7 @@ export const authRoutes: FastifyPluginAsyncZod = async (fastify) => {
       });
       setAuthCookies(reply, accessToken, familyUuid, rawRefreshToken);
 
-      return reply.send({
-        user: {
-          id: user.id,
-          email: user.email,
-          email_verified: user.email_verified,
-          username: user.username,
-        },
-      });
+      return reply.send({ user });
     },
   );
 
@@ -78,14 +71,7 @@ export const authRoutes: FastifyPluginAsyncZod = async (fastify) => {
       setAuthCookies(reply, accessToken, familyUuid, rawRefreshToken);
       await clearRateLimits(request, fastify.redis, email);
 
-      return reply.send({
-        user: {
-          id: user.id,
-          email: user.email,
-          email_verified: user.email_verified,
-          username: user.username,
-        },
-      });
+      return reply.send({ user });
     },
   );
 
