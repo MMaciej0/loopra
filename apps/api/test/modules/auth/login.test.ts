@@ -26,7 +26,26 @@ describe('POST /auth/login', () => {
     });
 
     expect(response.statusCode).toBe(400);
-    expect(response.json()).toMatchObject({ type: 'INVALID_INPUT', field: 'password' });
+    expect(response.json()).toMatchObject({
+      type: 'INVALID_INPUT',
+      message: 'REQUIRED',
+      field: 'password',
+    });
+  });
+
+  it('returns status 400 with REQUIRED for an empty password', async () => {
+    const response = await appRef.app.inject({
+      method: 'POST',
+      url: '/auth/login',
+      body: { email: 'test@example.com', password: '' },
+    });
+
+    expect(response.statusCode).toBe(400);
+    expect(response.json()).toMatchObject({
+      type: 'INVALID_INPUT',
+      message: 'REQUIRED',
+      field: 'password',
+    });
   });
 
   it('returns status 401 with invalid credentials when user is not found', async () => {
