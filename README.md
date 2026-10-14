@@ -57,21 +57,21 @@ What works today:
 
 ## Tech stack
 
-| Layer      | Technology                        | Why                                                         |
-| ---------- | --------------------------------- | ----------------------------------------------------------- |
-| Monorepo   | pnpm workspaces                   | API and web share one package with types and rules          |
-| API        | Fastify + TypeScript              | Fast, and every feature is a small plugin                   |
-| Database   | PostgreSQL + PostGIS              | PostGIS answers "which rides are in this area?" in SQL      |
-| ORM        | Drizzle ORM                       | The schema is TypeScript code, and migrations are plain SQL |
-| Cache      | Redis                             | Stores refresh tokens and rate limit counters               |
-| Auth       | JWT access token + refresh token  | Short-lived access token, long-lived refresh token          |
-| Storage    | S3-compatible storage             | Keeps the uploaded GPX files                                |
-| Validation | Zod (requests), TypeBox (replies) | See [Across the whole project](#across-the-whole-project)   |
-| Web        | Next.js (App Router) + React 19   | Server Components and Server Actions                        |
-| UI         | Tailwind CSS + shadcn/ui          | Accessible components that I own and can change             |
-| Maps       | MapLibre + MapTiler               | Map display and place search                                |
-| Tests      | Vitest                            | Runs against a real Postgres, not a mock                    |
-| CI         | GitHub Actions                    | Typecheck, lint, format, tests and build on every push      |
+| Layer      | Technology                       | Why                                                         |
+| ---------- | -------------------------------- | ----------------------------------------------------------- |
+| Monorepo   | pnpm workspaces                  | API and web share one package with types and rules          |
+| API        | Fastify + TypeScript             | Fast, and every feature is a small plugin                   |
+| Database   | PostgreSQL + PostGIS             | PostGIS answers "which rides are in this area?" in SQL      |
+| ORM        | Drizzle ORM                      | The schema is TypeScript code, and migrations are plain SQL |
+| Cache      | Redis                            | Stores refresh tokens and rate limit counters               |
+| Auth       | JWT access token + refresh token | Short-lived access token, long-lived refresh token          |
+| Storage    | S3-compatible storage            | Keeps the uploaded GPX files                                |
+| Validation | Zod                              | See [Across the whole project](#across-the-whole-project)   |
+| Web        | Next.js (App Router) + React 19  | Server Components and Server Actions                        |
+| UI         | Tailwind CSS + shadcn/ui         | Accessible components that I own and can change             |
+| Maps       | MapLibre + MapTiler              | Map display and place search                                |
+| Tests      | Vitest                           | Runs against a real Postgres, not a mock                    |
+| CI         | GitHub Actions                   | Typecheck, lint, format, tests and build on every push      |
 
 ## Architecture
 
@@ -89,11 +89,11 @@ How one request travels:
 
 1. The browser calls a **Server Action** in `apps/web`.
 2. The Server Action calls the **API** with the rider's JWT.
-3. A **route** in the API validates the input with Zod and calls a **service**.
+3. A **route** in the API declares Zod schemas. Fastify validates the input with them, and the route calls a **service**.
 4. The service talks to PostgreSQL through Drizzle and returns a row.
 5. A **response schema** from `packages/domain` decides which fields leave the API.
 
-The API is split into modules (`auth`, `users`, `rides`, `routes`). Every module has the same shape: `routes.ts`, `schema.ts`, `errors.ts` and a `services/` folder with one file per operation. Services do not import Fastify, so they are easy to test and reuse.
+The API is split into modules (`auth`, `users`, `rides`, `routes`). Every module has the same shape: `routes.ts`, `errors.ts`, a `schema.ts` when the module has request schemas only the API uses, and a `services/` folder with one file per operation. Services do not import Fastify, so they are easy to test and reuse.
 
 ## Authentication
 
@@ -140,7 +140,7 @@ These decisions do not belong to one feature.
 
 **Problem:** the API and the website must agree on many things: the list of bike types, the maximum ride size, the error codes. If each app keeps its own copy, the copies drift apart.
 
-**Decision:** everything both sides must agree on lives in `packages/domain`, and nowhere else. The package has two entry points. `@loopra/domain` has only types and constants. `@loopra/domain/schemas` has the TypeBox schemas. This split keeps TypeBox out of the browser bundle.
+**Decision:** everything both sides must agree on lives in `packages/domain`, and nowhere else. The package has two entry points. `@loopra/domain` has only types and constants. `@loopra/domain/schemas` has the Zod schemas. The API validates and serializes with them, and the web parses each reply with the same schema. Dates travel as ISO strings and are `Date` on both sides. Zod is the only schema library ([ADR-0005](docs/adr/0005-zod-is-the-only-schema-library.md)).
 
 ### A response schema on every endpoint
 
