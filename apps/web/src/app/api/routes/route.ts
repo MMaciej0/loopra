@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { MAX_GPX_FILE_SIZE_BYTES } from '@loopra/domain';
 import { protectedRequest } from '@/lib/api';
 import { APP_ERROR_TYPES } from '@loopra/domain';
+import { CreateRouteResponseSchema } from '@loopra/domain/schemas';
 
 export async function POST(req: Request) {
   const formData = await req.formData();
@@ -15,7 +16,11 @@ export async function POST(req: Request) {
     return NextResponse.json({ type: APP_ERROR_TYPES.FILE_TOO_LARGE }, { status: 413 });
   }
 
-  const response = await protectedRequest('/routes', { method: 'POST', body: formData });
+  const response = await protectedRequest('/routes', {
+    method: 'POST',
+    body: formData,
+    schema: CreateRouteResponseSchema,
+  });
 
   if (!response.ok) {
     return NextResponse.json({ type: response.errorType }, { status: 400 });

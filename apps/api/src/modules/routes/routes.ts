@@ -1,9 +1,9 @@
-import { FastifyInstance } from 'fastify';
+import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { CreateRouteResponseSchema } from '@loopra/domain/schemas';
 import { createRoute } from './services/createRoute.js';
 import { FileRequiredError } from './errors.js';
 
-export const routesRoutes = async (fastify: FastifyInstance) => {
+export const routesRoutes: FastifyPluginAsyncZod = async (fastify) => {
   fastify.post(
     '/',
     {

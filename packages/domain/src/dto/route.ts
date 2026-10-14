@@ -1,4 +1,4 @@
-import type { Static } from 'typebox';
+import type { z } from 'zod';
 import type {
   ElevationProfileSchema,
   RoutePathSchema,
@@ -6,7 +6,7 @@ import type {
   CreateRouteResponseSchema,
 } from '../schemas/route.js';
 
-export type ElevationProfile = Static<typeof ElevationProfileSchema>;
-export type RoutePath = Static<typeof RoutePathSchema>;
-export type Route = Static<typeof RouteSchema>;
-export type CreateRouteResponse = Static<typeof CreateRouteResponseSchema>;
+export type ElevationProfile = z.output<typeof ElevationProfileSchema>;
+export type RoutePath = z.output<typeof RoutePathSchema>;
+export type Route = z.output<typeof RouteSchema>;
+export type CreateRouteResponse = z.output<typeof CreateRouteResponseSchema>;
