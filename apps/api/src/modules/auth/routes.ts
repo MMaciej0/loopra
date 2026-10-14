@@ -22,9 +22,13 @@ import { changePassword } from './services/changePassword.js';
 import { findOrCreateOAuthUser } from './services/findOrCreateOAuthUser.js';
 import { sendEmailVerification } from './services/sendEmailVerification.js';
 import { verifyEmail } from './services/verifyEmail.js';
-import { InvalidTokenError, OAuthEmailNotVerifiedError, UnauthorizedError } from './errors.js';
+import {
+  InvalidTokenError,
+  OAuthEmailNotVerifiedError,
+  OAuthInvalidEmailError,
+  UnauthorizedError,
+} from './errors.js';
 import { clearAuthCookies, setAuthCookies } from './services/cookies.js';
-import { parseBody } from '../../utils/validation.js';
 import { APP_URL } from '../../config/env.js';
 import {
   authRateLimiter,
@@ -231,7 +235,11 @@ export const authRoutes: FastifyPluginAsyncZod = async (fastify) => {
     }
 
     const { sub } = userinfo;
-    const email = parseBody(userinfo.email, EmailSchema);
+    const parsedEmail = EmailSchema.safeParse(userinfo.email);
+    if (!parsedEmail.success) {
+      throw new OAuthInvalidEmailError();
+    }
+    const email = parsedEmail.data;
 
     const { accessToken, familyUuid, rawRefreshToken } = await findOrCreateOAuthUser({
       fastify,
