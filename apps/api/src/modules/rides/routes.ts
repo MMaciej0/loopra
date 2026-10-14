@@ -1,4 +1,4 @@
-import { FastifyInstance } from 'fastify';
+import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import {
   ListRideMarkersResponseSchema,
   ListRidesResponseSchema,
@@ -24,7 +24,7 @@ import { joinRide } from './services/joinRide.js';
 import { leaveRide } from './services/leaveRide.js';
 import { getRide } from './services/getRide.js';
 
-export const ridesRoutes = async (fastify: FastifyInstance) => {
+export const ridesRoutes: FastifyPluginAsyncZod = async (fastify) => {
   fastify.get(
     '/',
     { schema: { response: { 200: ListRidesResponseSchema } } },

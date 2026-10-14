@@ -41,6 +41,26 @@ describe('POST /rides/:rideId/join', () => {
     expect(response.statusCode).toBe(200);
   });
 
+  it('returns the participant with exactly the whitelisted keys and an ISO joined_at', async () => {
+    const rideResponse = await appRef.app.inject({
+      method: 'POST',
+      url: '/rides',
+      body: newRide({ user_id: creatorAuth.userId, city: 'Warsaw', country: 'Poland' }),
+      cookies: { accessToken: creatorAuth.accessToken },
+    });
+
+    const response = await appRef.app.inject({
+      method: 'POST',
+      url: `/rides/${rideResponse.json().data.id}/join`,
+      cookies: { accessToken: participantAuth.accessToken },
+    });
+
+    const { data } = response.json();
+
+    expect(Object.keys(data).sort()).toEqual(['joined_at', 'ride_id', 'status', 'user_id']);
+    expect(new Date(data.joined_at).toISOString()).toBe(data.joined_at);
+  });
+
   it('returns 400 when requested user is creator of ride', async () => {
     const rideResponse = await appRef.app.inject({
       method: 'POST',

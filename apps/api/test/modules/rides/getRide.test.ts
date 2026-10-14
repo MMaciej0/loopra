@@ -108,7 +108,49 @@ describe('GET /rides/:id', () => {
 
     const { data } = response.json();
 
+    expect(Object.keys(data).sort()).toEqual(
+      [
+        'average_pace_kmh',
+        'bike_type',
+        'city',
+        'country',
+        'created_at',
+        'creator',
+        'creator_id',
+        'description',
+        'distance_km',
+        'drop_policy',
+        'end_time',
+        'experience_policy',
+        'formation_policy',
+        'full_address',
+        'id',
+        'is_private',
+        'max_participants',
+        'municipality',
+        'pace_policy',
+        'participants',
+        'postal_code',
+        'region',
+        'ride_type',
+        'route',
+        'route_id',
+        'start_location',
+        'start_location_name',
+        'start_time',
+        'status',
+        'title',
+        'updated_at',
+      ].sort(),
+    );
     expect(Object.keys(data.creator).sort()).toEqual(['id', 'username']);
+    expect(Object.keys(data.participants[0]).sort()).toEqual([
+      'joined_at',
+      'ride_id',
+      'status',
+      'user',
+      'user_id',
+    ]);
     expect(Object.keys(data.participants[0].user).sort()).toEqual(['id', 'username']);
     expect(response.body).not.toContain(auth.email);
   });

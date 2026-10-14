@@ -57,6 +57,65 @@ describe('POST /rides', () => {
     expect(response.statusCode).toBe(200);
   });
 
+  it('sends start_time as an ISO string', async () => {
+    const response = await appRef.app.inject({
+      method: 'POST',
+      url: '/rides',
+      body: rideBody,
+      cookies: { accessToken: auth.accessToken },
+    });
+
+    const { data } = response.json();
+
+    expect(data.start_time).toBe(rideBody.start_time);
+    expect(data.end_time).toBeNull();
+    expect(new Date(data.created_at).toISOString()).toBe(data.created_at);
+    expect(new Date(data.updated_at).toISOString()).toBe(data.updated_at);
+  });
+
+  it('returns the ride with exactly the whitelisted keys', async () => {
+    const response = await appRef.app.inject({
+      method: 'POST',
+      url: '/rides',
+      body: rideBody,
+      cookies: { accessToken: auth.accessToken },
+    });
+
+    expect(Object.keys(response.json())).toEqual(['data']);
+    expect(Object.keys(response.json().data).sort()).toEqual(
+      [
+        'average_pace_kmh',
+        'bike_type',
+        'city',
+        'country',
+        'created_at',
+        'creator_id',
+        'description',
+        'distance_km',
+        'drop_policy',
+        'end_time',
+        'experience_policy',
+        'formation_policy',
+        'full_address',
+        'id',
+        'is_private',
+        'max_participants',
+        'municipality',
+        'pace_policy',
+        'postal_code',
+        'region',
+        'ride_type',
+        'route_id',
+        'start_location',
+        'start_location_name',
+        'start_time',
+        'status',
+        'title',
+        'updated_at',
+      ].sort(),
+    );
+  });
+
   it('seats the creator as a participant', async () => {
     const createResponse = await appRef.app.inject({
       method: 'POST',

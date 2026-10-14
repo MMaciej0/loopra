@@ -25,7 +25,7 @@ export default async function RidePage({ params }: Props) {
     notFound();
   }
 
-  if (ridePhase(new Date(ride.start_time), new Date()) === 'past') {
+  if (ridePhase(ride.start_time, new Date()) === 'past') {
     redirect({ href: '/rides', locale: await getLocale() });
   }
 

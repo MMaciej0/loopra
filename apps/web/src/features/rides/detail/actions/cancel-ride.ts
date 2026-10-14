@@ -1,11 +1,13 @@
 'use server';
 
 import { revalidatePath } from 'next/cache';
+import { RideResponseSchema } from '@loopra/domain/schemas';
 import { protectedRequest } from '@/lib/api';
 
 export async function cancelRide(rideId: string) {
   const response = await protectedRequest(`/rides/${encodeURIComponent(rideId)}/cancel`, {
     method: 'POST',
+    schema: RideResponseSchema,
   });
 
   if (!response.ok) {

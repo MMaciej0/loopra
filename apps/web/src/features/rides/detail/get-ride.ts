@@ -1,9 +1,12 @@
 import { cache } from 'react';
-import { ERROR_TYPES, type RideDetailResponse } from '@loopra/domain';
+import { ERROR_TYPES } from '@loopra/domain';
+import { RideDetailResponseSchema } from '@loopra/domain/schemas';
 import { protectedRequest } from '@/lib/api';
 
 export const getRide = cache(async (id: string) => {
-  const response = await protectedRequest<RideDetailResponse>(`/rides/${encodeURIComponent(id)}`);
+  const response = await protectedRequest(`/rides/${encodeURIComponent(id)}`, {
+    schema: RideDetailResponseSchema,
+  });
 
   if (response.ok) {
     return response.data.data;

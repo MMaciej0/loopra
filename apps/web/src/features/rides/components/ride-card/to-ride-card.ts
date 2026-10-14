@@ -11,7 +11,7 @@ export function toRideCard(ride: RideListItem): RideCardData {
     pace_policy: ride.pace_policy,
     experience_policy: ride.experience_policy,
     title: ride.title,
-    start_time: new Date(ride.start_time),
+    start_time: ride.start_time,
     start_location_name: ride.start_location_name ?? undefined,
     distance_km: toNumber(ride.distance_km),
     average_pace_kmh: ride.average_pace_kmh ?? undefined,

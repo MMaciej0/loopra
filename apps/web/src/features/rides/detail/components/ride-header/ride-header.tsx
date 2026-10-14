@@ -44,10 +44,7 @@ export function RideHeader({ ride }: Props) {
       <h1 className="font-editorial text-foreground mb-1.5 text-[34px] leading-[1.02] font-normal tracking-[-0.02em] text-pretty lg:text-[44px]">
         {ride.title}
       </h1>
-      <RideSubtitle
-        startTime={new Date(ride.start_time)}
-        startLocationName={ride.start_location_name}
-      />
+      <RideSubtitle startTime={ride.start_time} startLocationName={ride.start_location_name} />
     </div>
   );
 }
