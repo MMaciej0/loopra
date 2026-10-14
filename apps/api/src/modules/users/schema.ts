@@ -1,13 +1,14 @@
 import z from 'zod';
-import { USERNAME_MAX_LENGTH, USERNAME_MIN_LENGTH } from '@loopra/domain';
+import { ERROR_TYPES } from '@loopra/domain';
+import { UsernameSchema } from '@loopra/domain/schemas';
 
 export const UpdateUserBodySchema = z
   .object({
-    username: z.string().trim().min(USERNAME_MIN_LENGTH).max(USERNAME_MAX_LENGTH).optional(),
+    username: UsernameSchema.optional(),
   })
   .refine((body) => Object.keys(body).length > 0, { message: 'Nothing to update' });
 
-export type UpdateUserBody = z.infer<typeof UpdateUserBodySchema>;
+export type UpdateUserBody = z.output<typeof UpdateUserBodySchema>;
 
 export const LocationBodySchema = z.object({
   location: z.object({
@@ -22,4 +23,8 @@ export const LocationBodySchema = z.object({
   postal_code: z.string().trim().nullable().default(null),
 });
 
-export type LocationBody = z.infer<typeof LocationBodySchema>;
+export type LocationBody = z.output<typeof LocationBodySchema>;
+
+export const FavoriteLocationParamsSchema = z.object({
+  id: z.uuid(ERROR_TYPES.FAVORITE_LOCATION_NOT_FOUND),
+});

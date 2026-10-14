@@ -138,6 +138,31 @@ describe('GET /users/me', () => {
     expect(response.json().updatedUser).not.toHaveProperty('password_hash');
   });
 
+  it('serializes the updated user as the wire DTO', async () => {
+    const response = await appRef.app.inject({
+      method: 'PATCH',
+      url: '/users/me',
+      cookies: { accessToken: auth.accessToken },
+      payload: { username: 'KrakowRider' },
+    });
+
+    const { updatedUser } = response.json();
+
+    expect(Object.keys(response.json())).toEqual(['updatedUser']);
+    expect(Object.keys(updatedUser).sort()).toEqual(
+      [
+        'created_at',
+        'email',
+        'email_verified',
+        'has_password',
+        'id',
+        'selected_location',
+        'username',
+      ].sort(),
+    );
+    expect(updatedUser.created_at).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/);
+  });
+
   it('updates the current user profile', async () => {
     const response = await appRef.app.inject({
       method: 'PATCH',
@@ -163,6 +188,11 @@ describe('GET /users/me', () => {
     });
 
     expect(response.statusCode).toBe(400);
+    expect(response.json()).toEqual({
+      type: 'INVALID_INPUT',
+      message: 'USERNAME_TOO_SHORT',
+      field: 'username',
+    });
   });
 
   it('accepts a 3-character username', async () => {

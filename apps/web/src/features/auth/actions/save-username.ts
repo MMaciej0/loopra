@@ -3,6 +3,7 @@
 import z from 'zod';
 import { refresh } from 'next/cache';
 import { usernameSchema } from '@/features/auth/username-schema';
+import { UpdateCurrentUserResponseSchema } from '@loopra/domain/schemas';
 import { protectedRequest } from '@/lib/api';
 import { APP_ERROR_TYPES, type AppErrorType } from '@loopra/domain';
 import { getZodValidationErrorTypes } from '@/lib/errors';
@@ -35,6 +36,7 @@ export async function saveUsername(
     const response = await protectedRequest('/users/me', {
       method: 'PATCH',
       body: JSON.stringify({ username }),
+      schema: UpdateCurrentUserResponseSchema,
     });
 
     if (!response.ok) {
