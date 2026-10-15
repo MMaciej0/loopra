@@ -31,8 +31,9 @@ export function RideCard({ data, className }: RideCardProps) {
   const isOrganiser = data.viewer === 'organiser';
   const isFull =
     data.viewer === undefined &&
+    data.participant_count !== undefined &&
     data.max_participants !== undefined &&
-    rideAvailability(participants, data.max_participants) === 'full';
+    rideAvailability(data.participant_count, data.max_participants) === 'full';
 
   const distanceKm = data.elevation?.distance_km ?? data.distance_km;
 
