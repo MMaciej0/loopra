@@ -29,7 +29,7 @@ Planned, not installed: Expo mobile app, `@fastify/websocket` for real-time, `@f
 
 The compose file is named **`docker-compose-dev.yml`**, not `docker-compose.yml`. Bare `docker compose` commands fail with `no configuration file provided` — always pass `-f`.
 
-Four services run: `api`, `web`, `loopra-postgres`, `loopra-redis`. Host ports: api `8080`, web `3000`, Postgres `5433`, Redis `6380`. A healthy api answers `404` on `/` (it has no root route); a healthy web answers `307` (next-intl locale redirect). Neither is an error.
+Four services run: `api`, `web`, `loopra-postgres`, `loopra-redis`. Host ports: api `8080`, web `3000`, Postgres `5433`, Redis `6380`. A healthy api answers `404` on `/` (it has no root route); a healthy web answers `307` (next-intl locale redirect). Neither is an error. `GET /health` answers `200` when Postgres and Redis both answer, and `503` with the failed service marked `error` otherwise.
 
 **The `api` and `web` containers do not start the dev servers.** Both use `command: "tail -f /dev/null"` and idle. Exec in and start them by hand — this is also how tests are run:
 
@@ -141,7 +141,7 @@ apps/api/src/
   app.ts            # Fastify app factory
   config/           # Zod-validated env config
   plugins/          # Infrastructure (auth, cors, database, redis, storage, mailer, multipart, oauth, globalErrorHandler)
-  modules/          # Feature modules — each is a Fastify plugin: auth, users, rides, routes
+  modules/          # Feature modules — each is a Fastify plugin: auth, users, rides, routes, health
   db/
     schema.ts       # Drizzle table definitions, single file
   utils/            # errors (AppError), s3
