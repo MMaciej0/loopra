@@ -22,14 +22,14 @@ const probe = async (check: () => Promise<unknown>): Promise<ServiceStatus> => {
 };
 
 export const checkHealth = async (db: Db, redis: Redis): Promise<HealthResponse> => {
-  const [postgres, redisStatus] = await Promise.all([
+  const [postgresStatus, redisStatus] = await Promise.all([
     probe(() => db.execute(sql`select 1`)),
-    probe(() => redis.ping()),
+    redis.status === 'ready' ? probe(() => redis.ping()) : Promise.resolve<ServiceStatus>('error'),
   ]);
 
   return {
-    status: postgres === 'ok' && redisStatus === 'ok' ? 'ok' : 'error',
-    postgres,
+    status: postgresStatus === 'ok' && redisStatus === 'ok' ? 'ok' : 'error',
+    postgres: postgresStatus,
     redis: redisStatus,
   };
 };
