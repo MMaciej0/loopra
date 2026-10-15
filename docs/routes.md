@@ -8,11 +8,12 @@ The README has a short summary. This file has the details.
 
 ## How it works
 
-| Endpoint       | Who can call it  | What it does                                                   |
-| -------------- | ---------------- | -------------------------------------------------------------- |
-| `POST /routes` | a verified rider | Takes one GPX file, calculates its stats, and saves the route. |
+| Endpoint                        | Who can call it     | What it does                                                                 |
+| ------------------------------- | ------------------- | ---------------------------------------------------------------------------- |
+| `POST /routes`                  | a verified rider    | Takes one GPX file, calculates its stats, and saves the route.               |
+| `GET /rides/:id/route/download` | any logged-in rider | Returns a 5-minute signed link to the original GPX file of the ride's route. |
 
-There is no endpoint to list, read, change or delete a route. A route is read only as part of a ride.
+There is no endpoint to list, read, change or delete a route. A route is read only as part of a ride, and its original file is downloaded only through its ride.
 
 1. **Upload.** On the create-ride form, the organiser drops a GPX file. The browser sends it to a Next.js route handler (`/api/routes`), which sends it to the API with the rider's token.
 2. **Parse.** The API parses the file with `@loopra/gpx`. A file that is not valid GPX gets `400 INVALID_GPX`.
@@ -56,7 +57,7 @@ All limits are in `packages/gpx/src/config.ts`.
 
 **Problem:** the map and the chart need small, ready data. But the original GPX file has all the details, and a future feature may need them.
 
-**Decision:** the original file goes to S3-compatible storage under `routes/<user id>/<random uuid>.gpx`. The `routes` table keeps only what the website shows: the stats, the elevation profile and the simplified path, as `jsonb`. The website never downloads the GPX file. The original file is kept, so the route can be parsed again when the parser changes.
+**Decision:** the original file goes to S3-compatible storage under `routes/<user id>/<random uuid>.gpx`. The `routes` table keeps only what the website shows: the stats, the elevation profile and the simplified path, as `jsonb`. The website never reads the GPX file: the download button sends the browser to a signed storage link, so the file skips the API and the Next.js server. The original file is kept, so the route can be parsed again when the parser changes.
 
 ### Upload first, then insert, and clean up on failure
 

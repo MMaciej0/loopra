@@ -43,6 +43,7 @@ export default async function RidePage({ params }: Props) {
                 center={center}
                 start={ride.start_location}
                 path={ride.route?.path ?? null}
+                routeDownloadHref={ride.route ? `/api/rides/${ride.id}/route/download` : null}
               />
             </div>
           )}

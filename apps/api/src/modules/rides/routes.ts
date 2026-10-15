@@ -1,5 +1,6 @@
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import {
+  DownloadRouteResponseSchema,
   ListRideMarkersResponseSchema,
   ListRidesResponseSchema,
   RideDetailResponseSchema,
@@ -23,6 +24,7 @@ import { cancelRide } from './services/cancelRide.js';
 import { joinRide } from './services/joinRide.js';
 import { leaveRide } from './services/leaveRide.js';
 import { getRide } from './services/getRide.js';
+import { getRouteDownloadUrl } from './services/getRouteDownloadUrl.js';
 
 export const ridesRoutes: FastifyPluginAsyncZod = async (fastify) => {
   fastify.get(
@@ -81,6 +83,17 @@ export const ridesRoutes: FastifyPluginAsyncZod = async (fastify) => {
       const ride = await getRide(fastify.db, id);
 
       return reply.send({ data: ride });
+    },
+  );
+
+  fastify.get(
+    '/:id/route/download',
+    { schema: { params: RideParamsSchema, response: { 200: DownloadRouteResponseSchema } } },
+    async (request, reply) => {
+      const { id } = request.params;
+      const url = await getRouteDownloadUrl(fastify.db, fastify.s3, id);
+
+      return reply.send({ data: { url } });
     },
   );
 

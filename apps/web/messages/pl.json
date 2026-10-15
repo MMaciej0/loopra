@@ -89,6 +89,7 @@
     "emptyDiscover": "Znajdź jazdę"
   },
   "RidePage": {
+    "downloadRoute": "Pobierz trasę",
     "from": "start: {location}",
     "distance": "Dystans",
     "elevation": "Przewyższenie",

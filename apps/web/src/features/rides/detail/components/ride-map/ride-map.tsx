@@ -2,6 +2,8 @@
 
 import type { Point, RoutePath } from '@loopra/domain';
 import { useTranslations } from 'next-intl';
+import { Download } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { useRideMap } from './use-ride-map';
 
 type Props = Readonly<{
@@ -9,10 +11,12 @@ type Props = Readonly<{
   center: Point;
   start: Point | null;
   path: RoutePath | null;
+  routeDownloadHref: string | null;
 }>;
 
-export function RideMap({ title, center, start, path }: Props) {
+export function RideMap({ title, center, start, path, routeDownloadHref }: Props) {
   const t = useTranslations('RidesPage');
+  const tRide = useTranslations('RidePage');
   const { containerRef } = useRideMap({ center, start, path });
 
   return (
@@ -23,6 +27,19 @@ export function RideMap({ title, center, start, path }: Props) {
         aria-label={t('rideMapLabel', { title })}
         className="absolute inset-0"
       />
+      {routeDownloadHref && (
+        <Button
+          asChild
+          variant="secondary"
+          size="sm"
+          className="absolute top-2.5 left-2.5 shadow-md"
+        >
+          <a href={routeDownloadHref}>
+            <Download />
+            {tRide('downloadRoute')}
+          </a>
+        </Button>
+      )}
     </div>
   );
 }

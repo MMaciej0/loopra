@@ -89,6 +89,7 @@
     "emptyDiscover": "Find a ride"
   },
   "RidePage": {
+    "downloadRoute": "Download route",
     "from": "from {location}",
     "distance": "Distance",
     "elevation": "Elevation",

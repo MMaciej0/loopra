@@ -16,3 +16,5 @@ export const RouteSchema = z.object({
 });
 
 export const CreateRouteResponseSchema = z.object({ data: RouteSchema });
+
+export const DownloadRouteResponseSchema = z.object({ data: z.object({ url: z.url() }) });
