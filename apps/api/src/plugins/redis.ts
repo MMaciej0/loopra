@@ -14,6 +14,10 @@ export default fastifyPlugin(async (fastify) => {
   fastify.decorate('redis', redis);
 
   fastify.addHook('onClose', async () => {
-    await redis.quit();
+    if (redis.status === 'ready') {
+      await redis.quit();
+    } else {
+      redis.disconnect();
+    }
   });
 });
