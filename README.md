@@ -17,6 +17,7 @@ Strava is good at tracking a ride. Facebook groups are good at talking. Neither 
 - How it is built, and why
   - [Authentication](#authentication)
   - [Rides](#rides)
+  - [Routes](#routes)
   - [Across the whole project](#across-the-whole-project)
 - [Running locally](#running-locally)
 - [Testing and CI](#testing-and-ci)
@@ -143,6 +144,31 @@ Known limits: an organiser can lower Capacity below the number of riders who alr
 
 The full reasons, the flow step by step, and all known limits are in [`docs/rides.md`](docs/rides.md).
 
+## Routes
+
+A route is the path of a ride, uploaded as a GPX file.
+
+**Why routes matter.** A start point and a time are not enough to decide if a ride is right for you. The route shows where the group goes, how far, and how much it climbs. A rider can see before joining whether 80 km with 1,200 m of climbing fits their legs.
+
+**What works today:**
+
+- **Upload when creating a ride.** The organiser drops a GPX file on the create-ride form. The form shows the elevation profile at once and fills in the distance.
+- **View on the ride page.** The ride page draws the route on the map and shows its elevation profile, distance, ascent and descent.
+- **Download (planned).** A button on the ride page will download the original GPX file, so riders can follow the route on their bike computer. The spec is ready in [#158](https://github.com/MMaciej0/loopra/issues/158).
+
+**How a route is stored.** One upload is kept in two places:
+
+| What                                                          | Where                 | Why                                                                    |
+| ------------------------------------------------------------- | --------------------- | ---------------------------------------------------------------------- |
+| The original GPX file                                         | S3-compatible storage | It has every point. It is kept for download and for future features.   |
+| Distance, ascent, descent, elevation profile, simplified path | PostgreSQL (`routes`) | Small, ready data for the map and the chart. The browser needs no GPX. |
+
+The API parses the file once, at upload, with the `@loopra/gpx` package, and stores the results. Nothing parses GPX again when a page loads. If the database insert fails after the file upload, the API deletes the file, so no file is left without a row.
+
+For now routes live only inside rides. They will become their own feature, with a list of your routes and reuse across rides, after the rides core is finished.
+
+How the parser works, the storage decisions, and the known limits are in [`docs/routes.md`](docs/routes.md).
+
 ## Across the whole project
 
 These decisions do not belong to one feature.
@@ -202,6 +228,7 @@ The workflow has no logic of its own. Every step is a workspace script, so CI an
 
 ## Roadmap
 
+- [ ] Routes as their own feature: a list of my routes, reuse one route for many rides
 - [ ] Chat for each ride
 - [ ] Recurring rides ("every Sunday at 8:00")
 - [ ] Clubs: a group of riders that publishes rides together
@@ -212,5 +239,6 @@ The workflow has no logic of its own. Every step is a workspace script, so CI an
 - [`CONTEXT.md`](CONTEXT.md) — the glossary. One word for one thing, used in the database, the API and the UI.
 - [`docs/authentication.md`](docs/authentication.md) — login, tokens and cookies: every decision with its reasons.
 - [`docs/rides.md`](docs/rides.md) — creating, joining and finding rides: every decision with its reasons.
+- [`docs/routes.md`](docs/routes.md) — GPX upload and the `@loopra/gpx` parser, step by step.
 - [`docs/adr/`](docs/adr) — decision records: a hard decision, the options, and why one was chosen.
 - [`docs/product-vision.md`](docs/product-vision.md) — the product idea: who Loopra is for, and why.
