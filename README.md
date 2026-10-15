@@ -18,7 +18,7 @@ Strava is good at tracking a ride. Facebook groups are good at talking. Neither 
   - [Authentication](#authentication)
   - [Rides](#rides)
   - [Across the whole project](#across-the-whole-project)
-- [Getting started](#getting-started)
+- [Running locally](#running-locally)
 - [Testing and CI](#testing-and-ci)
 - [Roadmap](#roadmap)
 - [More documentation](#more-documentation)
@@ -173,58 +173,19 @@ A **race condition** is a bug where two requests arrive at the same time and the
 
 **Decision:** before the tests start, the setup builds one template database with all migrations. Each Vitest worker then gets its own copy of that template. Tests run in parallel, each worker is isolated, and the development database is never touched.
 
-## Getting started
+## Running locally
 
-You need **Docker**, **Node 22** and **pnpm 10.28.0**.
+You need Docker, Node 22, pnpm, and your own keys for Google OAuth, S3-compatible storage, Resend and MapTiler. Copy [`.env.example`](.env.example) to `.env` and fill it in, then:
 
 ```bash
-git clone git@github.com:MMaciej0/loopra.git
-cd loopra
 pnpm install
-```
-
-Create a `.env` file in the repo root. The API checks these variables at startup and stops with a clear error if one is missing:
-
-```bash
-# API
-JWT_ACCESS_SECRET=          # at least 32 characters
-APP_URL=http://localhost:3000
-RESEND_API_KEY=             # email sending
-GOOGLE_CLIENT_ID=
-GOOGLE_CLIENT_SECRET=
-GOOGLE_CALLBACK_URL=http://localhost:8080/auth/google/callback
-S3_ENDPOINT=
-S3_BUCKET=
-S3_ACCESS_KEY_ID=
-S3_SECRET_ACCESS_KEY=
-
-# Web
-API_URL=http://api:8080
-NEXT_PUBLIC_API_URL=http://localhost:8080
-NEXT_PUBLIC_MAPTILER_KEY=
-```
-
-Start the services. The compose file is named `docker-compose-dev.yml`, so the `-f` flag is required:
-
-```bash
 docker compose -f docker-compose-dev.yml up -d --build
 docker exec api sh -c 'cd /app && pnpm api:db:migrate'
-```
-
-The `api` and `web` containers do not start the dev servers by themselves. Start each one in its own terminal:
-
-```bash
 docker exec -it api sh -c 'cd /app && pnpm api:dev'   # http://localhost:8080
-docker exec -it web sh -c 'cd /app && pnpm web:dev'   # http://localhost:3000
+docker exec -it web sh -c 'cd /app && pnpm web:dev'   # http://localhost:3000, in a second terminal
 ```
 
 ## Testing and CI
-
-```bash
-docker compose -f docker-compose-test.yml up -d --wait   # Postgres and Redis for tests
-pnpm --filter api test                                   # API tests
-pnpm --filter @loopra/gpx test                           # GPX package tests, no database needed
-```
 
 The API has more than 200 tests. They call real endpoints against a real PostgreSQL. External services (email, Google, storage) are mocked or never called, so the tests need no real keys.
 
@@ -237,7 +198,7 @@ CI runs on every pull request and every push to `master`:
 | `checks`   | typecheck, lint, format check, GPX tests, web build |
 | `api-test` | starts Postgres and Redis, then runs the API tests  |
 
-The workflow has no logic of its own. Every step is a script that you can run on your own machine.
+The workflow has no logic of its own. Every step is a workspace script, so CI and a local run do the same thing.
 
 ## Roadmap
 
