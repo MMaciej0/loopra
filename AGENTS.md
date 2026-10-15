@@ -23,7 +23,7 @@ It is the single source: `CLAUDE.md` imports it, so edit this file, not that one
 | Storage  | S3-compatible (GPX files, avatars)               |
 | Schemas  | Zod, through `fastify-type-provider-zod`         |
 
-Planned, not installed: Expo mobile app, `@fastify/websocket` for real-time. Installed but not registered: `@fastify/swagger`, for API docs later.
+Planned, not installed: Expo mobile app, `@fastify/websocket` for real-time, `@fastify/swagger` for API docs.
 
 ## Docker & Local Development
 
