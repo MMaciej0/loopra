@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useTransition } from 'react';
-import { ERROR_TYPES, type RideDetail } from '@loopra/domain';
+import { ERROR_TYPES, type Phase, type RideDetail } from '@loopra/domain';
 import { Check } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
@@ -24,11 +24,12 @@ import { useCurrentUser } from '@/features/shell/components/current-user-provide
 
 type Props = Readonly<{
   ride: RideDetail;
+  phase: Phase;
 }>;
 
 type RideAction = typeof joinRide | typeof leaveRide | typeof cancelRide;
 
-export function JoinCard({ ride }: Props) {
+export function JoinCard({ ride, phase }: Props) {
   const t = useTranslations('RidePage');
   const user = useCurrentUser();
   const router = useRouter();
@@ -45,6 +46,7 @@ export function JoinCard({ ride }: Props) {
   const isFull = seatsLeft === 0;
   const isVerified = user?.email_verified === true;
   const isCancelled = ride.status === 'cancelled';
+  const isPast = phase === 'past';
   const otherRidersCount = ride.participants.filter(
     (participant) => participant.user.id !== ride.creator.id,
   ).length;
@@ -64,10 +66,10 @@ export function JoinCard({ ride }: Props) {
         case ERROR_TYPES.PARTICIPANT_EXISTS:
         case ERROR_TYPES.PARTICIPANT_NOT_FOUND:
         case ERROR_TYPES.RIDE_CANCELLED:
+        case ERROR_TYPES.RIDE_ALREADY_STARTED:
           router.refresh();
           return;
         case ERROR_TYPES.RIDE_NOT_FOUND:
-        case ERROR_TYPES.RIDE_ALREADY_STARTED:
           router.replace('/rides');
           return;
         default:
@@ -87,7 +89,7 @@ export function JoinCard({ ride }: Props) {
         <span className="font-ui text-foreground text-[13.5px] font-medium">
           {t('joinRiders', { count: participantCount, capacity })}
         </span>
-        {!isCancelled && (
+        {!isCancelled && !isPast && (
           <Text variant="caption" className="text-muted-foreground shrink-0">
             {isFull ? t('joinFull') : t('joinSeatsLeft', { count: seatsLeft })}
           </Text>
@@ -106,6 +108,10 @@ export function JoinCard({ ride }: Props) {
       {isCancelled ? (
         <Text variant="body-s" className="text-muted-foreground mt-4">
           {t('joinCancelled')}
+        </Text>
+      ) : isPast ? (
+        <Text variant="body-s" className="text-muted-foreground mt-4">
+          {t('joinStarted')}
         </Text>
       ) : isOrganiser ? (
         <div className="mt-4 flex items-center justify-between gap-3">

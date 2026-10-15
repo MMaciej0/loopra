@@ -1,10 +1,10 @@
 import { describe, expect, it, vi } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { useApp } from '../../helpers/app.js';
-import { useAuthenticatedUser } from '../../helpers/auth.js';
+import { registerUser, useAuthenticatedUser } from '../../helpers/auth.js';
 import { newRide } from '../../helpers/rides.js';
 import { buildFileUpload } from '../../helpers/multipart.js';
-import { routes } from '../../../src/db/schema.js';
+import { ride_participants, rides, routes } from '../../../src/db/schema.js';
 
 vi.mock('../../../src/utils/s3.js');
 
@@ -99,6 +99,37 @@ describe('GET /rides/:id', () => {
     expect(data.creator.password_hash).toBeUndefined();
     expect(data.participants).toHaveLength(1);
     expect(data.participants[0].user_id).toBe(auth.userId);
+  });
+
+  it('returns a ride whose start time has passed, with its participants', async () => {
+    const other = await registerUser(appRef.app, 'other@example.com', 'Password123!', 'otheruser');
+
+    const [{ id: rideId }] = await appRef.app.db
+      .insert(rides)
+      .values({
+        ...newRide({ user_id: auth.userId }),
+        start_time: new Date(Date.now() - 60 * 60 * 1000),
+      })
+      .returning({ id: rides.id });
+
+    await appRef.app.db.insert(ride_participants).values([
+      { ride_id: rideId, user_id: auth.userId },
+      { ride_id: rideId, user_id: other.userId },
+    ]);
+
+    const response = await appRef.app.inject({
+      method: 'GET',
+      url: `/rides/${rideId}`,
+      cookies: { accessToken: other.accessToken },
+    });
+
+    expect(response.statusCode).toBe(200);
+
+    const { data } = response.json();
+    expect(data.id).toBe(rideId);
+    expect(
+      data.participants.map((participant: { user_id: string }) => participant.user_id).sort(),
+    ).toEqual([auth.userId, other.userId].sort());
   });
 
   it('describes the organiser by id and username only, with no email anywhere', async () => {

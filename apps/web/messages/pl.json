@@ -122,6 +122,7 @@
     "joinLeave": "Zrezygnuj",
     "joinError": "Coś poszło nie tak. Spróbuj ponownie.",
     "joinCancelled": "Ta jazda została odwołana",
+    "joinStarted": "Ta jazda już się rozpoczęła",
     "cancelAction": "Odwołaj jazdę",
     "cancelDialogTitle": "Odwołać tę jazdę?",
     "cancelDialogRiders": "{count, plural, =0 {Nikt inny jeszcze nie dołączył.} one {Dołączyła # inna osoba.} few {Dołączyły # inne osoby.} many {Dołączyło # innych osób.} other {Dołączyło # innej osoby.}}",

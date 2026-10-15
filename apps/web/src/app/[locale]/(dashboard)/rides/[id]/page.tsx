@@ -1,7 +1,5 @@
 import { notFound } from 'next/navigation';
-import { getLocale } from 'next-intl/server';
 import { ridePhase } from '@loopra/domain';
-import { redirect } from '@/i18n/navigation';
 import { PageBody } from '@/features/shell/components/page-body';
 import { getRide } from '@/features/rides/detail/get-ride';
 import { mapCenter } from '@/features/rides/detail/map-center';
@@ -25,10 +23,7 @@ export default async function RidePage({ params }: Props) {
     notFound();
   }
 
-  if (ridePhase(ride.start_time, new Date()) === 'past') {
-    redirect({ href: '/rides', locale: await getLocale() });
-  }
-
+  const phase = ridePhase(ride.start_time, new Date());
   const center = mapCenter(ride);
 
   return (
@@ -56,7 +51,7 @@ export default async function RidePage({ params }: Props) {
               <ElevationProfileCard ride={ride} />
             </div>
             <aside className="contents lg:sticky lg:top-0 lg:flex lg:flex-col lg:gap-4 lg:px-7 lg:pt-[26px] lg:pb-12 xl:max-h-[calc(100svh-4rem)] xl:pb-[26px]">
-              <JoinCard ride={ride} />
+              <JoinCard ride={ride} phase={phase} />
               <ParticipantsCard ride={ride} />
             </aside>
           </div>
