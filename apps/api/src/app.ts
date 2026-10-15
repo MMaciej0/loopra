@@ -12,6 +12,7 @@ import globalErrorHandler from './plugins/globalErrorHandler.js';
 import multipartPlugin from './plugins/multipart.js';
 
 import authModule from './modules/auth/index.js';
+import healthModule from './modules/health/index.js';
 import usersModule from './modules/users/index.js';
 import ridesModule from './modules/rides/index.js';
 import routesModule from './modules/routes/index.js';
@@ -39,9 +40,7 @@ export const buildApp = () => {
 
   // public routes
   app.register(authModule, { prefix: '/auth' });
-  app.get('/health', async () => {
-    return { status: 'ok' };
-  });
+  app.register(healthModule, { prefix: '/health' });
 
   // protected routes
   app.register(async (protectedApp) => {
