@@ -137,7 +137,11 @@ describe('GET /rides/markers', () => {
     const HOUR = 60 * 60 * 1000;
     const now = Date.now();
     const gravelCoffee = { bike_type: 'gravel', ride_type: 'coffee_ride' };
-    const [inside] = await insertRides(1, { start_time: new Date(now + 2 * HOUR) });
+    const [inside] = await insertRides(1, {
+      bike_type: 'road',
+      ride_type: 'casual',
+      start_time: new Date(now + 2 * HOUR),
+    });
     const [insideGravelCoffee] = await insertRides(1, {
       ...gravelCoffee,
       start_time: new Date(now + 2.5 * HOUR),
