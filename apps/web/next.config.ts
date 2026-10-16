@@ -4,6 +4,7 @@ import createNextIntlPlugin from 'next-intl/plugin';
 const GOOGLE_AUTH_PATHS = ['/auth/google', '/auth/google/callback'];
 
 const nextConfig: NextConfig = {
+  output: 'standalone',
   async rewrites() {
     if (process.env.NODE_ENV === 'production') return [];
 
