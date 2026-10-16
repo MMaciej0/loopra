@@ -39,16 +39,6 @@ const EMPTY: RideLocation = {
   full_address: '',
 };
 
-function configureMaptiler() {
-  const apiKey = process.env.NEXT_PUBLIC_MAPTILER_KEY;
-
-  if (!apiKey) {
-    throw new Error('NEXT_PUBLIC_MAPTILER_KEY is not set');
-  }
-
-  maptilersdk.config.apiKey = apiKey;
-}
-
 // Human-settlement designations, most-specific-preferred first. `hamlet` is
 // deliberately excluded — OSM hamlets are things like "Tartak" (a sawmill),
 // not real towns.
@@ -122,8 +112,12 @@ export { formatLocationLabel };
 // localized to `language` (ISO 639-1, e.g. "pl" / "en"). Passing the language
 // to the API makes `text`/`place_name` come back already translated, so we just
 // read those fields directly.
-export async function reverseGeocode(coords: Point, language = 'en'): Promise<RideLocation> {
-  configureMaptiler();
+export async function reverseGeocode(
+  coords: Point,
+  apiKey: string,
+  language = 'en',
+): Promise<RideLocation> {
+  maptilersdk.config.apiKey = apiKey;
 
   try {
     const res = await maptilersdk.geocoding.reverse([coords.x, coords.y], { limit: 1, language });
@@ -136,12 +130,13 @@ export async function reverseGeocode(coords: Point, language = 'en'): Promise<Ri
 
 export async function forwardGeocode(
   query: string,
+  apiKey: string,
   language = 'en',
 ): Promise<LocationSuggestion[]> {
   const trimmed = query.trim();
   if (!trimmed) return [];
 
-  configureMaptiler();
+  maptilersdk.config.apiKey = apiKey;
 
   const res = await maptilersdk.geocoding.forward(trimmed, {
     types: [

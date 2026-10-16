@@ -1,6 +1,7 @@
 import { getLocale } from 'next-intl/server';
 import { AppSidebar } from '@/features/shell/components/app-sidebar/app-sidebar';
 import { CurrentUserProvider } from '@/features/shell/components/current-user-provider';
+import { MaptilerKeyProvider } from '@/components/providers/maptiler-key-provider';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { getOnboardingSteps } from '@/features/onboarding/steps';
@@ -20,14 +21,16 @@ export default async function DashboardLayout({ children }: Props) {
 
   return (
     <CurrentUserProvider user={user}>
-      <TooltipProvider>
-        <SidebarProvider className="min-h-svh lg:h-svh lg:min-h-0 lg:overflow-hidden">
-          <AppSidebar />
-          <main className="flex min-h-0 flex-1 flex-col lg:h-svh lg:overflow-hidden">
-            {children}
-          </main>
-        </SidebarProvider>
-      </TooltipProvider>
+      <MaptilerKeyProvider apiKey={process.env.MAPTILER_KEY}>
+        <TooltipProvider>
+          <SidebarProvider className="min-h-svh lg:h-svh lg:min-h-0 lg:overflow-hidden">
+            <AppSidebar />
+            <main className="flex min-h-0 flex-1 flex-col lg:h-svh lg:overflow-hidden">
+              {children}
+            </main>
+          </SidebarProvider>
+        </TooltipProvider>
+      </MaptilerKeyProvider>
     </CurrentUserProvider>
   );
 }
