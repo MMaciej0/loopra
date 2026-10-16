@@ -12,7 +12,8 @@ export async function GoogleAuthButton() {
       variant="secondary"
       className="text-foreground mb-[18px] flex w-full items-center justify-center gap-[10px] py-3 text-[14px]"
     >
-      <a href={`${process.env.NEXT_PUBLIC_API_URL}/auth/google`}>
+      {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+      <a href="/auth/google">
         <GoogleIcon />
         {t('continueWithGoogle')}
       </a>
