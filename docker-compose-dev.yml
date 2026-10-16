@@ -41,6 +41,7 @@ services:
     environment:
       API_URL: ${API_URL}
       MAPTILER_KEY: ${MAPTILER_KEY}
+      APP_ENV: ${APP_ENV}
 
   postgres:
     container_name: loopra-postgres
