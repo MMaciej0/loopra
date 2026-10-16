@@ -39,7 +39,6 @@ services:
       - /app/apps/web/.next
     command: "tail -f /dev/null"
     environment:
-      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
       API_URL: ${API_URL}
       NEXT_PUBLIC_MAPTILER_KEY: ${NEXT_PUBLIC_MAPTILER_KEY}
 
