@@ -11,6 +11,7 @@ import {
   ComboboxItem,
   ComboboxList,
 } from '@/components/ui/combobox';
+import { useMaptilerKey } from '@/components/providers/maptiler-key-provider';
 import { forwardGeocode, type LocationSuggestion } from '@/features/locations/geocoding';
 
 function sublineFor(location: LocationSuggestion) {
@@ -30,6 +31,7 @@ export function LocationPicker({
 }) {
   const t = useTranslations('FavoriteLocation');
   const locale = useLocale();
+  const apiKey = useMaptilerKey();
   const [inputValue, setInputValue] = useState(selectedLocation?.label ?? '');
   const [suggestions, setSuggestions] = useState<LocationSuggestion[]>([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -58,7 +60,7 @@ export function LocationPicker({
       setHasError(false);
 
       try {
-        const nextSuggestions = await forwardGeocode(query, locale);
+        const nextSuggestions = await forwardGeocode(query, apiKey, locale);
         if (cancelled) return;
 
         cache.current.set(cacheKey, nextSuggestions);
@@ -77,7 +79,7 @@ export function LocationPicker({
       cancelled = true;
       window.clearTimeout(timeout);
     };
-  }, [inputValue, locale, selectedLocation?.label]);
+  }, [inputValue, locale, apiKey, selectedLocation?.label]);
 
   const items =
     selectedLocation && !suggestions.some((item) => item.id === selectedLocation.id)

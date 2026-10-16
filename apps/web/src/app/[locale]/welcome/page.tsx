@@ -1,4 +1,5 @@
 import { getLocale } from 'next-intl/server';
+import { MaptilerKeyProvider } from '@/components/providers/maptiler-key-provider';
 import { Logo } from '@/components/ui/logo';
 import { LocationStep } from '@/features/onboarding/components/location-step';
 import { UsernameStep } from '@/features/onboarding/components/username-step';
@@ -23,7 +24,11 @@ export default async function WelcomePage() {
       <main className="flex flex-1 flex-col items-center py-8 md:py-10">
         <div className="my-auto w-full max-w-md">
           {step === 'username' && <UsernameStep />}
-          {step === 'location' && <LocationStep favorites={favorites} />}
+          {step === 'location' && (
+            <MaptilerKeyProvider apiKey={process.env.MAPTILER_KEY}>
+              <LocationStep favorites={favorites} />
+            </MaptilerKeyProvider>
+          )}
         </div>
       </main>
     </div>

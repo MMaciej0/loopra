@@ -40,7 +40,7 @@ services:
     command: "tail -f /dev/null"
     environment:
       API_URL: ${API_URL}
-      NEXT_PUBLIC_MAPTILER_KEY: ${NEXT_PUBLIC_MAPTILER_KEY}
+      MAPTILER_KEY: ${MAPTILER_KEY}
 
   postgres:
     container_name: loopra-postgres

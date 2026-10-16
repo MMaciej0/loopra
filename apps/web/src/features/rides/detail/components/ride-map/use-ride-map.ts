@@ -4,6 +4,7 @@ import { useLocale } from 'next-intl';
 import { useTheme } from 'next-themes';
 import * as maptilersdk from '@maptiler/sdk';
 import '@maptiler/sdk/dist/maptiler-sdk.css';
+import { useMaptilerKey } from '@/components/providers/maptiler-key-provider';
 import { readCssColor } from './read-css-color';
 
 const STREET_ZOOM = 16;
@@ -53,6 +54,7 @@ function createStartMarkerElement() {
 
 export function useRideMap({ center, start, path }: UseRideMapProps) {
   const locale = useLocale();
+  const apiKey = useMaptilerKey();
   const { resolvedTheme } = useTheme();
   const containerRef = useRef<HTMLDivElement>(null);
   const [map, setMap] = useState<maptilersdk.Map | null>(null);
@@ -79,7 +81,7 @@ export function useRideMap({ center, start, path }: UseRideMapProps) {
     const { center, start, path, language, theme } = readCreationOptions();
     if (!container || theme === undefined) return;
 
-    maptilersdk.config.apiKey = process.env.NEXT_PUBLIC_MAPTILER_KEY!;
+    maptilersdk.config.apiKey = apiKey;
 
     const mapElement = document.createElement('div');
     mapElement.style.width = '100%';
@@ -131,7 +133,7 @@ export function useRideMap({ center, start, path }: UseRideMapProps) {
         newMap.once('style.load', () => newMap.remove());
       }
     };
-  }, [isThemeResolved]);
+  }, [isThemeResolved, apiKey]);
 
   return { containerRef };
 }

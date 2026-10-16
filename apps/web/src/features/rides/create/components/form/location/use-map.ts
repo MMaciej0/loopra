@@ -3,6 +3,7 @@ import * as maptilersdk from '@maptiler/sdk';
 import '@maptiler/sdk/dist/maptiler-sdk.css';
 import type { Point } from '@loopra/domain';
 import { GeocodingControl } from '@maptiler/geocoding-control/maptilersdk';
+import { useMaptilerKey } from '@/components/providers/maptiler-key-provider';
 import { reverseGeocode, type RideLocation } from '@/features/locations/geocoding';
 
 const DEFAULT_CENTER: [number, number] = [19.9275, 50.0616]; // [lng, lat] — Kraków
@@ -20,6 +21,7 @@ interface UseMapProps {
 }
 
 export function useMap({ onPick, initialCoords, language = 'en', searchPlaceholder }: UseMapProps) {
+  const apiKey = useMaptilerKey();
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<maptilersdk.Map | null>(null);
   // keep latest language for the click handler without re-creating the map
@@ -36,7 +38,7 @@ export function useMap({ onPick, initialCoords, language = 'en', searchPlacehold
   useEffect(() => {
     if (mapRef.current || !mapContainerRef.current) return;
 
-    maptilersdk.config.apiKey = process.env.NEXT_PUBLIC_MAPTILER_KEY!;
+    maptilersdk.config.apiKey = apiKey;
 
     const map = new maptilersdk.Map({
       container: mapContainerRef.current,
@@ -85,7 +87,7 @@ export function useMap({ onPick, initialCoords, language = 'en', searchPlacehold
       const coords: Point = { x: e.lngLat.lng, y: e.lngLat.lat };
       pointer.setLngLat(e.lngLat).addTo(map); // instant marker, no wait
       map.easeTo({ center: e.lngLat }); // recenter on the picked point
-      const location = await reverseGeocode(coords, languageRef.current);
+      const location = await reverseGeocode(coords, apiKey, languageRef.current);
       onPickRef.current({ coords, ...location });
     });
 
@@ -102,7 +104,7 @@ export function useMap({ onPick, initialCoords, language = 'en', searchPlacehold
         });
       }
     };
-  }, []);
+  }, [apiKey]);
 
   return {
     mapContainerRef,

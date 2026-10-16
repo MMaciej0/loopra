@@ -11,6 +11,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { useTheme } from 'next-themes';
 import * as maptilersdk from '@maptiler/sdk';
 import '@maptiler/sdk/dist/maptiler-sdk.css';
+import { useMaptilerKey } from '@/components/providers/maptiler-key-provider';
 import { anyInView, boundsOf, revealOffset } from './map-geometry';
 import { createMarkerElement, setMarkerSelected } from './marker-element';
 import { searchAreaMinZoom, viewSearchArea } from './search-area';
@@ -42,6 +43,7 @@ function applySearchAreaMinZoom(map: maptilersdk.Map) {
 export function useRidesMap({ center, startPoints, onSearchAreaChange }: UseRidesMapProps) {
   const t = useTranslations('RidesPage');
   const locale = useLocale();
+  const apiKey = useMaptilerKey();
   const { resolvedTheme } = useTheme();
   const containerRef = useRef<HTMLDivElement>(null);
   const panelRef = useRef<HTMLElement>(null);
@@ -103,7 +105,7 @@ export function useRidesMap({ center, startPoints, onSearchAreaChange }: UseRide
     const { center, language, theme } = readCreationOptions();
     if (!container || theme === undefined) return;
 
-    maptilersdk.config.apiKey = process.env.NEXT_PUBLIC_MAPTILER_KEY!;
+    maptilersdk.config.apiKey = apiKey;
 
     const mapElement = document.createElement('div');
     mapElement.style.width = '100%';
@@ -163,7 +165,7 @@ export function useRidesMap({ center, startPoints, onSearchAreaChange }: UseRide
         newMap.once('style.load', () => newMap.remove());
       }
     };
-  }, [isThemeResolved]);
+  }, [isThemeResolved, apiKey]);
 
   useEffect(() => {
     if (!map) return;
