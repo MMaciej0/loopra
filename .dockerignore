@@ -11,3 +11,8 @@ build
 coverage
 **/coverage
 *.log
+.git
+.claude
+.env
+**/.env
+**/.env.*
