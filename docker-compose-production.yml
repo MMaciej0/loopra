@@ -1,0 +1,112 @@
+name: loopra-production
+
+services:
+  api:
+    image: ghcr.io/mmaciej0/loopra-api:${IMAGE_TAG:?IMAGE_TAG is not set}
+    restart: unless-stopped
+    env_file:
+      - ${ENV_DIR:-/srv/loopra/production}/.env
+    environment:
+      NODE_ENV: production
+      APP_ENV: production
+      PORT: 8080
+      TRUSTED_PROXIES: 10.100.0.0/24,10.100.2.0/24
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      internal:
+        aliases:
+          - api-internal
+      edge:
+        aliases:
+          - production-api
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:8080/health').then((r) => process.exit(r.ok ? 0 : 1), () => process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  web:
+    image: ghcr.io/mmaciej0/loopra-web:${IMAGE_TAG:?IMAGE_TAG is not set}
+    restart: unless-stopped
+    env_file:
+      - ${ENV_DIR:-/srv/loopra/production}/web.env
+    environment:
+      NODE_ENV: production
+      APP_ENV: production
+      API_URL: http://api-internal:8080
+    depends_on:
+      api:
+        condition: service_healthy
+    networks:
+      internal: {}
+      edge:
+        aliases:
+          - production-web
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://127.0.0.1:3000/').then((r) => process.exit(r.ok ? 0 : 1), () => process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  postgres:
+    image: postgis/postgis:16-3.4
+    restart: unless-stopped
+    env_file:
+      - ${ENV_DIR:-/srv/loopra/production}/.env
+    environment:
+      POSTGRES_USER: loopra
+      POSTGRES_DB: loopra
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U loopra -d loopra"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+    networks:
+      - internal
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  internal:
+    ipam:
+      config:
+        - subnet: 10.100.2.0/24
+  edge:
+    external: true
