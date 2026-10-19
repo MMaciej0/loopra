@@ -1,0 +1,50 @@
+name: Deploy edge
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Branch, tag or full commit SHA
+        required: true
+        type: string
+        default: master
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-edge
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Deploy ${{ inputs.ref }} to edge
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.ref }}
+
+      - name: Set up SSH
+        env:
+          SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+
+      - name: Copy files
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+        run: |
+          mkdir -p incoming/edge
+          cp docker-compose-edge.yml scripts/deploy-edge.sh incoming/
+          cp -r edge/nginx incoming/edge/
+          scp -r incoming "deploy@$DEPLOY_HOST:/srv/loopra/edge/"
+
+      - name: Run deploy-edge.sh
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+        run: ssh "deploy@$DEPLOY_HOST" "/srv/loopra/edge/incoming/deploy-edge.sh"
