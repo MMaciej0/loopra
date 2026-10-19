@@ -47,3 +47,23 @@ jobs:
 
       - name: Build and push images
         run: scripts/build-images.sh ${{ steps.tag.outputs.tag }}
+
+      - name: Set up SSH
+        env:
+          SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+
+      - name: Copy files
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+        run: scp docker-compose-${{ inputs.environment }}.yml scripts/deploy.sh "deploy@$DEPLOY_HOST:/srv/loopra/${{ inputs.environment }}/"
+
+      - name: Run deploy.sh
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+        run: ssh "deploy@$DEPLOY_HOST" "/srv/loopra/${{ inputs.environment }}/deploy.sh ${{ inputs.environment }} ${{ steps.tag.outputs.tag }}"
