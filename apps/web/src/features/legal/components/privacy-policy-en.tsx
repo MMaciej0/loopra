@@ -49,7 +49,10 @@ export function PrivacyPolicyEn() {
         <li>Resend — sending email.</li>
         <li>MapTiler — maps and place search.</li>
         <li>Cloudflare R2 — file storage.</li>
-        <li>Our hosting provider — running the application and its database.</li>
+        <li>
+          OVHcloud — running the application and its database, on a server in Prague, Czech Republic
+          (EU).
+        </li>
       </ul>
 
       <h2>5. Cookies and browser storage</h2>

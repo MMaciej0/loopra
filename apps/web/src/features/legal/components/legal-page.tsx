@@ -9,7 +9,7 @@ import { TermsPl } from './terms-pl';
 
 const DOCUMENTS = {
   privacy: {
-    lastUpdated: new Date(Date.UTC(2026, 9, 8)),
+    lastUpdated: new Date(Date.UTC(2026, 9, 19)),
     en: PrivacyPolicyEn,
     pl: PrivacyPolicyPl,
   },

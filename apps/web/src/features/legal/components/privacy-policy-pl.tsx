@@ -49,7 +49,9 @@ export function PrivacyPolicyPl() {
         <li>Resend — wysyłanie wiadomości e-mail.</li>
         <li>MapTiler — mapy i wyszukiwanie miejsc.</li>
         <li>Cloudflare R2 — przechowywanie plików.</li>
-        <li>Nasz dostawca hostingu — działanie aplikacji i jej bazy danych.</li>
+        <li>
+          OVHcloud — działanie aplikacji i jej bazy danych, na serwerze w Pradze (Czechy, UE).
+        </li>
       </ul>
 
       <h2>5. Pliki cookie i pamięć przeglądarki</h2>
