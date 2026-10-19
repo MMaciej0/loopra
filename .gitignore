@@ -37,3 +37,5 @@ coverage/
 
 # Playwright CLI artifacts
 .playwright-cli/
+
+edge/certbot/
