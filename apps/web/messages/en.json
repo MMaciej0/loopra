@@ -582,6 +582,13 @@
       "contact": "Contact"
     }
   },
+  "StagingIndicator": {
+    "label": "About this demo site",
+    "title": "This is a demo site",
+    "showcase": "Loopra staging is a showcase of the app.",
+    "rides": "The Rides here are examples and will not happen.",
+    "data": "Data may be deleted at any time."
+  },
   "LanguageSwitch": {
     "label": "Switch to Polish"
   },

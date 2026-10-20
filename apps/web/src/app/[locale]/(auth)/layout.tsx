@@ -6,6 +6,7 @@ import { PosterBadge, PosterBadgeDot } from '@/components/ui/badge';
 import { Text } from '@/components/ui/text';
 import { Logo } from '@/components/ui/logo';
 import { LanguageSwitch } from '@/components/ui/language-switch';
+import { StagingIndicator } from '@/features/staging/components/staging-indicator';
 import Link from 'next/link';
 
 type Props = Readonly<{
@@ -20,9 +21,12 @@ export default function AuthLayout({ children }: Props) {
       <div className="flex h-dvh flex-1 flex-col px-[22px] pt-7 pb-9 md:px-8 md:pt-8 md:pb-10 xl:items-end xl:px-14 xl:py-11">
         <div className="flex min-h-0 w-full flex-1 flex-col xl:max-w-[960px]">
           <nav className="flex shrink-0 items-center justify-between">
-            <Link href="/">
-              <Logo height={26} />
-            </Link>
+            <div className="flex items-center gap-1.5">
+              <Link href="/">
+                <Logo height={26} />
+              </Link>
+              <StagingIndicator />
+            </div>
             <LanguageSwitch />
           </nav>
           <main className="flex min-h-0 flex-1 flex-col items-center overflow-y-auto py-8 md:py-10 xl:py-12">

@@ -582,6 +582,13 @@
       "contact": "Kontakt"
     }
   },
+  "StagingIndicator": {
+    "label": "O tej stronie demo",
+    "title": "To jest strona demo",
+    "showcase": "Loopra staging to prezentacja aplikacji.",
+    "rides": "Jazdy są tu przykładowe i się nie odbędą.",
+    "data": "Dane mogą zostać usunięte w każdej chwili."
+  },
   "LanguageSwitch": {
     "label": "Przełącz na angielski"
   },
