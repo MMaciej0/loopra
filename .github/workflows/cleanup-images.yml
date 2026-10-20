@@ -1,0 +1,23 @@
+name: Clean up images
+
+on:
+  schedule:
+    - cron: "0 3 * * 1"
+  workflow_dispatch:
+
+permissions:
+  packages: write
+
+jobs:
+  cleanup:
+    name: Keep the newest 20 ${{ matrix.package }} images
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        package: [loopra-api, loopra-web]
+    steps:
+      - uses: actions/delete-package-versions@v5
+        with:
+          package-name: ${{ matrix.package }}
+          package-type: container
+          min-versions-to-keep: 20

@@ -22,7 +22,7 @@ services:
       ]
 
   certbot:
-    image: certbot/certbot:latest
+    image: certbot/certbot:v5.8.0
     restart: unless-stopped
     volumes:
       - ./edge/certbot/www:/var/www/certbot
