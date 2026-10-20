@@ -1,5 +1,6 @@
 'use client';
 
+import { Info } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 import {
   Popover,
@@ -20,9 +21,9 @@ export function StagingIndicatorPopover() {
       >
         <span
           aria-hidden
-          className="bg-accent absolute size-2.5 rounded-full motion-safe:animate-ping"
+          className="bg-accent/40 absolute size-4 rounded-full motion-safe:animate-ping"
         />
-        <span aria-hidden className="bg-accent relative size-2.5 rounded-full" />
+        <Info aria-hidden className="text-accent-deep relative size-4.5" />
       </PopoverTrigger>
       <PopoverContent align="start">
         <PopoverHeader>
