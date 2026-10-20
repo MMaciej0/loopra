@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { hasActiveRidesFilters } from '@/features/rides/browse/filters';
 import type { RidesListQuery } from '@/features/rides/browse/list-query';
 import { useClearRidesFilters } from '@/features/rides/browse/use-clear-rides-filters';
+import { useShowDemoRides } from '@/features/rides/browse/use-show-demo-rides';
 import { MapChip } from './map-chip';
 import { mapNotice } from './map-notice';
 import { RidePanel } from './ride-panel';
@@ -17,14 +18,16 @@ type Props = Readonly<{
   query: RidesListQuery;
   center: Point;
   screenReaderLocationLabel: string;
+  showDemoRidesHint: boolean;
 }>;
 
-export function RidesMap({ query, center, screenReaderLocationLabel }: Props) {
+export function RidesMap({ query, center, screenReaderLocationLabel, showDemoRidesHint }: Props) {
   const t = useTranslations('RidesPage');
   const { status, startPoints, truncated, retry, loadArea } = useStartPoints(query);
   const { containerRef, panelRef, selected, clearSelection, hasStartPointInView, showAll } =
     useRidesMap({ center, startPoints, onSearchAreaChange: loadArea });
   const clearFilters = useClearRidesFilters('map');
+  const demoRides = useShowDemoRides();
 
   const notice = mapNotice({
     status,
@@ -43,18 +46,32 @@ export function RidesMap({ query, center, screenReaderLocationLabel }: Props) {
         aria-label={t('mapLabel', { location: screenReaderLocationLabel })}
         className="absolute inset-0"
       />
-      <div className="pointer-events-none absolute inset-x-0 top-3 flex justify-center px-3">
+      <div className="pointer-events-none absolute inset-x-0 top-3 flex justify-center px-12">
         {notice === 'loading' && (
           <MapChip role="status" className="pr-3.5">
             <Loader2 aria-hidden className="text-muted-foreground size-3.5 animate-spin" />
             {t('mapLoading')}
           </MapChip>
         )}
-        {notice === 'empty' && (
-          <MapChip role="status" className="pr-3.5">
-            {t('mapEmpty')}
-          </MapChip>
-        )}
+        {notice === 'empty' &&
+          (showDemoRidesHint ? (
+            <MapChip role={demoRides.failed ? 'alert' : 'status'}>
+              {demoRides.failed ? t('demoRidesError') : t('mapDemoRidesHint')}
+              <Button
+                variant="secondary"
+                size="xs"
+                className="rounded-full"
+                loading={demoRides.isPending}
+                onClick={demoRides.showDemoRides}
+              >
+                {t('demoRidesShow')}
+              </Button>
+            </MapChip>
+          ) : (
+            <MapChip role="status" className="pr-3.5">
+              {t('mapEmpty')}
+            </MapChip>
+          ))}
         {notice === 'empty-filtered' && (
           <MapChip role="status">
             {t('filteredEmpty')}

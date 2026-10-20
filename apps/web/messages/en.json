@@ -53,6 +53,10 @@
     "mapTruncated": "Zoom in to see all rides",
     "listEmptyTitle": "No upcoming rides here yet",
     "listEmptyHint": "The list shows upcoming rides starting around your selected place. Change it above to look somewhere else.",
+    "demoRidesHint": "This is a demo site. Its example rides are around Kraków, Poland.",
+    "mapDemoRidesHint": "Demo rides are in Kraków",
+    "demoRidesShow": "Show Kraków",
+    "demoRidesError": "Could not move the search to Kraków. Try again.",
     "listLoadError": "Could not load rides.",
     "listRetry": "Try again",
     "rideMapLabel": "Map of the ride {title}"

@@ -10,10 +10,14 @@ import { hasActiveRidesFilters } from '@/features/rides/browse/filters';
 import type { RidesListQuery } from '@/features/rides/browse/list-query';
 import { buildRidesTimeWindow } from '@/features/rides/browse/time-window';
 import { useClearRidesFilters } from '@/features/rides/browse/use-clear-rides-filters';
+import { useShowDemoRides } from '@/features/rides/browse/use-show-demo-rides';
 
-export function RidesList({ query }: { query: RidesListQuery }) {
+type Props = Readonly<{ query: RidesListQuery; showDemoRidesHint: boolean }>;
+
+export function RidesList({ query, showDemoRidesHint }: Props) {
   const t = useTranslations('RidesPage');
   const clearFilters = useClearRidesFilters('list');
+  const demoRides = useShowDemoRides();
   const filtered = hasActiveRidesFilters(query.filters);
 
   return (
@@ -33,6 +37,26 @@ export function RidesList({ query }: { query: RidesListQuery }) {
             <Button variant="secondary" size="sm" onClick={clearFilters}>
               {t('filteredEmptyClear')}
             </Button>
+          ) : showDemoRidesHint ? (
+            <>
+              <Text variant="body-s" className="text-muted-foreground max-w-sm">
+                {t('demoRidesHint')}
+              </Text>
+              <Button
+                variant="secondary"
+                size="sm"
+                className="mt-1.5"
+                loading={demoRides.isPending}
+                onClick={demoRides.showDemoRides}
+              >
+                {t('demoRidesShow')}
+              </Button>
+              {demoRides.failed && (
+                <Text variant="body-s" role="alert" className="text-destructive">
+                  {t('demoRidesError')}
+                </Text>
+              )}
+            </>
           ) : (
             <Text variant="body-s" className="text-muted-foreground max-w-sm">
               {t('listEmptyHint')}

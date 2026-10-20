@@ -1,4 +1,5 @@
-import { bboxAround, SEARCH_AREA_MAX_KM } from '@loopra/domain';
+import { bboxAround, DEFAULT_SELECTED_LOCATION, SEARCH_AREA_MAX_KM } from '@loopra/domain';
+import { getAppEnv } from '@/lib/app-env';
 import { formatLocationLabel } from '@/features/locations/geocoding';
 import { getCurrentUser } from '@/lib/user';
 import { buildRidesListQuery, ridesListKey, ridesMapKey } from '@/features/rides/browse/list-query';
@@ -19,6 +20,10 @@ export async function ViewPane({ view, filters }: Props) {
   const center = user.selected_location.location;
   const searchArea = bboxAround(center, SEARCH_AREA_MAX_KM);
   const query = buildRidesListQuery(searchArea, filters);
+  const isDemoLocation =
+    center.x === DEFAULT_SELECTED_LOCATION.location.x &&
+    center.y === DEFAULT_SELECTED_LOCATION.location.y;
+  const showDemoRidesHint = getAppEnv() === 'staging' && !isDemoLocation;
 
   if (view === 'map') {
     const { district, city, country } = user.selected_location;
@@ -34,13 +39,14 @@ export async function ViewPane({ view, filters }: Props) {
         query={query}
         center={center}
         screenReaderLocationLabel={screenReaderLocationLabel}
+        showDemoRidesHint={showDemoRidesHint}
       />
     );
   }
 
   return (
     <div className="min-h-0 flex-1 overflow-y-auto">
-      <RidesList key={ridesListKey(query)} query={query} />
+      <RidesList key={ridesListKey(query)} query={query} showDemoRidesHint={showDemoRidesHint} />
     </div>
   );
 }

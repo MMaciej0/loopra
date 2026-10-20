@@ -53,6 +53,10 @@
     "mapTruncated": "Przybliż mapę, aby zobaczyć wszystkie jazdy",
     "listEmptyTitle": "Brak nadchodzących jazd w tej okolicy",
     "listEmptyHint": "Lista pokazuje nadchodzące jazdy startujące w okolicy wybranego miejsca. Zmień je powyżej, aby poszukać gdzie indziej.",
+    "demoRidesHint": "To jest strona demo. Przykładowe jazdy są w okolicy Krakowa.",
+    "mapDemoRidesHint": "Jazdy demo są w Krakowie",
+    "demoRidesShow": "Pokaż Kraków",
+    "demoRidesError": "Nie udało się przenieść wyszukiwania do Krakowa. Spróbuj ponownie.",
     "listLoadError": "Nie udało się wczytać jazd.",
     "listRetry": "Spróbuj ponownie",
     "rideMapLabel": "Mapa jazdy {title}"
