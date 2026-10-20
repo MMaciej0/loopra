@@ -15,7 +15,8 @@ Each file carries the same credit in its `<metadata>`.
 | file                              | name                             |   km | climb | profile    | made for         |
 | --------------------------------- | -------------------------------- | ---: | ----: | ---------- | ---------------- |
 | `old-town-sightseeing.gpx`        | Old Town, Kazimierz and Podgórze | 13.6 |  122m | `trekking` | sightseeing      |
-| `las-wolski-coffee-loop.gpx`      | Kościuszko Mound and Las Wolski  | 19.4 |  368m | `trekking` | coffee ride      |
+| `las-wolski-coffee-loop.gpx`      | Kościuszko Mound and Las Wolski  | 19.4 |  368m | `trekking` | coffee, hilly    |
+| `vistula-bagry-loop.gpx`          | Vistula boulevards to Bagry      | 20.4 |   37m | `trekking` | casual, coffee   |
 | `nowa-huta-wanda-loop.gpx`        | Nowa Huta and Wanda Mound        | 24.9 |   87m | `trekking` | casual, coffee   |
 | `vistula-tyniec-loop.gpx`         | Vistula loop to Tyniec           | 33.6 |  224m | `trekking` | casual           |
 | `niepolomice-forest-loop.gpx`     | Niepołomice Forest               | 40.9 |  117m | `trekking` | casual, training |
@@ -23,7 +24,7 @@ Each file carries the same credit in its `<metadata>`.
 | `ojcow-training.gpx`              | Ojców and Pieskowa Skała         | 72.2 |  838m | `fastbike` | training         |
 | `tenczynek-alwernia-training.gpx` | Tenczynek and Alwernia           | 78.4 |  567m | `fastbike` | training         |
 
-Climb is the ascent `@loopra/gpx` reports, so it is a bit higher than the "filtered ascend" in each file's first comment.
+Climb is the ascent `@loopra/gpx` reports, not the "filtered ascend" in each file's first comment. BRouter filters more, so its number is lower, for some routes by a third.
 
 ## How they were made
 
@@ -48,9 +49,10 @@ The points of every route:
 | `old-town-sightseeing.gpx`        | `trekking` | `19.9373,50.0617\|19.9355,50.0540\|19.9446,50.0516\|19.9530,50.0450\|19.9585,50.0381\|19.9615,50.0475\|19.9420,50.0700\|19.9373,50.0617` |
 | `ojcow-training.gpx`              | `fastbike` | `19.9373,50.0617\|19.9200,50.1200\|19.8290,50.2110\|19.7800,50.2440\|19.8530,50.2270\|19.9850,50.1680\|19.9373,50.0617`                  |
 | `wieliczka-hills-training.gpx`    | `fastbike` | `19.9530,50.0450\|20.0650,49.9870\|19.9780,49.9080\|19.8870,49.9400\|19.9530,50.0450`                                                    |
+| `vistula-bagry-loop.gpx`          | `trekking` | `19.9446,50.0516\|19.9615,50.0475\|20.0450,50.0380\|19.9950,50.0300\|19.9600,50.0420\|19.9446,50.0516`                                   |
 | `niepolomice-forest-loop.gpx`     | `trekking` | `20.0377,50.0725\|20.2180,50.0350\|20.1500,50.0150\|20.0377,50.0725`                                                                     |
 | `tenczynek-alwernia-training.gpx` | `fastbike` | `19.9120,50.0605\|19.6330,50.1360\|19.5730,50.1100\|19.5390,50.0610\|19.6800,50.0450\|19.8226,50.0198\|19.9120,50.0605`                  |
 
-Start points: Rynek Główny `19.9373,50.0617`, Błonia `19.9120,50.0605`, Plac Centralny in Nowa Huta `20.0377,50.0725`, Rynek Podgórski `19.9530,50.0450`.
+Start points: Rynek Główny `19.9373,50.0617`, Błonia `19.9120,50.0605`, Plac Centralny in Nowa Huta `20.0377,50.0725`, Rynek Podgórski `19.9530,50.0450`, Plac Nowy in Kazimierz `19.9446,50.0516`.
 
 To add a route: pick the points on [brouter.de/brouter-web](https://brouter.de/brouter-web/), run the request, make the two edits, add a row to both tables, and run the test.
