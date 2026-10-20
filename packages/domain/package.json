@@ -31,11 +31,11 @@
   "license": "ISC",
   "packageManager": "pnpm@10.28.0",
   "devDependencies": {
-    "prettier": "^3.8.1",
+    "prettier": "^3.9.10",
     "typescript": "5.9.3",
-    "zod": "^4.3.6"
+    "zod": "^4.6.7"
   },
   "peerDependencies": {
-    "zod": "^4.3.6"
+    "zod": "^4.6.7"
   }
 }
