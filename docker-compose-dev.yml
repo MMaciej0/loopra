@@ -45,7 +45,7 @@ services:
 
   postgres:
     container_name: loopra-postgres
-    image: postgis/postgis:16-3.4
+    image: postgis/postgis:17-3.5
     ports:
       - "5433:5432"
     environment:
