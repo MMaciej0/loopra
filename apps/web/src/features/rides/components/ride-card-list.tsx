@@ -14,8 +14,7 @@ const SKELETON_COUNT = 3;
 type ListedRide = Readonly<{ id: string; data: RideCardData }>;
 
 type RideCardsPage =
-  | Readonly<{ ok: false }>
-  | Readonly<{ ok: true; cards: ListedRide[]; nextCursor: string | null }>;
+  Readonly<{ ok: false }> | Readonly<{ ok: true; cards: ListedRide[]; nextCursor: string | null }>;
 
 type Status = 'loading' | 'idle' | 'error' | 'done';
 

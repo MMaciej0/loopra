@@ -13,10 +13,7 @@ type PendingPick = Readonly<{
 }>;
 
 type ErrorKey =
-  | 'saveError'
-  | 'favorites.saveError'
-  | 'favorites.deleteError'
-  | 'firstRun.defaultError';
+  'saveError' | 'favorites.saveError' | 'favorites.deleteError' | 'firstRun.defaultError';
 
 type Options = Readonly<{
   favorites: readonly LocationSuggestion[];
