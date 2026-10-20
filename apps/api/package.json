@@ -34,7 +34,7 @@
     "@loopra/domain": "workspace:*",
     "@loopra/gpx": "workspace:*",
     "bcrypt": "^6.0.0",
-    "dotenv": "^17.3.1",
+    "dotenv": "^18.0.8",
     "drizzle-orm": "^0.45.4",
     "fastify": "^5.12.7",
     "fastify-plugin": "^5.1.0",
