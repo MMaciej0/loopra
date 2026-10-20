@@ -2,7 +2,8 @@ name: loopra-test
 
 services:
   postgres:
-    image: postgis/postgis:17-3.5
+    image: postgis/postgis:18-3.6
+    platform: linux/amd64
     ports:
       - "5434:5432"
     environment:
@@ -10,7 +11,7 @@ services:
       POSTGRES_PASSWORD: loopra
       POSTGRES_DB: loopra
     tmpfs:
-      - /var/lib/postgresql/data
+      - /var/lib/postgresql
     healthcheck:
       # -h forces a TCP probe: without it pg_isready uses the unix socket, which
       # answers during initdb while listen_addresses is still empty

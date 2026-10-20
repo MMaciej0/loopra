@@ -29,3 +29,6 @@ updates:
         applies-to: "version-updates"
         patterns: ["*"]
         update-types: ["minor", "patch"]
+    ignore:
+      - dependency-name: "postgis/postgis"
+        update-types: ["version-update:semver-major"]
