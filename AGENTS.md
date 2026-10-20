@@ -42,6 +42,8 @@ docker exec -it web sh    # then: pnpm web:dev
 
 A `.env` file at the repo root configures connection strings pointing at the Docker services.
 
+A new dev database is filled with `docker exec api sh -c 'cd /app/apps/api && pnpm db:migrate && pnpm db:seed'`. The seed adds four verified riders (`dev`, `anna`, `bartek`, `kasia` `@loopra.test`, password `Loopra-dev-123`) and rides around Kraków dated from today. It refuses a database that already has users, and refuses `NODE_ENV=production`.
+
 ## Testing
 
 Two ways to run the suite, both supported. Inside the container:
