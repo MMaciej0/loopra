@@ -1,0 +1,19 @@
+name: Check certificate
+
+on:
+  schedule:
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    name: Certificate valid for 20 more days
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Check certificate
+        run: scripts/check-cert.sh staging.loopra.cc loopra.cc
