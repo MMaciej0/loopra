@@ -13,6 +13,7 @@ import multipartPlugin from './plugins/multipart.js';
 
 import authModule from './modules/auth/index.js';
 import healthModule from './modules/health/index.js';
+import contactModule from './modules/contact/index.js';
 import usersModule from './modules/users/index.js';
 import ridesModule from './modules/rides/index.js';
 import routesModule from './modules/routes/index.js';
@@ -41,6 +42,7 @@ export const buildApp = () => {
   // public routes
   app.register(authModule, { prefix: '/auth' });
   app.register(healthModule, { prefix: '/health' });
+  app.register(contactModule, { prefix: '/contact' });
 
   // protected routes
   app.register(async (protectedApp) => {

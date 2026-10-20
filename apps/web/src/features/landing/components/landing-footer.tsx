@@ -1,6 +1,5 @@
 import { useTranslations } from 'next-intl';
 import { Link } from '@/i18n/navigation';
-import { CONTACT_EMAIL } from '@/lib/contact-email';
 
 export function LandingFooter() {
   const t = useTranslations('LandingPage.footer');
@@ -17,9 +16,9 @@ export function LandingFooter() {
           <Link href="/terms" className={linkClass}>
             {t('terms')}
           </Link>
-          <a href={`mailto:${CONTACT_EMAIL}`} className={linkClass}>
+          <Link href="/contact" className={linkClass}>
             {t('contact')}
-          </a>
+          </Link>
         </nav>
       </div>
     </footer>

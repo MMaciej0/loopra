@@ -1,4 +1,4 @@
-import { CONTACT_EMAIL } from '@/lib/contact-email';
+import { CONTACT_EMAIL } from '@loopra/domain';
 
 export function TermsPl() {
   return (

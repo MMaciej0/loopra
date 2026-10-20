@@ -1,31 +1,6 @@
 import { FastifyRequest } from 'fastify';
 import { Redis } from 'ioredis';
-import { RateLimitExceededError } from '../errors.js';
-
-interface Options {
-  maxAttempts: number;
-  timeout: number;
-}
-
-const upsertRateLimit = async (redis: Redis, key: string, options: Options) => {
-  const result = await redis.multi().incr(key).expire(key, options.timeout, 'NX').exec();
-
-  if (!result) {
-    throw new Error('Rate limit transaction returned no result');
-  }
-
-  const error = result[0][0] || result[1][0];
-
-  if (error) {
-    throw error;
-  }
-
-  const count = Number(result[0][1]);
-
-  if (count > options.maxAttempts) {
-    throw new RateLimitExceededError();
-  }
-};
+import { upsertRateLimit } from '../../../utils/rateLimit.js';
 
 const createIpKey = (ip: string) => `rate-limit:ip:${ip}`;
 const createEmailKey = (email: string) => `rate-limit:email:${email}`;

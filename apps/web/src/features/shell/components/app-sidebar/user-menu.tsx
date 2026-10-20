@@ -1,7 +1,7 @@
 'use client';
 
 import { useTransition } from 'react';
-import { Loader2, LogOut, Settings } from 'lucide-react';
+import { Loader2, LogOut, Mail, Settings } from 'lucide-react';
 import { useTranslations } from 'next-intl';
 
 import { Link } from '@/i18n/navigation';
@@ -54,6 +54,12 @@ export function UserMenu() {
           <Link href="/settings">
             <Settings />
             {t('settings')}
+          </Link>
+        </DropdownMenuItem>
+        <DropdownMenuItem asChild onSelect={() => setOpenMobile(false)}>
+          <Link href="/contact">
+            <Mail />
+            {t('contact')}
           </Link>
         </DropdownMenuItem>
         <DropdownMenuSeparator />

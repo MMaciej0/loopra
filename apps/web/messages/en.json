@@ -4,7 +4,8 @@
     "createRide": "Create ride",
     "userMenu": "Account menu for {name}",
     "settings": "Settings",
-    "logOut": "Log out"
+    "logOut": "Log out",
+    "contact": "Contact"
   },
   "RidesNav": {
     "label": "Rides sections",
@@ -386,7 +387,9 @@
     "PARTICIPANT_EXISTS": "You have already joined this ride.",
     "PARTICIPANT_NOT_FOUND": "You are not signed up for this ride.",
     "MAX_PARTICIPANTS": "This ride is full.",
-    "CREATOR_CANNOT_LEAVE": "You organise this ride, so you can't leave it. Cancel it instead."
+    "CREATOR_CANNOT_LEAVE": "You organise this ride, so you can't leave it. Cancel it instead.",
+    "NAME_TOO_LONG": "Name must be at most {max} characters.",
+    "MESSAGE_TOO_LONG": "Message must be at most {max} characters."
   },
   "Auth": {
     "or": "OR",
@@ -593,7 +596,8 @@
     "title": "This is a demo site",
     "showcase": "Loopra staging is a showcase of the app.",
     "rides": "The Rides here are examples and will not happen.",
-    "data": "Data may be deleted at any time."
+    "data": "Data may be deleted at any time.",
+    "contact": "Questions? Get in touch"
   },
   "LanguageSwitch": {
     "label": "Switch to Polish"
@@ -607,6 +611,24 @@
     "terms": {
       "title": "Terms",
       "metaTitle": "Terms — Loopra"
+    }
+  },
+  "ContactPage": {
+    "metaTitle": "Contact — Loopra",
+    "title": "Contact",
+    "description": "A question, an idea, or a job offer? Write a message and I will reply by email.",
+    "nameLabel": "Name",
+    "namePlaceholder": "Your name",
+    "emailLabel": "Email",
+    "emailPlaceholder": "you@example.com",
+    "messageLabel": "Message",
+    "messagePlaceholder": "What would you like to say?",
+    "honeypotLabel": "Leave this field empty",
+    "submit": "Send message",
+    "directly": "Prefer your own email app? Write to <email>{address}</email>.",
+    "success": {
+      "title": "Message sent",
+      "body": "Thank you. I will reply to your email soon."
     }
   }
 }

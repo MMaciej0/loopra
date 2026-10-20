@@ -4,7 +4,8 @@
     "createRide": "Utwórz jazdę",
     "userMenu": "Menu konta {name}",
     "settings": "Ustawienia",
-    "logOut": "Wyloguj się"
+    "logOut": "Wyloguj się",
+    "contact": "Kontakt"
   },
   "RidesNav": {
     "label": "Sekcje jazd",
@@ -386,7 +387,9 @@
     "PARTICIPANT_EXISTS": "Już dołączyłeś do tej przejażdżki.",
     "PARTICIPANT_NOT_FOUND": "Nie jesteś zapisany na tę przejażdżkę.",
     "MAX_PARTICIPANTS": "Ta przejażdżka jest pełna.",
-    "CREATOR_CANNOT_LEAVE": "Organizujesz tę przejażdżkę, więc nie możesz jej opuścić. Zamiast tego odwołaj ją."
+    "CREATOR_CANNOT_LEAVE": "Organizujesz tę przejażdżkę, więc nie możesz jej opuścić. Zamiast tego odwołaj ją.",
+    "NAME_TOO_LONG": "Imię może mieć najwyżej {max} znaków.",
+    "MESSAGE_TOO_LONG": "Wiadomość może mieć najwyżej {max} znaków."
   },
   "Auth": {
     "or": "LUB",
@@ -593,7 +596,8 @@
     "title": "To jest strona demo",
     "showcase": "Loopra staging to prezentacja aplikacji.",
     "rides": "Jazdy są tu przykładowe i się nie odbędą.",
-    "data": "Dane mogą zostać usunięte w każdej chwili."
+    "data": "Dane mogą zostać usunięte w każdej chwili.",
+    "contact": "Masz pytania? Skontaktuj się"
   },
   "LanguageSwitch": {
     "label": "Przełącz na angielski"
@@ -607,6 +611,24 @@
     "terms": {
       "title": "Regulamin",
       "metaTitle": "Regulamin — Loopra"
+    }
+  },
+  "ContactPage": {
+    "metaTitle": "Kontakt — Loopra",
+    "title": "Kontakt",
+    "description": "Masz pytanie, pomysł albo ofertę pracy? Napisz wiadomość, a odpowiem e-mailem.",
+    "nameLabel": "Imię",
+    "namePlaceholder": "Twoje imię",
+    "emailLabel": "E-mail",
+    "emailPlaceholder": "ty@example.com",
+    "messageLabel": "Wiadomość",
+    "messagePlaceholder": "Co chcesz napisać?",
+    "honeypotLabel": "Zostaw to pole puste",
+    "submit": "Wyślij wiadomość",
+    "directly": "Wolisz własną skrzynkę? Napisz na <email>{address}</email>.",
+    "success": {
+      "title": "Wiadomość wysłana",
+      "body": "Dziękuję. Wkrótce odpowiem na Twój e-mail."
     }
   }
 }
