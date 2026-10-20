@@ -1,7 +1,6 @@
 import { getLocale } from 'next-intl/server';
 import { MaptilerKeyProvider } from '@/components/providers/maptiler-key-provider';
 import { Logo } from '@/components/ui/logo';
-import { StagingIndicator } from '@/features/staging/components/staging-indicator';
 import { LocationStep } from '@/features/onboarding/components/location-step';
 import { UsernameStep } from '@/features/onboarding/components/username-step';
 import { getOnboardingSteps } from '@/features/onboarding/steps';
@@ -21,10 +20,7 @@ export default async function WelcomePage() {
 
   return (
     <div className="flex min-h-dvh w-full flex-col px-[22px] pt-7 pb-9 md:px-8 md:pt-8 md:pb-10">
-      <div className="flex items-center gap-1.5">
-        <Logo height={26} />
-        <StagingIndicator />
-      </div>
+      <Logo withStagingIndicator />
       <main className="flex flex-1 flex-col items-center py-8 md:py-10">
         <div className="my-auto w-full max-w-md">
           {step === 'username' && <UsernameStep />}

@@ -1,50 +1,40 @@
-import { cn } from '@/lib/utils';
+import { useTranslations } from 'next-intl';
+import { LogoMark } from '@/components/ui/logo-mark';
+import { StagingIndicator } from '@/components/ui/staging-indicator';
+import { Link } from '@/i18n/navigation';
 
-interface LogoProps {
-  height?: number;
-  className?: string;
-}
-
+const HEIGHT = 26;
+const FONT_SIZE = HEIGHT * 0.92;
 // Geist 700 cap height ≈ 0.72 × font-size
 const CAP_RATIO = 0.72;
-// Mark viewBox aspect: 38.4 / 25.4
-const MARK_ASPECT = 38.4 / 25.4;
+const MARK_HEIGHT = FONT_SIZE * CAP_RATIO * 0.76;
 
-export function LogoMark({ height = 24, className }: LogoProps) {
-  return (
-    <svg
-      width={height * MARK_ASPECT}
-      height={height}
-      viewBox="0 0 38.4 25.4"
-      fill="none"
-      aria-hidden="true"
-      className={className}
-      style={{ display: 'block', flexShrink: 0 }}
-    >
-      <circle cx="12.7" cy="12.7" r="11" stroke="currentColor" strokeWidth="4.4" />
-      <circle cx="25.7" cy="12.7" r="11" stroke="currentColor" strokeWidth="4.4" />
-      <path
-        d="M 23.7 12.7 a 11 11 0 0 1 -22 0"
-        stroke="currentColor"
-        strokeWidth="4.4"
-        fill="none"
-      />
-    </svg>
-  );
+interface LogoProps {
+  withStagingIndicator?: boolean;
 }
 
-export function Logo({ height = 32, className }: LogoProps) {
-  const fontSize = height * 0.92;
-  const markHeight = fontSize * CAP_RATIO * 0.76;
+export function Logo({ withStagingIndicator = false }: LogoProps) {
+  const t = useTranslations('Logo');
 
   return (
-    <span
-      className={cn('font-ui inline-flex items-baseline', className)}
-      style={{ height, fontSize, fontWeight: 700, letterSpacing: '-0.03em', lineHeight: 1 }}
-    >
-      l
-      <LogoMark height={markHeight} />
-      <span style={{ marginLeft: '-0.04em' }}>pra</span>
-    </span>
+    <div className="flex items-center gap-1.5">
+      <Link href="/" aria-label={t('home')} className="text-foreground">
+        <span
+          className="font-ui inline-flex items-baseline"
+          style={{
+            height: HEIGHT,
+            fontSize: FONT_SIZE,
+            fontWeight: 700,
+            letterSpacing: '-0.03em',
+            lineHeight: 1,
+          }}
+        >
+          l
+          <LogoMark height={MARK_HEIGHT} />
+          <span style={{ marginLeft: '-0.04em' }}>pra</span>
+        </span>
+      </Link>
+      {withStagingIndicator && <StagingIndicator />}
+    </div>
   );
 }

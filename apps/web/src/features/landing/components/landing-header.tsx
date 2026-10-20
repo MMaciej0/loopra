@@ -2,7 +2,6 @@ import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/button';
 import { LanguageSwitch } from '@/components/ui/language-switch';
 import { Logo } from '@/components/ui/logo';
-import { StagingIndicator } from '@/features/staging/components/staging-indicator';
 import { Link } from '@/i18n/navigation';
 
 export function LandingHeader() {
@@ -10,12 +9,7 @@ export function LandingHeader() {
 
   return (
     <header className="mx-auto flex w-full max-w-[1280px] items-center justify-between gap-4 px-[clamp(20px,4vw,48px)] py-[22px]">
-      <div className="flex items-center gap-1.5">
-        <Link href="/" aria-label={t('home')} className="text-foreground">
-          <Logo height={24} />
-        </Link>
-        <StagingIndicator />
-      </div>
+      <Logo withStagingIndicator />
       <nav aria-label={t('navLabel')} className="flex items-center gap-2 sm:gap-4">
         <Button variant="nav" asChild className="hidden text-[13px] sm:inline-flex">
           <Link href="/#how-it-works">{t('howItWorks')}</Link>

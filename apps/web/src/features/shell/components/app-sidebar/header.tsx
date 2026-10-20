@@ -1,14 +1,15 @@
 'use client';
 
 import { SidebarHeader, SidebarTrigger, useSidebar } from '@/components/ui/sidebar';
-import { Logo, LogoMark } from '@/components/ui/logo';
+import { LogoMark } from '@/components/ui/logo-mark';
 import { cn } from '@/lib/utils';
 
 type Props = Readonly<{
+  logo: React.ReactNode;
   stagingIndicator: React.ReactNode;
 }>;
 
-export function AppSidebarHeader({ stagingIndicator }: Props) {
+export function AppSidebarHeader({ logo, stagingIndicator }: Props) {
   const { state, isMobile } = useSidebar();
   const isCollapsed = state === 'collapsed';
 
@@ -26,10 +27,7 @@ export function AppSidebarHeader({ stagingIndicator }: Props) {
           <div className="absolute -top-4 -right-4">{stagingIndicator}</div>
         </div>
       ) : (
-        <div className="flex items-center gap-1.5">
-          <Logo height={26} />
-          {stagingIndicator}
-        </div>
+        logo
       )}
       {isMobile && <SidebarTrigger />}
     </SidebarHeader>

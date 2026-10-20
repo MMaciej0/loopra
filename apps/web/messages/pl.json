@@ -502,7 +502,6 @@
       "description": "Znajdź wspólne jazdy w swoim tempie, dołącz jednym kliknięciem i ruszaj z ludźmi, którzy jeżdżą tak jak Ty."
     },
     "header": {
-      "home": "Strona główna Loopra",
       "howItWorks": "Jak to działa",
       "navLabel": "Główna",
       "signIn": "Zaloguj się"
@@ -581,6 +580,9 @@
       "terms": "Regulamin",
       "contact": "Kontakt"
     }
+  },
+  "Logo": {
+    "home": "Strona główna Loopra"
   },
   "StagingIndicator": {
     "label": "O tej stronie demo",

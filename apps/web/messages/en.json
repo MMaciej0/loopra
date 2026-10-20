@@ -502,7 +502,6 @@
       "description": "Find group rides at your pace, join in one tap, and roll out with people who ride like you."
     },
     "header": {
-      "home": "Loopra home",
       "howItWorks": "How it works",
       "navLabel": "Main",
       "signIn": "Sign in"
@@ -581,6 +580,9 @@
       "terms": "Terms",
       "contact": "Contact"
     }
+  },
+  "Logo": {
+    "home": "Loopra home"
   },
   "StagingIndicator": {
     "label": "About this demo site",
