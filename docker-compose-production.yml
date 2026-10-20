@@ -67,7 +67,7 @@ services:
       start_period: 10s
 
   postgres:
-    image: postgis/postgis:17-3.5
+    image: postgis/postgis:18-3.6
     restart: unless-stopped
     env_file:
       - ${ENV_DIR:-/srv/loopra/production}/.env
@@ -75,7 +75,7 @@ services:
       POSTGRES_USER: loopra
       POSTGRES_DB: loopra
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql
     networks:
       - internal
     healthcheck:
