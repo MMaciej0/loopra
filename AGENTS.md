@@ -83,7 +83,7 @@ Web has no automated tests, by choice. Verify web changes live in the browser an
 
 **The workflow holds no logic of its own** — every step invokes a workspace script you can run yourself. So "will CI pass" is answerable locally by running those six commands; there is no CI-only path to reason about. Keep it that way: put new logic in a script, not in the YAML.
 
-`.github/dependabot.yml` opens weekly upgrade PRs for the pnpm workspace and the GitHub Actions: one grouped PR of minor and patch upgrades per ecosystem, and a separate PR for each major. Security updates stay outside the group. These are ordinary pull requests, so CI tests them with no extra workflow.
+`.github/dependabot.yml` opens weekly upgrade PRs for the pnpm workspace, the GitHub Actions and the images in the compose files: one grouped PR of minor and patch upgrades per ecosystem, and a separate PR for each major. Security updates stay outside the group. These are ordinary pull requests, so CI tests them with no extra workflow.
 
 `checks` runs `next typegen` before typechecking. `apps/web/next-env.d.ts` and `.next/types/` are gitignored build output, and `tsc` needs them to resolve `.svg` imports and route types — so `pnpm -r typecheck` passes on a machine that has built the app and fails on a fresh clone until something generates them. `next typegen` does that without a full build.
 
