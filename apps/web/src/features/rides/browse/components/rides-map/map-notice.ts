@@ -1,12 +1,7 @@
 import type { StartPointsStatus } from './use-start-points';
 
 export type MapNotice =
-  | 'loading'
-  | 'error'
-  | 'empty'
-  | 'empty-filtered'
-  | 'out-of-view'
-  | 'truncated';
+  'loading' | 'error' | 'empty' | 'empty-filtered' | 'out-of-view' | 'truncated';
 
 type MapNoticeInput = Readonly<{
   status: StartPointsStatus;
