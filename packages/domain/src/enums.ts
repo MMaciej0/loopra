@@ -40,3 +40,6 @@ export type RideRole = (typeof RIDE_ROLES)[number];
 
 export const PARTICIPANT_STATUSES = ['pending', 'confirmed', 'declined'] as const;
 export type ParticipantStatus = (typeof PARTICIPANT_STATUSES)[number];
+
+export const APP_ENVS = ['development', 'staging', 'production'] as const;
+export type AppEnv = (typeof APP_ENVS)[number];

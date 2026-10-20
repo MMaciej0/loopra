@@ -1,3 +1,4 @@
+import { APP_ENVS } from '@loopra/domain';
 import { z } from 'zod';
 
 const schema = z.object({
@@ -6,6 +7,7 @@ const schema = z.object({
   PORT: z.coerce.number().default(8080),
   JWT_ACCESS_SECRET: z.string().min(32),
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
+  APP_ENV: z.enum(APP_ENVS),
   RESEND_API_KEY: z.string(),
   APP_URL: z.url(),
   GOOGLE_CLIENT_ID: z.string(),
@@ -25,6 +27,7 @@ export const {
   PORT,
   JWT_ACCESS_SECRET,
   NODE_ENV,
+  APP_ENV,
   RESEND_API_KEY,
   APP_URL,
   GOOGLE_CLIENT_ID,

@@ -1,6 +1,4 @@
-const APP_ENVS = ['development', 'staging', 'production'] as const;
-
-export type AppEnv = (typeof APP_ENVS)[number];
+import { APP_ENVS, type AppEnv } from '@loopra/domain';
 
 function isAppEnv(value: string | undefined): value is AppEnv {
   return APP_ENVS.some((appEnv) => appEnv === value);

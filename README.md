@@ -201,7 +201,7 @@ A **race condition** is a bug where two requests arrive at the same time and the
 
 ## Running locally
 
-You need Docker, Node 22, pnpm, and your own keys for Google OAuth, S3-compatible storage, Resend and MapTiler. Copy [`.env.example`](.env.example) to `.env` and fill it in, then:
+You need Docker, Node 22, pnpm, and your own keys for Google OAuth, S3-compatible storage, Resend and MapTiler. Copy [`.env.example`](.env.example) to `.env` and fill it in. `APP_ENV` (`development`, `staging` or `production`) tells both the API and the web which environment they run in, and neither starts without it. Then:
 
 ```bash
 pnpm install
