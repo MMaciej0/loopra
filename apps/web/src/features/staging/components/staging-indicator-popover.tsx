@@ -17,11 +17,11 @@ export function StagingIndicatorPopover() {
     <Popover>
       <PopoverTrigger
         aria-label={t('label')}
-        className="focus-visible:ring-ring relative flex size-7 shrink-0 items-center justify-center rounded-full outline-none focus-visible:ring-2"
+        className="focus-visible:ring-ring hover:bg-muted group relative flex size-7 shrink-0 cursor-pointer items-center justify-center rounded-full outline-none focus-visible:ring-2"
       >
         <span
           aria-hidden
-          className="bg-accent/40 absolute size-4 rounded-full motion-safe:animate-ping"
+          className="bg-accent/40 absolute size-4 rounded-full group-hover:hidden motion-safe:animate-ping"
         />
         <Info aria-hidden className="text-accent-deep relative size-4.5" />
       </PopoverTrigger>
