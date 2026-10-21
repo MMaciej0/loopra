@@ -280,4 +280,4 @@ How to deploy, roll back, and what the server needs: [`docs/deployment.md`](docs
 
 ## License
 
-All rights reserved. You may read the code, but you may not copy, change or use it without permission.
+All rights reserved. You may read the code, fork it on GitHub, and run it on your own computer to learn from it or try it out. You may not use it in your own projects, publish it anywhere else, or use it commercially without my permission.
