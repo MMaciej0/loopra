@@ -550,6 +550,8 @@
       }
     },
     "howItWorks": {
+      "eyebrow": "How it works",
+      "title": "Two ways to ride with Loopra",
       "join": {
         "label": "Join a ride",
         "title": "Show up, ride, repeat.",

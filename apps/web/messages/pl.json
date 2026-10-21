@@ -550,6 +550,8 @@
       }
     },
     "howItWorks": {
+      "eyebrow": "Jak to działa",
+      "title": "Dwa sposoby na wspólną jazdę",
       "join": {
         "label": "Dołącz do jazdy",
         "title": "Przyjedź, jedź, powtórz.",
