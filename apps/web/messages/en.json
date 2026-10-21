@@ -394,6 +394,7 @@
   "Auth": {
     "or": "OR",
     "continueWithGoogle": "Continue with Google",
+    "useGuestAccount": "Use a guest account",
     "poster": {
       "badge": "OPEN WORLDWIDE · NEW RIDES DAILY",
       "heading": "Find rides you<br></br><em>actually belong</em> on.",

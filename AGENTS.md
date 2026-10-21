@@ -53,6 +53,8 @@ docker exec loopra-staging-api-1 node dist/db/runStagingSeed.js           # stag
 
 Run `db:seed` first: it refuses a database with users, so it fails after the staging seed. The prod image gets the GPX files through a `COPY` in `apps/api/Dockerfile`.
 
+**Guest accounts** exist only on staging. `POST /auth/guest` is registered only when `APP_ENV=staging` (other environments answer `404`), and the login and register pages show its button only there. It creates a verified rider with `is_guest = true`, no password, a `guest-<random>@guest.loopra.cc` email and a generated username, then logs them in. Code and statistics read `is_guest`, never the email domain. `buildApp({ appEnv })` lets a test build a staging app; build one app per test file, because the database pool is shared and closed with the app.
+
 ## Testing
 
 Two ways to run the suite, both supported. Inside the container:

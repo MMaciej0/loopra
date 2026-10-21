@@ -1,6 +1,7 @@
 import Fastify from 'fastify';
 import { serializerCompiler, validatorCompiler } from 'fastify-type-provider-zod';
-import { TRUSTED_PROXIES } from './config/env.js';
+import type { AppEnv } from '@loopra/domain';
+import { APP_ENV, TRUSTED_PROXIES } from './config/env.js';
 import databasePlugin from './plugins/database.js';
 import redisPlugin from './plugins/redis.js';
 import authPlugin from './plugins/auth.js';
@@ -18,7 +19,11 @@ import usersModule from './modules/users/index.js';
 import ridesModule from './modules/rides/index.js';
 import routesModule from './modules/routes/index.js';
 
-export const buildApp = () => {
+export interface BuildAppOptions {
+  appEnv?: AppEnv;
+}
+
+export const buildApp = ({ appEnv = APP_ENV }: BuildAppOptions = {}) => {
   const app = Fastify({
     logger: true,
     trustProxy: TRUSTED_PROXIES ?? false,
@@ -40,7 +45,7 @@ export const buildApp = () => {
   app.register(globalErrorHandler);
 
   // public routes
-  app.register(authModule, { prefix: '/auth' });
+  app.register(authModule, { prefix: '/auth', appEnv });
   app.register(healthModule, { prefix: '/health' });
   app.register(contactModule, { prefix: '/contact' });
 

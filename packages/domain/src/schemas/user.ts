@@ -9,6 +9,7 @@ export const CurrentUserSchema = z.object({
   created_at: IsoDateTime,
   email_verified: z.boolean(),
   has_password: z.boolean(),
+  is_guest: z.boolean(),
   selected_location: SelectedLocationSchema.nullable(),
 });
 

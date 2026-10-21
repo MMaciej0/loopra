@@ -88,6 +88,10 @@ The height-over-distance shape derived from a Route, split into segments.
 A person on the platform. The domain word for a user.
 _Avoid_: User — reserve for the auth/account record, not the person in cycling terms
 
+**Guest**:
+A rider whose account was created with one click on staging, without an email or a password, so a visitor can try Loopra. A real account in every other way: it goes through onboarding and can create and join rides. Exists only on staging.
+_Avoid_: Anonymous user, demo user
+
 **Club** / **Group** — _undecided_:
 A named set of riders who ride together and can publish rides collectively. The word is deliberately unresolved until this is built; note that "group" already means the riders on a single ride (see Pace Policy `group_split`).
 _Avoid_: Team

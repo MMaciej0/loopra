@@ -1,4 +1,5 @@
 import type { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
+import type { AppEnv } from '@loopra/domain';
 import {
   AuthUserResponseSchema,
   ChangePasswordBodySchema,
@@ -22,6 +23,7 @@ import { changePassword } from './services/changePassword.js';
 import { findOrCreateOAuthUser } from './services/findOrCreateOAuthUser.js';
 import { sendEmailVerification } from './services/sendEmailVerification.js';
 import { verifyEmail } from './services/verifyEmail.js';
+import { createGuestUser } from './services/createGuestUser.js';
 import {
   InvalidTokenError,
   OAuthEmailNotVerifiedError,
@@ -35,10 +37,14 @@ import {
   clearPasswordChangeRateLimit,
   clearRateLimits,
   emailSendRateLimiter,
+  guestRateLimiter,
   passwordChangeRateLimiter,
 } from './services/rateLimiter.js';
 
-export const authRoutes: FastifyPluginAsyncZod = async (fastify) => {
+export const authRoutes: FastifyPluginAsyncZod<{ appEnv: AppEnv }> = async (
+  fastify,
+  { appEnv },
+) => {
   fastify.post(
     '/register',
     { schema: { body: RegisterBodySchema, response: { 200: AuthUserResponseSchema } } },
@@ -74,6 +80,21 @@ export const authRoutes: FastifyPluginAsyncZod = async (fastify) => {
       return reply.send({ user });
     },
   );
+
+  if (appEnv === 'staging') {
+    fastify.post(
+      '/guest',
+      { schema: { response: { 200: AuthUserResponseSchema } } },
+      async (request, reply) => {
+        await guestRateLimiter(request, fastify.redis);
+
+        const { user, accessToken, familyUuid, rawRefreshToken } = await createGuestUser(fastify);
+        setAuthCookies(reply, accessToken, familyUuid, rawRefreshToken);
+
+        return reply.send({ user });
+      },
+    );
+  }
 
   fastify.post(
     '/refresh',

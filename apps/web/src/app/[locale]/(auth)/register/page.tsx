@@ -3,6 +3,7 @@ import { AuthHeader } from '@/features/auth/components/auth-header';
 import { AuthDivider } from '@/features/auth/components/auth-divider';
 import { AuthSwitchLink } from '@/features/auth/components/auth-switch-link';
 import { GoogleAuthButton } from '@/features/auth/components/google-auth-button';
+import { GuestAccountButton } from '@/features/auth/components/guest-account-button/guest-account-button';
 import { RegisterForm } from '@/features/auth/components/register-form';
 
 export default async function Register() {
@@ -16,6 +17,7 @@ export default async function Register() {
         description={t('description')}
       />
       <GoogleAuthButton />
+      <GuestAccountButton />
       <AuthDivider />
 
       <RegisterForm />

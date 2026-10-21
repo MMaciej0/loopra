@@ -41,6 +41,7 @@ export const users = pgTable(
       .$onUpdate(() => new Date()),
     email_verified: boolean().notNull().default(false),
     email_verified_at: timestamp({ withTimezone: true }),
+    is_guest: boolean().notNull().default(false),
   },
   (table) => [check('users_email_lowercase', sql`${table.email} = lower(${table.email})`)],
 );
