@@ -616,7 +616,7 @@
   "ContactPage": {
     "metaTitle": "Contact — Loopra",
     "title": "Contact",
-    "description": "A question, an idea, or a job offer? Write a message and I will reply by email.",
+    "description": "A question, an idea, or a bug to report? Write a message and I will reply by email.",
     "nameLabel": "Name",
     "namePlaceholder": "Your name",
     "emailLabel": "Email",
