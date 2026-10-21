@@ -11,7 +11,7 @@ export function HowItWorks() {
     <section
       id="how-it-works"
       aria-labelledby="how-it-works-title"
-      className="mx-auto flex w-full max-w-[1280px] flex-col gap-[clamp(24px,3vw,36px)] px-[clamp(20px,4vw,48px)] pt-[clamp(24px,4vw,48px)]"
+      className="mx-auto flex w-full max-w-[1280px] scroll-mt-20 flex-col gap-[clamp(24px,3vw,36px)] px-[clamp(20px,4vw,48px)] pt-[clamp(24px,4vw,48px)]"
     >
       <div className="flex flex-col gap-3">
         <Text variant="meta" className="text-muted-foreground flex items-center gap-2.5 uppercase">
