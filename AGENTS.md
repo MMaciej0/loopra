@@ -44,6 +44,15 @@ A `.env` file at the repo root configures connection strings pointing at the Doc
 
 A new dev database is filled with `docker exec api sh -c 'cd /app/apps/api && pnpm db:migrate && pnpm db:seed'`. The seed adds four verified riders (`dev`, `anna`, `bartek`, `kasia` `@loopra.test`, password `Loopra-dev-123`) and rides around Kraków dated from today. It refuses a database that already has users, and refuses `NODE_ENV=production`.
 
+The **staging seed** (`src/db/stagingSeed.ts`) keeps about 10 future demo Rides around Kraków. It creates 10 verified organisers (`@seed.loopra.cc`, a domain with no mail server, no password) once and reuses them. When fewer than 10 of their Rides are in the future, it adds Rides from a fixed list of templates, two days apart after the latest one, with the GPX routes from `src/db/staging-routes/` uploaded to S3. A seed Ride is one whose organiser is a seed account; past ones are kept. It is re-runnable and refuses any `APP_ENV` except `staging` and `development`:
+
+```bash
+docker exec api sh -c 'cd /app/apps/api && pnpm db:seed:staging'          # dev, after db:seed if you want both
+docker exec loopra-staging-api-1 node dist/db/runStagingSeed.js           # staging VPS; a daily cron there must call this
+```
+
+Run `db:seed` first: it refuses a database with users, so it fails after the staging seed. The prod image gets the GPX files through a `COPY` in `apps/api/Dockerfile`.
+
 ## Testing
 
 Two ways to run the suite, both supported. Inside the container:
