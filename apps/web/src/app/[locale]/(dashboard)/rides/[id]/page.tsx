@@ -12,16 +12,19 @@ import { RideContractCards } from '@/features/rides/detail/components/ride-contr
 import { OrganiserCard } from '@/features/rides/detail/components/organiser-card';
 import { JoinCard } from '@/features/rides/detail/components/join-card';
 import { ParticipantsCard } from '@/features/rides/detail/components/participants-card';
+import { getCurrentUser } from '@/lib/user';
 
 type Props = Readonly<{ params: Promise<{ id: string }> }>;
 
 export default async function RidePage({ params }: Props) {
   const { id } = await params;
-  const ride = await getRide(id);
+  const [ride, user] = await Promise.all([getRide(id), getCurrentUser()]);
 
   if (!ride) {
     notFound();
   }
+
+  const isParticipant = ride.participants.some((participant) => participant.user.id === user?.id);
 
   const phase = ridePhase(ride.start_time, new Date());
   const center = mapCenter(ride);
@@ -38,7 +41,9 @@ export default async function RidePage({ params }: Props) {
                 center={center}
                 start={ride.start_location}
                 path={ride.route?.path ?? null}
-                routeDownloadHref={ride.route ? `/api/rides/${ride.id}/route/download` : null}
+                routeDownloadHref={
+                  ride.route && isParticipant ? `/api/rides/${ride.id}/route/download` : null
+                }
               />
             </div>
           )}

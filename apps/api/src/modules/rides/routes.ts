@@ -91,7 +91,7 @@ export const ridesRoutes: FastifyPluginAsyncZod = async (fastify) => {
     { schema: { params: RideParamsSchema, response: { 200: DownloadRouteResponseSchema } } },
     async (request, reply) => {
       const { id } = request.params;
-      const url = await getRouteDownloadUrl(fastify.db, fastify.s3, id);
+      const url = await getRouteDownloadUrl(fastify.db, fastify.s3, request.user.sub, id);
 
       return reply.send({ data: { url } });
     },

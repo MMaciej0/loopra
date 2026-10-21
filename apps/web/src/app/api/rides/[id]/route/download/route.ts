@@ -3,7 +3,11 @@ import { APP_ERROR_TYPES } from '@loopra/domain';
 import { DownloadRouteResponseSchema } from '@loopra/domain/schemas';
 import { protectedRequest } from '@/lib/api';
 
-const NOT_FOUND_TYPES: string[] = [APP_ERROR_TYPES.RIDE_NOT_FOUND, APP_ERROR_TYPES.ROUTE_NOT_FOUND];
+const NOT_FOUND_TYPES: string[] = [
+  APP_ERROR_TYPES.RIDE_NOT_FOUND,
+  APP_ERROR_TYPES.ROUTE_NOT_FOUND,
+  APP_ERROR_TYPES.PARTICIPANT_NOT_FOUND,
+];
 
 export async function GET(
   _req: NextRequest,

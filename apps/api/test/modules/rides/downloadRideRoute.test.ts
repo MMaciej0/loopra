@@ -4,7 +4,7 @@ import { ERROR_TYPES } from '@loopra/domain';
 import { useApp } from '../../helpers/app.js';
 import { useAuthenticatedUser } from '../../helpers/auth.js';
 import { newRide } from '../../helpers/rides.js';
-import { rides, routes } from '../../../src/db/schema.js';
+import { ride_participants, rides, routes } from '../../../src/db/schema.js';
 import { DOWNLOAD_URL_EXPIRES_IN_SECONDS } from '../../../src/utils/s3.js';
 import { S3_BUCKET } from '../../../src/config/env.js';
 
@@ -27,8 +27,13 @@ describe('GET /rides/:id/route/download', () => {
       .insert(rides)
       .values({ ...newRide({ user_id: organiserAuth.userId }), route_id: routeId })
       .returning();
+    await join(ride!.id, organiserAuth.userId);
 
     return ride!;
+  };
+
+  const join = async (rideId: string, userId = strangerAuth.userId) => {
+    await appRef.app.db.insert(ride_participants).values({ ride_id: rideId, user_id: userId });
   };
 
   const download = (rideId: string, accessToken = strangerAuth.accessToken) =>
@@ -59,18 +64,39 @@ describe('GET /rides/:id/route/download', () => {
     expect(url.searchParams.get('response-content-type')).toBe('application/gpx+xml');
   });
 
-  it('returns 200 for a rider who is not the organiser and not a participant', async () => {
+  it('returns 200 for a participant who is not the organiser', async () => {
+    const route = await insertRoute();
+    const ride = await insertRide(route.id);
+    await join(ride.id);
+
+    const response = await download(ride.id);
+
+    expect(response.statusCode).toBe(200);
+  });
+
+  it('returns 404 PARTICIPANT_NOT_FOUND for a rider who has not joined', async () => {
     const route = await insertRoute();
     const ride = await insertRide(route.id);
 
-    const response = await download(ride.id, strangerAuth.accessToken);
+    const response = await download(ride.id);
 
-    expect(response.statusCode).toBe(200);
+    expect(response.statusCode).toBe(404);
+    expect(response.json()).toMatchObject({ type: ERROR_TYPES.PARTICIPANT_NOT_FOUND });
+  });
+
+  it('returns 404 PARTICIPANT_NOT_FOUND for a ride without a route when not joined', async () => {
+    const ride = await insertRide();
+
+    const response = await download(ride.id);
+
+    expect(response.statusCode).toBe(404);
+    expect(response.json()).toMatchObject({ type: ERROR_TYPES.PARTICIPANT_NOT_FOUND });
   });
 
   it('returns 200 for a cancelled ride with a route', async () => {
     const route = await insertRoute();
     const ride = await insertRide(route.id);
+    await join(ride.id);
     await appRef.app.db.update(rides).set({ status: 'cancelled' }).where(eq(rides.id, ride.id));
 
     const response = await download(ride.id);
@@ -80,6 +106,7 @@ describe('GET /rides/:id/route/download', () => {
 
   it('returns 404 ROUTE_NOT_FOUND for a ride without a route', async () => {
     const ride = await insertRide();
+    await join(ride.id);
 
     const response = await download(ride.id);
 
@@ -117,6 +144,7 @@ describe('GET /rides/:id/route/download', () => {
     const name = 'Pętla "przez" Łódź';
     const route = await insertRoute(name);
     const ride = await insertRide(route.id);
+    await join(ride.id);
 
     const response = await download(ride.id);
 

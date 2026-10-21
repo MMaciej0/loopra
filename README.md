@@ -154,7 +154,7 @@ A route is the path of a ride, uploaded as a GPX file.
 
 - **Upload when creating a ride.** The organiser drops a GPX file on the create-ride form. The form shows the elevation profile at once and fills in the distance.
 - **View on the ride page.** The ride page draws the route on the map and shows its elevation profile, distance, ascent and descent.
-- **Download from the ride page.** A button on the ride map downloads the original GPX file, so riders can follow the route on their bike computer. The file comes straight from storage through a short-lived signed link.
+- **Download from the ride page.** After joining a ride, a button on the ride map downloads the original GPX file, so riders can follow the route on their bike computer. The file comes straight from storage through a short-lived signed link.
 
 **How a route is stored.** One upload is kept in two places:
 

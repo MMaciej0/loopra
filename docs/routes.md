@@ -8,10 +8,10 @@ The README has a short summary. This file has the details.
 
 ## How it works
 
-| Endpoint                        | Who can call it     | What it does                                                                 |
-| ------------------------------- | ------------------- | ---------------------------------------------------------------------------- |
-| `POST /routes`                  | a verified rider    | Takes one GPX file, calculates its stats, and saves the route.               |
-| `GET /rides/:id/route/download` | any logged-in rider | Returns a 5-minute signed link to the original GPX file of the ride's route. |
+| Endpoint                        | Who can call it           | What it does                                                                 |
+| ------------------------------- | ------------------------- | ---------------------------------------------------------------------------- |
+| `POST /routes`                  | a verified rider          | Takes one GPX file, calculates its stats, and saves the route.               |
+| `GET /rides/:id/route/download` | a participant of the ride | Returns a 5-minute signed link to the original GPX file of the ride's route. |
 
 There is no endpoint to list, read, change or delete a route. A route is read only as part of a ride, and its original file is downloaded only through its ride.
 
@@ -72,6 +72,12 @@ If the delete also fails, the API logs the key of the orphaned file and returns 
 ### The path is not sent on upload
 
 The upload answer has the stats and the elevation profile, because the form shows them at once. The path can be large, and the form does not draw a map of it, so it is left out. The ride page gets the path when it loads the ride.
+
+### Only participants download the GPX file
+
+**Problem:** every download costs storage traffic, and a rider who only browses a ride does not need the file. The map and the elevation profile already show where the ride goes.
+
+**Decision:** `GET /rides/:id/route/download` checks for a row in `ride_participants`. A rider who has not joined gets `404 PARTICIPANT_NOT_FOUND`, even when the ride has no route. The organiser holds a participant row, so the organiser can always download. The ride page shows the download button only to participants. This is not a secret: anyone can join a ride with a free seat, and the path is visible to every logged-in rider.
 
 ### The name comes from the file
 
