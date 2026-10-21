@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { LanguageSwitch } from '@/components/ui/language-switch';
 import { Logo } from '@/components/ui/logo';
 import { Link } from '@/i18n/navigation';
+import { SectionLink } from './section-link';
 
 export function LandingHeader() {
   const t = useTranslations('LandingPage.header');
@@ -12,7 +13,7 @@ export function LandingHeader() {
       <Logo withStagingIndicator />
       <nav aria-label={t('navLabel')} className="flex items-center gap-2 sm:gap-4">
         <Button variant="nav" asChild className="hidden text-[13px] sm:inline-flex">
-          <Link href="/#how-it-works">{t('howItWorks')}</Link>
+          <SectionLink sectionId="how-it-works">{t('howItWorks')}</SectionLink>
         </Button>
         <LanguageSwitch />
         <Button variant="outline" size="sm" asChild className="border-border-strong">
