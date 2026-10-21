@@ -18,6 +18,10 @@ export const sendEmailVerification = async (
     return; // silent — don't leak whether email exists
   }
 
+  if (user.is_guest) {
+    return;
+  }
+
   if (user.email_verified) {
     return; // silent — don't leak whether email exists
   }

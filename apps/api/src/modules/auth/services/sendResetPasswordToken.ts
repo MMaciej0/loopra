@@ -19,6 +19,10 @@ export const sendResetPasswordToken = async (
     throw new UserNotFoundError();
   }
 
+  if (user.is_guest) {
+    return;
+  }
+
   if (!user.password_hash) {
     await resend.emails.send({
       from: 'Loopra <noreply@loopra.cc>',
