@@ -522,8 +522,9 @@
       "getStarted": "Załóż konto"
     },
     "exampleRides": {
-      "heading": "W ten weekend · blisko Ciebie",
-      "count": "{count, plural, one {# jazda} few {# jazdy} many {# jazd} other {# jazdy}}",
+      "heading": "Przykładowe jazdy",
+      "subheading": "Załóż konto i zobacz prawdziwe jazdy w Twojej okolicy.",
+      "cta": "Zobacz jazdy w pobliżu",
       "going": "{count, plural, few {# jadą} other {# jedzie}}",
       "rides": {
         "coffee": {

@@ -522,8 +522,9 @@
       "getStarted": "Get started"
     },
     "exampleRides": {
-      "heading": "This weekend · near you",
-      "count": "{count, plural, one {# ride} other {# rides}}",
+      "heading": "Example rides",
+      "subheading": "Sign up to see real rides near you.",
+      "cta": "See rides near you",
       "going": "{count} going",
       "rides": {
         "coffee": {
