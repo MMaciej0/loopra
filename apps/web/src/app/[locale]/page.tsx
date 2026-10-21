@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { getTranslations } from 'next-intl/server';
 import { ExampleRides } from '@/features/landing/components/example-rides';
 import { Hero } from '@/features/landing/components/hero';
 import { HowItWorks } from '@/features/landing/components/how-it-works';
@@ -34,10 +34,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function Home({ params }: Props) {
-  const { locale } = await params;
-  setRequestLocale(locale);
-
+export default function Home() {
   return (
     <div className="flex min-h-dvh flex-col overflow-x-clip">
       <LandingHeader />
