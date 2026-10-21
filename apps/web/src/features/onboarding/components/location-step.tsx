@@ -10,9 +10,9 @@ import { LocationModalBody } from '@/features/locations/components/location-moda
 import { useLocationModal } from '@/features/locations/components/location-modal/use-location-modal';
 import type { LocationSuggestion } from '@/features/locations/geocoding';
 
-type Props = Readonly<{ favorites: LocationSuggestion[] }>;
+type Props = Readonly<{ favorites: LocationSuggestion[]; showDemoRidesHint: boolean }>;
 
-export function LocationStep({ favorites }: Props) {
+export function LocationStep({ favorites, showDemoRidesHint }: Props) {
   const t = useTranslations('FavoriteLocation');
   const router = useRouter();
   const [isAcceptingDefault, startAcceptDefaultTransition] = useTransition();
@@ -67,6 +67,15 @@ export function LocationStep({ favorites }: Props) {
           {t('showRides')}
         </Button>
       </div>
+
+      {showDemoRidesHint && (
+        <Text
+          variant="body-s"
+          className="border-accent bg-accent/10 rounded-[10px] border px-3.5 py-3"
+        >
+          {t('firstRun.demoRidesHint')}
+        </Text>
+      )}
     </section>
   );
 }

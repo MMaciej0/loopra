@@ -6,6 +6,7 @@ import { UsernameStep } from '@/features/onboarding/components/username-step';
 import { getOnboardingSteps } from '@/features/onboarding/steps';
 import { getFavoriteLocations } from '@/features/locations/favorites';
 import { redirect } from '@/i18n/navigation';
+import { getAppEnv } from '@/lib/app-env';
 import { getCurrentUser } from '@/lib/user';
 
 export default async function WelcomePage() {
@@ -26,7 +27,7 @@ export default async function WelcomePage() {
           {step === 'username' && <UsernameStep />}
           {step === 'location' && (
             <MaptilerKeyProvider apiKey={process.env.MAPTILER_KEY}>
-              <LocationStep favorites={favorites} />
+              <LocationStep favorites={favorites} showDemoRidesHint={getAppEnv() === 'staging'} />
             </MaptilerKeyProvider>
           )}
         </div>

@@ -166,6 +166,7 @@
       "eyebrow": "Dostosuj Looprę do siebie",
       "description": "Wybierz okolicę, w której jeździsz — wystarczy z grubsza, dokładny adres nie jest potrzebny. Loopra wyśrodkuje tam Twoją mapę i znajdzie jazdy oraz rowerzystów w pobliżu. Pomiń ten krok, a zaczniesz w Nowej Hucie w Krakowie — tam, gdzie narodziła się Loopra.",
       "useDefault": "Użyj domyślnej lokalizacji",
+      "demoRidesHint": "To jest strona demonstracyjna. Przykładowe jazdy są w okolicach Krakowa — wybierz „Użyj domyślnej lokalizacji”, aby je zobaczyć.",
       "defaultError": "Nie udało się użyć domyślnej lokalizacji. Spróbuj ponownie."
     },
     "picker": {

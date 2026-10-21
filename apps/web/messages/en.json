@@ -166,6 +166,7 @@
       "eyebrow": "Make Loopra yours",
       "description": "Pick the area you ride in — roughly is fine, no address needed. Loopra centres your map there and finds rides and riders near you. Skip it and you'll start in Nowa Huta, Kraków, Poland — where Loopra was born.",
       "useDefault": "Use default location",
+      "demoRidesHint": "This is a demo site. Its example rides are around Kraków — choose “Use default location” to see them.",
       "defaultError": "Could not use the default location. Try again."
     },
     "picker": {
