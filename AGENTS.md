@@ -106,7 +106,7 @@ Node comes from `.nvmrc`, pnpm from the root `packageManager` field, and install
 
 `pnpm -r` skips the workspace **root**, so the root `format`/`format:check` scripts run the recursive pass and then a second, glob-scoped prettier over the files no project owns: root `*.{json,md,yml,yaml}`, `docs/**/*.md`, and `.github/**`. Without that second pass this file, the README, the compose files and the workflow itself would be in no formatter's scope. YAML keeps double quotes via an override in the root `.prettierrc`, so formatting never rewrites compose port mappings.
 
-Nothing is enforced yet: `master` has no branch protection, so a red run blocks nothing. Not checked by CI: migration drift (`drizzle-kit generate` reporting "No schema changes"), which is still a manual step.
+`master` is protected by two rulesets. "master: no force-push, no delete" has no bypass, not even for admins. "master: CI must pass" requires the `Typecheck, lint, format, build` and `API tests` checks — the job `name:`s, not the job ids — and repo admins bypass it, so the owner can still push straight to `master`. Not checked by CI: migration drift (`drizzle-kit generate` reporting "No schema changes"), which is still a manual step.
 
 ## Deploy
 
