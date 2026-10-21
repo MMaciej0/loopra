@@ -108,6 +108,17 @@ Node comes from `.nvmrc`, pnpm from the root `packageManager` field, and install
 
 Nothing is enforced yet: `master` has no branch protection, so a red run blocks nothing. Not checked by CI: migration drift (`drizzle-kit generate` reporting "No schema changes"), which is still a manual step.
 
+## Deploy
+
+Read `docs/deployment.md` before changing a production compose file, `scripts/deploy*.sh`, `scripts/build-images.sh`, `edge/nginx/`, a deploy workflow, or adding an env variable. It holds the server layout, the env files, the subnets and the cron the repo cannot show. The design is [ADR-0006](docs/adr/0006-one-server-isolated-stacks-one-image.md).
+
+The rules a change must keep:
+
+- `docker-compose-staging.yml` and `docker-compose-production.yml` change together, in the same pull request. `diff` of the two shows only names, subnets and `APP_ENV`.
+- An image is built once per commit SHA and reused: `build-images.sh` skips a tag that is already in GHCR. An environment difference goes in the env files or the compose `environment`, read at runtime — a web value the browser needs comes from the Next.js server, never `NEXT_PUBLIC_*`.
+- A new env variable goes in `.env.example` and in the env-file list of `docs/deployment.md`, or the next deploy starts a container that fails its env check.
+- The deploy workflows keep their SSH setup and file copy inline; it is the only YAML logic allowed outside `scripts/`, because it only moves files to the server.
+
 ## Package Manager
 
 Always use **pnpm 10.28.0**. Root `package.json` holds the shortcuts (`api:dev`, `web:dev`, `api:test`, …); `pnpm -r typecheck` covers all four projects, and `pnpm -r lint` covers `web` alone, which is the only project with a `lint` script.

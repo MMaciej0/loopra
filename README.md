@@ -6,7 +6,9 @@ Loopra is a platform for cyclists. A rider creates a ride, other riders join it,
 
 Strava is good at tracking a ride. Facebook groups are good at talking. Neither is good at the question "who can I ride with this Saturday?". Loopra is built to answer that question.
 
-> **Status:** work in progress. The API and the website work. The mobile app is planned.
+**Try it:** [staging.loopra.cc](https://staging.loopra.cc). Click **Use a guest account** on the login page — no email, no password. The demo Rides are around Kraków.
+
+> **Status:** work in progress. The API and the website work and run on a staging server. Production is prepared but not launched yet. The mobile app is planned.
 
 ## Contents
 
@@ -21,6 +23,7 @@ Strava is good at tracking a ride. Facebook groups are good at talking. Neither 
   - [Across the whole project](#across-the-whole-project)
 - [Running locally](#running-locally)
 - [Testing and CI](#testing-and-ci)
+- [Deployment](#deployment)
 - [Roadmap](#roadmap)
 - [More documentation](#more-documentation)
 
@@ -34,7 +37,7 @@ Strava is good at tracking a ride. Facebook groups are good at talking. Neither 
 
 ![Rides list](docs/screenshots/rides-list.jpg)
 
-**Ride page.** The ride contract, the stats and the join card.
+**Ride page.** The route on the map, the stats, the ride contract and the join card.
 
 ![Ride page](docs/screenshots/ride-page.jpg)
 
@@ -53,6 +56,8 @@ What works today:
 - **Join and leave** — a ride has a real headcount. A full ride cannot be joined.
 - **Routes** — upload a GPX file. The API calculates distance, ascent, descent and an elevation profile. The ride page draws the route on the map.
 - **Locations** — save up to five favourite locations and pick one as the start for your search.
+- **Contact** — a contact form for bug reports, sent by email.
+- **Guest accounts** — on staging only, one click creates an account with no email and no password, so anyone can try Loopra.
 - **Two languages** — English and Polish. Light and dark theme.
 
 ## Tech stack
@@ -71,7 +76,10 @@ What works today:
 | UI         | Tailwind CSS + shadcn/ui         | Accessible components that I own and can change             |
 | Maps       | MapLibre + MapTiler              | Map display and place search                                |
 | Tests      | Vitest                           | Runs against a real Postgres, not a mock                    |
-| CI         | GitHub Actions                   | Typecheck, lint, format, tests and build on every push      |
+| CI and CD  | GitHub Actions                   | Checks on every push, deploys with one click                |
+| Hosting    | Docker Compose on one VPS        | Cheap, and staging runs the same image as production        |
+| Edge       | Nginx + Let's Encrypt (certbot)  | One entry point with HTTPS for all environments             |
+| Images     | GitHub Container Registry (GHCR) | One image per commit, reused from staging to production     |
 
 ## Architecture
 
@@ -93,7 +101,7 @@ How one request travels:
 4. The service talks to PostgreSQL through Drizzle and returns a row.
 5. A **response schema** from `packages/domain` decides which fields leave the API.
 
-The API is split into modules (`auth`, `users`, `rides`, `routes`). Every module has the same shape: `routes.ts`, `errors.ts`, a `schema.ts` when the module has request schemas only the API uses, and a `services/` folder with one file per operation. Services do not import Fastify, so they are easy to test and reuse.
+The API is split into modules (`auth`, `users`, `rides`, `routes`, `contact`, `health`). Every module has the same shape: `routes.ts`, `errors.ts`, a `schema.ts` when the module has request schemas only the API uses, and a `services/` folder with one file per operation. Services do not import Fastify, so they are easy to test and reuse.
 
 ## Authentication
 
@@ -207,13 +215,18 @@ You need Docker, Node 22, pnpm, and your own keys for Google OAuth, S3-compatibl
 pnpm install
 docker compose -f docker-compose-dev.yml up -d --build
 docker exec api sh -c 'cd /app && pnpm api:db:migrate'
+docker exec api sh -c 'cd /app/apps/api && pnpm db:seed'   # optional: test riders and rides
 docker exec -it api sh -c 'cd /app && pnpm api:dev'   # http://localhost:8080
 docker exec -it web sh -c 'cd /app && pnpm web:dev'   # http://localhost:3000, in a second terminal
 ```
 
+The seed adds four test riders and a few rides around Kraków. Log in as `dev@loopra.test` with the password `Loopra-dev-123`. The seed works only on an empty database.
+
+The containers do not start the dev servers by themselves — this is on purpose, so you see the server logs in your own terminal.
+
 ## Testing and CI
 
-The API has more than 200 tests. They call real endpoints against a real PostgreSQL. External services (email, Google, storage) are mocked or never called, so the tests need no real keys.
+The API has more than 300 tests. They call real endpoints against a real PostgreSQL. External services (email, Google, storage) are mocked or never called, so the tests need no real keys.
 
 The website has no automated tests. This is a choice: the UI still changes often, so I check web changes in the browser. The rules that must not break live in the API, and the API is tested.
 
@@ -225,6 +238,26 @@ CI runs on every pull request and every push to `master`:
 | `api-test` | starts Postgres and Redis, then runs the API tests  |
 
 The workflow has no logic of its own. Every step is a workspace script, so CI and a local run do the same thing.
+
+**Dependabot** opens a pull request every week with dependency upgrades: npm packages, GitHub Actions and the Docker images in the compose files. CI tests these pull requests like any other.
+
+## Deployment
+
+Loopra runs on one small VPS. Staging is live at [staging.loopra.cc](https://staging.loopra.cc). Production will run on the same server, and its compose file and deploy path are ready.
+
+The main decisions ([ADR-0006](docs/adr/0006-one-server-isolated-stacks-one-image.md)):
+
+- **One server, separate stacks.** Staging and production are separate Docker Compose **stacks** (groups of containers): each has its own web, api, Postgres and Redis. They share nothing except Nginx in front. Only Nginx is open to the internet.
+- **One image for both.** A deploy builds a Docker image for the commit and pushes it to GHCR. Production later runs **the same image**, not a new build, so "it worked on staging" means something.
+- **Configuration at runtime.** The image holds no environment values. `APP_ENV` (`staging` or `production`) and the secrets come from the server's env files when the container starts.
+- **Deploy with one click.** A manual GitHub Actions workflow builds the images, copies the compose file to the server over SSH, runs the database migrations, and starts the new version. `--wait` waits for the **healthchecks** (`GET /health` checks Postgres and Redis), so a broken version fails the deploy.
+- **HTTPS that renews itself.** Certbot renews the Let's Encrypt certificate, and a daily workflow fails if the certificate has less than 20 days left.
+
+What makes staging different: a small staging badge next to the logo, a **guest account** button, and about 10 demo Rides around Kraków that a daily job keeps in the future.
+
+Known limits: staging and production share one machine, so a staging problem that eats memory or disk can slow production down. A rollback does not undo database migrations.
+
+How to deploy, roll back, and what the server needs: [`docs/deployment.md`](docs/deployment.md).
 
 ## Roadmap
 
@@ -240,5 +273,6 @@ The workflow has no logic of its own. Every step is a workspace script, so CI an
 - [`docs/authentication.md`](docs/authentication.md) — login, tokens and cookies: every decision with its reasons.
 - [`docs/rides.md`](docs/rides.md) — creating, joining and finding rides: every decision with its reasons.
 - [`docs/routes.md`](docs/routes.md) — GPX upload and the `@loopra/gpx` parser, step by step.
+- [`docs/deployment.md`](docs/deployment.md) — servers, deploys, rollback, and what the server needs.
 - [`docs/adr/`](docs/adr) — decision records: a hard decision, the options, and why one was chosen.
 - [`docs/product-vision.md`](docs/product-vision.md) — the product idea: who Loopra is for, and why.
