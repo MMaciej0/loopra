@@ -21,7 +21,7 @@ export function ExampleRides() {
       aria-label={t('cta')}
       className="group border-border bg-secondary hover:border-border-strong hover:bg-secondary-hover focus-visible:border-ring focus-visible:ring-ring/50 flex flex-col overflow-hidden rounded-[20px] border transition-[color,background-color,border-color,box-shadow,scale] outline-none focus-visible:ring-3 active:scale-[0.98]"
     >
-      <div className="border-border flex flex-col gap-1 border-b px-[18px] py-3.5">
+      <div className="border-border flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 border-b px-[18px] py-3.5">
         <Text variant="meta" className="text-muted-foreground uppercase">
           {t('heading')}
         </Text>
