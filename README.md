@@ -26,6 +26,7 @@ Strava is good at tracking a ride. Facebook groups are good at talking. Neither 
 - [Deployment](#deployment)
 - [Roadmap](#roadmap)
 - [More documentation](#more-documentation)
+- [License](#license)
 
 ## Screenshots
 
@@ -276,3 +277,7 @@ How to deploy, roll back, and what the server needs: [`docs/deployment.md`](docs
 - [`docs/deployment.md`](docs/deployment.md) — servers, deploys, rollback, and what the server needs.
 - [`docs/adr/`](docs/adr) — decision records: a hard decision, the options, and why one was chosen.
 - [`docs/product-vision.md`](docs/product-vision.md) — the product idea: who Loopra is for, and why.
+
+## License
+
+All rights reserved. You may read the code, but you may not copy, change or use it without permission.
