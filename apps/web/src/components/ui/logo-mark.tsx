@@ -17,14 +17,8 @@ export function LogoMark({ height = 24, className }: LogoMarkProps) {
       className={className}
       style={{ display: 'block', flexShrink: 0 }}
     >
-      <circle cx="12.7" cy="12.7" r="11" stroke="currentColor" strokeWidth="4.4" />
-      <circle cx="25.7" cy="12.7" r="11" stroke="currentColor" strokeWidth="4.4" />
-      <path
-        d="M 23.7 12.7 a 11 11 0 0 1 -22 0"
-        stroke="currentColor"
-        strokeWidth="4.4"
-        fill="none"
-      />
+      <path d="M22.659 8.028A11 11 0 1 1 14.15 1.796" stroke="currentColor" strokeWidth="4.4" />
+      <path d="M15.741 17.372A11 11 0 1 1 24.25 23.604" stroke="currentColor" strokeWidth="4.4" />
     </svg>
   );
 }
