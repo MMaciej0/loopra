@@ -43,3 +43,10 @@ export type ParticipantStatus = (typeof PARTICIPANT_STATUSES)[number];
 
 export const APP_ENVS = ['development', 'staging', 'production'] as const;
 export type AppEnv = (typeof APP_ENVS)[number];
+
+export const APP_URLS = [
+  'http://localhost:3000',
+  'https://staging.loopra.cc',
+  'https://loopra.cc',
+] as const;
+export type AppUrl = (typeof APP_URLS)[number];

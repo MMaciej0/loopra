@@ -5,3 +5,10 @@ export const stripLocale = (pathname: string) => {
 
   return pathname.replace(localePattern, '') || '/';
 };
+
+const OPEN_GRAPH_LOCALES: Record<string, string> = {
+  en: 'en_US',
+  pl: 'pl_PL',
+};
+
+export const toOpenGraphLocale = (locale: string) => OPEN_GRAPH_LOCALES[locale] ?? 'en_US';
