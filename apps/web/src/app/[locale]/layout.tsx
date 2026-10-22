@@ -6,6 +6,7 @@ import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { routing } from '@/i18n/routing';
 import { ThemeProvider } from '@/components/providers/theme';
+import { getAppUrl } from '@/lib/app-url';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -23,10 +24,13 @@ const bricolage = Bricolage_Grotesque({
   axes: ['opsz'],
 });
 
-export const metadata: Metadata = {
-  title: 'Loopra',
-  description: 'Global cycling community platform',
-};
+export function generateMetadata(): Metadata {
+  return {
+    title: 'Loopra',
+    description: 'Global cycling community platform',
+    metadataBase: getAppUrl(),
+  };
+}
 
 type Props = Readonly<{
   children: React.ReactNode;

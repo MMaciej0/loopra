@@ -7,6 +7,7 @@ import { LandingFooter } from '@/features/landing/components/landing-footer';
 import { LandingHeader } from '@/features/landing/components/landing-header';
 import { getPathname } from '@/i18n/navigation';
 import { routing } from '@/i18n/routing';
+import { toOpenGraphLocale } from '@/lib/locale';
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -30,6 +31,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         ),
         'x-default': getPathname({ locale: routing.defaultLocale, href: '/' }),
       },
+    },
+    openGraph: {
+      title: t('title'),
+      description: t('description'),
+      url: getPathname({ locale, href: '/' }),
+      siteName: 'Loopra',
+      type: 'website',
+      locale: toOpenGraphLocale(locale),
     },
   };
 }

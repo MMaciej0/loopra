@@ -130,7 +130,7 @@ docker network create --subnet 10.100.0.0/24 edge
 Each environment folder has two files. Compose sets `NODE_ENV`, `APP_ENV`, `PORT`, `TRUSTED_PROXIES` and the web's `API_URL` itself, so they are not in these files.
 
 - **`.env`** — read by `api` and `postgres`: `POSTGRES_PASSWORD`, `DATABASE_URL` (host `postgres`), `REDIS_URL` (host `redis`), `JWT_ACCESS_SECRET`, `APP_URL`, `RESEND_API_KEY`, `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_CALLBACK_URL`, and the `S3_*` values. Use a different bucket per environment.
-- **`web.env`** — read by `web`: `MAPTILER_KEY`.
+- **`web.env`** — read by `web`: `MAPTILER_KEY`, `APP_URL` (the public address, for example `https://staging.loopra.cc`; link previews need it).
 
 Never copy staging secrets into production. The two stacks must not share a database, a Redis, a bucket or a JWT secret.
 
