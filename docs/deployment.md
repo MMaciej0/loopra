@@ -32,12 +32,12 @@ Only Nginx publishes ports on the host. The `api` and the databases are reachabl
 
 For `staging.loopra.cc` ([`loopra.staging.conf`](../edge/nginx/conf.d/loopra.staging.conf)):
 
-| Path                                    | Goes to         | Why                                                                     |
-| --------------------------------------- | --------------- | ----------------------------------------------------------------------- |
-| `/auth/google`, `/auth/google/callback` | `api`           | Google redirects the browser here, so it must reach the API directly    |
-| `/api-health`                           | `api` `/health` | check the API from outside: `curl https://staging.loopra.cc/api-health` |
-| `/robots.txt`                           | a static file   | tells search engines not to index staging                               |
-| everything else                         | `web`           | the website; the web calls the API inside Docker                        |
+| Path                                    | Goes to         | Why                                                                                       |
+| --------------------------------------- | --------------- | ----------------------------------------------------------------------------------------- |
+| `/auth/google`, `/auth/google/callback` | `api`           | Google redirects the browser here, so it must reach the API directly                      |
+| `/api-health`                           | `api` `/health` | check the API from outside: `curl https://staging.loopra.cc/api-health`                   |
+| `/robots.txt`                           | a static file   | tells search engines not to index staging, but lets LinkedIn read pages for link previews |
+| everything else                         | `web`           | the website; the web calls the API inside Docker                                          |
 
 Nginx **overwrites** the `X-Forwarded-For` header with the real client address. The web passes it on, and the api trusts it only from the `edge` and internal subnets. This is how the rate limits see the rider's IP and not the web server's IP (see "Client IP" in [`AGENTS.md`](../AGENTS.md)).
 
