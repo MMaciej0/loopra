@@ -32,6 +32,7 @@ COPY --from=build --chown=node:node /out/node_modules node_modules
 COPY --from=build --chown=node:node /out/dist dist
 COPY --from=build --chown=node:node /out/drizzle drizzle
 COPY --from=build --chown=node:node /out/src/db/staging-routes dist/db/staging-routes
+COPY --from=build --chown=node:node /out/src/modules/help/qa.md dist/modules/help/qa.md
 
 USER node
 
