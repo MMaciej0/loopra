@@ -9,6 +9,7 @@ import {
   type HelpTextEvent,
 } from '@loopra/domain';
 import { APIUserAbortError } from '@anthropic-ai/sdk';
+import { ReportAnswerInputSchema } from './schema.js';
 
 export const helpRoutes: FastifyPluginAsyncZod = async (fastify) => {
   fastify.post(
@@ -40,13 +41,28 @@ export const helpRoutes: FastifyPluginAsyncZod = async (fastify) => {
           }
         }
 
-        const finalMessage = await stream.finalMessage();
-        request.log.info({ usage: finalMessage.usage }, 'help answer done');
+        const { content, usage } = await stream.finalMessage();
+
+        const reportAnswerTool = content
+          .filter((block) => block.type === 'tool_use')
+          .find((block) => block.name === 'report_answer');
+
+        const parsedReport = ReportAnswerInputSchema.safeParse(reportAnswerTool?.input);
+
+        if (!parsedReport.success) {
+          request.log.warn({ input: reportAnswerTool?.input }, 'report_answer missing or invalid');
+        }
+
+        const { fallback, topic } = parsedReport.success
+          ? parsedReport.data
+          : { topic: null, fallback: false };
+
+        request.log.info({ usage, topic, fallback }, 'help answer done');
 
         writeEvent<HelpDoneEvent>(reply, 'done', {
           answerId: crypto.randomUUID(),
-          topic: null,
-          fallback: false,
+          topic,
+          fallback,
         });
       } catch (error) {
         if (error instanceof APIUserAbortError) {
