@@ -17,15 +17,20 @@ import {
 import { sql } from 'drizzle-orm';
 import type { GpxMetadata } from '@loopra/gpx';
 import {
+  APP_ENVS,
   BIKE_TYPES,
   DROP_POLICIES,
   EXPERIENCE_POLICIES,
   FORMATION_POLICIES,
+  HELP_RATINGS,
+  LOCALES,
   PACE_POLICIES,
   PARTICIPANT_STATUSES,
   RIDE_STATUSES,
   RIDE_TYPES,
 } from '@loopra/domain';
+
+export const localeEnum = pgEnum('locale', LOCALES);
 
 export const users = pgTable(
   'users',
@@ -174,4 +179,34 @@ export const ride_participants = pgTable(
     joined_at: timestamp({ withTimezone: true }).notNull().defaultNow(),
   },
   (t) => [primaryKey({ columns: [t.ride_id, t.user_id] })],
+);
+
+export const appEnvEnum = pgEnum('app_env', APP_ENVS);
+export const helpAnswerStatusEnum = pgEnum('help_answer_status', ['completed', 'error', 'aborted']);
+export const helpVersionEnum = pgEnum('help_version', ['v1', 'v2']);
+export const helpRatingEnum = pgEnum('help_rating', HELP_RATINGS);
+
+export const help_answers = pgTable(
+  'help_answers',
+  {
+    id: uuid().primaryKey().defaultRandom(),
+    conversation_id: uuid(),
+    question: text().notNull(),
+    answer: text().notNull(),
+    topic: text(),
+    fallback: boolean().notNull().default(false),
+    locale: localeEnum().notNull(),
+    site: appEnvEnum().notNull(),
+    version: helpVersionEnum().notNull(),
+    status: helpAnswerStatusEnum().notNull(),
+    rating: helpRatingEnum(),
+    model: text().notNull(),
+    stop_reason: text(),
+    input_tokens: integer(),
+    output_tokens: integer(),
+    cache_read_tokens: integer(),
+    duration_ms: integer().notNull(),
+    created_at: timestamp({ withTimezone: true, precision: 3 }).notNull().defaultNow(),
+  },
+  (t) => [index('help_answers_conversation_idx').on(t.conversation_id, t.created_at)],
 );

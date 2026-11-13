@@ -4,9 +4,11 @@ import type Anthropic from '@anthropic-ai/sdk';
 import type { MessageStream } from '@anthropic-ai/sdk/lib/MessageStream';
 import type { HelpMessageBody } from '@loopra/domain';
 
+export const HELP_MODEL = 'claude-haiku-5-5';
+
 export const askHelp = (anthropic: Anthropic, body: HelpMessageBody): MessageStream => {
   return anthropic.messages.stream({
-    model: 'claude-haiku-5-5',
+    model: HELP_MODEL,
     output_config: { effort: 'low' },
     max_tokens: 1024,
     system: systemBlocks,
