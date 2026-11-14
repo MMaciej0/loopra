@@ -1,7 +1,7 @@
-import { SUPPORTED_LOCALES } from '@/i18n/routing';
+import { LOCALES } from '@loopra/domain';
 
 export const stripLocale = (pathname: string) => {
-  const localePattern = new RegExp(`^/(${SUPPORTED_LOCALES.join('|')})(?=/|$)`);
+  const localePattern = new RegExp(`^/(${LOCALES.join('|')})(?=/|$)`);
 
   return pathname.replace(localePattern, '') || '/';
 };

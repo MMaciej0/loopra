@@ -44,6 +44,15 @@ export type ParticipantStatus = (typeof PARTICIPANT_STATUSES)[number];
 export const APP_ENVS = ['development', 'staging', 'production'] as const;
 export type AppEnv = (typeof APP_ENVS)[number];
 
+export const LOCALES = ['en', 'pl'] as const;
+export type Locale = (typeof LOCALES)[number];
+
+export const HELP_ROLES = ['user', 'bot'] as const;
+export type HelpRole = (typeof HELP_ROLES)[number];
+
+export const HELP_RATINGS = ['up', 'down'] as const;
+export type HelpRating = (typeof HELP_RATINGS)[number];
+
 export const APP_URLS = [
   'http://localhost:3000',
   'https://staging.loopra.cc',

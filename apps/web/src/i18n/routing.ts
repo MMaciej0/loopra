@@ -1,9 +1,8 @@
 import { defineRouting } from 'next-intl/routing';
-
-export const SUPPORTED_LOCALES = ['en', 'pl'];
+import { LOCALES } from '@loopra/domain';
 
 export const routing = defineRouting({
-  locales: SUPPORTED_LOCALES,
+  locales: LOCALES,
   defaultLocale: 'en',
   localePrefix: 'as-needed',
 });
