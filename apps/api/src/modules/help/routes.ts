@@ -1,4 +1,8 @@
-import { HelpMessageBodySchema } from '@loopra/domain/schemas';
+import {
+  HelpFeedbackBodySchema,
+  HelpMessageBodySchema,
+  HelpFeedbackResponseSchema,
+} from '@loopra/domain/schemas';
 import { FastifyPluginAsyncZod } from 'fastify-type-provider-zod';
 import { askHelp, HELP_MODEL } from './services/ask.js';
 import { openEventStream } from '../../utils/serverEvent.js';
@@ -11,6 +15,9 @@ import {
 import { APIUserAbortError } from '@anthropic-ai/sdk';
 import { APP_ENV } from '../../config/env.js';
 import { startHelpAnswer } from './services/startHelpAnswer.js';
+import { HelpFeedbackParamsSchema } from './schema.js';
+import { rateHelpAnswer } from './services/rateHelpAnswer.js';
+import { helpFeedbackRateLimiter } from './services/rateLimiter.js';
 
 export const helpRoutes: FastifyPluginAsyncZod = async (fastify) => {
   fastify.post(
@@ -54,6 +61,22 @@ export const helpRoutes: FastifyPluginAsyncZod = async (fastify) => {
       } finally {
         events.end();
       }
+    },
+  );
+
+  fastify.post(
+    '/answers/:id/feedback',
+    {
+      schema: {
+        params: HelpFeedbackParamsSchema,
+        body: HelpFeedbackBodySchema,
+        response: { 200: HelpFeedbackResponseSchema },
+      },
+    },
+    async (request, reply) => {
+      await helpFeedbackRateLimiter(request, fastify.redis);
+      const answer = await rateHelpAnswer(fastify.db, request.params.id, request.body.rating);
+      return reply.send(answer);
     },
   );
 };

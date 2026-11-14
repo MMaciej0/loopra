@@ -36,4 +36,5 @@ export const HelpDoneEventSchema = z.object({
 
 export const HelpErrorEventSchema = z.object({ type: z.literal(ERROR_TYPES.HELP_UNAVAILABLE) });
 
-export const HelpFeedbackBodySchema = z.object({ rating: z.enum(HELP_RATINGS) });
+export const HelpFeedbackBodySchema = z.object({ rating: z.enum(HELP_RATINGS).nullable() });
+export const HelpFeedbackResponseSchema = z.object({ rating: z.enum(HELP_RATINGS).nullable() });
