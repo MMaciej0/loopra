@@ -11,6 +11,7 @@ import corsPlugin from './plugins/cors.js';
 import storagePlugin from './plugins/storage.js';
 import globalErrorHandler from './plugins/globalErrorHandler.js';
 import multipartPlugin from './plugins/multipart.js';
+import anthropicPlugin from './plugins/anthropic.js';
 
 import authModule from './modules/auth/index.js';
 import healthModule from './modules/health/index.js';
@@ -18,6 +19,7 @@ import contactModule from './modules/contact/index.js';
 import usersModule from './modules/users/index.js';
 import ridesModule from './modules/rides/index.js';
 import routesModule from './modules/routes/index.js';
+import helpModule from './modules/help/index.js';
 
 export interface BuildAppOptions {
   appEnv?: AppEnv;
@@ -41,6 +43,7 @@ export const buildApp = ({ appEnv = APP_ENV }: BuildAppOptions = {}) => {
   app.register(mailerPlugin);
   app.register(storagePlugin);
   app.register(multipartPlugin);
+  app.register(anthropicPlugin);
 
   app.register(globalErrorHandler);
 
@@ -48,6 +51,7 @@ export const buildApp = ({ appEnv = APP_ENV }: BuildAppOptions = {}) => {
   app.register(authModule, { prefix: '/auth', appEnv });
   app.register(healthModule, { prefix: '/health' });
   app.register(contactModule, { prefix: '/contact' });
+  app.register(helpModule, { prefix: '/help' });
 
   // protected routes
   app.register(async (protectedApp) => {

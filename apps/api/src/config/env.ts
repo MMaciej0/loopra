@@ -19,6 +19,7 @@ const schema = z.object({
   S3_SECRET_ACCESS_KEY: z.string(),
   S3_REGION: z.string().default('auto'),
   TRUSTED_PROXIES: z.string().optional(),
+  ANTHROPIC_API_KEY: z.string(),
 });
 
 export const {
@@ -39,4 +40,5 @@ export const {
   S3_SECRET_ACCESS_KEY,
   S3_REGION,
   TRUSTED_PROXIES,
+  ANTHROPIC_API_KEY,
 } = schema.parse(process.env);

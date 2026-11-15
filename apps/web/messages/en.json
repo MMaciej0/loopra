@@ -390,7 +390,10 @@
     "MAX_PARTICIPANTS": "This ride is full.",
     "CREATOR_CANNOT_LEAVE": "You organise this ride, so you can't leave it. Cancel it instead.",
     "NAME_TOO_LONG": "Name must be at most {max} characters.",
-    "MESSAGE_TOO_LONG": "Message must be at most {max} characters."
+    "MESSAGE_TOO_LONG": "Message must be at most {max} characters.",
+    "HISTORY_TOO_LONG": "The conversation is too long. Start a new chat.",
+    "HELP_UNAVAILABLE": "The assistant is not available right now. Try again later or contact us.",
+    "HELP_ANSWER_NOT_FOUND": "This answer is no longer available."
   },
   "Auth": {
     "or": "OR",

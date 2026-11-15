@@ -1,0 +1,3 @@
+export const HELP_QUESTION_MAX_LENGTH = 500;
+export const HELP_HISTORY_MAX_MESSAGES = 6;
+export const HELP_HISTORY_TEXT_MAX_LENGTH = 2000;

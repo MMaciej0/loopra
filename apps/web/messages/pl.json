@@ -390,7 +390,10 @@
     "MAX_PARTICIPANTS": "Ta przejażdżka jest pełna.",
     "CREATOR_CANNOT_LEAVE": "Organizujesz tę przejażdżkę, więc nie możesz jej opuścić. Zamiast tego odwołaj ją.",
     "NAME_TOO_LONG": "Imię może mieć najwyżej {max} znaków.",
-    "MESSAGE_TOO_LONG": "Wiadomość może mieć najwyżej {max} znaków."
+    "MESSAGE_TOO_LONG": "Wiadomość może mieć najwyżej {max} znaków.",
+    "HISTORY_TOO_LONG": "Rozmowa jest za długa. Zacznij nowy czat.",
+    "HELP_UNAVAILABLE": "Asystent jest teraz niedostępny. Spróbuj ponownie później lub napisz do nas.",
+    "HELP_ANSWER_NOT_FOUND": "Ta odpowiedź nie jest już dostępna."
   },
   "Auth": {
     "or": "LUB",
