@@ -6,3 +6,9 @@ export class HelpAnswerNotFoundError extends AppError {
     super(404, ERROR_TYPES.HELP_ANSWER_NOT_FOUND, 'Help answer not found');
   }
 }
+
+export class HelpUnavailableError extends AppError {
+  constructor() {
+    super(503, ERROR_TYPES.HELP_UNAVAILABLE, 'Help is unavailable');
+  }
+}

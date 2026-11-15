@@ -17,7 +17,7 @@ import { APP_ENV } from '../../config/env.js';
 import { startHelpAnswer } from './services/startHelpAnswer.js';
 import { HelpFeedbackParamsSchema } from './schema.js';
 import { rateHelpAnswer } from './services/rateHelpAnswer.js';
-import { helpFeedbackRateLimiter } from './services/rateLimiter.js';
+import { helpAskRateLimiter, helpFeedbackRateLimiter } from './services/rateLimiter.js';
 
 export const helpRoutes: FastifyPluginAsyncZod = async (fastify) => {
   fastify.post(
@@ -28,6 +28,7 @@ export const helpRoutes: FastifyPluginAsyncZod = async (fastify) => {
       },
     },
     async (request, reply) => {
+      await helpAskRateLimiter(request, fastify.redis);
       const record = startHelpAnswer(
         { db: fastify.db, log: request.log },
         request.body,
